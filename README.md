@@ -16,3 +16,6 @@ les différents répertoires du projet :
 - script_R = tous les scripts R ou Rnw permettant de réaliser les sorties ou simulations sur le modèle
 - figures = toutes les figures relatives au modèle présent dans la branche Master
 - rapports = les rapports réalisés sur le projet
+
+Les branches features servent à développer des nouvelles choses sur le modèle. Les branches features et master seront remises ensemble quand le développement sera terminé sur les branches features. La branche master intègrera alors les modifications/ajouts
+réalisés sur les branches features.
