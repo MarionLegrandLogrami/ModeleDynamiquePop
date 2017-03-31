@@ -1,0 +1,52 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage[nogin]{Sweave}
+\usepackage[latin1]{inputenc}%encodage du fichier source
+\usepackage[T1]{fontenc}%gestion des accents (pour les pdf) 
+\usepackage{lmodern}%fonte latin modern
+%\usepackage{float}
+%\usepackage[section]{placeins}%The placeins package provides the command
+% \FloatBarrier
+%\usepackage{amsmath}% equation numbering
+%\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black,bookmarksnumbered]{hyperref}
+%\usepackage{wrapfig}
+
+\usepackage{subcaption}% pour les subfigures
+%\usepackage{vmargin}
+\usepackage[final]{pdfpages} 
+\usepackage[left=3cm, right=3cm, top=2cm, bottom=2cm]{geometry}
+\geometry{dvips,a4paper,hmargin=2.5cm,vmargin=2.5cm}
+\usepackage[font={it}]{caption}% pour des légendes en italique
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage[abs]{overpic}
+\usepackage[section]{placeins}
+\usepackage[francais]{babel}
+\graphicspath{{illustrations/}}
+\usepackage[final]{pdfpages} 
+\usepackage{graphicx}
+\usepackage[left=3cm, right=3cm, top=2cm, bottom=2cm]{geometry}
+\geometry{dvips,a4paper,hmargin=2.5cm,vmargin=2.5cm}
+%\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+
+
+\title{coucou}
+\author{marion.legrand}
+\clearpage
+\begin{document}
+
+\maketitle
+\section{coucou}
+
+\begin{equation}
+\label{eq_proba_poutes}
+  \begin{align}
+     $L\_p\_poutes[t] \textasciitilde dnorm(L\_mu\_p\_poutes[t],tau\_p\_poutes)$
+  \end{align}
+\end{equation}
+
+\end{document}

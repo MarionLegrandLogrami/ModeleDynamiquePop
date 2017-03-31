@@ -1,0 +1,23 @@
+%latex.default(ratio, title = str_c(), rowname = "", rowlabel = "",     where = "ht", longtable = FALSE, col.just = strsplit("l l l",         " ")[[1]], rgroup = c("\\textit{prorata} surfaces+productivité",         "\\textit{prorata} surfaces"), n.rgroup = table(ratio$ratio_type),     label = "ratio", caption = "Ratio à appliquer sur chacun des axes du secteur 1 (Allier en aval de Langeac, Alagnon et Dore) en fonction de deux méthodologies de calcul différentes. \\textit{prorata} surfaces ne tient compte que de la disponibilité des habitats productifs \nsur chacun des axes, \\textit{prorata} surfaces+productivité tient compte à la fois du ratio d'habitats productifs sur chacun des axes mais également de la productivité de ces axes via un coefficient pondérateur\nissu de l'analyse des pêches électriques sur chacun de ces axes. $r_{river}$\\_75-03 étant le ratio à appliquer à chaque cours d'eau sur la période 1975-2003 (c'est-à-dire avant l'ouverture de Grand Pont sur l'Alagnon) et $r_{river}$\\_04-14 le ratio à appliquer depuis 2004.",     caption.lot = "Ratio à appliquer sur chacun des axes du secteur 1 pour répartir les juvéniles produits dans le secteur 1 (Vichy-Langeac + Allier + Dore)",     file = str_c(tabwd, "ratio_surf.tex"))%
+\begin{table}[ht]
+\caption[Ratio à appliquer sur chacun des axes du secteur 1 pour répartir les juvéniles produits dans le secteur 1 (Vichy-Langeac + Allier + Dore)]{Ratio à appliquer sur chacun des axes du secteur 1 (Allier en aval de Langeac, Alagnon et Dore) en fonction de deux méthodologies de calcul différentes. \textit{prorata} surfaces ne tient compte que de la disponibilité des habitats productifs 
+sur chacun des axes, \textit{prorata} surfaces+productivité tient compte à la fois du ratio d'habitats productifs sur chacun des axes mais également de la productivité de ces axes via un coefficient pondérateur
+issu de l'analyse des pêches électriques sur chacun de ces axes. $r_{river}$\_75-03 étant le ratio à appliquer à chaque cours d'eau sur la période 1975-2003 (c'est-à-dire avant l'ouverture de Grand Pont sur l'Alagnon) et $r_{river}$\_04-14 le ratio à appliquer depuis 2004.\label{ratio}} 
+\begin{center}
+\begin{tabular}{llll}
+\hline\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{Cours d'eau}&\multicolumn{1}{c}{$r_{river}$\_75-03}&\multicolumn{1}{c}{$r_{river}$\_04-14}\tabularnewline
+\hline
+{\bfseries \textit{prorata} surfaces+productivité}&&&\tabularnewline
+~~&Allier (Vichy-Langeac)&0.66&0.43\tabularnewline
+~~&Alagnon&0.14&0.44\tabularnewline
+~~&Dore&0.2&0.13\tabularnewline
+\hline
+{\bfseries \textit{prorata} surfaces}&&&\tabularnewline
+~~&Allier (Vichy-Langeac)&0.61&0.46\tabularnewline
+~~&Alagnon&0.08&0.3\tabularnewline
+~~&Dore&0.31&0.24\tabularnewline
+\hline
+\end{tabular}\end{center}
+
+\end{table}

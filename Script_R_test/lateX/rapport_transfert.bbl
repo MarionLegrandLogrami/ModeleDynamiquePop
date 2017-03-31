@@ -1,0 +1,46 @@
+\begin{thebibliography}{5}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem[{Bach et~al.(2007)Bach, Lelièvre and Trotet}]{bach_poutes_2007}
+Bach, J., Lelièvre, M. and Trotet, M. 2007.
+\newblock Expertise du système de dévalaison de Naussac 2 et évaluation globale
+  des conditions de dévalaison des saumons sur l'Allier.
+\newblock Tech. rep., {LOGRAMI}
+
+\bibitem[{Baglinière et~al.(2005)Baglinière, Larinier, Porcher, Prévost,
+  Souchon and Vauclin}]{bagliniere_poutes_2005}
+Baglinière, J., Larinier, M., Porcher, J., Prévost, E., Souchon, Y. and
+  Vauclin, V. 2005.
+\newblock Le complexe hydroélectrique de Poutès-Monistrol (Haute-Loire) :
+  Impact sur la population de saumon de {l'Allier} et sur les autres espèces
+  migratrices.
+\newblock Tech. rep., {GRISAM}
+
+\bibitem[{Dauphin et~al.(2013)Dauphin, Brugel, Hoffmann-Legrand and
+  Prévost}]{dauphin_spawners_2013}
+Dauphin, G., Brugel, C., Hoffmann-Legrand, M. and Prévost, E. 2013.
+\newblock Estimating spatial distribution of Atlantic salmon escapement using
+  redd counts despite changes over time in counting procedure: application to
+  the Allier River population.
+\newblock \emph{Ecology of Freshwater Fish} \textbf{22}(4): 626--636
+
+\bibitem[{Dauphin and Prévost(2013)}]{dauphin_viability_2013}
+Dauphin, G. and Prévost, E. 2013.
+\newblock Viability analysis of the natural population of Atlantic salmon
+  (Salmo salar L.) in the Allier catchment.
+\newblock Tech. rep., {INRA}
+
+\bibitem[{Minster and Bomassi(1999)}]{minster_err_1999}
+Minster, A.~M. and Bomassi, P. 1999.
+\newblock Repérage et évaluation des surfaces potentielles de développement de
+  juvéniles de saumons atlantiques : Proposition d'un modèle de gestion des
+  stocks sur les bassins de {l'Allier} et de {l'Arroux}.
+\newblock Tech. rep., {LOGRAMI},{CSP--DR6}
+
+\end{thebibliography}

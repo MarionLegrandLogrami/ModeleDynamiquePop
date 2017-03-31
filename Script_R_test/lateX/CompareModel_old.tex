@@ -1,0 +1,799 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage[latin1]{inputenc} %encodage du fichier source
+\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf) 
+\usepackage[francais]{babel}
+\usepackage{float}
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage{amsmath} % equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption} % pour les subfigures
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\pagestyle{empty}
+%1 est la marge gauche
+%2 est la marge en haut
+%3 est la marge droite
+%4 est la marge en bas
+%5 fixe la hauteur de l'entête
+%6 fixe la distance entre l'entête et le texte
+%7 fixe la hauteur du pied de page
+%8 fixe la distance entre le texte et le pied de page
+
+\title{Comparaison des modèles - Version V\_1}
+\author{Marion Legrand,\\Guillaume Dauphin,\\Etienne Prevost}
+
+\begin{document}
+\maketitle
+\newpage
+
+Les modèles comparés ici sont :
+\begin{itemize}
+  \item Modèle développé avec Guillaume (2014.05.30) avec MAJ données 2012-2013
+et corrections
+  \item Modèle précédent modifié pour passer les surfaces juvéniles
+(S\_juv\_JP) en ERR et ajouter une notion temporelle (modification des surfaces en fonction de la réouverture 
+des cours d'eau :
+St-Etienne, Poutès, Grand Pont, etc.)
+  \item Modèle précédent modifié pour une meilleure prise en compte du caractère
+aleviné ou non des secteurs. Uniquement à partir de 2005 (pour l'historique un travail reste à mener avec l'onema pour définir les zones amont et aval des déversements
+sur les différents cours d'eau)
+\end{itemize}
+
+%=================================================================================
+\section{Figures-Modèle}
+%=================================================================================
+
+
+
+
+
+
+  %--------------------------------------------------
+  \subsection{retour à Vichy}
+  %--------------------------------------------------
+  % TotalReturns
+  
+
+  \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Spawners_ReturnsVichy_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{ReturnsVichy_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Spawners_ReturnsVichy_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{ReturnsVichy_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Spawners_ReturnsVichy_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{ReturnsVichy_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori des 
+  retours d'adultes à Vichy.]{Comparaison des 3 modèles : distribution a posteriori des 
+  retours d'adultes à Vichy. Les
+  boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les cercles pleins indiquent les années pour
+  lesquelles la station de comptage à Vichy est opérationnelle et fournit le
+  nombre de retours d'adultes. Les cercles orange représentent les
+  coefficients de variation (CVs) associés aux estimations de retour d'adultes.}
+  \label{ReturnsVichy}
+  \end{figure}
+
+
+\FloatBarrier 
+
+  %--------------------------------------------------
+  \subsection{Géniteurs potentiels et ratio}
+  %--------------------------------------------------
+  % SpawnersRedds_GeniteursPotentiels
+
+  \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/SpawnersRedds_GeniteursPotentiels_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{GenitPot_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/SpawnersRedds_GeniteursPotentiels_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{GenitPot_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/SpawnersRedds_GeniteursPotentiels_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{GenitPot_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori
+  des abondances annuelles absolues et relatives de géniteurs
+  potentiels]{Comparaison des 3 modèles :
+  distribution a posteriori
+  des abondances annuelles absolues et relatives de géniteurs
+  potentiels dans chaque zone du bassin de l'Allier: Vichy-Langeac (a et d),
+  Langeac-Poutès (b et e), Amont Poutès (c et f). Les boxplots indiquent les quantiles
+  à 2.5$^{th}$, 25$^{th}$, 75$^{th}$ et 97.5$^{th}$. Les lignes pointillées
+  horizontales pour d, e et f indiquent la disponibilité relative de l'habitat
+  potnetiel pour les juvéniles. On notera que pour la zone à l'amont de Poutès
+  il n'y a pas d'estimation des abondances absolues car le nombre exact de
+  géniteurs est toujours connu (c) et l'abondance relative est connue lorsque
+  les comptages à Vichy sont disponibles.}
+  \label{GenitPot}
+  \end{figure}
+  
+\FloatBarrier 
+
+
+  %--------------------------------------------------
+  \subsection{ratio géniteurs potentiels:frayères}
+  %--------------------------------------------------
+  % Redds_Kappa
+  \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Redds_kappa_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Redds_kappa_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Redds_kappa_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Redds_kappa_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Redds_kappa_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Redds_kappa_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori du
+  ratio géniteurs potentiels:frayères pour chaque zone du bassin]{Comparaison des 3 modèles : distribution a posteriori du
+  ratio géniteurs potentiels:frayères pour chaque zone du bassin de
+  l'Allier: a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les
+  boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les bandes colorées en arrière-plan
+  représentent la médiane et les quantiles à 2.5$^{th}$, 25$^{th}$, médiane,
+  75$^{th}$ et 97.5$^{th}$ des hyper-paramètres \mu$^{K_{down}}$ (a et b)
+  et \mu$^{K_{up}}$ (c).}
+  \label{Redds_kappa}
+  \end{figure}
+  
+\FloatBarrier 
+
+
+  %--------------------------------------------------
+  \subsection{Densité de juvéniles - échelle macroscopique}
+  %--------------------------------------------------
+    %#############################
+    % Dtot Vichy-Langeac-Poutès
+    %############################
+
+    %................................................................................
+    \subsubsection{Densités en juvéniles 0+ total (somme de tous les compartiments)}
+    %................................................................................
+ \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/juvenile_production_totale_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Juvenile_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/juvenile_production_totale_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Juvenile_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/juvenile_production_totale_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Juvenile_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori
+  des densités de juvéniles 0+ à l'échelle macroscopique]{Comparaison des 3
+  modèles :
+  distribution a posteriori
+  des densités de juvéniles 0+ à l'échelle macroscopique D$^{tot}_{t+1,i}$
+  dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Juvenile_densite}
+  \end{figure}
+  
+\FloatBarrier 
+
+    %#############################
+    % Dtot WILD-JUV-EGG Vichy-Langeac-Poutès
+    %############################
+
+    %..................................................
+    \subsubsection{Densités en juvéniles sauvages}
+    %..................................................
+ \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/juvenile_wild_totale_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Juvenile_wild_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/juvenile_wild_totale_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Juvenile_wild_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/juvenile_wild_totale_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Juvenile_wild_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori
+  des densités de juvéniles sauvages 0+ à l'échelle macroscopique]{Comparaison
+  des 3 modèles :
+  distribution a posteriori
+  des densités de juvéniles sauvages 0+ à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Juvenile_wild_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    %....................................................
+    \subsubsection{Densités en juvéniles d'élevage}
+    %....................................................
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/juvenile_juv_totale_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Juvenile_juv_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/juvenile_juv_totale_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Juvenile_juv_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/juvenile_juv_totale_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Juvenile_juv_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori
+  des densités de juvéniles d'élevage 0+ à l'échelle macroscopique]{Comparaison
+  des 3 modèles :
+  distribution a posteriori
+  des densités de juvéniles d'élevage 0+ à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Juvenile_juv_densite}
+  \end{figure}
+  
+\FloatBarrier 
+
+    %....................................................
+    \subsubsection{Densités en juvéniles issus des incubateurs de terrain}
+    %....................................................
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/juvenile_egg_totale_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Juvenile_egg_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/juvenile_egg_totale_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Juvenile_egg_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/juvenile_egg_totale_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Juvenile_egg_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori
+  des densités de juvéniles 0+ issus des incubateurs de terrain à l'échelle
+  macroscopique]{Comparaison des 3 modèles :
+  distribution a posteriori
+  des densités de juvéniles 0+ issus des incubateurs de terrain à l'échelle
+  macroscopique D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Il n'y a jamais eu d'incubateurs en amont de
+  Poutès.}
+  \label{Juvenile_juv_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    
+
+
+    %--------------------------------------------------
+    \subsubsection{Résidus des juvéniles sauvages}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Residus_wild_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Residus_wild_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Residus_wild_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Residus_wild_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Residus_wild_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Residus_wild_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : Résidus
+  des densités de juvéniles sauvages 0+ à l'échelle macroscopique]{Comparaison
+  des 3 modèles :
+  Résidus
+  des densités de juvéniles sauvages 0+ à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Residus_wild_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    %--------------------------------------------------
+    \subsubsection{Résidus des juvéniles d'élevage}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Residus_juv_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Residus_juv_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Residus_juv_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Residus_juv_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Residus_juv_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Residus_juv_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : Résidus
+  des densités de juvéniles 0+ issus des repeuplements à l'échelle
+  macroscopique]{Comparaison des 3 modèles :
+  Résidus
+  des densités de juvéniles 0+ issus des repeuplements à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Residus_juv_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    %--------------------------------------------------
+    \subsubsection{Résidus des juvéniles issus des incubateurs}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Residus_egg_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Residus_egg_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Residus_egg_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Residus_egg_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Residus_egg_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Residus_egg_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : Résidus
+  des densités de juvéniles 0+ issus des incubateurs terrain à l'échelle
+  macroscopique]{Comparaison des 3 modèles :
+  Résidus
+  des densités de juvéniles 0+ issus des incubateurs terrain à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement. Il n'y a
+  jamais eu d'incubateurs en amont de Poutès.}
+  \label{Residus_egg_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    
+
+    %--------------------------------------------------
+    \subsubsection{Ratio entre les densités sauvages et les densités totales}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Ratio_wild_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Ratio_wild_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Ratio_wild_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Ratio_wild_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Ratio_wild_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Ratio_wild_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : contribution relative des juvéniles
+  sauvages par rapport aux juvéniles totales produits à l'échelle macroscopique]{Comparaison des 3 modèles :
+  contribution relative des juvéniles
+  sauvages par rapport aux juvéniles totales produits à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les cercles colorés indiquent les années sans
+  repeuplement.}
+  \label{Ratio_wild_densite}
+  \end{figure}
+  
+\FloatBarrier    
+
+    %--------------------------------------------------
+    \subsubsection{Ratio entre les densités issus des juvéniles déversés et
+    les densités totales}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Ratio_juv_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Ratio_juv_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Ratio_juv_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Ratio_juv_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Ratio_juv_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Ratio_juv_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : contribution relative des juvéniles
+  issus des déversements par rapport aux juvéniles totales produits à l'échelle
+  macroscopique]{Comparaison des 3 modèles :
+  contribution relative des juvéniles
+  issus des déversements par rapport aux juvéniles totales produits à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les cercles colorés indiquent les années sans
+  repeuplement.}
+  \label{Ratio_juv_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    %--------------------------------------------------
+    \subsubsection{Ratio entre les densités issus des incubateurs de terrain et
+    les densités totales}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Ratio_egg_VLP_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Ratio_egg_densite_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Ratio_egg_VLP_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Ratio_egg_densite_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Ratio_egg_VLP_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Ratio_egg_densite_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : contribution relative des juvéniles
+  issus des incubateurs de terrain par rapport aux juvéniles totales produits à
+  l'échelle macroscopique]{Comparaison des 3 modèles :
+  contribution relative des juvéniles
+  issus des incubateurs de terrain par rapport aux juvéniles totales produits à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les cercles colorés indiquent les années sans
+  repeuplement.}
+  \label{Ratio_egg_densite}
+  \end{figure}
+  
+\FloatBarrier  
+    
+    
+  %--------------------------------------
+  \subsection{Production relative de juvéniles 0+ pour une année donnée (J$^{coh}_{t,i}$)}
+
+
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/SpawnersProdJuvRatio_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{Juv_Coh_Ratio_deux}
+         \end{subfigure}%         
+        ~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/SpawnersProdJuvRatio_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{Juv_Coh_Ratio_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/SpawnersProdJuvRatio_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{Juv_Coh_Ratio_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : production relative de
+  juvéniles 0+ pour une année donnée (J$^{coh}_{t,i}$)]{Comparaison des 3
+  modèles :
+  production relative de
+  juvéniles 0+ pour une année donnée (J$^{coh}_{t,i}$) pour chaque zone du
+  bassin de l'Allier (panneaux a,d et g), distribution a posteriori des
+  abondances relatives de géniteurs potentiels (panneaux b,e et h) et
+  distribution a posteriori de la différence entre les abondances relatives de
+  géniteurs potentiels et de production de juvéniles 0+ (panneaux c,f et
+  i).Les lignes pointillées horizontales indiquent la disponibilité relative
+  de l'habitat potentiel pour les juvéniles. Les boxplots indiquent les
+  quantiles à 2.5$^{th}$, 25$^{th}$, 75$^{th}$ et 97.5$^{th}$. }
+  \label{Juv_Coh_Ratio}
+  \end{figure}
+  
+\FloatBarrier  
+
+  %--------------------------------------------------
+  \subsection{Relation de densité dépendance}
+  %--------------------------------------------------
+
+
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/dd_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{dd_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/dd_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{dd_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/dd_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{dd_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : Relation de densité
+  dépendance moyenne pour le compartiment sauvage et élevage]{Comparaison des 3
+  modèles :
+  Relation de densité
+  dépendance moyenne entre a) les géniteurs potentiels d'une année
+  donnée t et la densité de juvéniles 0+ sauvage l'année suivante
+  t+1 et entre b) le nombre de juvéniles 0+ déversés au printemps
+  et la densité de juvéniles issus du repeuplement à l'automne. Les
+  différences spatiales à l'aval et l'amont de Langeac sont
+  représentées par deux courbes de couleurs différentes (rouge pour l'aval et
+  vert pour l'amont). Les cercles et les carrés colorés
+  représentent les "données" pour chaque zone du bassin de l'Allier
+  : rouge pour la zone Vichy-Langeac, vert foncé pour la zone
+  Langeac-Poutès et vert clair pour la zone à l'amont de Poutès. La
+  ligne pointillée dans le panneau b représente la fonction
+  identité.}
+  \label{dd}
+  \end{figure}
+  
+\FloatBarrier  
+
+  %--------------------------------------------------
+  \subsection{Survie du 0+ à l'adulte}
+  %--------------------------------------------------
+
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/SurvivalJuv2Ad_deux.png}
+                  \caption{SurvivalJuv2Ad modèle SurfErrSeul}
+                  \label{SurvivalJuv2Ad_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/SurvivalJuv2Ad_trois.png}
+                  \caption{SurvivalJuv2Ad modèle SurfErr+SurfDev}
+                  \label{SurvivalJuv2Ad_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/SurvivalJuv2Ad_un.png}
+                  \caption{SurvivalJuv2Ad modèle GuillaumeMaJ}
+                  \label{SurvivalJuv2Ad_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : évolution du taux de retour
+  du juvénile 0+ à l'adulte]{Comparaison des 3 modèles :
+  évolution du taux de retour
+  du juvénile 0+ à l'adulte \mu$^{s_J}$ (a) et du taux de retour du smolt issu
+  du repeuplement à l'adulte \mu$^{s_Sm}$. Les points indiquent la survie
+  moyenne du smolt issu du repeuplement à l'adulte fixée à partir des données
+  de marquage (\mu$^{s_Sm}$=5.45 x10^$^{-4}$)}
+  \label{SurvivalJuv2Ad}
+  \end{figure}
+
+
+  %--------------------------------------------------
+  \subsection{Probabilité de passage à Langeac et Poutès}
+  %--------------------------------------------------
+
+
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Redds_ProbaPassageStation_deux.png}
+                  \caption{Redds kappa modèle SurfErrSeul}
+                  \label{Redds_kappa_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/Redds_ProbaPassageStation_trois.png}
+                  \caption{Redds kappa modèle SurfErr+SurfDev}
+                  \label{Redds_kappa_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/Redds_ProbaPassageStation_un.png}
+                  \caption{Redds kappa modèle GuillaumeMaJ}
+                  \label{Redds_kappa_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori du
+  ratio géniteurs potentiels:frayères pour chaque zone du bassin]{Comparaison des 3 modèles : distribution a posteriori du
+  ratio géniteurs potentiels:frayères pour chaque zone du bassin de
+  l'Allier: a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les
+  boxplots indiquent les quantiles à 2.5$^th$, 25$^th$,
+  75$^th$ et 97.5$^th$. Les bandes colorées en arrière-plan
+  représentent la médiane et les quantiles à 2.5$^th$, 25$^th$, médiane,
+  75$^th$ et 97.5$^th$ des hyper-paramètres \mu$^K_down$ (a et b)
+  et \mu$^K_up$ (c).}
+  \label{Redds_kappa}
+  \end{figure}
+
+
+
+
+
+%=================================================================================
+\section{Figures-Simulation amélioration de la survie}
+%=================================================================================
+%=================================================================================
+\section{Paramètres à comparer}
+%=================================================================================
+  %-------------------------
+  \subsection{a_juv}
+  %-------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/a_juv_deux.png}
+                  \caption{modèle SurfErrSeul}
+                  \label{a_juv_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/a_juv_trois.png}
+                  \caption{modèle SurfErr+SurfDev}
+                  \label{a_juv_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/a_juv_un.png}
+                  \caption{modèle GuillaumeMaJ}
+                  \label{a_juv_un}
+          \end{subfigure}%    
+  \caption[Comparaison du paramètres a_juv de chacun des 3 modèles]{Comparaison du paramètres a_juv de chacun des 3 modèles}
+  \label{a_juv}
+  \end{figure}
+  
+\FloatBarrier  
+
+
+\maketitle
+
+
+\end{document}

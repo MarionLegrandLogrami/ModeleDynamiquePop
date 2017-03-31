@@ -1,0 +1,1226 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[nogin]{Sweave}
+\usepackage[latin1]{inputenc}%encodage du fichier source
+\usepackage[T1]{fontenc}%gestion des accents (pour les pdf) 
+\usepackage[francais]{babel}
+\usepackage{lmodern}%fonte latin modern
+\usepackage{float}
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage{amsmath}% equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black,bookmarksnumbered]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption}% pour les subfigures
+%\usepackage{vmargin}
+\usepackage[final]{pdfpages} 
+\usepackage[left=2cm, right=2cm, top=1.5cm, bottom=1.5cm]{geometry}
+\geometry{dvips,a4paper,hmargin=1.5cm,vmargin=1.5cm}
+\usepackage[font={it}]{caption}% pour des légendes en italique
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage[abs]{overpic}
+\usepackage[section]{placeins}%The placeins package provides the command % \FloatBarrier \let\emptyset\varnothing
+\graphicspath{{illustrations/}}
+%\setpapersize{A4}
+%\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\setcounter{secnumdepth}{10}
+\usepackage[xindy,acronym]{glossaries}% pour faire un glossaire [xindy] option
+\usepackage{enumitem}% pour diminuer les espaces après itemize
+% [noitemsep,nolistsep] \usepackage{blindtext} %dummty text
+\usepackage[round]{natbib}
+\definecolor{bois}{RGB}{139,69,19}
+\definecolor{brique}{RGB}{238,64,0}
+\definecolor{bleu}{RGB}{16,18,138}
+%\definecolor{violet}{RGB}{160,32,240}
+\definecolor{jauneorange}{RGB}{205,133,0}
+\definecolor{deeppink}{RGB}{255,20,147}
+\definecolor{lightgoldenrod1}{RGB}{255,236,139}
+\definecolor{royalblue4}{RGB}{39,64,139}
+\definecolor{grisbleu}{RGB}{62,59,132}
+\definecolor{vertfond}{RGB}{34,49,23}
+\definecolor{vertfond2}{RGB}{57,102,45}
+\definecolor{vertsurf}{RGB}{212,242,132}
+\renewcommand*{\glstextformat}[1]{\textcolor{grisbleu}{#1}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}% cette commande est pour créer un ligne il faut la précéder de noident
+% recommended,[toc]=> glossary in the table of contents
+\hypersetup{pdfstartview=FitH} %zoom pleine page
+\hypersetup{
+     backref=true,%permet d'ajouter des liens dans...
+     pagebackref=true,%...les bibliographies
+     hyperindex=true,%ajoute des liens dans les index.
+     colorlinks=true,%colorise les liens
+     breaklinks=true,%permet le retour à  la ligne dans les liens trop longs
+     urlcolor= cyan,%couleur des hyperliens
+     linkcolor= royalblue4,%couleur des liens internes(change box color with linkbordercolor)
+     filecolor=magenta,% color of file links 
+     citecolor=grisbleu,
+     bookmarks=true,%créé des signets pour Acrobat
+     bookmarksopen=true,%si les signets Acrobat sont créés, %les afficher complètement.
+     %dans les informations du document
+     %pdfsubject={Mortalité dévalaison},          %sous Acrobat
+     %pdfkeywords={saumon}{Salmo salar}{Modèle dynamique de population}
+     }
+\usepackage{etoolbox}
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+  \vspace*{50\p@}%
+  {\parindent \z@ \raggedright \normalfont
+  \hrule                                        % horizontal line
+  \vspace{10pt}%                                 % add vertical space
+  \interlinepenalty\@M
+  \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \thechapter\space \scshape #1\par
+        \par\nobreak
+        \vskip 20\p@        
+  \vspace{10pt}%                                 % add vertical space
+  \hrule                                        % horizontal rule
+  \nobreak
+  \vskip 40\p@
+  }%
+}
+\makeatother
+\addto{\captionsfrench}{\renewcommand{\bibname}{Références bibliographiques}}
+\addto{\captionsfrench}{\renewcommand{\abstractname}{Résumé}}
+\addto{\captionsfrench}{\renewcommand{\glossaryname}{Glossaire}}
+\addto{\captionsfrench}{\renewcommand{\tablename}{Tableau}}
+
+\begin{document}
+\includepdf{PageDeGarde.pdf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENTREES DU GLOSSAIRE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\makeglossaries
+%\newglossaryentry{COGEPOMI}
+%{
+%  name=COGEPOMI,
+%  description={Le comité de gestion des poissons migrateurs (COGEPOMI) assure
+%  localement la gestion des poissons migrateurs à l'échelle des grands bassins
+%  fluviaux. Il met en place
+%  les Plans de gestion des poissons migrateurs (PLAGEPOMI)} 
+%}
+%
+%\newglossaryentry{INRA}
+%{
+%  name=INRA,
+%  description={Institut national de la recherche agronomique} 
+%}
+%\newglossaryentry{LOGRAMI}
+%{
+%  name=LOGRAMI,
+%  description={Association Loire Grands Migrateurs} 
+%}
+%\newglossaryentry{ONEMA}
+%{
+%  name=ONEMA,
+%  description={Office National de l'Eau et des Milieux Aquatiques} 
+%}
+%\newglossaryentry{PLAGEPOMI}
+%{
+%  name=PLAGEPOMI,
+%  description={Plan de gestion des poissons migrateurs arrêté par le Préfet de
+%  région, Président du \gls{COGEPOMI}. Ce plan définit les mesures utiles à la
+%  reproduction, au développement, à la conservation et à la circulation des espèces,
+%  les plans de soutien d'effectifs ainsi que les conditions d'exercice de la
+%  pêche (périodes et autorisations)} 
+%}
+%\newglossaryentry{potamotoque}
+%{
+%  name=Potamotoque,
+%  text=potamotoque,
+%  description={un poisson potamotoque est un poisson se reproduisant en
+%  rivière et grandissant en mer}, 
+%  plural=potamotoques
+%}
+%\newglossaryentry{Sage}
+%{
+%  name=Sage,
+%  text=sage,
+%  description={En France, le schéma
+%  d'aménagement et de gestion des eaux décline à l'échelle d'un bassin versant et 
+%  de son cours d'eau, appelés unité hydrographique ou d'un système aquifère les
+%  grandes orientations définies par le SDAGE}, 
+%  plural=Sages 
+%}
+%\newglossaryentry{SDAGE}
+%{
+%  name=SDAGE,
+%  description={le SDAGE est un instrument de planification qui fixe pour chaque bassin hydrographique les orientations 
+%  fondamentales d'une gestion équilibrée de la ressource en eau dans l'intérêt général et dans le respect des principes 
+%  de la directive cadre sur l'eau et de la loi sur l'eau},
+%}
+%\newglossaryentry{TB_SALT}
+%{
+%  name=Tableau de bord SALT,
+%  description={Le Tableau de bord \og saumon,
+%  aloses, lamproies et truite de mer \fg{} du bassin de la Loire, des côtiers vendéens et de la sèvre niortaise est
+%  un outil de centralisation et valorisation de l'information sur les poissons
+%  \glspl{potamotoque}, ainsi qu'un outil d'expertise auprès des gestionnaires de
+%  ces espèces. Il a été créé en 2008 et est porté par LOGRAMILOGRAMI}, tout comme
+%  son projet homologue : le tableau de bord \og anguille \fg{} créé en 2001.
+%  Ces deux projets forment le tableau de bord \og migrateurs \fg{} du bassin
+%  Loire}
+%}
+%\newglossaryentry{0+}
+%{name=0+,
+%description={Les tacons 0+ sont des juvéniles de saumon issus de l'année}
+%}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TABLES DES MATIERES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+\sffamily
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PARTIES DU RAPPORT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introduction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+La réalisation d'un modèle de dynamique de population sur le saumon de l'Allier
+a été souhaité de longue date par les acteurs du bassin de la Loire. Ce projet
+avait ainsi été inscrit dans le plan de gestion des poissons migrateurs
+(PLAGEPOMI) 2009-2013 à la mesure 62 intitulée \og Comprendre les
+modalités de renouvellement de la population : création d'un modèle de dynamique
+des populations \fg{}.
+En 2010, pour répondre à cette demande, Guillaume Dauphin et Etienne Prévost
+(INRA--UMR Ecobiop) ont développé dans le cadre
+du plan Loire grandeur nature (plateforme Recherche/Données et Informations), et
+avec la collaboration de tous les acteurs locaux de la gestion et du suivi du
+saumon de l'axe Loire-Allier, un modèle de dynamique de population spécifique au saumon de l'Allier
+\citep{dauphin_viability_2013}.\\
+Ce modèle permet de faire la synthèse d'un vaste ensemble de données et
+d'informations collectées depuis plus de 30 ans et d'évaluer la viabilité de la
+population de saumons de l'Allier sous différentes hypothèses de gestion
+combinant repeuplement, restauration de la continuité écologique et changement
+de la qualité de l'habitat.
+La version remise en 2012 répondait aux attentes des acteurs du bassin mais il
+est très vite apparu qu'un tel projet méritait d'être poursuivi et amélioré afin de
+répondre plus largement aux questions des gestionnaires (développement de
+nouveaux scénarios, notamment). Une passation a ainsi été proposée
+entre l'INRA, concepteur du modèle, et le tableau de bord
+\og saumon, aloses, lamproies et truite de mer \fg{} du bassin Loire (porté par
+LOGRAMI), outil de centralisation, de valorisation de l'information et d'expertise auprès des gestionnaires.
+\\
+Du fait de sa complexité, la mise à jour (en fonction des nouvelles données et informations disponibles) et 
+l'utilisation de ce modèle requiert un niveau d'expertise assez avancé en modélisation et un apprentissage pour sa prise en main. 
+L'opération de transfert vise ainsi à permettre au principal opérateur assurant
+le suivi et l'évaluation du statut du saumon de l'Allier (association
+LOGRAMI) de devenir autonome dans la mise à jour et l'utilisation du
+modèle à des fins de tests d'options alternatives de gestion et d'évolution de l'environnement.
+Cette action de transfert est menée dans le cadre du pôle INRA-ONEMA. 
+
+
+\clearpage 
+\chapter{Opération de transfert}
+\label{Operation_transfert}%Donne un nom à la section pour pouvoir y faire référence si besoin (\ref{Operation_transfert})
+
+\noindent Le projet de transfert du modèle de dynamique de population vers le
+Tableau de bord SALT visait plusieurs objectifs (Annexe \ref{Annexe1}) :
+\begin{itemize}
+  \item la formation à la modélisation bayésienne,
+  \item la prise en main du modèle développé sur l'Allier,
+  \item l'appropriation du modèle via la mise à jour avec les données
+  thésaurisées en 2012 et 2013,
+  \item le test de quelques options de gestion et d'évolution de
+  l'environnement, et en particulier une première évaluation des effets attendus
+  du prochain aménagement du barrage de Poutès.
+\end{itemize}
+En 2014, conformément à la fiche-projet (Annexe \ref{Annexe1}), une formation à
+la modélisation bayésienne, réalisée par Etienne Prévost, s'est tenue du 24 au
+29 mars puis du 7 au 11 avril.
+Cette formation s'est déroulée sur deux semaines et a permis à l'ingénieure LOGRAMI en charge du
+Tableau de bord SALT de se familiariser avec la modélisation bayésienne à la fois à
+travers l'apport de notions théoriques et au travers d'exemples concrets pour
+la mise en pratique de ces notions théoriques. Le logiciel
+Openbugs, utilisé pour faire tourner le modèle de
+dynamique de population du saumon de l'Allier, a également été présenté et des
+exercices utilisant ce logiciel ont été proposés. De façon à dynamiser cet
+apprentissage et à répondre à une demande en formation bayésienne, ces 15 jours
+ont été ouverts à des agents de l'ONEMA et de l'INRA. Au total,
+jusqu'à 7 personnes ont pu bénéficier de cette formation.\\
+Suite à cette première phase, 2 autres semaines
+(du 19 au 30 mai) ont été consacrées à la prise en main du modèle Allier. Ces
+journées n'ont été suivies que par Marion Legrand (LOGRAMI) et ont été
+assurées par Guillaume Dauphin et Etienne Prévost, concepteurs du modèle sur l'Allier.
+Lors de cette période de prise en main, le modèle a été revisité en détail ce
+qui a permis à la fois à l'ingénieure LOGRAMI de s'approprier le modèle
+mais également de vérifier et valider toutes les données et hypothèses
+le constituant. Suite à ce travail des corrections et des
+modifications ont été apportées (section \ref{revision_corr}). Pour finir cette phase de prise
+en main, la mise à jour du modèle avec les données 2012 et 2013 bancarisées au sein du
+Tableau de bord SALT a été réalisée (section \ref{maj}).\\
+A la suite de cette période, l'ingénieure LOGRAMI a
+commencé à travailler en autonomie sur le modèle avec des réunions régulières
+avec Etienne Prévost à l'INRA. Ainsi, 3 réunions de 3 jours chacunes
+(du 25 au 27 août, du 13 au 15 octobre et du 8 au 10 décembre 2014) ont été
+organisées afin de discuter des avancées et des résultats, ainsi que de
+l'organisation du travail à venir. De nouvelles
+modifications ont été approtées au modèle notamment concernant la prise en compte de l'influence des déversements dans les points de pêche à l'électricité
+(section \ref{inf_dev} et plus généralement section \ref{amelioration_model}).
+Enfin, durant cette période, les scénarios liés au réaménagement futur de Poutès
+ont été développés (section \ref{scenario}).\\
+Afin de poursuivre et de renforcer le lien créé dès le démarrage du projet,
+avec les acteurs locaux de la gestion de l'eau et du saumon, nous avons
+constitué et réunis à deux reprises un groupe pour le suivi du projet (22
+juillet et 19 novembre 2014, cf. Annexe \ref{Annexe2} pour les relevés de
+décisions de ces réunions).
+La composition de ce groupe s'est voulue large afin que les principaux acteurs
+du bassin de l'Allier puisse y participer.
+Ont ainsi été invités l'ensemble des fédérations de pêche du bassin de l'Allier,
+les animateurs(/trices) des Sages Alagnon, Dore, Sioule et Haut-Allier,
+l'Agence de l'Eau Loire-Bretagne, Electricité de France, le Conservatoire
+National du Saumon Sauvage, l'ONEMA, la Direction Régionale de
+l'Environnement, de l'Aménagement et du Logement (DREAL) de bassin et la DREAL
+Auvergne, l'Etablissement Public Loire, le Syndicat Interdépartemental de Gestion de l'Alagnon, ainsi que LOGRAMI.
+Ces réunions co-pilotées par l'INRA et le Tableau de bord SALT, ont permis
+de présenter le modèle tel que mis à jour des données 2012 et 2013, ainsi que
+les différentes modifications apportées au cours de l'année 2014. Elles ont
+également été l'occasion de discuter les hypothèses et de présenter
+le développement des scénarios liés au réaménagement de Poutès. De façon plus
+générale, ce groupe a permis d'attester de l'intérêt des acteurs du bassin pour
+ce projet de modélisation et a validé la poursuite du travail sur le modèle pour les années à venir. Dans ce but, les modifications et
+les développements nouveaux souhaités ont été listés et priorisés pour que le
+travail se poursuive en 2015 (Annexe \ref{Annexe2}).\\
+L'ensemble du code permettant de générer le modèle (version 2015.01.24) est
+consultable en Annexe \ref{Annexe5}. Les données ayant alimenté le modèle
+peuvent être obtenues par demande écrite au
+Tableau de bord SALT
+\footnote{\href{mailto:tableau-salt-loire@logrami.fr}{\nolinkurl{tableau-salt-loire@logrami.fr}}}.
+
+\clearpage
+
+\chapter{Modifications apportées au modèle}
+\label{Modif_model}%Donne un nom à la section pour pouvoir y faire% référence si besoin (\ref{nom_label}) 
+\noindent Comme nous l'avons vu, 3 types de modifications ont pu être
+apportées en 2014 au modèle tel que développé par \citet{dauphin_viability_2013}
+:
+\begin{itemize}
+  \item des révisions et des corrections : l'explication détaillée du modèle
+  lors de la phase de formation, a été l'occasion de revalider l'ensemble des
+  hypothèses et des données injectées dans le modèle ainsi que les scripts générés. Lors de cette phases, des
+  erreurs ont pu être identifiées et corrigées (section \ref{revision_corr}),
+  \item l'incrémentation des séries de données avec les années 2012 et 2013
+  (section \ref{maj}),
+  \item la poursuite de l'amélioration du modèle (section \ref{amelioration_model}).
+\end{itemize}
+
+\section{Révisions et corrections}
+\label{revision_corr}%Donne un nom à la section pour pouvoir y faire référence si besoin (\ref{nom_label}) 
+
+\noindent La principale correction apportée concerne le modèle de
+calibration reliant le nombre de tacons 0+ pêchés en 5
+minutes au nombre total de tacons 0+ présents sur la zone (nombre connu
+grâce à la réalisation de pêches complètes à deux ou trois passages sur le même
+site et immédiatement après la réalisation de la pêche en 5 minutes). Ce modèle de calibration est à la base de tous les autres calculs
+concernant les juvéniles puisqu'il permet de transformer un nombre de poissons
+obtenus en 5 minutes de pêche en densité de 0+ par m\up{2}. Cette densité est ensuite multipliée
+par les surfaces disponibles permettant ainsi d'avoir une estimation du nombre
+de juvéniles produits une année donnée. Or, une erreur s'était glissée dans le
+script permettant de réaliser le lien entre pêches en 5 minutes et pêches complètes.
+La figure \ref{fig_prediction_IA} et le tableau de
+l'Annexe \ref{Annexe4} présentent ainsi la mise à jour de cette relation corrigée.\\
+D'autre part, nous avons rediscuté l'effet méthode ajouté dans le modèle frayère pour
+distinguer les comptages réalisés à pied ou en bateau (avant 1997), de ceux
+réalisés en hélicoptère (après 1997). En retravaillant cet aspect nous nous
+sommes aperçus que l'effet spatial injecté dans le modèle et permettant d'ajuster les données frayères en fonction des secteurs, ne permettait
+pas de sectoriser les zones au niveau de Langeac mais bien au niveau de Poutès.
+Cette correction ayant été apportée, nous avons constaté que l'effet méthode de
+comptage des frayères (pied et bateau \textit{versus} hélicoptère) n'était plus
+significatif.
+Néanmoins, nous avons décidé de conserver cet effet puisqu'il avait été ajouté lors de la
+publication de ce modèle d'observation par \citet{dauphin_spawners_2013} (sur
+demande du comité de lecture), et que cela nous semblait cohérent avec les données (c'est-à-dire changement
+important dans la méthodologie). La section \ref{resu}, présente les figures
+modifiées suite à la correction de l'effet spatial dans le modèle frayère.\\
+Enfin, nous avons reparcouru l'ensemble des données et lors de cette phase nous
+en avons précisé et corrigé un certain nombre. Les données
+frayères ont ainsi été complétées, notamment pour les cours d'eau Alagnon
+(données ajoutées sur la période 2001 -- 2011) et Dore (données 2011).
+En effet, ces rivières faisant partie intégrante du secteur aval du
+modèle (secteur Vichy-Langeac), la prise en compte de ces données par le modèle
+est importante. Les nombreuses données de pêche en 5 minutes ont également été
+validées et corrigées. Enfin, une correction a été apportée aux comptages
+d'adultes à Vichy concernant l'année 2004. En effet, les opérateurs de terrain
+ont indiqué que l'effectif compté à Vichy cette année là, n'était pas exhaustif.
+Nous avons donc considéré ce nombre comme étant un minimum.
+
+\section{Mise à jour}
+\label{maj}%Donne un nom à la section pour pouvoir y faire référence si besoin (\ref{nom_label}) 
+\noindent La mise à jour des données a été un moment important dans le processus
+d'appropriation du modèle. En effet, il a permis de mieux se familiariser avec
+l'outil et de mieux comprendre comment le modèle fonctionnait. Deux années de
+données supplémentaires (années 2012 et 2013) ont été ajoutées (cf. section
+\ref{resu_anal_retro} pour les résultats de cette mise à jour). Les retours
+d'adultes de ces deux années correspondent aux premières années de mise en place de la zone refuge sur l'Allier. Cette zone refuge, située en amont de Langeac,
+vise à préserver les secteurs de productions considérés comme étant les
+meilleurs, des différents impacts anthropiques. Ainsi, il a été décidé de ne
+plus y déverser de poissons de pisciculture à quel que stades que ce soit. Cette
+mesure a pris effet en 2008 pour l'arrêt des déversements au stade alevin et en
+2009 pour l'arrêt total (y compris les \oe{}ufs). Les retours d'adultes en 2012
+et 2013 proviennent ainsi (en totalité ou en partie) des juvéniles sauvages
+produits dans cette zones (respectivement entre 2007--2009 et 2008--2010). Ces
+années sont ainsi importantes car elles permettent au modèle de connaitre avec
+certitude l'origine des poissons produits dans la zone en amont de Langeac
+(origine sauvage), or cette distinction sauvage/élevage est un des défis que
+se propose de relever le modèle compte-tenu du fait que l'ensemble des
+poissons déversés ne sont pas marqués. La poursuite de la mise à jour du modèle
+avec les données des prochaines années sera tout aussi importante pour permettre
+au modèle d'être plus robuste dans cette discrimination sauvage/élevage.
+
+\section{Amélioration du modèle}
+\label{amelioration_model}%Donne un nom à la section pour pouvoir y faire référence si besoin (\ref{nom_label})  Tous ces ajouts et modifications permettent d'une part 
+
+\noindent Deux types d'amélioration ont pu être apportées au modèle. La première
+est une amélioration de \og forme \fg{}. En effet, dans le processus
+d'appropriation du modèle et du code, le script a été entièrement revu et
+commenté, avec une mise en évidence plus nette des différentes parties le
+composant. D'autre part, une séparation beaucoup plus nette a été proposée entre
+le modèle en tant que tel (tournant sous Openbugs), et
+la partie simulation et projection. Jusque là cette deuxième partie était pour
+un bout réalisée dans Openbugs et pour l'autre
+dans le logiciel R. Afin de bien dissocier les deux parties et d'éviter toute
+confusion d'Openbugs entre les paramètres projetés et ceux estimés sur la
+période pour laquelle nous disposons de données, toutes les simulations et
+projections ont été réécrites dans R. Ce travail de réécriture présente
+également l'avantage d'augmenter la rapidité de sortie des simulations et
+projections (puisqu'il n'est plus nécessaire de faire retourner tout le modèle
+pour réaliser chaque nouvelle projection).\\
+Le deuxième type d'amélioration concerne le modèle en tant que
+tel. Ces modifications ont concerné les deux modèles d'observation constituant
+le modèle de dynamique de population (cf. \citet{dauphin_viability_2013} pour
+avoir un rappel sur la façon dont le modèle est construit), à savoir le modèle
+de densité de juvéniles 0+ et le modèle \og frayères \fg{} permettant de
+relier les géniteurs potentiels aux comptages des nids.
+
+\subsection{Les données de surfaces productives et leur prise en compte dans
+le modèle}
+\label{am_surf}
+
+La façon de considérer les surfaces productives a été revue. Ainsi, ces surfaces
+ne sont plus calculées comme dans l'équation \ref{eq_surf_GD} proposée par
+\citet{dauphin_viability_2013}, mais comme dans l'équation \ref{eq_ERR} proposée
+par \citet{minster_err_1999}. Cette modification a fait l'objet d'une validation
+par le groupe de suivi du projet.
+\begin{equation}
+\label{eq_surf_GD}
+  \begin{align}
+    S_{p}=RAD+RAP+RAB+PLA
+  \end{align}
+\end{equation}
+avec S$_{p}$= Surfaces$_{productives}$,\\
+RAD= Surfaces de radiers, \\
+RAP= Surfaces de
+rapides, \\
+RAB= Surfaces de radiers à blocs et \\
+PLA= Surfaces de plats courants.\\
+
+\begin{equation}
+\label{eq_ERR}
+  \begin{align}
+    S_{p}=RAD+RAP+RAB+CLO+\frac{1}{5}PLA
+  \end{align}
+\end{equation}
+avec S$_{p}$= Surfaces$_{productives}$ en équivalent radiers--rapides,\\
+RAD= Surfaces de radiers,\\
+RAP=Surfaces de rapides,\\
+RAB=Surfaces de radiers à blocs,\\
+CLO=Surfaces de chenaux lotiques et \\
+PLA=Surfaces de plats courants.\\
+
+D'autre part, la façon de prendre en compte le linéaire prospecté lors du
+comptage des frayères a été revue. En effet, jusque là le linéaire prospecté
+d'une année était rapporté au linéaire maximum prospecté sur l'ensemble de la
+série chronologique. Ce maximum prospecté a été remplacé dans cette nouvelle version du modèle par le linéaire total
+accessible, qui nous a semblé être une meilleure mesure (notamment pour éviter dans une année 
+future d'avoir un linéaire prospecté supérieur au linéaire maximum prospecté jusque là). Ainsi, les limites amont de l'ensemble des cours
+d'eau intégrés dans le modèle ont été définies afin de quantifier ce linéaire
+total accessible.\\
+Enfin, nous avons adapté le modèle pour mieux prendre
+en compte les différentes ouvertures opérées au cours du temps sur les cours
+d'eau Alagnon, Dore et Allier et qui sont récapitulées dans le tableau \ref{tab_lineaire}.
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+  \hline
+     & Allier & Alagnon & Dore\\
+  \hline
+    \multirow{3}{*}{1975--1985} & VL= Langeac & \multirow{3}{*}{Grand Pont} &
+    \multirow{3}{*}{Ambert}\\
+                                & LP= Poutès & & \\ 
+                                & AM= $\emptyset$ & & \\ 
+  \hline
+    \multirow{3}{*}{1986--1997} & VL= Langeac & \multirow{3}{*}{Grand Pont} &
+    \multirow{3}{*}{Ambert}\\
+                                & LP= Poutès & & \\ 
+                                & AM= S\up{T} Etienne & & \\ 
+  \hline
+    \multirow{3}{*}{1998--2003} & VL= Langeac & \multirow{3}{*}{Grand Pont} &
+    \multirow{3}{*}{Ambert}\\
+                                & LP= Poutès & & \\ 
+                                & AM= amont Poutès total & & \\    
+  \hline
+    \multirow{3}{*}{1998--2003} & VL= Langeac & \multirow{3}{*}{Joursac} &
+    \multirow{3}{*}{Ambert}\\
+                                & LP= Poutès & & \\ 
+                                & AM= amont Poutès total & & \\      
+  \hline    
+\end{tabular}
+\caption[Limites amont des linéaires accessibles]{Limites amont des linéaires
+accessibles en fonction des années et des cours d'eau. Sur l'Allier nous distingons les 3 secteurs du modèle à savoir
+VL=Vichy--Langeac, LP=Langeac--Poutès et AM=Amont Poutès.}
+\label{tab_lineaire}
+\end{center}
+\end{table}
+
+
+\subsection{Les données de déversement d'alevins et leur influence sur les
+résultats de pêches électriques}
+\label{inf_dev}
+
+La localisation précise des points d'alevinage n'est pas aisée à obtenir sur
+l'ensemble de la série chronologique (en particulier sur la partie historique
+de la série).
+De plus, le phénomène de dispersion de ces poissons est difficile à appréhender, ce qui implique que lors des pêches
+électriques il n'est pas évident de connaitre l'origine des juvéniles pêchés
+notamment lorsque le point de pêche n'est pas directement situé au niveau
+du point de déversement. De ce fait, le modèle considérait jusque là que si un
+site de pêche était sous influence des repeuplements (site de pêche situé au
+niveau du point de déversement), tout le secteur était considéré comme sous
+l'influence des déversements. La figure \ref{fig_loca} rappelle la
+sectorisation réalisée dans ce modèle.
+\begin{figure}[!h]
+  \begin{center}
+    \includegraphics[scale=0.5]{illustrations/LocalisationSecteursModeleDynamiquePop.pdf}
+  \end{center}
+  \caption{Localisation des secteurs utilisés dans le modèle}
+  \label{fig_loca}
+\end{figure}
+Ce mécanisme conduisait donc à considérer tout le secteur aval de l'Allier
+(secteur Vichy-Langeac) ainsi que la Dore et l'Alagnon sous influence des
+déversements si un point de pêche sur l'Alagnon était considéré comme influencé par les
+alevinages.\\
+Avec le soucis constant de préciser au maximum l'origine des poissons (quand
+cela est possible) afin de permettre au modèle de mieux discriminer les deux
+origines, nous avons repris l'ensemble des données bancarisées au sein du
+Tableau de bord SALT et pour lesquelles nous disposions d'informations précises sur la
+localisation des points d'alevinages (années 2005 à 2013). A l'aide du logiciel
+de cartographie MapInfo\up{\textregistered}, nous avons croisé les points de
+pêche et de déversement afin de visualiser des grands ensembles (zones où les points de déversement
+sont très fréquents et à proximité des points de pêche, et zones indemnes de
+repeuplement avec une zone tampon minimale de 2,5 km).
+Le résultat de ce croisement a été réinjecté dans le modèle pour les données
+2005--2013 afin de déterminer plus finement pour ces années là, l'influence des
+déversements dans nos résultats de pêche.
+
+\subsection{Le taux de transition du juvénile à l'adulte à l'intérieur des
+différents secteurs du modèle}
+\label{surmortalie_poutes}
+Dans la version antérieure \citep{dauphin_viability_2013}, le taux de transition
+du juvénile 0+ à l'adulte était identique quels que soient les secteurs.
+Le modèle n'avait donc qu'un seul paramètre à ajuster et cet ajustement était
+fait en fonction de l'ensemble des données des différents secteurs. Or, il nous est
+apparu durant notre travail sur le modèle en 2014, que cette hypothèse
+d'homogénéité était assez forte et pas vraiment justifiée.
+En effet, les connaissances de terrain et des études (en particulier
+\citet{bagliniere_poutes_2005} et \citet{bach_poutes_2007}) tendent à montrer,
+au contraire, que le secteur en amont de Poutès, bien que disposant de surfaces
+jugées les plus productives, est lourdement impacté par le barrage de Poutès lors de la dévalaison des smolts.
+Ce facteur supplémentaire de mortalité n'ayant pas été prévu dans le modèle,
+c'est l'ensemble du taux de transition du 0+ à l'adulte de l'ensemble des
+zones qui était potentiellement impacté.
+Ainsi, nous avons ajouté dans le modèle un nouveau paramètre (rho\_poutès pouvant
+prendre les valeurs de 0 à 1) lui permettant d'estimer un différentiel de
+survie entre l'amont et l'aval de Poutès.
+La production totale de juvéniles du système ne s'écrit donc plus comme dans
+l'équation \ref{eq_prod_juv_anc}, mais comme dans l'équation \ref{eq_prod_juv} :
+
+\begin{equation}
+\label{eq_prod_juv_anc}
+  \begin{align}
+    Juv\_tot\_system[t] <- Juv\_tot\_vichy[t] + Juv\_tot\_langeac[t] + Juv\_tot\_poutes[t]
+  \end{align}
+\end{equation}
+
+\begin{equation}
+\label{eq_prod_juv}
+  \begin{align}
+    Juv\_tot\_system[t] <- Juv\_tot\_vichy[t] + Juv\_tot\_langeac[t] + rho\_poutes*Juv\_tot\_poutes[t]
+  \end{align}
+\end{equation}
+avec :\\
+Juv\_tot\_system= production totale de juvéniles du système,\\
+Juv\_tot\_vichy= production totale de juvéniles dans le secteur aval
+Vichy-Langeac,\\
+Juv\_tot\_langeac= production totale de juvéniles dans le secteur intermédiaire
+Langeac-Poutès,\\
+rho\_poutes= paramètre de survie (entre 0 et 1) lié aux conditions de dévalaison à
+l'ouvrage de Poutès,\\
+Juv\_tot\_poutes= production totale de juvéniles dans le
+secteur amont en amont de Poutès.\\
+\newline
+L'ajout de ce paramètre s'est révélé intéressant puisque le
+modèle a été capable d'estimer un facteur de surmortalité lié aux conditions de dévalaison à Poutès et dans le même temps de
+revoir à la hausse ses estimations sur le paramètre de transition entre le
+0+ et l'adulte à l'échelle de l'ensemble des secteurs (cf. Annexe
+\ref{Annexe3} et section \ref{resu_tx_retour}).
+
+\chapter{Développement d'un nouveau scénario : l'aménagement de Poutès}
+\label{scenario}%Donne un nom à la section pour pouvoir y faire référence si besoin (\ref{nom_label}) 
+Conformément à la fiche-projet (cf. Annexe \ref{Annexe1}), nous avons développé
+des simulations liées au réaménagement prochain du barrage de Poutès
+situé sur l'Allier dans le département de la Haute-Loire. Les modifications
+apportées à cet ouvrage devraient être substantielles autant pour la montaison
+(abaissement du seuil de 17 à 4 mètres avec remplacement de l'ascenceur à poissons par une passe à bassins), que pour
+la dévalaison (réduction de la retenue de 3,5 kilomètres à moins de 300 mètres).
+L'objectif de ce travail était de :
+\begin{itemize}
+  \item démontrer que le modèle était en mesure de simuler des scénarios de
+  gestion liés aux ouvrages,
+  \item évaluer la réponse de la population au réaménagement prochain de Poutès,
+  tout particulièrement du point de vue de la viabilité de la population.
+\end{itemize}
+Suite aux discussions avec le comité de suivi du projet (cf. Annexe
+\ref{Annexe2}), il a été décidé de réaliser 2 scénarios :
+\begin{itemize}
+  \item le réaménagement de Poutès améliorera de 50\% les conditions de
+  montaison et de dévalaison (cf. section \ref{resu_poutes50}). Cette hypothèse
+  est considérée comme pessimiste compte-tenu des améliorations prévues sur
+  l'ouvrage et représentera donc un minimum à attendre en terme de réponse de
+  la population,
+  \item le barrage de Poutès est entièrement effacé (100\% de gain à la
+  montaison comme à la dévalaison). Ce deuxième scénario a été souhaité pour
+  mesurer l'ensemble des gains possibles sur la population du
+  saumon de l'Allier liés à l'ouvrage de Poutès (cf. section
+  \ref{resu_poutes100}).
+\end{itemize}
+
+\noindent Pour réaliser ces scénarios nous avons identifié 2 paramètres à faire
+évoluer :
+\begin{itemize}
+  \item un paramètre permettant de modifier les conditions à la dévalaison. Il
+  s'agit du paramètre de différentiel de survie (rho\_poutès) lié à l'ouvrage de
+  Poutès (cf. section \ref{surmortalie_poutes}),
+  \item un paramètre permettant de modifier les conditions de franchissabilité à
+  la montaison au niveau de l'ouvrage de Poutès (probabilité de passer en amont du barrage).
+\end{itemize}
+
+\noindent Dans le modèle, la probabilité de franchir Poutès s'écrit (équation
+\ref{eq_proba_poutes}) :
+\begin{equation}
+\label{eq_proba_poutes}
+  \begin{align}
+     $L\_p\_poutes[t] \textasciitilde dnorm(L\_mu\_p\_poutes[t],tau\_p\_poutes)$ 
+  \end{align}
+\end{equation}
+avec :\\
+L\_p\_poutes= logit de la probabilité de passer en amont de
+poutès (p\_poutes),\\
+L\_mu\_p\_poutes = logit de la probabilité moyenne (mu\_p\_poutes) de passer
+en amont de Poutès (cf. équation \ref{eq_proba_moyenne_poutes}),\\
+tau\_p\_poutes = la précision liée à la probabilité de passer en amont de Poutès
+(la précision se définit comme étant $\frac{1}{Variance}$).\\
+\begin{equation}
+\label{eq_proba_moyenne_poutes}
+  \begin{align}
+     L\_mu\_p\_poutes[t] <- L\_ratio\_juv\_P[t] + adjust\_p\_P 
+  \end{align}
+\end{equation}
+avec :\\
+L\_mu\_p\_poutes= logit de la probabilité moyenne (mu\_p\_poutes) de passer
+en amont de Poutès,\\
+L\_ratio\_juv\_P= le mécanisme de répartition des adultes à la fois en fonction
+des surfaces disponibles (répartition idéale libre) et en fonction de l'endroit
+où ils sont nés (homing),\\
+adjust\_p\_P= un facteur supplémentaire modifiant la probabilité de passage et
+directement lié à la présence de l'ouvrage. C'est ce paramètre qui est modifié
+dans nos simulations.\\
+
+Ainsi, selon le scénario nous avons facilité la migration de montaison de 50\%
+(cf. section \ref{resu_poutes50}) ou de 100\% (cf. section \ref{resu_poutes100}), c'est à
+dire que nous avons respectivement divisé le paramètre adjust\_p\_P par 2 ou
+supprimé ce paramètre.\\
+
+Concernant le paramètre modifiant les conditions de dévalaison (rho\_poutes, cf.
+section \ref{surmortalie_poutes}), nous avons, dans le cadre du premier scénario
+(50\% d'amélioration), divisé la mortalité par deux (soit
+$\frac{(1+rho\_poutes)}{2}$), et dans le cadre du second (100\% d'amélioration)
+supprimé le paramètre rho\_poutes.
+
+\clearpage
+
+\chapter{Résultats obtenus}
+\label{resu}%Donne un nom à la section pour pouvoir y faire référence si besoin (\ref{nom_label}) 
+
+\noindent Deux types de résultats sont présentés ici :
+\begin{itemize}
+  \item les résultats du modèle de dynamique de population (section
+  \ref{resu_anal_retro}),
+  \item les résultats des différentes simulations développées pour analyser la
+  dynamique et la viabilité de la population à l'horizon de 20 ans sous
+  différents scénarios (section \ref{resu_simulations}).\\
+\end{itemize}
+Pour l'ensemble de ces projections nous avons fait l'hypothèse que les
+conditions environnementales resteront les mêmes que celles observées les années
+précédentes.
+
+
+
+\section{Analyse rétrospective}
+\label{resu_anal_retro}
+\subsection{Relation de calibration entre les densités de tacons 0+ et les
+indices d'abondance en 5 minutes}
+
+
+Suite aux corrections et modifications apportées (section \ref{revision_corr}),
+la relation de calibration (figure \ref{fig_prediction_IA}) entre les indices d'abondances en 5
+minutes et les densités de tacons 0+ par mètres carré est linéaire, et non
+plus concave comme dans la version de \citet{dauphin_viability_2013}.
+
+\begin{figure}[!h]
+     \includegraphics[width=0.4\textwidth,keepaspectratio]{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Calibration_2015_02_09.pdf}
+     \caption[Densité de tacons prédits en fonction du nombre de poissons capturés]{Relation entre les indices d'abondances des pêches électriques 5 minutes et les densités de
+juvéniles 0+ pour 9 sites échantillonnés avec les deux types de méthodologies (enlèvements successifs et 5
+minutes). Les boxplots indiquent les quantiles à 2.5th, 25th, médiane, 75th et 97.5th. Les lignes rouges
+pleines et pointillées indiquent la médiane et les quantiles à 2,5 et 97,5 des
+densités de juvéniles 0+ pour des valeurs d'indices d'abondance compris entre 1 et 300.}
+     \label{fig_prediction_IA} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Répartition des adultes dans les différents secteurs}
+Les modifications apportées aux données de surfaces productives (section
+\ref{am_surf}), ont quelque peu changé la vision que nous avions de la
+répartition des adultes (figure \ref{fig_repartition_adultes}). Notamment, la prise en
+compte exhaustive des ouvertures des cours d'eau au fil du temps permet de mieux
+comprendre cette répartition avec un meilleur ajustement  entre la présence des
+adultes et les surfaces disponibles (en particulier pour le secteur Vichy-Langeac).
+
+
+\begin{figure}[h]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SpawnersRedds_GeniteursPotentiels_2015_02_10.pdf}
+     \caption[Répartition des adultes dans les différents secteurs]{Répartition
+     des adultes dans les différents secteurs. Distribution \textit{a
+     posteriori} des abondances annuelles absolues et relatives des géniteurs potentiels dans
+     chaque zones du bassin de l'Allier : Vichy-Langeac (a et d),
+     Langeac-Poutès (b et e) et Amont de Poutès (c et f). Les boxplots indiquent
+     les quantiles 2.5, 25, médiane, 75 et 97.5. Les lignes pointillées
+     horizontales pour d, e, f indiquent la disponibilité relative de l'habitat
+     potentiel pour les juvéniles. On notera que pour l'amont de Poutès, il n'y
+     a pas d'estimation des abondances absolues car le nombre exact est
+     toujours connu (c) et l'abondance relative est connue lorsque les
+     comptages à Vichy sont disponibles.}
+     \label{fig_repartition_adultes} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Relation entre nombre d'adultes potentiels et comptages frayères}
+
+
+La moyenne du ratio \og géntieurs:frayères \fg{} présentée dans la figure
+\ref{fig_adultes_comptages}, met bien en avant la différence qui existe entre
+d'une part Vichy-Langeac et Langeac-Poutès, et l'amont de Poutès d'autre part.
+Ainsi, lorsqu'en amont de Poutès nous observons une frayère par géniteur
+potentiel, nous n'observons en moyenne que 0.65 frayères pour un géniteur
+potentiel en aval de Poutès.
+
+
+\begin{figure}[h]
+     \includegraphics[width=0.7\textwidth,keepaspectratio]{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Redds_kappa_2015_02_10.pdf}
+     \caption[Relation entre nombre de géniteurs potentiels et comptages
+     frayères]{Relation entre nombre de géniteurs potentiels et comptages
+     frayères. Distribution \textit{a posteriori} du ratio \og géniteurs
+     potentiels:frayères \fg{} pour chaque zone du bassin de l'Allier : a)
+     Vichy-Langeac, b) Langeac-Poutès, c) Amont de Poutès. Les boxplots indiquent les quantiles 2.5, 25, médiane, 75 et 97.5. Les bandes colorées en arrière-plan
+     représentent la médiane (trait blanc) et les quantiles à 2.5, 25, 75 et
+     97.5 pour l'hyper-paramètre  $\mu\up{\kappa_{down}}$ (moyenne de
+     l'effet zone en aval de Poutès). L'hyper-paramètre $\mu\up{\kappa_{up}}$ (moyenne
+     de l'effet zone en amont de Poutès) est quant à lui fixé à 1.}
+     \label{fig_adultes_comptages} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Relations de densité--dépendance}
+
+Les relations Beverton \& Holt de stock-recrutement ont également été mises à
+jour suites aux différentes modifications et améliorations apportées au modèle
+en 2014. Malgré cette mise à jour, les conclusions restent les mêmes avec un
+secteur en amont de Langeac bien plus productif que le secteur en aval (figure
+\ref{fig_dd}). Cette différence amont/aval Langeac est la plus marquée pour la
+relation stock-recrutement des juvéniles sauvages.
+
+\begin{figure}[!ht]
+     \includegraphics[width=0.7\textwidth,keepaspectratio]{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/dd_2015_02_10.pdf}
+     \caption[Relation Stock/recrutement]{Relation de densité dépendance
+     moyenne entre a) les géniteurs potentiels d'une année donnée t et la
+     densité de juvéniles 0+ sauvages de l'année suivante (t+1) et entre b) le
+     nombre de juvéniles 0+ déversés au printemps et la densité de juvéniles
+     issu du repeuplement à l'automne. Les différences spatiales à l'aval et à
+     l'amont de Langeac sont représentées par deux courbes de couleurs
+     différentes (rouge pour l'aval et vert pour l'amont). Les cercles et les
+     carrés colorés représentent les \og données \fg{} pour chaque zones du
+     bassin de l'Allier : rouge pour la zone Vichy-Langeac, vert foncé pour la
+     zone Langeac-Poutès et vert clair pour l'amont de Poutès.}
+     \label{fig_dd} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Taux de retour du tacon 0+ et du smolt déversé à l'adulte}
+\label{resu_tx_retour}
+Dans cette nouvelle version du modèle, un facteur de sur-mortalité lié aux
+conditions de dévalaison au barrage de Poutès a été ajouté (section
+\ref{surmortalie_poutes}). Ainsi, nous estimons  en moyenne (cf. Annexe
+\ref{Annexe4}) que seuls 37\% des
+juvéniles produits en amont de Poutès survivent à la dévalaison (tous paramètres
+pris en compte : perte dans la retenue, mortalité dans les turbines, etc.).
+Parallèlement à ce résultat, l'ajout du paramètre de sur-mortalité lié au
+barrage de Poutès a eu pour effet d'augmenter le taux de retour du juvénile 0+ à
+l'adulte (figure \ref{fig_SurvivalJuv2Ad}), même si le patron n'a pas bougé
+(décrochage observé du taux au milieu des années 80 comme précédemment). Ainsi,
+nous estimons en  début de période (début année 80) un taux de transition moyen
+de l'ordre de 2\% contre 0,65\% dans la version précédente du
+modèle \citep{dauphin_viability_2013}, soit une augmentation d'un facteur
+3. Le taux de transition actuel est également réévalué à la hausse
+(0,56\% contre 0,17\% précédemment).
+
+\begin{figure}[!ht]
+     \includegraphics[width=0.7\textwidth,keepaspectratio]{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SurvivalJuv2Ad_2015_02_10.pdf}
+     \caption[Taux de retour du 0+ et du smolt à l'adulte]{Evolution a) du taux
+     de retour du juvénile 0+ à l'adulte et b) du taux de retour du smolt
+     déversé à l'adulte. Les points indiquent la survie moyenne du smolt issu
+     du repeuplement à l'adulte fixée à partir des données de marquage
+     (\mu\up{s\_Sm}=4.81 * 10\up{-4}).}
+     \label{fig_SurvivalJuv2Ad} 
+\end{figure}
+
+\FloatBarrier
+
+\clearpage
+\section{Simulations sans repeuplement et projections à 20 ans}
+\label{resu_simulations}
+
+\noindent Suite aux différentes corrections et améliorations apportées au modèle
+en 2014, les principaux scénarios proposés par \citet{dauphin_viability_2013}
+ont été mis à jour et sont présentés dans cette section \footnote{se référer au
+rapport de \citet{dauphin_viability_2013} pour plus de détails sur les
+scénarios produits}. Il s'agit de :
+\begin{itemize}
+  \item une analyse rétrospective dans un scénario où aucun repeuplement
+  n'aurait jamais eu lieu (section \ref{resu_retour_futur}),
+  \item un scénario d'arrêt des repeuplements dès l'année prochaine avec une
+  projection des retours à Vichy à 20 ans (section \ref{resu_retour_20ans}),
+  \item un scénario d'arrêt des repeuplements dès l'année prochaine et une
+  augmentation progressive (sur 10 ans) du taux de transition entre le tacon 0+
+  et l'adulte jusqu'à atteindre 50\% du niveau initial (section
+  \ref{resu_Retour_20ans_survivalImprov50}),
+  \item un scénario d'arrêt des repeuplements dès l'année prochaine et une
+  augmentation progressive (sur 10 ans) du taux de transition entre le tacon 0+
+  et l'adulte jusqu'à atteindre le niveau initial (section
+  \ref{resu_Retour_20ans_survivalImprov100}).
+\end{itemize}
+En plus de ces scénarios mis à jour, sont présentés les résultats des scénarios
+liés au réaménagement futur de Poutès :
+\begin{itemize}
+  \item un scénario d'arrêt des repeuplements dès l'année prochaine accompagné
+  d'une amélioration à la montaison et à la dévalaison de 50\% au niveau du
+  barrage de Poutès (section \ref{resu_poutes50}),
+  \item un scénario d'arrêt des repeuplements dès l'année prochaine accompagné
+  d'une amélioration à la montaison et à la dévalaison de 100\% au niveau du
+  barrage de Poutès (section \ref{resu_poutes50}). Ce scénario correspond à un
+  scénario de suppression totale de l'ouvrage.
+\end{itemize}
+
+\subsection{Retour vers le futur : Et si on n'avait jamais repeuplé ?}
+\label{resu_retour_futur}
+
+
+L'analyse rétrospective dans le scénario où aucun repeuplement n'auraient eu
+lieu dans le bassin Loire, indique que le repeuplement joue un rôle important
+dans le retour des adultes à Vichy depuis ces 15 dernières années (environ 61\%
+des retours sur cette période).
+La contribution des repeuplements dans les retours d'adultes tient compte ici :
+\begin{itemize}
+  \item des adultes de retour issus de repeuplement,
+  \item de la déscendance \og naturelle \fg{} de géniteurs issus de
+  repeuplement,
+  \item des effets cumulés au cours des générations.
+\end{itemize}
+Cette contribution, bien qu'importante, a été revue à la baisse dans cette
+nouvelle version du modèle (61\% contre 67\% en moyenne dans la version
+précédente \citep{dauphin_viability_2013}). Ceci peut notamment être dû à la révision de
+l'influence des points de déversement sur les résultats des pêches électriques
+en 5 minutes (section \ref{inf_dev}).
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//RetourVersLeFutur_2015_02_09.pdf}
+     \caption[Retour vers le futur : et si on n'avait jamais repeuplé ?]{a)
+     Distribution \textit{a posteriori} des retours d'adultes à Vichy, b)
+     Distribution a posteriori des retours d'adultes à Vichy simulés si il n'y avait jamais eu de
+     repeuplement, c)Différences annuelles entre les retours d'adultes avec et
+     sans repeuplement, d) Contribution du repeuplement aux retours d'adultes à
+     Vichy. Les boxplots indiquent les quantiles 2.5, 25, médiane, 75 et 97.5.}
+     \label{fig_retour_futur} 
+\end{figure}
+
+\FloatBarrier
+\subsection{Projection à 20 ans sans changement autre que l'arrêt des
+déversements}
+\label{resu_retour_20ans}
+
+L'intérêt de ce scénario est tout particulièrement de tester la viabilité de la
+population de saumon de l'Allier. Les résultats indiquent que le nombre
+d'adultes à Vichy tend à diminuer au cours du temps, témoignant ainsi d'une
+population qui ne se renouvelle pas suffisamment naturellement (figure
+\ref{fig_retour_20ans}). Dans ce scénario, la probabilité d'observer moins de
+500 individus à Vichy est non négligeable (environ 40\%) (figure
+\ref{fig_seuil_20ans}), bien que cette probabilité ait été revue à la baisse
+comparée à la version précédente du modèle.
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes à Vichy avec arrêt des repeuplements et
+     projection à 20 ans]{Retours d'adultes à Vichy avec arrêt des repeuplements et
+     projection à 20 ans. Les boxplots indiquent les quantiles 2.5, 25, médiane,
+     75 et 97.5. Les cercles pleins indiquent les années pour lesquelles la
+     station de comptage de Vichy est opérationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes à Vichy pour les 20 prochaines années.}
+     \label{fig_retour_20ans} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//Threshold_2015_02_10.pdf}
+     \caption[Probabilité d'atteindre certains seuils de nombre
+     d'adultes à Vichy]{Evolution de la probabilité p\up{seuils} d'atteindre
+     certains seuils arbitraires de nombre d'adultes de retours à Vichy sur
+     la période 2014--2033, dans le scénario d'arrêt des repeuplements.}
+     \label{fig_seuil_20ans} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Projection à 20 ans avec une amélioration des conditions de franchissabilité à la montaison et une diminution des impacts à la dévalaison de 50\% au barrage de Poutès}
+\label{resu_poutes50}
+
+Dans ce scénario, les repeuplements sont arrêtés et la migration de montaison et
+de dévalaison est améliorée à hauteur de 50\% à l'ouvrage de Poutès. Les retours
+d'adultes diminuent au cours du temps (figure \ref{fig_retour_20ans_poutes50})
+mais les efffectifs attendus sont plus importants que ceux du scénario d'arrêt des repeuplements (figure
+\ref{fig_retour_20ans}). La diminution des effectifs à Vichy est plus lente
+que dans le scénario précédent et la probabilité d'observer moins de 500
+individus à Vichy est d'environ 30\% à la fin de la période (figure
+\ref{fig_seuil_20ans_poutes50}).
+Néanmoins, à l'horizon de 20 ans on ne constate toujours pas de stabilisation
+des effectifs à Vichy, ce qui tend à montrer que cette hypothèse ne serait pas
+suffisante pour assurer la viabilité de la population.
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//50poutes_TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes à Vichy avec arrêt des repeuplements et
+     amélioration des conditions à Poutès de 50\%]{Retours
+     d'adultes à Vichy avec arrêt des repeuplements et amélioration
+     des conditions de migration à la montaison et dévalaison à Poutès
+     à hauteur de 50\%. Une projection des retours d'adultes à 20 ans est
+     réalisée.
+     Les boxplots indiquent les quantiles 2.5, 25, médiane, 75 et 97.5. Les cercles pleins indiquent les années pour lesquelles la
+     station de comptage de Vichy est opérationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes à Vichy pour les 20 prochaines années.}
+     \label{fig_retour_20ans_poutes50} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//50poutes_Threshold_2015_02_10.pdf}
+     \caption[Probabilité d'atteindre certains seuils de nombre
+     d'adultes à Vichy avec 50\% d'amélioration à Poutès]{Evolution de la
+     probabilité p\up{seuils} d'atteindre certains seuils arbitraires de nombre
+     d'adultes de retours à Vichy sur la période 2014--2033, dans le scénario d'arrêt des repeuplements et
+     d'amélioration des conditions de migration à la montaison et à la
+     dévalaison à Poutès à hauteur de 50\%.}
+     \label{fig_seuil_20ans_poutes50} 
+\end{figure}
+
+\FloatBarrier
+
+
+\subsection{Projection à 20 ans avec la suppression du barrage de Poutès}
+\label{resu_poutes100}
+
+Dans ce scénario, les repeuplements sont arrêtés et la migration de montaison et
+de dévalaison est améliorée à hauteur de 100\% à l'ouvrage de Poutès. Les
+retours d'adultes semblent quasiment stabilisés au cours du temps, avec un
+nombre médian de 543 individus à Vichy sur
+la période 2020--2033 (figure
+\ref{fig_retour_20ans_poutes100}). Néanmoins, la probabilité d'observer moins de 500 individus à Vichy augmente encore (figure \ref{fig_seuil_20ans_poutes100}),
+même si cette augmentation est très ténue. Ce scénario permettrait d'observer
+des effectifs à Vichy à peu près comparables à ceux rencontrés ces dernières années, mais un doute persiste, sur le long terme, sur la viabilité de la population.
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//100poutes_TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes à Vichy avec arrêt des repeuplements et
+     amélioration des conditions à Poutès de 100\%]{Retours
+     d'adultes à Vichy avec arrêt des repeuplements et amélioration
+     des conditions de migration à la montaison et dévalaison à Poutès
+     à hauteur de 100\%. Une projection des retours d'adultes à 20 ans est
+     réalisée.
+     Les boxplots indiquent les quantiles 2.5, 25, médiane, 75 et 97.5. Les cercles pleins indiquent les années pour lesquelles la
+     station de comptage de Vichy est opérationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes à Vichy pour les 20 prochaines années.}
+     \label{fig_retour_20ans_poutes100} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//100poutes_Threshold_2015_02_10.pdf}
+     \caption[Probabilité d'atteindre certains seuils de nombre
+     d'adultes à Vichy avec 100\% d'amélioration à Poutès]{Evolution de la
+     probabilité p\up{seuils} d'atteindre certains seuils arbitraires de nombre
+     d'adultes de retours à Vichy sur la période 2014--2033, dans le scénario
+     d'arrêt des repeuplements et d'amélioration des conditions de migration à la montaison et à la
+     dévalaison à Poutès à hauteur de 100\%.}
+     \label{fig_seuil_20ans_poutes100} 
+\end{figure}
+
+\FloatBarrier
+
+
+\subsection{Projection à 20 ans avec une augmentation progressive du taux de
+transition entre le tacon 0+ et l'adulte jusqu'à atteindre 50\% du niveau initial}
+\label{resu_Retour_20ans_survivalImprov50}
+
+Dans ce scénario nous arrêtons les déversements et nous faisons l'hypothèse que
+le taux de transition entre le juvénile 0+ et l'adulte s'améliore
+progressivement sur les 10 premières années des projections puis se stabilise
+pour les dix années suivantes à la moitié du taux observé dans les années 80.
+Sous ces hypothèses nous obtenons une stabilité des retours à Vichy pour les 20
+prochaines années (nombre médian de
+1055 individus à Vichy sur la période
+2020--2033)  (figure
+\ref{fig_retour_20ans_survivalImpro50}), avec une probabilité relativement faible (p\up{seuils}=8\% en moyenne) d'observer moins
+de 500 adultes de retour à Vichy (figure \ref{fig_seuil_20ans_survivalImpro50}).
+
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//50ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes à Vichy avec arrêt des repeuplements et
+     amélioration de la survie jusqu'à 50\% du niveau initial]{Retours
+     d'adultes à Vichy avec arrêt des repeuplements et amélioration de la survie jusqu'à 50\% du niveau initial.
+     Une projection des retours d'adultes à 20 ans est réalisée.
+     Les boxplots indiquent les quantiles 2.5, 25, médiane, 75 et 97.5. Les cercles pleins indiquent les années pour lesquelles la
+     station de comptage de Vichy est opérationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes à Vichy pour les 20 prochaines années.}
+     \label{fig_retour_20ans_survivalImpro50} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//50ImprovementSurvival_Threshold_2015_02_10.pdf}
+     \caption[Probabilité d'atteindre certains seuils de nombre
+     d'adultes à Vichy avec arrêt des repeuplements et amélioration
+     de la survie de 50\%]{Evolution de la probabilité p\up{seuils} d'atteindre
+     certains seuils arbitraires de nombre d'adultes de retours à Vichy sur la période 2014--2033, dans le scénario d'arrêt des repeuplements et
+     d'amélioration du taux de survie du juvénile 0+ à l'adulte jusqu'à 50\%
+     de son niveau initial.}
+     \label{fig_seuil_20ans_survivalImpro50} 
+\end{figure}
+
+\FloatBarrier
+
+
+\subsection{Projection à 20 ans avec une augmentation progressive du taux de
+transition entre le tacon 0+ et l'adulte jusqu'à l'atteinte de son niveau
+initial}
+\label{resu_Retour_20ans_survivalImprov100}
+Dans ce dernier scénario, nous simulons à 20 ans l'arrêt des repeuplements et
+l'amélioration progressive sur les 10 première années (puis stabilisation) du
+taux de transition du 0+ à l'adulte jusqu'à l'atteinte du taux observé
+dans les années 80.
+Dans ces conditions, nous observons une augmentation des retours d'adultes à
+Vichy avec un nombre médian de 2268
+individus à Vichy sur la période 2020--2033 (figure
+\ref{fig_retour_20ans_survivalImpro100}), et une probabilité quasi nulle d'observer moins de 500 individus à vichy (figure
+\ref{fig_seuil_20ans_survivalImpro100}).
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//100ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes à Vichy avec arrêt des repeuplements et
+     amélioration de la survie jusqu'à 100\% du niveau initial]{Retours
+     d'adultes à Vichy avec arrêt des repeuplements et amélioration de la survie
+     jusqu'à l'atteinte de son niveau initial.
+     Une projection des retours d'adultes à 20 ans est réalisée.
+     Les boxplots indiquent les quantiles 2.5, 25, médiane, 75 et 97.5. Les cercles pleins indiquent les années pour lesquelles la
+     station de comptage de Vichy est opérationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes à Vichy pour les 20 prochaines années.}
+     \label{fig_retour_20ans_survivalImpro100} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24//100ImprovementSurvival_Threshold_2015_02_10.pdf}
+     \caption[Probabilité d'atteindre certains seuils de nombre
+     d'adultes à Vichy avec arrêt des repeuplements et amélioration
+     de la survie de 100\%]{Evolution de la probabilité p\up{seuils} d'atteindre
+     certains seuils arbitraires de nombre d'adultes de retours à Vichy sur la période 2014--2033, dans le scénario d'arrêt des repeuplements et
+     d'amélioration du taux de survie du juvénile 0+ à l'adulte jusqu'à
+     l'atteinte de son niveau initial.}
+     \label{fig_seuil_20ans_survivalImpro100} 
+\end{figure}
+
+\FloatBarrier
+
+
+\clearpage
+\chapter{Conclusion et perspectives du projet }
+\section{La modélisation}
+Comme tous les modèles, l'outil développé est une simplification de la réalité,
+qui ne décrit pas spécifiquement tous les processus à l'\oe{}uvre. Il y a
+plusieurs raisons pour expliquer cela :
+\begin{itemize}
+  \item nous ne disposons pas toujours des données nécessaires à modéliser un
+  processus,
+  \item le développement du modèle est long et parfois l'ajout d'un processus
+  peut s'avérer compliqué et donc nécessiter beaucoup de temps. 
+\end{itemize}
+Ainsi, certaines améliorations sont déjà envisagées et pourraient être mises
+en \oe{}vre dans les années futures. Il s'agirait notamment de :
+\begin{itemize}
+    \item différencier la \textit{fitness} des juvéniles issus de reproduction
+    naturelle de celle des individus déversés,
+    \item tester une hypothèse alternative à notre hypothèse de priorité aux
+    juvéniles natifs dans les relations de densité-dépendance,
+    \item mieux quantifier les impacts à la dévalaison et estimer le gain attendu en cas
+    d'aménagement à la dévalaison,
+    \item introduire une corrélation spatiale dans la stochasticité
+    environnementale (c'est-à-dire considérer à l'échelle de nos secteurs que lorsque les conditions 
+    environnementales sont propices dans un secteur, elles le sont également
+    dans les autres), en particulier en ce qui concerne le recrutement et la
+    survie des poissons de repeuplement.
+\end{itemize}
+
+\section{Analyse rétrospective}
+L'ajout de l'hypothèse d'un différentiel de survie amont/aval Poutès (hypothèse basée sur une évaluation du barrage à la dévalaison
+\citep{bagliniere_poutes_2005} et d'un radiopistage de smolts
+\citep{bach_poutes_2007}), a modifié de façon importante les valeurs de survie
+du 0+ à l'adulte, même si le patron reste identique à celui décrit dans
+\citet{dauphin_viability_2013}. Nous observons ainsi toujours une
+diminution forte de ce taux de transition au milieu des années 80, mais la
+survie moyenne en début de période (début des années 80) a été augmentée d'un
+facteur 3 par rapport aux premières estimations
+\citep{dauphin_viability_2013}.
+
+\section{Simulation rétrospective sans repeuplement}
+L'exercice de simulation nous permet d'estimer l'état de la population si aucun
+repeuplement n'avait eu lieu sur la période considérée par le modèle
+(1975--2013). Il est important de noter que malgré la contribution significative
+des repeuplements dans les retours d'adultes à Vichy, la population ne se serait
+pas éteinte sans ce soutient d'effectif, même si la taille de la population
+aurait été plus petite que celle actuellement observée (258 individus en
+moyenne sur les 10 dernières années contre 684).
+Notons également, que les évolutions du modèle en 2014 ont modifié l'importance
+de la contribution des repeuplements dans les retours à Vichy dans le sens d'une
+réduction de cette dernière. Ainsi, en moyenne 61\% des poissons à Vichy
+seraient issus de poissons repeuplés contre 67\% dans la version précédente. Pour rappel, la
+contribution des repeuplements est à considérer à la fois en terme de poissons
+déversés (au stade \oe{}uf, alevin ou smolt) de retour à Vichy, mais également
+en terme de descendance de ces poissons issus de déversement revenant à Vichy
+(les générations se cumulant).
+
+\section{Viabilité de la population de saumon atlantique dans le bassin Allier}
+Les améliorations, corrections et ajouts de données, ont permis de modifier
+quelque peu notre vision de la dynamique de population du saumon de l'Allier,
+dans le sens d'une moindre inquiétude sur l'état de cette population.
+Néanmoins, les projections à 20 ans sans repeuplement (ni améliorations quelles
+qu'elles soient) indiquent toujours une diminution au cours du temps du nombre
+d'adultes de retour témoignant ainsi du renouvellement insuffisant de la
+population. A l'horizon de 20 ans la population retournerait à un niveau plus
+bas que celui actuellement observé, avec environ 40\% de chance d'observer moins
+de 500 individus à Vichy à la fin de cette période de projection.\\
+Les simulations avec arrêt des repeuplements et amélioration des conditions de
+migration à hauteur de 50\% voire enlèvement du barrage de Poutès, montrent tout
+l'intérêt de ce modèle dans une optique de gestion. Les résultats indiquent
+qu'en améliorant les conditions de passage à un seul barrage stratégique, la
+situation du saumon de l'Allier peut être significativement améliorée,
+même si un doute persiste sur le fait que cette seule action soit
+suffisante pour assurer sur le long terme la persistence de la population de l'Allier. Au vu de
+nos résultats, le réaménagement de Poutès ne peut donc être qu'encouragé.\\
+Le levier le plus fort pour restaurer la population de l'Allier reste
+l'amélioration du taux de transition entre le 0+ et l'adulte. Avec une
+augmentation de ce taux de transition jusqu'à atteindre 50\% de son niveau
+initial au début des années 80, la persistence de la population avec une
+taille de population similaire à ce qui est observée actuelleement semble
+assurée sur le long terme. Dans l'hypothèse de l'atteinte du taux de transition
+initial, la population de l'Allier augmenterait progressivement au cours des 20
+ans, avec une probabilité quasi nulle d'observer moins de 500 individus à Vichy.
+
+\section{Projet de transfert}
+L'opération de transfert du modèle de dynamique de population de
+l'INRA vers le Tableau de bord SALT, s'est déroulée conformément à la fiche projet (Annexe
+\ref{Annexe1}). A l'issu de l'année 2014, le modèle a été mis à jour, des
+améliorations et corrections ont été apportées, des nouveaux scénarios de
+gestion liés au réaménagement futur du barrage de Poutès ont été développés et
+une organisation s'est mise en place (constitution d'un comité de suivi,
+collaboration INRA -- Tableau de bord SALT, etc.). Ce projet a donc montré tout
+l'intérêt de ce type de démarche permettant de continuer à faire vivre des
+outils mis en place par un organisme scientifique pour répondre à des questions
+de gestion. L'intérêt des acteurs locaux pour la poursuite du développement du
+modèle et les nombreuses propositions de développement (cf. Annexe
+\ref{Annexe2}), est en ce sens un indicateur positif fort.
+
+
+
+
+\clearpage
+
+\bibliographystyle{cjfas}
+\bibliography{rapport_transfert}
+
+%\printglossaries
+\clearpage
+\appendix
+
+\chapter{Présentation de la fiche-projet du transfert du modèle de
+dynamique de population}
+\label{Annexe1}
+\includepdf[pages=-]{Fiche_Transfert_Modele_Allier_2014_V2.pdf}
+\clearpage
+
+\chapter{Relevés de décisions des réunions du groupe de suivi du projet
+de modélisation}
+\label{Annexe2}
+%\includegraphics{2014_07_22_ReleveDecision.pdf}
+\includepdf[pages=-]{2014_07_22_ReleveDecision.pdf}
+\includepdf[pages=-]{2014_11_19_ReleveDecision_non_valide.pdf}
+\clearpage
+
+
+\chapter{Densités prédites pour un
+nombre de tacons 0+ capturé en 5 minutes}
+\label{Annexe4}
+\includepdf[pages=-,nup=2x2,scale=1]{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/tab/2015_01_24_thin200/predictionIA.pdf}
+
+\chapter{Présentation des paramètres estimés par le modèle}
+\label{Annexe3}
+\includepdf[pages=-,nup=1x2,landscape=true]{SortieOpenbugs_parameters.pdf}
+\clearpage
+
+\chapter{Code du modèle 2015.01.24}
+\label{Annexe5}
+
+\includepdf[pages=-,nup=1x2,landscape=true]{model_Annexe5.pdf}
+
+
+
+\end{document}

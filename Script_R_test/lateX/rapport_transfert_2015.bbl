@@ -1,0 +1,106 @@
+\begin{thebibliography}{14}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem[{Araki et~al.(2008)Araki, Berejikian, Ford and
+  Blouin}]{araki_fitness_2008}
+Araki, H., Berejikian, B.~A., Ford, M.~J. and Blouin, M.~S. 2008.
+\newblock Fitness of hatchery-reared salmonids in the wild.
+\newblock \emph{Evolutionary Applications} \textbf{1}(2): 342--355
+
+\bibitem[{Araki et~al.(2007)Araki, Cooper and Blouin}]{araki_genetic_2007}
+Araki, H., Cooper, B. and Blouin, M.~S. 2007.
+\newblock Genetic {Effects} of {Captive} {Breeding} {Cause} a {Rapid},
+  {Cumulative} {Fitness} {Decline} in the {Wild}.
+\newblock \emph{Science} (5847): 100
+
+\bibitem[{Berejikian and Ford(2004)}]{berejikian_review_2004}
+Berejikian, B. and Ford, M. 2004.
+\newblock Review of relative fitness of hatchery and natural salmon - {DWH}
+  {Repository}.
+\newblock {NOAA} {Technical} {Memorandum} NMFS-NWFSC-61, Northwest Fisheries
+  Science Center
+
+\bibitem[{Briand et~al.(2015)Briand, Legrand, Chapon, Beaulaton, Germis, Arago,
+  Besse, {De Canet} and Steinbach}]{briand_devalaison_2015}
+Briand, C., Legrand, M., Chapon, P., Beaulaton, L., Germis, G., Arago, M.,
+  Besse, T., {De Canet}, L. and Steinbach, P. 2015.
+\newblock Mortalité cumulée des saumons et des anguilles dans les turbines du
+  bassin Loire-Bretagne.
+\newblock Tech. rep., {EPTB-Vilaine}, {LOGRAMI}, {ONEMA}, {BGM}, {INRA}
+
+\bibitem[{Christie et~al.(2014)Christie, Ford and
+  Blouin}]{christie_reproductive_2014}
+Christie, M.~R., Ford, M.~J. and Blouin, M.~S. 2014.
+\newblock On the reproductive success of early-generation hatchery fish in the
+  wild.
+\newblock \emph{Evolutionary Applications} \textbf{7}(8): 883--896
+
+\bibitem[{Dauphin and Prévost(2013)}]{dauphin_viability_2013}
+Dauphin, G. and Prévost, E. 2013.
+\newblock Viability analysis of the natural population of Atlantic salmon
+  (Salmo salar L.) in the Allier catchment.
+\newblock Tech. rep., {INRA}
+
+\bibitem[{Einum and Fleming(2001)}]{einum_implications_2001}
+Einum, S. and Fleming, I.~A. 2001.
+\newblock Implications of {Stocking}: {Ecological} {Interactions} {Between}
+  {Wild} and {Released} {Salmonids}.
+\newblock \emph{NORDIC JOURNAL OF FRESHWATER RESEARCH} (75): 56--70
+
+\bibitem[{Jokikokko et~al.(2006)Jokikokko, Kallio-Nyberg, Saloniemi and
+  Jutila}]{jokikokko_survival_2006}
+Jokikokko, E., Kallio-Nyberg, I., Saloniemi, I. and Jutila, E. 2006.
+\newblock The survival of semi-wild, wild and hatchery-reared {Atlantic} salmon
+  smolts of the {Simojoki} {River} in the {Baltic} {Sea}.
+\newblock \emph{Journal of Fish Biology} \textbf{68}(2): 430--442
+
+\bibitem[{Jonsson et~al.(2003)Jonsson, Jonsson and
+  Hansen}]{jonsson_marine_2003}
+Jonsson, N., Jonsson, B. and Hansen, L.~P. 2003.
+\newblock The marine survival and growth of wild and hatchery-reared {Atlantic}
+  salmon.
+\newblock \emph{Journal of Applied Ecology} \textbf{40}(5): 900--911
+
+\bibitem[{Kallio-Nyberg et~al.(2015)Kallio-Nyberg, Romakkaniemi, Jokikokko,
+  Saloniemi and Jutila}]{kallio-nyberg_differences_2015}
+Kallio-Nyberg, I., Romakkaniemi, A., Jokikokko, E., Saloniemi, I. and Jutila,
+  E. 2015.
+\newblock Differences between wild and reared {Salmo} salar stocks of two
+  northern {Baltic} {Sea} rivers.
+\newblock \emph{Fisheries Research} \textbf{165}: 85--95
+
+\bibitem[{Legrand and Prévost(2015)}]{legrand_transfert_2014}
+Legrand, M. and Prévost, E. 2015.
+\newblock De la recherche à la gestion : transfert {d'un} modèle de dynamique
+  de population vers un opérateur de la gestion. Cas du saumon de {l'Allier}.
+\newblock Tech. rep., LOGRAMI,{INRA--UMR 1224 ECOBIOP}
+
+\bibitem[{Milot et~al.(2013)Milot, Perrier, Papillon, Dodson and
+  Bernatchez}]{milot_reduced_2013}
+Milot, E., Perrier, C., Papillon, L., Dodson, J.~J. and Bernatchez, L. 2013.
+\newblock Reduced fitness of {Atlantic} salmon released in the wild after one
+  generation of captive breeding.
+\newblock \emph{Evolutionary Applications} \textbf{6}(3): 472--485
+
+\bibitem[{Minster and Bomassi(1999)}]{minster_err_1999}
+Minster, A.~M. and Bomassi, P. 1999.
+\newblock Repérage et évaluation des surfaces potentielles de développement de
+  juvéniles de saumons atlantiques : Proposition d'un modèle de gestion des
+  stocks sur les bassins de {l'Allier} et de {l'Arroux}.
+\newblock Tech. rep., {LOGRAMI},{CSP--DR6}
+
+\bibitem[{Thériault et~al.(2011)Thériault, Moyer, Jackson, Blouin and
+  Banks}]{theriault_reduced_2011}
+Thériault, V., Moyer, G.~R., Jackson, L.~S., Blouin, M.~S. and Banks, M.~A.
+  2011.
+\newblock Reduced reproductive success of hatchery coho salmon in the wild:
+  insights into most likely mechanisms.
+\newblock \emph{Molecular Ecology} \textbf{20}(9): 1860--1869
+
+\end{thebibliography}

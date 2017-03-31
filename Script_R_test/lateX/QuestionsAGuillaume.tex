@@ -1,0 +1,112 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage{color}
+\usepackage{graphicx}
+\graphicspath{{./image/}}
+\usepackage[latin1]{inputenc} %encodage du fichier source
+\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf) 
+\usepackage[francais]{babel}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
+\usepackage{multicol}%pour test affichage légende équation sur 2 colonnes
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\raggedcenter\arraybackslash}X}
+%\usepackage{numprint}
+\addto\captionsfrench{\def\tablename{Tableau}}
+
+\title{Questions à Guillaume}
+\author{marion.legrand}
+
+\begin{document}
+
+\maketitle
+
+%=================================
+\section{Modèle frayères/géniteurs}
+%==================================
+Dans fichier "...ModèleDynamiquePopSaumon/DonnéesModèle/redds and adult
+counts/redds.xlsx" la proportion de linéaire prospectée est indiquée (colonne E
+à G).
+Les L\_p\_area données dans Data (page 128 du rapport) ne correspondent pas aux
+données du fichier excel.\\
+D'autre part, questionnement sur les données indiquées dans le fichier excel
+(cf. commentaires dans fichier)\\
+REPONSE : dans publi Dauphin et al., 2013 on
+retrouve les "vraies" valeurs (page 134 du rapport). Comment ont-elles été
+calculées ? Pourquoi pas dans le fichier excel ? Nouvelle version entre l'envoie
+du fichier excel et la publi ?\\
+Page 130 du rapport (page 8 de la publi Dauphin et al., 2013) : Pourquoi dans la
+figure 3a les années 2003 et 2004 sont estimées peu précisément sur la postérior
+?
+
+
+%==========================================
+\section{Modèle de calibration des pêches}
+%==========================================
+Utilisation d'un coefficient $\eta$ dans l'équation \ref{eq_IA} :
+\begin{equation}
+\lambda_{i}\up{\alpha}=\kappa*d_{i}\up{(\eta)}
+\label{eq_IA}
+\end{equation}
+
+Pourquoi ? Signifie qu'on fait l'hypothèse que les pêches électriques peuvent
+être peu pêchantes ? Il me semblait que pour le saumon ce système était
+particulièrement bien adapté.
+Tu indiques (page 91 du rapport) que la proportion de poissons non pêchés peut
+croitre ou décroitre avec la densité de poisson. Par contre tu ne fais plus
+cette hypothèse pour les enlèvements successifs (page 92) "la probabilité de
+capturer un 0+ est la même pour les 2 passages successifs".
+
+\textcolor{green}{Réponse guillaume : choix simplicité du modèle et ça s'ajuste
+bien aux données avec un seul pi pour les 2 passages.}
+
+%==============================
+\section{Modèle densité de 0+}
+%==============================
+Page 106 du rapport tu indiques que $D_{t+1,i}\up{juv}$ (la densité en juvéniles
+0+ déversés) est conditionnée par le nbr de 0+ déversés ($Stock_{t+1,i}\up{juv}$)
+et par les paramètres de la relation Beverton\&Holt des 0+ "sauvages". Or dans
+l'équation (Eq.A2.6) tu utilises les paramètres $\alpha\up{D_juv}$ et
+$\beta\up{D_juv}$\\
+\textcolor{green}{Réponse : il s'agit du $R_{max}\up{wild}$ et du
+$\mu_{t,i}\up{D_{wild}}$ qui conditionnent le $R_{max}\up{juv}$}\\
+Page 106 : erreur
+dans le texte ? "The assumption that stocked 0+ juveniles have an advantage over the stocked
+juveniles" -->"The assumption that \textcolor{red}{wild} 0+ juveniles have an
+advantage over the stocked juveniles"\\
+Comment la zone d'influence des incubateurs (Hinc) a-t-elle été calculée ? \\
+Page 120 erreur dans la légende de la fig A3.8 Il s'agit du ruisseau d'Arçon et
+non du Mas.\\
+Dans les données du fichier IA onglet summary. Je ne comprends pas pourquoi parfois tu prends
+les afflents (ex en 95 le 2 et le 10 respectivement du Céroux et Ardes) et pas
+le 6 du Chambon ?\\
+Et dans le tableau de récap à droite tu prends par exemple en 2011 23 stations
+sur Vichy-Langeac alors que dedans il y a les stations de l'alagnon + dore qui ne sont pas utilisées dans le modèle
+??\\
+
+
+%====================================
+\section{Modèle cycle de vie complet}
+%====================================
+Page 138 tu indiques que tu as 3 années de production de juvéniles et que
+chacune d'entre elle contribue à part égale dans la production totale de
+juvénile.\\
+Hypothèse d'après des références biblio ? je trouve que c'est étonnant car  ton
+temps t-4 englobe à la fois les 2ans de rivière-2ans de mer et tes 1an de
+rivière-3ans de mer. Même en faisant l'hypothèse d'une proba équivalente d'être
+smolt 1+ ou 2+ ton t-3 représente 25\% de la prod de juvénile d'une année t de
+retour, ton t-4 50\% et ton t-5 25\% (à priori on a tendance à penser que
+majoritairement on a des smolt 1+ mais j'ai pas de données pour justifier cette
+hypothèse. Dans Bomassi et Minster proportion 85-15 en faveur des 1ans de
+mer).\\
+Page 140 Eq.A5.10 & Eq.A5.11 : Pourquoi tu ne prends pas dans ta borne supérieur
+le 17300 de ton iC 95 ? (tu prends 15000)\\
+
+
+
+
+\end{document}

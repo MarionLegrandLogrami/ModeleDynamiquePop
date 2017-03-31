@@ -1,0 +1,14 @@
+% cette page correspond a la page de titre du rapport de transfert du modèle
+% dynamique de pop
+% voir http://en.wikibooks.org/wiki/LaTeX/Title_Creation
+\begin{titlepage}
+\pagecolor{white}
+\newgeometry{margin=0cm}
+\begin{document}
+\begin{tikzpicture}[remember picture, overlay]
+ \node[inner sep=0pt] at (current page.center) {%
+  \includegraphics[width=\paperwidth,height=\paperheight]{PageDeGarde.pdf}%
+};
+\end{tikzpicture}
+\restoregeometry
+\end{titlepage}

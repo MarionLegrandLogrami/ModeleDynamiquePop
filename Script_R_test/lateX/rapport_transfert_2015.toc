@@ -1,0 +1,42 @@
+\select@language {french}
+\contentsline {chapter}{\numberline {1}Introduction}{7}{chapter.1}
+\contentsline {chapter}{\numberline {2}Mise \`a jour, corrections et am\'eliorations du mod\`ele}{8}{chapter.2}
+\contentsline {section}{\numberline {2.1}Corrections et mise \`a jour}{8}{section.2.1}
+\contentsline {section}{\numberline {2.2}Am\'eliorations}{9}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Hypoth\`ese d'une \textit {fitness} similaire entre les tacons 0+ sauvages et les tacons 0+ issus du d\'eversement d'alevin}{9}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Renforcement de la relation de calibration}{12}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}D\'eveloppement de nouvelles sorties graphiques : r\'epartition des juv\'eniles en fonction des secteurs}{13}{subsection.2.2.3}
+\contentsline {chapter}{\numberline {3}D\'eveloppement d'un nouveau sc\'enario de gestion : l'am\'enagement des ouvrages hydro\'electriques pour la d\'evalaison}{14}{chapter.3}
+\contentsline {chapter}{\numberline {4}R\'esultats}{18}{chapter.4}
+\contentsline {section}{\numberline {4.1}Mod\`ele dynamique de population}{18}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Relation de calibration entre les densit\'es de tacons 0+ et les indices d'abondance en 5 minutes}{18}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}R\'epartition des adultes dans les diff\'erents secteurs}{20}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}Relation entre nombre d'adultes potentiels et comptages fray\`eres}{22}{subsection.4.1.3}
+\contentsline {subsection}{\numberline {4.1.4}Relations de recrutement densit\'e--d\'ependant}{22}{subsection.4.1.4}
+\contentsline {subsection}{\numberline {4.1.5}R\'epartition des juv\'eniles dans les secteurs et relation entre la r\'epartition des g\'eniteurs et celle des juv\'eniles}{23}{subsection.4.1.5}
+\contentsline {subsection}{\numberline {4.1.6}Taux de retour du tacon 0+ et du smolt d\'evers\'e \`a l'adulte}{25}{subsection.4.1.6}
+\contentsline {subsection}{\numberline {4.1.7}Nouvelles figures : r\'epartition des juv\'eniles de l'ann\'ee}{26}{subsection.4.1.7}
+\contentsline {section}{\numberline {4.2}Simulation sans repeuplement et projections \`a 20 ans}{32}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Retour vers le futur : Et si on n'avait jamais repeupl\'e ?}{32}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Projection \`a 20 ans sans changement autre que l'arr\^et des d\'eversements}{34}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Projection \`a 20 ans avec une am\'elioration des conditions de montaison et de d\'evalaison \`a Pout\`es}{37}{subsection.4.2.3}
+\contentsline {subsubsection}{\numberline {4.2.3.1}Am\'elioration de la montaison et de la d\'evalaison \`a hauteur de 50\%}{37}{subsubsection.4.2.3.1}
+\contentsline {subsubsection}{\numberline {4.2.3.2}Suppression du barrage de Pout\`es (ou am\'elioration \`a hauteur de 100\%)}{40}{subsubsection.4.2.3.2}
+\contentsline {subsection}{\numberline {4.2.4}Projection \`a 20 ans avec une am\'elioration progressive du taux de transition entre le tacon 0+ et l'adulte}{43}{subsection.4.2.4}
+\contentsline {subsubsection}{\numberline {4.2.4.1}Am\'elioration jusqu'\`a atteindre 50\% du niveau initial}{43}{subsubsection.4.2.4.1}
+\contentsline {subsubsection}{\numberline {4.2.4.2}Am\'elioration jusqu'\`a atteindre 100\% du niveau initial}{46}{subsubsection.4.2.4.2}
+\contentsline {subsection}{\numberline {4.2.5}Projection \`a 20 ans avec suppression des impacts \`a la d\'evalaison dans les ouvrages hydro\'electriques}{49}{subsection.4.2.5}
+\contentsline {subsubsection}{\numberline {4.2.5.1}Mod\'elisation sur l'ensemble des axes du secteur 1 (Allier en aval de Langeac, Alagnon et Dore)}{49}{subsubsection.4.2.5.1}
+\contentsline {subsubsection}{\numberline {4.2.5.2}Mod\'elisation sous l'hypoth\`ese d'une production nulle en juv\'eniles de la Dore}{49}{subsubsection.4.2.5.2}
+\contentsline {chapter}{\numberline {5}Conclusion et perspectives du projet }{56}{chapter.5}
+\contentsline {section}{\numberline {5.1}Am\'eliorations apport\'ees au mod\`ele}{56}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}\textit {fitness}}{56}{subsection.5.1.1}
+\contentsline {subsection}{\numberline {5.1.2}Relation de calibration entre les p\^eches en 5 minutes (IA) et les p\^eches compl\`etes}{56}{subsection.5.1.2}
+\contentsline {section}{\numberline {5.2}Retour vers le futur : Et si on n'avait jamais repeupl\'e ?}{56}{section.5.2}
+\contentsline {section}{\numberline {5.3}Viabilit\'e de la population de saumon atlantique dans le bassin Allier et projection \`a 20 ans sous diff\'erents sc\'enarii}{57}{section.5.3}
+\contentsline {section}{\numberline {5.4}Perspectives pour ce projet}{57}{section.5.4}
+\contentsline {chapter}{\numberline {A}Pr\'esentation de la fiche-projet du mod\`ele de dynamique de population pour l'ann\'ee 2015}{60}{appendix.A}
+\contentsline {chapter}{\numberline {B}Relev\'es de d\'ecisions des r\'eunions du groupe de suivi du projet de mod\'elisation}{62}{appendix.B}
+\contentsline {chapter}{\numberline {C}Densit\'es pr\'edites pour un nombre de tacons 0+ captur\'e en 5 minutes}{73}{appendix.C}
+\contentsline {chapter}{\numberline {D}Pr\'esentation des param\`etres estim\'es par le mod\`ele}{76}{appendix.D}
+\contentsline {chapter}{\numberline {E}Code du mod\`ele 2016.01.20}{99}{appendix.E}

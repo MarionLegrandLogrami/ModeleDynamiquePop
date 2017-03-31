@@ -1,0 +1,620 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage[latin1]{inputenc} %encodage du fichier source
+\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf) 
+\usepackage[francais]{babel}
+\usepackage{float}
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage{amsmath} % equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption} % pour les subfigures
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\pagestyle{empty}
+%1 est la marge gauche
+%2 est la marge en haut
+%3 est la marge droite
+%4 est la marge en bas
+%5 fixe la hauteur de l'entête
+%6 fixe la distance entre l'entête et le texte
+%7 fixe la hauteur du pied de page
+%8 fixe la distance entre le texte et le pied de page
+
+\title{Comparaison des modèles - Version 2016.05.27\_Alagnon &
+2016.10.14\_Alagnon\_adjust\_p\_A}
+\author{Marion LEGRAND}
+
+\begin{document}
+\maketitle
+\newpage
+
+%=================================================================================
+\section{Figures-Modèle}
+%=================================================================================
+
+
+
+
+
+Les modèles comparés ici sont :
+\begin{itemize}
+  \item Modèle Alagnon V1 2016.05.27
+  \item Modèle Alagnon V2 2016.10.14
+\end{itemize}
+
+
+  %--------------------------------------------------
+  \subsection{retour à Vichy}
+  %--------------------------------------------------
+  % TotalReturns
+  
+ \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Spawners_ReturnsVichy_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{ReturnsVichy_un}
+         \end{subfigure}%         
+        \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Spawners_ReturnsVichy_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{ReturnsVichy_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : distribution a posteriori des 
+  retours d'adultes à Vichy.]{Comparaison des 2 modèles : distribution a
+  posteriori des retours d'adultes à Vichy. Les
+  boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les cercles pleins indiquent les années pour
+  lesquelles la station de comptage à Vichy est opérationnelle et fournit le
+  nombre de retours d'adultes. Les cercles orange représentent les
+  coefficients de variation (CVs) associés aux estimations de retour d'adultes.}
+  \label{ReturnsVichy}
+  \end{figure}
+  
+
+\FloatBarrier 
+
+ %--------------------------------------------------
+  \subsection{Géniteurs potentiels et ratio}
+  %--------------------------------------------------
+  % SpawnersRedds_GeniteursPotentiels
+
+  \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/SpawnersRedds_GeniteursPotentiels_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{GenitPot_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                 
+                   \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/SpawnersRedds_GeniteursPotentiels_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{GenitPot_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : distribution a posteriori
+  des abondances annuelles absolues et relatives de géniteurs
+  potentiels]{Comparaison des 2 modèles :
+  distribution a posteriori
+  des abondances annuelles absolues et relatives de géniteurs
+  potentiels dans chaque zone du bassin de l'Allier: Vichy-Langeac (a et d),
+  Langeac-Poutès (b et e), Amont Poutès (c et f). Les boxplots indiquent les quantiles
+  à 2.5$^{th}$, 25$^{th}$, 75$^{th}$ et 97.5$^{th}$. Les lignes pointillées
+  horizontales pour d, e et f indiquent la disponibilité relative de l'habitat
+  potnetiel pour les juvéniles. On notera que pour la zone à l'amont de Poutès
+  il n'y a pas d'estimation des abondances absolues car le nombre exact de
+  géniteurs est toujours connu (c) et l'abondance relative est connue lorsque
+  les comptages à Vichy sont disponibles.}
+  \label{GenitPot}
+  \end{figure}
+  
+\FloatBarrier 
+
+
+ %--------------------------------------------------
+  \subsection{ratio géniteurs potentiels:frayères}
+  %--------------------------------------------------
+  % Redds_Kappa
+  \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Redds_kappa_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Redds_kappa_un}
+         \end{subfigure}%         
+        \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Redds_kappa_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Redds_kappa_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : distribution a posteriori du
+  ratio géniteurs potentiels:frayères pour chaque zone du bassin]{Comparaison des 3 modèles : distribution a posteriori du
+  ratio géniteurs potentiels:frayères pour chaque zone du bassin de
+  l'Allier: a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les
+  boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les bandes colorées en arrière-plan
+  représentent la médiane et les quantiles à 2.5$^{th}$, 25$^{th}$, médiane,
+  75$^{th}$ et 97.5$^{th}$ des hyper-paramètres \mu$^{K_{down}}$ (a et b)
+  et \mu$^{K_{up}}$ (c).}
+  \label{Redds_kappa}
+  \end{figure}
+  
+\FloatBarrier 
+
+ %--------------------------------------------------
+  \subsection{Densité de juvéniles - échelle macroscopique}
+  %--------------------------------------------------
+    %#############################
+    % Dtot Vichy-Langeac-Poutès
+    %############################
+
+
+  %................................................................................
+    \subsubsection{Densités en juvéniles 0+ total (somme de tous les compartiments)}
+    %................................................................................
+ \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/juvenile_production_totale_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Juvenile_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/juvenile_production_totale_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Juvenile_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : distribution a posteriori
+  des densités de juvéniles 0+ à l'échelle macroscopique]{Comparaison des 2
+  modèles :
+  distribution a posteriori
+  des densités de juvéniles 0+ à l'échelle macroscopique D$^{tot}_{t+1,i}$
+  dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Juvenile_densite}
+  \end{figure}
+  
+\FloatBarrier 
+
+    %#############################
+    % Dtot WILD-JUV-EGG Vichy-Langeac-Poutès
+    %############################
+
+    %..................................................
+    \subsubsection{Densités en juvéniles sauvages}
+    %..................................................
+ \begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/juvenile_wild_totale_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Juvenile_wild_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                 % \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/juvenile_wild_totale_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Juvenile_wild_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : distribution a posteriori
+  des densités de juvéniles sauvages 0+ à l'échelle macroscopique]{Comparaison
+  des 2 modèles :
+  distribution a posteriori
+  des densités de juvéniles sauvages 0+ à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Juvenile_wild_densite}
+  \end{figure}
+  
+\FloatBarrier 
+
+ %....................................................
+    \subsubsection{Densités en juvéniles d'élevage}
+    %....................................................
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/juvenile_juv_totale_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Juvenile_juv_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                 % \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/juvenile_juv_totale_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Juvenile_juv_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : distribution a posteriori
+  des densités de juvéniles d'élevage 0+ à l'échelle macroscopique]{Comparaison
+  des 2 modèles :
+  distribution a posteriori
+  des densités de juvéniles d'élevage 0+ à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Juvenile_juv_densite}
+  \end{figure}
+  
+\FloatBarrier 
+
+    %....................................................
+    \subsubsection{Densités en juvéniles issus des incubateurs de terrain}
+    %....................................................
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/juvenile_egg_totale_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Juvenile_egg_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/juvenile_egg_totale_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Juvenile_egg_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : distribution a posteriori
+  des densités de juvéniles 0+ issus des incubateurs de terrain à l'échelle
+  macroscopique]{Comparaison des 2 modèles :
+  distribution a posteriori
+  des densités de juvéniles 0+ issus des incubateurs de terrain à l'échelle
+  macroscopique D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Il n'y a jamais eu d'incubateurs en amont de
+  Poutès.}
+  \label{Juvenile_juv_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    
+
+
+    %--------------------------------------------------
+    \subsubsection{Résidus des juvéniles sauvages}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Residus_wild_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Residus_wild_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Residus_wild_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Residus_wild_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : Résidus
+  des densités de juvéniles sauvages 0+ à l'échelle macroscopique]{Comparaison
+  des 2 modèles :
+  Résidus
+  des densités de juvéniles sauvages 0+ à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Residus_wild_densite}
+  \end{figure}
+  
+\FloatBarrier 
+
+ %--------------------------------------------------
+    \subsubsection{Résidus des juvéniles d'élevage}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Residus_juv_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Residus_juv_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Residus_juv_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Residus_juv_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : Résidus
+  des densités de juvéniles 0+ issus des repeuplements à l'échelle
+  macroscopique]{Comparaison des 2 modèles :
+  Résidus
+  des densités de juvéniles 0+ issus des repeuplements à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement.}
+  \label{Residus_juv_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    %--------------------------------------------------
+    \subsubsection{Résidus des juvéniles issus des incubateurs}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Residus_egg_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Residus_egg_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Residus_egg_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Residus_egg_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : Résidus
+  des densités de juvéniles 0+ issus des incubateurs terrain à l'échelle
+  macroscopique]{Comparaison des 2 modèles :
+  Résidus
+  des densités de juvéniles 0+ issus des incubateurs terrain à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Le remplissage en couleur foncée des boxplot
+  indique les années durant lesquelles il y a eu du repeuplement. Il n'y a
+  jamais eu d'incubateurs en amont de Poutès.}
+  \label{Residus_egg_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    
+
+    %--------------------------------------------------
+    \subsubsection{Ratio entre les densités sauvages et les densités totales}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Ratio_wild_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Ratio_wild_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Ratio_wild_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Ratio_wild_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : contribution relative des juvéniles
+  sauvages par rapport aux juvéniles totales produits à l'échelle
+  macroscopique]{Comparaison des 2 modèles :
+  contribution relative des juvéniles
+  sauvages par rapport aux juvéniles totales produits à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les cercles colorés indiquent les années sans
+  repeuplement.}
+  \label{Ratio_wild_densite}
+  \end{figure}
+  
+\FloatBarrier    
+
+%--------------------------------------------------
+    \subsubsection{Ratio entre les densités issus des juvéniles déversés et
+    les densités totales}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Ratio_juv_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Ratio_juv_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Ratio_juv_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Ratio_juv_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : contribution relative des juvéniles
+  issus des déversements par rapport aux juvéniles totales produits à l'échelle
+  macroscopique]{Comparaison des 2 modèles :
+  contribution relative des juvéniles
+  issus des déversements par rapport aux juvéniles totales produits à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les cercles colorés indiquent les années sans
+  repeuplement.}
+  \label{Ratio_juv_densite}
+  \end{figure}
+  
+\FloatBarrier 
+    %--------------------------------------------------
+    \subsubsection{Ratio entre les densités issus des incubateurs de terrain et
+    les densités totales}
+    %--------------------------------------------------
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Ratio_egg_VLP_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Ratio_egg_densite_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Ratio_egg_VLP_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Ratio_egg_densite_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : contribution relative des juvéniles
+  issus des incubateurs de terrain par rapport aux juvéniles totales produits à
+  l'échelle macroscopique]{Comparaison des 2 modèles :
+  contribution relative des juvéniles
+  issus des incubateurs de terrain par rapport aux juvéniles totales produits à l'échelle macroscopique
+  D$^{tot}_{t+1,i}$ dans les bassin de l'Allier:
+  a)Vichy-Langeac, b)Langeac-Poutès, c)Amont Poutès. Les boxplots indiquent les quantiles à 2.5$^{th}$, 25$^{th}$,
+  75$^{th}$ et 97.5$^{th}$. Les cercles colorés indiquent les années sans
+  repeuplement.}
+  \label{Ratio_egg_densite}
+  \end{figure}
+  
+\FloatBarrier  
+    
+    
+  %--------------------------------------
+  \subsection{Production relative de juvéniles 0+ pour une année donnée (J$^{coh}_{t,i}$)}
+
+
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/SpawnersProdJuvRatio_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{Juv_Coh_Ratio_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/SpawnersProdJuvRatio_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{Juv_Coh_Ratio_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : production relative de
+  juvéniles 0+ pour une année donnée (J$^{coh}_{t,i}$)]{Comparaison des 2
+  modèles :
+  production relative de
+  juvéniles 0+ pour une année donnée (J$^{coh}_{t,i}$) pour chaque zone du
+  bassin de l'Allier (panneaux a,d et g), distribution a posteriori des
+  abondances relatives de géniteurs potentiels (panneaux b,e et h) et
+  distribution a posteriori de la différence entre les abondances relatives de
+  géniteurs potentiels et de production de juvéniles 0+ (panneaux c,f et
+  i).Les lignes pointillées horizontales indiquent la disponibilité relative
+  de l'habitat potentiel pour les juvéniles. Les boxplots indiquent les
+  quantiles à 2.5$^{th}$, 25$^{th}$, 75$^{th}$ et 97.5$^{th}$. }
+  \label{Juv_Coh_Ratio}
+  \end{figure}
+  
+\FloatBarrier  
+
+
+%--------------------------------------------------
+  \subsection{Relation de densité dépendance}
+  %--------------------------------------------------
+
+
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/dd_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{dd_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/dd_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{dd_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : Relation de densité
+  dépendance moyenne pour le compartiment sauvage et élevage]{Comparaison des 2
+  modèles :
+  Relation de densité
+  dépendance moyenne entre a) les géniteurs potentiels d'une année
+  donnée t et la densité de juvéniles 0+ sauvage l'année suivante
+  t+1 et entre b) le nombre de juvéniles 0+ déversés au printemps
+  et la densité de juvéniles issus du repeuplement à l'automne. Les
+  différences spatiales à l'aval et l'amont de Langeac sont
+  représentées par deux courbes de couleurs différentes (rouge pour l'aval et
+  vert pour l'amont). Les cercles et les carrés colorés
+  représentent les "données" pour chaque zone du bassin de l'Allier
+  : rouge pour la zone Vichy-Langeac, vert foncé pour la zone
+  Langeac-Poutès et vert clair pour la zone à l'amont de Poutès. La
+  ligne pointillée dans le panneau b représente la fonction
+  identité.}
+  \label{dd}
+  \end{figure}
+  
+\FloatBarrier  
+
+ %--------------------------------------------------
+  \subsection{Survie du 0+ à l'adulte}
+  %--------------------------------------------------
+
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.50\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/SurvivalJuv2Ad_un.png}
+                  \caption{Modèle Alagnon V1 2016.05.27}
+                  \label{SurvivalJuv2Ad_un}
+         \end{subfigure}%         
+         \begin{subfigure}{0.50\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/SurvivalJuv2Ad_deux.png}
+                  \caption{Modèle Alagnon V2 2016.10.14}
+                  \label{SurvivalJuv2Ad_deux}
+          \end{subfigure}%    
+  \caption[Comparaison des 2 modèles : évolution du taux de retour
+  du juvénile 0+ à l'adulte]{Comparaison des 2 modèles :
+  évolution du taux de retour
+  du juvénile 0+ à l'adulte \mu$^{s_J}$ (a) et du taux de retour du smolt issu
+  du repeuplement à l'adulte \mu$^{s_Sm}$. Les points indiquent la survie
+  moyenne du smolt issu du repeuplement à l'adulte fixée à partir des données
+  de marquage (\mu$^{s_Sm}$=5.45 x10^$^{-4}$)}
+  \label{SurvivalJuv2Ad}
+  \end{figure}
+
+\FloatBarrier  
+% %--------------------------------------------------
+%  \subsection{Probabilité de passage à Langeac et Poutès}
+%  %--------------------------------------------------
+
+
+%\begin{figure}[h!]
+%          \centering
+%          \begin{subfigure}{0.50\textwidth}
+%                  %\centering
+%                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/Redds_ProbaPassageStation_un.png}
+%                  \caption{Modèle Alagnon V1 2016.05.27}
+%                  \label{Redds_ProbaPassageStation_un}
+%         \end{subfigure}%
+%         \begin{subfigure}{0.50\textwidth}
+%                  %\centering
+%                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/Redds_ProbaPassageStation_deux.png}
+%                  \caption{Modèle Alagnon V2 2016.10.14}
+%                  \label{Redds_ProbaPassageStation_deux}
+%          \end{subfigure}%    
+%  \caption[Comparaison des 2 modèles : probabilité de passer en
+%  amont de Langeac et Poutès]{Comparaison des 2 modèles :
+%  probabilité de passer en
+%  amont de Langeac et Poutès.}
+%  \label{Redds_ProbaPassageStation}
+%  \end{figure}
+
+
+
+
+
+
+\maketitle
+
+
+\end{document}
+

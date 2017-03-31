@@ -1,0 +1,150 @@
+% 
+\documentclass[a4paper]{report}
+\usepackage{Sweave}
+\usepackage[latin1]{inputenc}%encodage du fichier source
+\usepackage[T1]{fontenc}%gestion des accents (pour les pdf) 
+\usepackage[francais]{babel}
+\usepackage{lmodern}%fonte latin modern
+\usepackage{float}
+\usepackage[section]{placeins} %The placeins package provides the command
+% \FloatBarrier
+\usepackage[final]{pdfpages} 
+\usepackage{pdflscape}
+
+
+%\documentclass[a4paper,12pt]{report}
+%\usepackage[nogin]{Sweave}
+
+
+%\makeatletter %%Si on ne fait pas ces lignes de commandes, le FloatBarrier ne marche pas à l'intérieur des subsection (uniquement section)
+%\AtBeginDocument{%
+%  \expandafter\renewcommand\expandafter\subsection\expandafter{%
+%    \expandafter\@fb@secFB\subsection
+%  }%
+%}%
+%\makeatother
+%
+%\usepackage{amsmath}% equation numbering
+%\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black,bookmarksnumbered]{hyperref}
+%\usepackage{wrapfig}
+%\usepackage{subcaption}% pour les subfigures
+%%\usepackage{vmargin}
+
+%\usepackage[left=2cm, right=2cm, top=1.5cm, bottom=1.5cm]{geometry}
+%\geometry{dvips,a4paper,hmargin=1.5cm,vmargin=1.5cm}
+%\usepackage[font={it}]{caption}% pour des légendes en italique
+%\usepackage{graphicx}
+%\usepackage{tikz}
+%\usepackage{multirow}
+%\usepackage{tabularx}
+%\usepackage{longtable}
+%\usepackage{amssymb}
+%\usepackage[abs]{overpic}
+%\usepackage[section]{placeins}%The placeins package provides the command % \FloatBarrier \let\emptyset\varnothing
+%\graphicspath{{illustrations/}}
+%%\setpapersize{A4}
+%%\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+%\setcounter{secnumdepth}{10}
+%\usepackage[xindy,acronym]{glossaries}% pour faire un glossaire [xindy] option
+%\usepackage{enumitem}% pour diminuer les espaces après itemize
+%% [noitemsep,nolistsep] \usepackage{blindtext} %dummty text
+%\usepackage[round]{natbib}
+%\definecolor{bois}{RGB}{139,69,19}
+%\definecolor{brique}{RGB}{238,64,0}
+%\definecolor{bleu}{RGB}{16,18,138}
+%%\definecolor{violet}{RGB}{160,32,240}
+%\definecolor{jauneorange}{RGB}{205,133,0}
+%\definecolor{deeppink}{RGB}{255,20,147}
+%\definecolor{lightgoldenrod1}{RGB}{255,236,139}
+%\definecolor{royalblue4}{RGB}{39,64,139}
+%\definecolor{grisbleu}{RGB}{62,59,132}
+%\definecolor{vertfond}{RGB}{34,49,23}
+%\definecolor{vertfond2}{RGB}{57,102,45}
+%\definecolor{vertsurf}{RGB}{212,242,132}
+%\renewcommand*{\glstextformat}[1]{\textcolor{grisbleu}{#1}}
+%\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}% cette commande est pour créer un ligne il faut la précéder de noident
+%% recommended,[toc]=> glossary in the table of contents
+%\hypersetup{pdfstartview=FitH} %zoom pleine page
+%\hypersetup{
+%     backref=true,%permet d'ajouter des liens dans...
+%     pagebackref=true,%...les bibliographies
+%     hyperindex=true,%ajoute des liens dans les index.
+%     colorlinks=true,%colorise les liens
+%     breaklinks=true,%permet le retour à  la ligne dans les liens trop longs
+%     urlcolor= cyan,%couleur des hyperliens
+%     linkcolor= royalblue4,%couleur des liens internes(change box color with linkbordercolor)
+%     filecolor=magenta,% color of file links 
+%     citecolor=grisbleu,
+%     bookmarks=true,%créé des signets pour Acrobat
+%     bookmarksopen=true,%si les signets Acrobat sont créés, %les afficher complètement.
+%     %dans les informations du document
+%     %pdfsubject={Mortalité dévalaison},          %sous Acrobat
+%     %pdfkeywords={saumon}{Salmo salar}{Modèle dynamique de population}
+%     }
+%\usepackage{etoolbox}
+%\makeatletter
+%\renewcommand{\@makechapterhead}[1]{%
+%  \vspace*{50\p@}%
+%  {\parindent \z@ \raggedright \normalfont
+%  \hrule                                        % horizontal line
+%  \vspace{10pt}%                                 % add vertical space
+%  \interlinepenalty\@M
+%  \ifnum \c@secnumdepth >\m@ne
+%        \huge\bfseries \thechapter\space \scshape #1\par
+%        \par\nobreak
+%        \vskip 20\p@        
+%  \vspace{10pt}%                                 % add vertical space
+%  \hrule                                        % horizontal rule
+%  \nobreak
+%  \vskip 40\p@
+%  }%
+%}
+%\makeatother
+%
+%%\newcommand{\myparagraph}[1]{\paragraph*{#1}\mbox{}\\} %pour forcer à aller à
+%% la ligne en début de paragraphe
+%
+%\addto{\captionsfrench}{\renewcommand{\bibname}{Références bibliographiques}}
+%\addto{\captionsfrench}{\renewcommand{\abstractname}{Résumé}}
+%\addto{\captionsfrench}{\renewcommand{\glossaryname}{Glossaire}}
+%\addto{\captionsfrench}{\renewcommand{\tablename}{Tableau}}
+
+\begin{document}
+
+\maketitle
+
+<<init, echo=FALSE, eval=TRUE,results=hide >>=
+setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX") 
+datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/"
+imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/"
+tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/tab/2016/"
+@
+
+\chapter{Présentation des paramètres estimés par le modèle}
+\label{Annexe4}
+\begin{landscape}
+\includepdf[pages=-,nup=1x2,landscape=true]{SortieOpenbugs_parameters_rapport2015.pdf}
+\end{landscape}
+\clearpage
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

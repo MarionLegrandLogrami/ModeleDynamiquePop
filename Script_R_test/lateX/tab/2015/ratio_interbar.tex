@@ -1,0 +1,28 @@
+%latex.default(interbar, title = str_c(), rowname = "", rowlabel = "",     where = "ht", longtable = FALSE, label = "interbar", caption = "Fraction de juvéniles produits impactés par les ouvrages situés dans leur secteur. \n\t\t\t\tPour l'Allier, tous les juvéniles produits dans les secteurs situés en amont d'un certain ouvrage et ayant survécu \n\t\t\t\tà la dévalaison dans les ouvrages de leur secteur sont impactés par cet ouvrage.\n\t\t\t\t$r_{intbar}$75-85 représente la fraction de juvéniles impactés par chaque ouvrage sur la période 1975-1985 \n\t\t\t\t(c'est-à-dire avant l'ouverture de Poutès sur l'Allier), $r_{intbar}$86-03 pour la période 1986-2003 (avant l'ouverture de Grand Pont sur l'Alagnon), et $r_{intbar}$04-14 représente \n\t\t\t\tla fraction de juvéniles impactés par chaque ouvrage depuis 2004.",     caption.lot = "Fraction de juvéniles produits impactés par les ouvrages situés dans leur secteur.",     file = str_c(tabwd, "ratio_interbar.tex"))%
+\begin{table}[ht]
+\caption[Fraction de juvéniles produits impactés par les ouvrages situés dans leur secteur.]{Fraction de juvéniles produits impactés par les ouvrages situés dans leur secteur. 
+				Pour l'Allier, tous les juvéniles produits dans les secteurs situés en amont d'un certain ouvrage et ayant survécu 
+				à la dévalaison dans les ouvrages de leur secteur sont impactés par cet ouvrage.
+				$r_{intbar}$75-85 représente la fraction de juvéniles impactés par chaque ouvrage sur la période 1975-1985 
+				(c'est-à-dire avant l'ouverture de Poutès sur l'Allier), $r_{intbar}$86-03 pour la période 1986-2003 (avant l'ouverture de Grand Pont sur l'Alagnon), et $r_{intbar}$04-14 représente 
+				la fraction de juvéniles impactés par chaque ouvrage depuis 2004.\label{interbar}} 
+\begin{center}
+\begin{tabular}{lllllll}
+\hline\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{Cours d'eau}&\multicolumn{1}{c}{Secteur}&\multicolumn{1}{c}{Ouvrage}&\multicolumn{1}{c}{$r_{intbar}$75-85}&\multicolumn{1}{c}{$r_{intbar}$86-03}&\multicolumn{1}{c}{$ratio_{intbar}$04-14}\tabularnewline
+\hline
+&Allier&Amont Poutès&Poutès&0&1&1\tabularnewline
+&Allier&Langeac-Poutès&Langeac&1&1&1\tabularnewline
+&Allier&Vichy-Langeac&Chambon de Cerzat&0.0884&0.0884&0.0884\tabularnewline
+&Allier&Vichy-Langeac&Vieille-Brioude&0.281&0.281&0.281\tabularnewline
+&Alagnon&Vichy-Langeac&Aurouze&0&0&0.303\tabularnewline
+&Alagnon&Vichy-Langeac&Babory&0&0&0.174\tabularnewline
+&Dore&Vichy-Langeac&Chalard&0.395&0.395&0.395\tabularnewline
+&Dore&Vichy-Langeac&Chanteliauze-Olliergues&0.029&0.029&0.029\tabularnewline
+&Dore&Vichy-Langeac&Decours&0.012&0.012&0.012\tabularnewline
+&Dore&Vichy-Langeac&St Gervais sous Meymont&0.06&0.06&0.06\tabularnewline
+&Dore&Vichy-Langeac&Prades-Sauviat&0.156&0.156&0.156\tabularnewline
+\hline
+\end{tabular}\end{center}
+
+\end{table}

@@ -1,0 +1,18 @@
+%latex.default(tab, title = str_c(), rowname = "", rowlabel = "",     where = "ht", longtable = FALSE, col.just = strsplit("l l l",         " ")[[1]], label = "tab_scenar", caption = "Résultats des projections à 20 ans sous l'hypothèse de l'arrêt des déversements et dans différents scénarii d'amélioration. medV=Nombre d'individus médian à Vichy sur les 5 dernières années de la période de projection, probaV=Probabilité d'observer moins de 500 individus à Vichy sur les 5 dernières années de la période de projection (en \\%).",     caption.lot = "Résultats des projections à 20 ans sous l'hypothèse de l'arrêt des déversements et dans différents scénarii d'amélioration",     file = str_c(tabwd, "scenar.tex"))%
+\begin{table}[ht]
+\caption[Résultats des projections à 20 ans sous l'hypothèse de l'arrêt des déversements et dans différents scénarii d'amélioration]{Résultats des projections à 20 ans sous l'hypothèse de l'arrêt des déversements et dans différents scénarii d'amélioration. medV=Nombre d'individus médian à Vichy sur les 5 dernières années de la période de projection, probaV=Probabilité d'observer moins de 500 individus à Vichy sur les 5 dernières années de la période de projection (en \%).\label{tab_scenar}} 
+\begin{center}
+\begin{tabular}{llll}
+\hline\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{scenario}&\multicolumn{1}{c}{medV}&\multicolumn{1}{c}{probaV}\tabularnewline
+\hline
+&Pas d'amélioration&398&38.7\tabularnewline
+&Amélioration à Poutès à hauteur de 50\%&469&33.4\tabularnewline
+&Amélioration à Poutès à hauteur de 100\%&557&27.7\tabularnewline
+&Amélioration de la survie à hauteur de 50\%&1077&8.2\tabularnewline
+&Amélioration de la survie à hauteur de 100\%&2560&0.5\tabularnewline
+&Suppression des mortalités à la dévalaison&726&19\tabularnewline
+\hline
+\end{tabular}\end{center}
+
+\end{table}

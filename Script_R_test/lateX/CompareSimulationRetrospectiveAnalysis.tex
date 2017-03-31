@@ -1,0 +1,65 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage[latin1]{inputenc} %encodage du fichier source
+\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf) 
+\usepackage[francais]{babel}
+\usepackage{float}
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage{amsmath} % equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption} % pour les subfigures
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\pagestyle{empty}
+%1 est la marge gauche
+%2 est la marge en haut
+%3 est la marge droite
+%4 est la marge en bas
+%5 fixe la hauteur de l'entête
+%6 fixe la distance entre l'entête et le texte
+%7 fixe la hauteur du pied de page
+%8 fixe la distance entre le texte et le pied de page
+
+\title{Comparaison des modèles retrospectifs + simulations - Version V\_1}
+\author{Marion Legrand,\\Guillaume Dauphin,\\Etienne Prevost}
+
+\begin{document}
+\maketitle
+\newpage
+
+
+\section{Analyse rétrospective - sans les repeuplements}
+
+\begin{figure}[h!]
+          \centering
+          \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/simulation/spawners_reels_deux.png}
+                  \caption{Spawners reels modèle SurfErrSeul}
+                  \label{Spawners_reels_deux}
+         \end{subfigure}%         
+        ~%~%\qquad
+        \begin{subfigure}{0.59\textwidth}
+                  %\centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/simulation/spawners_reels_trois.png}
+                  \caption{Spawners reels modèle SurfErr+SurfDev}
+                  \label{Spawners_reels_trois}
+        \end{subfigure}          
+        \hfill
+        \begin{subfigure}{0.59\textwidth}
+                  \centering
+                  \includegraphics{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/simulation/spawners_reels_un.png}
+                  \caption{Spawners reels modèle GuillaumeMaJ}
+                  \label{Spawners_reels_un}
+          \end{subfigure}%    
+  \caption[Comparaison des 3 modèles : Géniteurs réels par secteur]{Comparaison
+  des 3 modèles :
+  Géniteurs réels par secteur. Les
+  boxplots indiquent les quantiles à 2.5$^th$, 25$^th$,
+  75$^th$ et 97.5$^th$.}
+  \label{Spawners_reels}
+  \end{figure}
+
