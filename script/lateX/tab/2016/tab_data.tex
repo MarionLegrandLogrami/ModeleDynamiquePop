@@ -1,0 +1,34 @@
+%latex.default(tab_data[, 2:3], title = str_c(""), rowname = "",     rowlabel = "", rgroup = levels(as.factor(tab_data$"Type\\_data"))[c(6,         2, 5, 4, 1, 3)], n.rgroup = c(3, 2, 2, 2, 1, 1), numeric.dollar = TRUE,     where = "htbp", caption = "Données utilisées dans le modèle et période des séries de données",     size = "small", label = "tab_data", file = str_c(tabwd, "tab_data.tex"))%
+\begin{table}[htbp]
+{\small
+\caption{Données utilisées dans le modèle et période des séries de données\label{tab_data}} 
+\begin{center}
+\begin{tabular}{lll}
+\hline\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{Données}&\multicolumn{1}{c}{Périodes}\tabularnewline
+\hline
+{\bfseries Stations de comptage}&&\tabularnewline
+~~&Vichy&1997 - 2015\tabularnewline
+~~&Langeac&2003 - 2008\tabularnewline
+~~&Poutès&1986 - 2015\tabularnewline
+\hline
+{\bfseries Comptage frayère}&&\tabularnewline
+~~&Dénombrement des nids&1977 - 2015\tabularnewline
+~~&Surfaces prospectées&1977 - 2015\tabularnewline
+\hline
+{\bfseries Repeuplement}&&\tabularnewline
+~~&Déversement d'oeufs, d'alevins et de smolts&1977 - 2015\tabularnewline
+~~&Nombre d'adultes prélevés à Vichy pour le repeuplement&1975 - 2015\tabularnewline
+\hline
+{\bfseries Pêche électrique}&&\tabularnewline
+~~&Pêche par enlèvements successifs&1975 - 1990\tabularnewline
+~~&Pêche Indice d'abondance en 5 minutes&1994 - 2015\tabularnewline
+\hline
+{\bfseries Capture}&&\tabularnewline
+~~&Données de capture à la ligne et professionnelle&1977 - 1993\tabularnewline
+\hline
+{\bfseries Marquage/recapture}&&\tabularnewline
+~~&Dénombrement des saumons adultes sans nageoire adipeuse à Vichy&2003 - 2015\tabularnewline
+\hline
+\end{tabular}\end{center}}
+\end{table}

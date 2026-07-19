@@ -1,0 +1,3552 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[nogin]{Sweave}
+\usepackage[latin1]{inputenc}%encodage du fichier source
+\usepackage[T1]{fontenc}%gestion des accents (pour les pdf) 
+\usepackage[francais]{babel}
+\usepackage{lmodern}%fonte latin modern
+\usepackage{float}
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage{amsmath}% equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black,bookmarksnumbered]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption}% pour les subfigures
+%\usepackage{vmargin}
+\usepackage[final]{pdfpages} 
+\usepackage[left=2cm, right=2cm, top=1.5cm, bottom=1.5cm]{geometry}
+\geometry{dvips,a4paper,hmargin=1.5cm,vmargin=1.5cm}
+\usepackage[font={it}]{caption}% pour des l?gendes en italique
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage[abs]{overpic}
+\usepackage[section]{placeins}%The placeins package provides the command % \FloatBarrier \let\emptyset\varnothing
+\graphicspath{{illustrations/}}
+%\setpapersize{A4}
+%\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\setcounter{secnumdepth}{10}
+\usepackage[xindy,acronym]{glossaries}% pour faire un glossaire [xindy] option
+\usepackage{enumitem}% pour diminuer les espaces apr?s itemize
+% [noitemsep,nolistsep] \usepackage{blindtext} %dummty text
+\usepackage[round]{natbib}
+\definecolor{bois}{RGB}{139,69,19}
+\definecolor{brique}{RGB}{238,64,0}
+\definecolor{bleu}{RGB}{16,18,138}
+%\definecolor{violet}{RGB}{160,32,240}
+\definecolor{jauneorange}{RGB}{205,133,0}
+\definecolor{deeppink}{RGB}{255,20,147}
+\definecolor{lightgoldenrod1}{RGB}{255,236,139}
+\definecolor{royalblue4}{RGB}{39,64,139}
+\definecolor{grisbleu}{RGB}{62,59,132}
+\definecolor{vertfond}{RGB}{34,49,23}
+\definecolor{vertfond2}{RGB}{57,102,45}
+\definecolor{vertsurf}{RGB}{212,242,132}
+\renewcommand*{\glstextformat}[1]{\textcolor{grisbleu}{#1}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}% cette commande est pour cr?er un ligne il faut la pr?c?der de noident
+% recommended,[toc]=> glossary in the table of contents
+\hypersetup{pdfstartview=FitH} %zoom pleine page
+\hypersetup{
+     backref=true,%permet d'ajouter des liens dans...
+     pagebackref=true,%...les bibliographies
+     hyperindex=true,%ajoute des liens dans les index.
+     colorlinks=true,%colorise les liens
+     breaklinks=true,%permet le retour ?? la ligne dans les liens trop longs
+     urlcolor= cyan,%couleur des hyperliens
+     linkcolor= royalblue4,%couleur des liens internes(change box color with linkbordercolor)
+     filecolor=magenta,% color of file links 
+     citecolor=grisbleu,
+     bookmarks=true,%cr?? des signets pour Acrobat
+     bookmarksopen=true,%si les signets Acrobat sont cr??s, %les afficher compl?tement.
+     %dans les informations du document
+     %pdfsubject={Mortalit? d?valaison},          %sous Acrobat
+     %pdfkeywords={saumon}{Salmo salar}{Mod?le dynamique de population}
+     }
+\usepackage{etoolbox}
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+  \vspace*{50\p@}%
+  {\parindent \z@ \raggedright \normalfont
+  \hrule                                        % horizontal line
+  \vspace{10pt}%                                 % add vertical space
+  \interlinepenalty\@M
+  \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \thechapter\space \scshape #1\par
+        \par\nobreak
+        \vskip 20\p@        
+  \vspace{10pt}%                                 % add vertical space
+  \hrule                                        % horizontal rule
+  \nobreak
+  \vskip 40\p@
+  }%
+}
+\makeatother
+\addto{\captionsfrench}{\renewcommand{\bibname}{R?f?rences bibliographiques}}
+\addto{\captionsfrench}{\renewcommand{\abstractname}{R?sum?}}
+\addto{\captionsfrench}{\renewcommand{\glossaryname}{Glossaire}}
+\addto{\captionsfrench}{\renewcommand{\tablename}{Tableau}}
+
+\begin{document}
+\includepdf{PageDeGarde.pdf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENTREES DU GLOSSAIRE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\makeglossaries
+%\newglossaryentry{COGEPOMI}
+%{
+%  name=COGEPOMI,
+%  description={Le comit? de gestion des poissons migrateurs (COGEPOMI) assure
+%  localement la gestion des poissons migrateurs ? l'?chelle des grands bassins
+%  fluviaux. Il met en place
+%  les Plans de gestion des poissons migrateurs (PLAGEPOMI)} 
+%}
+%
+%\newglossaryentry{INRA}
+%{
+%  name=INRA,
+%  description={Institut national de la recherche agronomique} 
+%}
+%\newglossaryentry{LOGRAMI}
+%{
+%  name=LOGRAMI,
+%  description={Association Loire Grands Migrateurs} 
+%}
+%\newglossaryentry{ONEMA}
+%{
+%  name=ONEMA,
+%  description={Office National de l'Eau et des Milieux Aquatiques} 
+%}
+%\newglossaryentry{PLAGEPOMI}
+%{
+%  name=PLAGEPOMI,
+%  description={Plan de gestion des poissons migrateurs arr?t? par le Pr?fet de
+%  r?gion, Pr?sident du \gls{COGEPOMI}. Ce plan d?finit les mesures utiles ? la
+%  reproduction, au d?veloppement, ? la conservation et ? la circulation des esp?ces,
+%  les plans de soutien d'effectifs ainsi que les conditions d'exercice de la
+%  p?che (p?riodes et autorisations)} 
+%}
+%\newglossaryentry{potamotoque}
+%{
+%  name=Potamotoque,
+%  text=potamotoque,
+%  description={un poisson potamotoque est un poisson se reproduisant en
+%  rivi?re et grandissant en mer}, 
+%  plural=potamotoques
+%}
+%\newglossaryentry{Sage}
+%{
+%  name=Sage,
+%  text=sage,
+%  description={En France, le sch?ma
+%  d'am?nagement et de gestion des eaux d?cline ? l'?chelle d'un bassin versant et 
+%  de son cours d'eau, appel?s unit? hydrographique ou d'un syst?me aquif?re les
+%  grandes orientations d?finies par le SDAGE}, 
+%  plural=Sages 
+%}
+%\newglossaryentry{SDAGE}
+%{
+%  name=SDAGE,
+%  description={le SDAGE est un instrument de planification qui fixe pour chaque bassin hydrographique les orientations 
+%  fondamentales d'une gestion ?quilibr?e de la ressource en eau dans l'int?r?t g?n?ral et dans le respect des principes 
+%  de la directive cadre sur l'eau et de la loi sur l'eau},
+%}
+%\newglossaryentry{TB_SALT}
+%{
+%  name=Tableau de bord SALT,
+%  description={Le Tableau de bord \og saumon,
+%  aloses, lamproies et truite de mer \fg{} du bassin de la Loire, des c?tiers vend?ens et de la s?vre niortaise est
+%  un outil de centralisation et valorisation de l'information sur les poissons
+%  \glspl{potamotoque}, ainsi qu'un outil d'expertise aupr?s des gestionnaires de
+%  ces esp?ces. Il a ?t? cr?? en 2008 et est port? par LOGRAMILOGRAMI}, tout comme
+%  son projet homologue : le tableau de bord \og anguille \fg{} cr?? en 2001.
+%  Ces deux projets forment le tableau de bord \og migrateurs \fg{} du bassin
+%  Loire}
+%}
+%\newglossaryentry{0+}
+%{name=0+,
+%description={Les tacons 0+ sont des juv?niles de saumon issus de l'ann?e}
+%}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TABLES DES MATIERES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+\sffamily
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PARTIES DU RAPPORT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introduction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+La réalisation d'un modèle de dynamique de population sur le saumon de l'Allier
+a été souhaité de longue date par les acteurs du bassin de la Loire. Ce projet
+avait ainsi été inscrit dans le plan de gestion des poissons migrateurs
+(PLAGEPOMI) 2009-2013 à la mesure 62 intitulée \og Comprendre les
+modalités de renouvellement de la population : création d'un modèle de dynamique
+des populations \fg{}.
+En 2010, pour répondre à cette demande, Guillaume Dauphin et Etienne Prévost
+(INRA--UMR Ecobiop) ont développé dans le cadre
+du plan Loire grandeur nature (plateforme Recherche/Données et Informations), et
+avec la collaboration de tous les acteurs locaux de la gestion et du suivi du
+saumon de l'axe Loire-Allier, un modèle de dynamique de population spécifique au saumon de l'Allier
+\citep{dauphin_viability_2013}.\\
+Ce modèle permet de faire la synthèse d'un vaste ensemble de données et
+d'informations collectées depuis plus de 30 ans et d'évaluer la viabilité de la
+population de saumons de l'Allier sous différentes hypothèses de gestion
+combinant repeuplement, restauration de la continuité écologique et changement
+de la qualité de l'habitat.
+La version remise en 2012 répondait aux attentes des acteurs du bassin mais il
+est très vite apparu qu'un tel projet méritait d'être poursuivi et amélioré afin de
+répondre plus largement aux questions des gestionnaires (développement de
+nouveaux scénarios, notamment). Une passation a ainsi été proposée
+entre l'INRA, concepteur du modèle, et le tableau de bord
+\og saumon, aloses, lamproies et truite de mer \fg{} du bassin Loire (porté par
+LOGRAMI), outil de centralisation, de valorisation de l'information et d'expertise auprès des gestionnaires.
+\\
+Du fait de sa complexité, la mise à jour (en fonction des nouvelles données et informations disponibles) et 
+l'utilisation de ce modèle requiert un niveau d'expertise assez avancé en modélisation et un apprentissage pour sa prise en main. 
+L'opération de transfert vise ainsi à permettre au principal opérateur assurant
+le suivi et l'évaluation du statut du saumon de l'Allier (association
+LOGRAMI) de devenir autonome dans la mise à jour et l'utilisation du
+modèle à des fins de tests d'options alternatives de gestion et d'évolution de l'environnement.
+Cette action de transfert est menée dans le cadre du pôle INRA-ONEMA. 
+
+
+\clearpage 
+\chapter{Op?ration de transfert}
+\label{Operation_transfert}%Donne un nom ? la section pour pouvoir y faire r?f?rence si besoin (\ref{Operation_transfert})
+
+\noindent Le projet de transfert du mod?le de dynamique de population vers le
+Tableau de bord SALT visait plusieurs objectifs (Annexe \ref{Annexe1}) :
+\begin{itemize}
+  \item la formation ? la mod?lisation bay?sienne,
+  \item la prise en main du mod?le d?velopp? sur l'Allier,
+  \item l'appropriation du mod?le via la mise ? jour avec les donn?es
+  th?sauris?es en 2012 et 2013,
+  \item le test de quelques options de gestion et d'?volution de
+  l'environnement, et en particulier une premi?re ?valuation des effets attendus
+  du prochain am?nagement du barrage de Pout?s.
+\end{itemize}
+En 2014, conform?ment ? la fiche-projet (Annexe \ref{Annexe1}), une formation ?
+la mod?lisation bay?sienne, r?alis?e par Etienne Pr?vost, s'est tenue du 24 au
+29 mars puis du 7 au 11 avril.
+Cette formation s'est d?roul?e sur deux semaines et a permis ? l'ing?nieure LOGRAMI en charge du
+Tableau de bord SALT de se familiariser avec la mod?lisation bay?sienne ? la fois ?
+travers l'apport de notions th?oriques et au travers d'exemples concrets pour
+la mise en pratique de ces notions th?oriques. Le logiciel
+Openbugs, utilis? pour faire tourner le mod?le de
+dynamique de population du saumon de l'Allier, a ?galement ?t? pr?sent? et des
+exercices utilisant ce logiciel ont ?t? propos?s. De fa?on ? dynamiser cet
+apprentissage et ? r?pondre ? une demande en formation bay?sienne, ces 15 jours
+ont ?t? ouverts ? des agents de l'ONEMA et de l'INRA. Au total,
+jusqu'? 7 personnes ont pu b?n?ficier de cette formation.\\
+Suite ? cette premi?re phase, 2 autres semaines
+(du 19 au 30 mai) ont ?t? consacr?es ? la prise en main du mod?le Allier. Ces
+journ?es n'ont ?t? suivies que par Marion Legrand (LOGRAMI) et ont ?t?
+assur?es par Guillaume Dauphin et Etienne Pr?vost, concepteurs du mod?le sur l'Allier.
+Lors de cette p?riode de prise en main, le mod?le a ?t? revisit? en d?tail ce
+qui a permis ? la fois ? l'ing?nieure LOGRAMI de s'approprier le mod?le
+mais ?galement de v?rifier et valider toutes les donn?es et hypoth?ses
+le constituant. Suite ? ce travail des corrections et des
+modifications ont ?t? apport?es (section \ref{revision_corr}). Pour finir cette phase de prise
+en main, la mise ? jour du mod?le avec les donn?es 2012 et 2013 bancaris?es au sein du
+Tableau de bord SALT a ?t? r?alis?e (section \ref{maj}).\\
+A la suite de cette p?riode, l'ing?nieure LOGRAMI a
+commenc? ? travailler en autonomie sur le mod?le avec des r?unions r?guli?res
+avec Etienne Pr?vost ? l'INRA. Ainsi, 3 r?unions de 3 jours chacunes
+(du 25 au 27 ao?t, du 13 au 15 octobre et du 8 au 10 d?cembre 2014) ont ?t?
+organis?es afin de discuter des avanc?es et des r?sultats, ainsi que de
+l'organisation du travail ? venir. De nouvelles
+modifications ont ?t? approt?es au mod?le notamment concernant la prise en compte de l'influence des d?versements dans les points de p?che ? l'?lectricit?
+(section \ref{inf_dev} et plus g?n?ralement section \ref{amelioration_model}).
+Enfin, durant cette p?riode, les sc?narios li?s au r?am?nagement futur de Pout?s
+ont ?t? d?velopp?s (section \ref{scenario}).\\
+Afin de poursuivre et de renforcer le lien cr?? d?s le d?marrage du projet,
+avec les acteurs locaux de la gestion de l'eau et du saumon, nous avons
+constitu? et r?unis ? deux reprises un groupe pour le suivi du projet (22
+juillet et 19 novembre 2014, cf. Annexe \ref{Annexe2} pour les relev?s de
+d?cisions de ces r?unions).
+La composition de ce groupe s'est voulue large afin que les principaux acteurs
+du bassin de l'Allier puisse y participer.
+Ont ainsi ?t? invit?s l'ensemble des f?d?rations de p?che du bassin de l'Allier,
+les animateurs(/trices) des Sages Alagnon, Dore, Sioule et Haut-Allier,
+l'Agence de l'Eau Loire-Bretagne, Electricit? de France, le Conservatoire
+National du Saumon Sauvage, l'ONEMA, la Direction R?gionale de
+l'Environnement, de l'Am?nagement et du Logement (DREAL) de bassin et la DREAL
+Auvergne, l'Etablissement Public Loire, le Syndicat Interd?partemental de Gestion de l'Alagnon, ainsi que LOGRAMI.
+Ces r?unions co-pilot?es par l'INRA et le Tableau de bord SALT, ont permis
+de pr?senter le mod?le tel que mis ? jour des donn?es 2012 et 2013, ainsi que
+les diff?rentes modifications apport?es au cours de l'ann?e 2014. Elles ont
+?galement ?t? l'occasion de discuter les hypoth?ses et de pr?senter
+le d?veloppement des sc?narios li?s au r?am?nagement de Pout?s. De fa?on plus
+g?n?rale, ce groupe a permis d'attester de l'int?r?t des acteurs du bassin pour
+ce projet de mod?lisation et a valid? la poursuite du travail sur le mod?le pour les ann?es ? venir. Dans ce but, les modifications et
+les d?veloppements nouveaux souhait?s ont ?t? list?s et prioris?s pour que le
+travail se poursuive en 2015 (Annexe \ref{Annexe2}).\\
+L'ensemble du code permettant de g?n?rer le mod?le (version 2015.01.24) est
+consultable en Annexe \ref{Annexe5}. Les donn?es ayant aliment? le mod?le
+peuvent ?tre obtenues par demande ?crite au
+Tableau de bord SALT
+\footnote{\href{mailto:tableau-salt-loire@logrami.fr}{\nolinkurl{tableau-salt-loire@logrami.fr}}}.
+
+\clearpage
+
+\chapter{Modifications apport?es au mod?le}
+\label{Modif_model}%Donne un nom ? la section pour pouvoir y faire% r?f?rence si besoin (\ref{nom_label}) 
+\noindent Comme nous l'avons vu, 3 types de modifications ont pu ?tre
+apport?es en 2014 au mod?le tel que d?velopp? par \citet{dauphin_viability_2013}
+:
+\begin{itemize}
+  \item des r?visions et des corrections : l'explication d?taill?e du mod?le
+  lors de la phase de formation, a ?t? l'occasion de revalider l'ensemble des
+  hypoth?ses et des donn?es inject?es dans le mod?le ainsi que les scripts g?n?r?s. Lors de cette phases, des
+  erreurs ont pu ?tre identifi?es et corrig?es (section \ref{revision_corr}),
+  \item l'incr?mentation des s?ries de donn?es avec les ann?es 2012 et 2013
+  (section \ref{maj}),
+  \item la poursuite de l'am?lioration du mod?le (section \ref{amelioration_model}).
+\end{itemize}
+
+\section{R?visions et corrections}
+\label{revision_corr}%Donne un nom ? la section pour pouvoir y faire r?f?rence si besoin (\ref{nom_label}) 
+
+\noindent La principale correction apport?e concerne le mod?le de
+calibration reliant le nombre de tacons 0+ p?ch?s en 5
+minutes au nombre total de tacons 0+ pr?sents sur la zone (nombre connu
+gr?ce ? la r?alisation de p?ches compl?tes ? deux ou trois passages sur le m?me
+site et imm?diatement apr?s la r?alisation de la p?che en 5 minutes). Ce mod?le de calibration est ? la base de tous les autres calculs
+concernant les juv?niles puisqu'il permet de transformer un nombre de poissons
+obtenus en 5 minutes de p?che en densit? de 0+ par m\up{2}. Cette densit? est ensuite multipli?e
+par les surfaces disponibles permettant ainsi d'avoir une estimation du nombre
+de juv?niles produits une ann?e donn?e. Or, une erreur s'?tait gliss?e dans le
+script permettant de r?aliser le lien entre p?ches en 5 minutes et p?ches compl?tes.
+La figure \ref{fig_prediction_IA} et le tableau de
+l'Annexe \ref{Annexe4} pr?sentent ainsi la mise ? jour de cette relation corrig?e.\\
+D'autre part, nous avons rediscut? l'effet m?thode ajout? dans le mod?le fray?re pour
+distinguer les comptages r?alis?s ? pied ou en bateau (avant 1997), de ceux
+r?alis?s en h?licopt?re (apr?s 1997). En retravaillant cet aspect nous nous
+sommes aper?us que l'effet spatial inject? dans le mod?le et permettant d'ajuster les donn?es fray?res en fonction des secteurs, ne permettait
+pas de sectoriser les zones au niveau de Langeac mais bien au niveau de Pout?s.
+Cette correction ayant ?t? apport?e, nous avons constat? que l'effet m?thode de
+comptage des fray?res (pied et bateau \textit{versus} h?licopt?re) n'?tait plus
+significatif.
+N?anmoins, nous avons d?cid? de conserver cet effet puisqu'il avait ?t? ajout? lors de la
+publication de ce mod?le d'observation par \citet{dauphin_spawners_2013} (sur
+demande du comit? de lecture), et que cela nous semblait coh?rent avec les donn?es (c'est-?-dire changement
+important dans la m?thodologie). La section \ref{resu}, pr?sente les figures
+modifi?es suite ? la correction de l'effet spatial dans le mod?le fray?re.\\
+Enfin, nous avons reparcouru l'ensemble des donn?es et lors de cette phase nous
+en avons pr?cis? et corrig? un certain nombre. Les donn?es
+fray?res ont ainsi ?t? compl?t?es, notamment pour les cours d'eau Alagnon
+(donn?es ajout?es sur la p?riode 2001 -- 2011) et Dore (donn?es 2011).
+En effet, ces rivi?res faisant partie int?grante du secteur aval du
+mod?le (secteur Vichy-Langeac), la prise en compte de ces donn?es par le mod?le
+est importante. Les nombreuses donn?es de p?che en 5 minutes ont ?galement ?t?
+valid?es et corrig?es. Enfin, une correction a ?t? apport?e aux comptages
+d'adultes ? Vichy concernant l'ann?e 2004. En effet, les op?rateurs de terrain
+ont indiqu? que l'effectif compt? ? Vichy cette ann?e l?, n'?tait pas exhaustif.
+Nous avons donc consid?r? ce nombre comme ?tant un minimum.
+
+\section{Mise ? jour}
+\label{maj}%Donne un nom ? la section pour pouvoir y faire r?f?rence si besoin (\ref{nom_label}) 
+\noindent La mise ? jour des donn?es a ?t? un moment important dans le processus
+d'appropriation du mod?le. En effet, il a permis de mieux se familiariser avec
+l'outil et de mieux comprendre comment le mod?le fonctionnait. Deux ann?es de
+donn?es suppl?mentaires (ann?es 2012 et 2013) ont ?t? ajout?es (cf. section
+\ref{resu_anal_retro} pour les r?sultats de cette mise ? jour). Les retours
+d'adultes de ces deux ann?es correspondent aux premi?res ann?es de mise en place de la zone refuge sur l'Allier. Cette zone refuge, situ?e en amont de Langeac,
+vise ? pr?server les secteurs de productions consid?r?s comme ?tant les
+meilleurs, des diff?rents impacts anthropiques. Ainsi, il a ?t? d?cid? de ne
+plus y d?verser de poissons de pisciculture ? quel que stades que ce soit. Cette
+mesure a pris effet en 2008 pour l'arr?t des d?versements au stade alevin et en
+2009 pour l'arr?t total (y compris les \oe{}ufs). Les retours d'adultes en 2012
+et 2013 proviennent ainsi (en totalit? ou en partie) des juv?niles sauvages
+produits dans cette zones (respectivement entre 2007--2009 et 2008--2010). Ces
+ann?es sont ainsi importantes car elles permettent au mod?le de connaitre avec
+certitude l'origine des poissons produits dans la zone en amont de Langeac
+(origine sauvage), or cette distinction sauvage/?levage est un des d?fis que
+se propose de relever le mod?le compte-tenu du fait que l'ensemble des
+poissons d?vers?s ne sont pas marqu?s. La poursuite de la mise ? jour du mod?le
+avec les donn?es des prochaines ann?es sera tout aussi importante pour permettre
+au mod?le d'?tre plus robuste dans cette discrimination sauvage/?levage.
+
+\section{Am?lioration du mod?le}
+\label{amelioration_model}%Donne un nom ? la section pour pouvoir y faire r?f?rence si besoin (\ref{nom_label})  Tous ces ajouts et modifications permettent d'une part 
+
+\noindent Deux types d'am?lioration ont pu ?tre apport?es au mod?le. La premi?re
+est une am?lioration de \og forme \fg{}. En effet, dans le processus
+d'appropriation du mod?le et du code, le script a ?t? enti?rement revu et
+comment?, avec une mise en ?vidence plus nette des diff?rentes parties le
+composant. D'autre part, une s?paration beaucoup plus nette a ?t? propos?e entre
+le mod?le en tant que tel (tournant sous Openbugs), et
+la partie simulation et projection. Jusque l? cette deuxi?me partie ?tait pour
+un bout r?alis?e dans Openbugs et pour l'autre
+dans le logiciel R. Afin de bien dissocier les deux parties et d'?viter toute
+confusion d'Openbugs entre les param?tres projet?s et ceux estim?s sur la
+p?riode pour laquelle nous disposons de donn?es, toutes les simulations et
+projections ont ?t? r??crites dans R. Ce travail de r??criture pr?sente
+?galement l'avantage d'augmenter la rapidit? de sortie des simulations et
+projections (puisqu'il n'est plus n?cessaire de faire retourner tout le mod?le
+pour r?aliser chaque nouvelle projection).\\
+Le deuxi?me type d'am?lioration concerne le mod?le en tant que
+tel. Ces modifications ont concern? les deux mod?les d'observation constituant
+le mod?le de dynamique de population (cf. \citet{dauphin_viability_2013} pour
+avoir un rappel sur la fa?on dont le mod?le est construit), ? savoir le mod?le
+de densit? de juv?niles 0+ et le mod?le \og fray?res \fg{} permettant de
+relier les g?niteurs potentiels aux comptages des nids.
+
+\subsection{Les donn?es de surfaces productives et leur prise en compte dans
+le mod?le}
+\label{am_surf}
+
+La fa?on de consid?rer les surfaces productives a ?t? revue. Ainsi, ces surfaces
+ne sont plus calcul?es comme dans l'?quation \ref{eq_surf_GD} propos?e par
+\citet{dauphin_viability_2013}, mais comme dans l'?quation \ref{eq_ERR} propos?e
+par \citet{minster_err_1999}. Cette modification a fait l'objet d'une validation
+par le groupe de suivi du projet.
+\begin{equation}
+\label{eq_surf_GD}
+  \begin{align}
+    S_{p}=RAD+RAP+RAB+PLA
+  \end{align}
+\end{equation}
+avec S$_{p}$= Surfaces$_{productives}$,\\
+RAD= Surfaces de radiers, \\
+RAP= Surfaces de
+rapides, \\
+RAB= Surfaces de radiers ? blocs et \\
+PLA= Surfaces de plats courants.\\
+
+\begin{equation}
+\label{eq_ERR}
+  \begin{align}
+    S_{p}=RAD+RAP+RAB+CLO+\frac{1}{5}PLA
+  \end{align}
+\end{equation}
+avec S$_{p}$= Surfaces$_{productives}$ en ?quivalent radiers--rapides,\\
+RAD= Surfaces de radiers,\\
+RAP=Surfaces de rapides,\\
+RAB=Surfaces de radiers ? blocs,\\
+CLO=Surfaces de chenaux lotiques et \\
+PLA=Surfaces de plats courants.\\
+
+D'autre part, la fa?on de prendre en compte le lin?aire prospect? lors du
+comptage des fray?res a ?t? revue. En effet, jusque l? le lin?aire prospect?
+d'une ann?e ?tait rapport? au lin?aire maximum prospect? sur l'ensemble de la
+s?rie chronologique. Ce maximum prospect? a ?t? remplac? dans cette nouvelle version du mod?le par le lin?aire total
+accessible, qui nous a sembl? ?tre une meilleure mesure (notamment pour ?viter dans une ann?e 
+future d'avoir un lin?aire prospect? sup?rieur au lin?aire maximum prospect? jusque l?). Ainsi, les limites amont de l'ensemble des cours
+d'eau int?gr?s dans le mod?le ont ?t? d?finies afin de quantifier ce lin?aire
+total accessible.\\
+Enfin, nous avons adapt? le mod?le pour mieux prendre
+en compte les diff?rentes ouvertures op?r?es au cours du temps sur les cours
+d'eau Alagnon, Dore et Allier et qui sont r?capitul?es dans le tableau \ref{tab_lineaire}.
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+  \hline
+     & Allier & Alagnon & Dore\\
+  \hline
+    \multirow{3}{*}{1975--1985} & VL= Langeac & \multirow{3}{*}{Grand Pont} &
+    \multirow{3}{*}{Ambert}\\
+                                & LP= Pout?s & & \\ 
+                                & AM= $\emptyset$ & & \\ 
+  \hline
+    \multirow{3}{*}{1986--1997} & VL= Langeac & \multirow{3}{*}{Grand Pont} &
+    \multirow{3}{*}{Ambert}\\
+                                & LP= Pout?s & & \\ 
+                                & AM= S\up{T} Etienne & & \\ 
+  \hline
+    \multirow{3}{*}{1998--2003} & VL= Langeac & \multirow{3}{*}{Grand Pont} &
+    \multirow{3}{*}{Ambert}\\
+                                & LP= Pout?s & & \\ 
+                                & AM= amont Pout?s total & & \\    
+  \hline
+    \multirow{3}{*}{1998--2003} & VL= Langeac & \multirow{3}{*}{Joursac} &
+    \multirow{3}{*}{Ambert}\\
+                                & LP= Pout?s & & \\ 
+                                & AM= amont Pout?s total & & \\      
+  \hline    
+\end{tabular}
+\caption[Limites amont des lin?aires accessibles]{Limites amont des lin?aires
+accessibles en fonction des ann?es et des cours d'eau. Sur l'Allier nous distingons les 3 secteurs du mod?le ? savoir
+VL=Vichy--Langeac, LP=Langeac--Pout?s et AM=Amont Pout?s.}
+\label{tab_lineaire}
+\end{center}
+\end{table}
+
+
+\subsection{Les donn?es de d?versement d'alevins et leur influence sur les
+r?sultats de p?ches ?lectriques}
+\label{inf_dev}
+
+La localisation pr?cise des points d'alevinage n'est pas ais?e ? obtenir sur
+l'ensemble de la s?rie chronologique (en particulier sur la partie historique
+de la s?rie).
+De plus, le ph?nom?ne de dispersion de ces poissons est difficile ? appr?hender, ce qui implique que lors des p?ches
+?lectriques il n'est pas ?vident de connaitre l'origine des juv?niles p?ch?s
+notamment lorsque le point de p?che n'est pas directement situ? au niveau
+du point de d?versement. De ce fait, le mod?le consid?rait jusque l? que si un
+site de p?che ?tait sous influence des repeuplements (site de p?che situ? au
+niveau du point de d?versement), tout le secteur ?tait consid?r? comme sous
+l'influence des d?versements. La figure \ref{fig_loca} rappelle la
+sectorisation r?alis?e dans ce mod?le.
+\begin{figure}[!h]
+  \begin{center}
+    \includegraphics[scale=0.5]{illustrations/LocalisationSecteursModeleDynamiquePop.pdf}
+  \end{center}
+  \caption{Localisation des secteurs utilis?s dans le mod?le}
+  \label{fig_loca}
+\end{figure}
+Ce m?canisme conduisait donc ? consid?rer tout le secteur aval de l'Allier
+(secteur Vichy-Langeac) ainsi que la Dore et l'Alagnon sous influence des
+d?versements si un point de p?che sur l'Alagnon ?tait consid?r? comme influenc? par les
+alevinages.\\
+Avec le soucis constant de pr?ciser au maximum l'origine des poissons (quand
+cela est possible) afin de permettre au mod?le de mieux discriminer les deux
+origines, nous avons repris l'ensemble des donn?es bancaris?es au sein du
+Tableau de bord SALT et pour lesquelles nous disposions d'informations pr?cises sur la
+localisation des points d'alevinages (ann?es 2005 ? 2013). A l'aide du logiciel
+de cartographie MapInfo\up{\textregistered}, nous avons crois? les points de
+p?che et de d?versement afin de visualiser des grands ensembles (zones o? les points de d?versement
+sont tr?s fr?quents et ? proximit? des points de p?che, et zones indemnes de
+repeuplement avec une zone tampon minimale de 2,5 km).
+Le r?sultat de ce croisement a ?t? r?inject? dans le mod?le pour les donn?es
+2005--2013 afin de d?terminer plus finement pour ces ann?es l?, l'influence des
+d?versements dans nos r?sultats de p?che.
+
+\subsection{Le taux de transition du juv?nile ? l'adulte ? l'int?rieur des
+diff?rents secteurs du mod?le}
+\label{surmortalie_poutes}
+Dans la version ant?rieure \citep{dauphin_viability_2013}, le taux de transition
+du juv?nile 0+ ? l'adulte ?tait identique quels que soient les secteurs.
+Le mod?le n'avait donc qu'un seul param?tre ? ajuster et cet ajustement ?tait
+fait en fonction de l'ensemble des donn?es des diff?rents secteurs. Or, il nous est
+apparu durant notre travail sur le mod?le en 2014, que cette hypoth?se
+d'homog?n?it? ?tait assez forte et pas vraiment justifi?e.
+En effet, les connaissances de terrain et des ?tudes (en particulier
+\citet{bagliniere_poutes_2005} et \citet{bach_poutes_2007}) tendent ? montrer,
+au contraire, que le secteur en amont de Pout?s, bien que disposant de surfaces
+jug?es les plus productives, est lourdement impact? par le barrage de Pout?s lors de la d?valaison des smolts.
+Ce facteur suppl?mentaire de mortalit? n'ayant pas ?t? pr?vu dans le mod?le,
+c'est l'ensemble du taux de transition du 0+ ? l'adulte de l'ensemble des
+zones qui ?tait potentiellement impact?.
+Ainsi, nous avons ajout? dans le mod?le un nouveau param?tre (rho\_pout?s pouvant
+prendre les valeurs de 0 ? 1) lui permettant d'estimer un diff?rentiel de
+survie entre l'amont et l'aval de Pout?s.
+La production totale de juv?niles du syst?me ne s'?crit donc plus comme dans
+l'?quation \ref{eq_prod_juv_anc}, mais comme dans l'?quation \ref{eq_prod_juv} :
+
+\begin{equation}
+\label{eq_prod_juv_anc}
+  \begin{align}
+    Juv\_tot\_system[t] <- Juv\_tot\_vichy[t] + Juv\_tot\_langeac[t] + Juv\_tot\_poutes[t]
+  \end{align}
+\end{equation}
+
+\begin{equation}
+\label{eq_prod_juv}
+  \begin{align}
+    Juv\_tot\_system[t] <- Juv\_tot\_vichy[t] + Juv\_tot\_langeac[t] + rho\_poutes*Juv\_tot\_poutes[t]
+  \end{align}
+\end{equation}
+avec :\\
+Juv\_tot\_system= production totale de juv?niles du syst?me,\\
+Juv\_tot\_vichy= production totale de juv?niles dans le secteur aval
+Vichy-Langeac,\\
+Juv\_tot\_langeac= production totale de juv?niles dans le secteur interm?diaire
+Langeac-Pout?s,\\
+rho\_poutes= param?tre de survie (entre 0 et 1) li? aux conditions de d?valaison ?
+l'ouvrage de Pout?s,\\
+Juv\_tot\_poutes= production totale de juv?niles dans le
+secteur amont en amont de Pout?s.\\
+\newline
+L'ajout de ce param?tre s'est r?v?l? int?ressant puisque le
+mod?le a ?t? capable d'estimer un facteur de surmortalit? li? aux conditions de d?valaison ? Pout?s et dans le m?me temps de
+revoir ? la hausse ses estimations sur le param?tre de transition entre le
+0+ et l'adulte ? l'?chelle de l'ensemble des secteurs (cf. Annexe
+\ref{Annexe3} et section \ref{resu_tx_retour}).
+
+\chapter{D?veloppement d'un nouveau sc?nario : l'am?nagement de Pout?s}
+\label{scenario}%Donne un nom ? la section pour pouvoir y faire r?f?rence si besoin (\ref{nom_label}) 
+Conform?ment ? la fiche-projet (cf. Annexe \ref{Annexe1}), nous avons d?velopp?
+des simulations li?es au r?am?nagement prochain du barrage de Pout?s
+situ? sur l'Allier dans le d?partement de la Haute-Loire. Les modifications
+apport?es ? cet ouvrage devraient ?tre substantielles autant pour la montaison
+(abaissement du seuil de 17 ? 4 m?tres avec remplacement de l'ascenceur ? poissons par une passe ? bassins), que pour
+la d?valaison (r?duction de la retenue de 3,5 kilom?tres ? moins de 300 m?tres).
+L'objectif de ce travail ?tait de :
+\begin{itemize}
+  \item d?montrer que le mod?le ?tait en mesure de simuler des sc?narios de
+  gestion li?s aux ouvrages,
+  \item ?valuer la r?ponse de la population au r?am?nagement prochain de Pout?s,
+  tout particuli?rement du point de vue de la viabilit? de la population.
+\end{itemize}
+Suite aux discussions avec le comit? de suivi du projet (cf. Annexe
+\ref{Annexe2}), il a ?t? d?cid? de r?aliser 2 sc?narios :
+\begin{itemize}
+  \item le r?am?nagement de Pout?s am?liorera de 50\% les conditions de
+  montaison et de d?valaison (cf. section \ref{resu_poutes50}). Cette hypoth?se
+  est consid?r?e comme pessimiste compte-tenu des am?liorations pr?vues sur
+  l'ouvrage et repr?sentera donc un minimum ? attendre en terme de r?ponse de
+  la population,
+  \item le barrage de Pout?s est enti?rement effac? (100\% de gain ? la
+  montaison comme ? la d?valaison). Ce deuxi?me sc?nario a ?t? souhait? pour
+  mesurer l'ensemble des gains possibles sur la population du
+  saumon de l'Allier li?s ? l'ouvrage de Pout?s (cf. section
+  \ref{resu_poutes100}).
+\end{itemize}
+
+\noindent Pour r?aliser ces sc?narios nous avons identifi? 2 param?tres ? faire
+?voluer :
+\begin{itemize}
+  \item un param?tre permettant de modifier les conditions ? la d?valaison. Il
+  s'agit du param?tre de diff?rentiel de survie (rho\_pout?s) li? ? l'ouvrage de
+  Pout?s (cf. section \ref{surmortalie_poutes}),
+  \item un param?tre permettant de modifier les conditions de franchissabilit? ?
+  la montaison au niveau de l'ouvrage de Pout?s (probabilit? de passer en amont du barrage).
+\end{itemize}
+
+\noindent Dans le mod?le, la probabilit? de franchir Pout?s s'?crit (?quation
+\ref{eq_proba_poutes}) :
+\begin{equation}
+\label{eq_proba_poutes}
+  \begin{align}
+     $L\_p\_poutes[t] \textasciitilde dnorm(L\_mu\_p\_poutes[t],tau\_p\_poutes)$ 
+  \end{align}
+\end{equation}
+avec :\\
+L\_p\_poutes= logit de la probabilit? de passer en amont de
+pout?s (p\_poutes),\\
+L\_mu\_p\_poutes = logit de la probabilit? moyenne (mu\_p\_poutes) de passer
+en amont de Pout?s (cf. ?quation \ref{eq_proba_moyenne_poutes}),\\
+tau\_p\_poutes = la pr?cision li?e ? la probabilit? de passer en amont de Pout?s
+(la pr?cision se d?finit comme ?tant $\frac{1}{Variance}$).\\
+\begin{equation}
+\label{eq_proba_moyenne_poutes}
+  \begin{align}
+     L\_mu\_p\_poutes[t] <- L\_ratio\_juv\_P[t] + adjust\_p\_P 
+  \end{align}
+\end{equation}
+avec :\\
+L\_mu\_p\_poutes= logit de la probabilit? moyenne (mu\_p\_poutes) de passer
+en amont de Pout?s,\\
+L\_ratio\_juv\_P= le m?canisme de r?partition des adultes ? la fois en fonction
+des surfaces disponibles (r?partition id?ale libre) et en fonction de l'endroit
+o? ils sont n?s (homing),\\
+adjust\_p\_P= un facteur suppl?mentaire modifiant la probabilit? de passage et
+directement li? ? la pr?sence de l'ouvrage. C'est ce param?tre qui est modifi?
+dans nos simulations.\\
+
+Ainsi, selon le sc?nario nous avons facilit? la migration de montaison de 50\%
+(cf. section \ref{resu_poutes50}) ou de 100\% (cf. section \ref{resu_poutes100}), c'est ?
+dire que nous avons respectivement divis? le param?tre adjust\_p\_P par 2 ou
+supprim? ce param?tre.\\
+
+Concernant le param?tre modifiant les conditions de d?valaison (rho\_poutes, cf.
+section \ref{surmortalie_poutes}), nous avons, dans le cadre du premier sc?nario
+(50\% d'am?lioration), divis? la mortalit? par deux (soit
+$\frac{(1+rho\_poutes)}{2}$), et dans le cadre du second (100\% d'am?lioration)
+supprim? le param?tre rho\_poutes.
+
+\clearpage
+
+\chapter{R?sultats obtenus}
+\label{resu}%Donne un nom ? la section pour pouvoir y faire r?f?rence si besoin (\ref{nom_label}) 
+
+\noindent Deux types de r?sultats sont pr?sent?s ici :
+\begin{itemize}
+  \item les r?sultats du mod?le de dynamique de population (section
+  \ref{resu_anal_retro}),
+  \item les r?sultats des diff?rentes simulations d?velopp?es pour analyser la
+  dynamique et la viabilit? de la population ? l'horizon de 20 ans sous
+  diff?rents sc?narios (section \ref{resu_simulations}).\\
+\end{itemize}
+Pour l'ensemble de ces projections nous avons fait l'hypoth?se que les
+conditions environnementales resteront les m?mes que celles observ?es les ann?es
+pr?c?dentes.
+
+
+<<init, echo=FALSE, eval=TRUE,results=hide >>=
+setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX") 
+datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"
+imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2014/"
+tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/tab/2014/"
+
+library(coda)
+library(lattice)
+library(boot)
+require(stringr)
+require(xtable)
+library("Hmisc")
+T=39
+
+@
+
+\section{Analyse r?trospective}
+\label{resu_anal_retro}
+\subsection{Relation de calibration entre les densit?s de tacons 0+ et les
+indices d'abondance en 5 minutes}
+
+<<calibration, echo=FALSE, eval=TRUE,results=hide >>=
+IA=c(52,82,131,120,159,15,21,21,61)
+d=read.coda(str_c(datawd,"calibration/dCODAchain1.txt"),str_c(datawd,"calibration/dCODAindex.txt"),5001,10000)
+q.d_1=quantile(d[,1],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+q.d_2=quantile(d[,2],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+q.d_3=quantile(d[,3],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+q.d_4=quantile(d[,4],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+q.d_5=quantile(d[,5],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+q.d_6=quantile(d[,6],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+q.d_7=quantile(d[,7],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+q.d_8=quantile(d[,8],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+q.d_9=quantile(d[,9],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+
+q.d=rbind(
+		q.d_1,q.d_2,q.d_3,q.d_4,q.d_5,q.d_6,q.d_7,q.d_8,q.d_9)
+
+d_fake=read.coda(str_c(datawd,"calibration/d_newCODAchain1.txt"),str_c(datawd,"calibration/d_newCODAindex.txt"),5001,10000)
+
+d_fake_q=array(rep(0,1500),dim=c(300,5) )
+
+IA_fake=seq(1,300,1)
+
+for (i in 1:300){
+	
+	d_fake_q[i,]=quantile(d_fake[,i],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+	
+}
+
+#Graphes
+#densities
+
+pdf(file=str_c(imgwd,"Calibration_2015_02_09.pdf"),width = 5, height = 6 )
+plot(1,1,type="n",axes=FALSE,xlim=c(0,300),xlab="IA 5 minutes",ylim=c(0,1.2),ylab="densit? (0+ / m-2)")
+
+# trace l'axe des ordonn?es
+axis(2,at = seq(0,1.2,0.2),cex.axis = 0.8,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = seq(0,300,25),cex.axis = 0.8,las = 1,col = "black")
+
+points(IA_fake,d_fake_q[,3],type="l",col="red",lwd=1.5)
+points(IA_fake,d_fake_q[,1],type="l",col="red",lwd=1.5,lty=2)
+points(IA_fake,d_fake_q[,5],type="l",col="red",lwd=1.5,lty=2)
+
+k=2
+
+for(i in 1:9){
+	
+	#whiskers
+	#95%
+	segments(IA[i]-4,q.d[i,5],IA[i]+4,q.d[i,5])
+	segments(IA[i],q.d[i,4],IA[i],q.d[i,5])
+	
+	#5%
+	segments(IA[i]-4,q.d[i,1],IA[i]+4,q.d[i,1])
+	segments(IA[i],q.d[i,2],IA[i],q.d[i,1])
+	
+	
+	#boxplot
+	polygon(c(IA[i]-4,IA[i]+4,IA[i]+4,IA[i]-4),c(q.d[i,2],q.d[i,2],q.d[i,4],q.d[i,4]),col="light grey")
+	
+	#median
+	segments(IA[i]-4,q.d[i,3],IA[i]+4,q.d[i,3])
+	
+	
+}
+
+dev.off()
+#write.table(d_fake_q, "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/data_predict.txt")
+
+@
+
+Suite aux corrections et modifications apport?es (section \ref{revision_corr}),
+la relation de calibration (figure \ref{fig_prediction_IA}) entre les indices d'abondances en 5
+minutes et les densit?s de tacons 0+ par m?tres carr? est lin?aire, et non
+plus concave comme dans la version de \citet{dauphin_viability_2013}.
+
+\begin{figure}[!h]
+     \includegraphics[width=0.4\textwidth,keepaspectratio]{\Sexpr{imgwd}Calibration_2015_02_09.pdf}
+     \caption[Densit? de tacons pr?dits en fonction du nombre de poissons captur?s]{Relation entre les indices d'abondances des p?ches ?lectriques 5 minutes et les densit?s de
+juv?niles 0+ pour 9 sites ?chantillonn?s avec les deux types de m?thodologies (enl?vements successifs et 5
+minutes). Les boxplots indiquent les quantiles ? 2.5th, 25th, m?diane, 75th et 97.5th. Les lignes rouges
+pleines et pointill?es indiquent la m?diane et les quantiles ? 2,5 et 97,5 des
+densit?s de juv?niles 0+ pour des valeurs d'indices d'abondance compris entre 1 et 300.}
+     \label{fig_prediction_IA} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{R?partition des adultes dans les diff?rents secteurs}
+Les modifications apport?es aux donn?es de surfaces productives (section
+\ref{am_surf}), ont quelque peu chang? la vision que nous avions de la
+r?partition des adultes (figure \ref{fig_repartition_adultes}). Notamment, la prise en
+compte exhaustive des ouvertures des cours d'eau au fil du temps permet de mieux
+comprendre cette r?partition avec un meilleur ajustement  entre la pr?sence des
+adultes et les surfaces disponibles (en particulier pour le secteur Vichy-Langeac).
+
+<<Repartition_adultes, echo=FALSE, eval=TRUE,results=hide>>=
+#je cr?? un save.image ? partir du script figures_mod?le_VF.R afin de ne r?int?grer que le load 
+#(?a ?vite de pourrir mon rapport rnw) afin de g?n?rer le pdf dans sweave (sinon il ne g?re pas les accents)
+load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/SpawnersRedds_GeniteursPotentiels_2015.02.10.RData")
+
+#Graph with all years
+surf=c(rep(c(916866,250441,0),11),rep(c(916866,250441,301101),12),rep(c(916866,250441,383049),6),rep(c(1202540,250441,383049),31))
+S_juv_JP<-matrix(surf,nrow=3)	
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SpawnersRedds_GeniteursPotentiels_2015_02_10.pdf")
+par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.2,col.lab="grey25",col.axis="grey55",col.main="grey25")
+#........
+# Vichy
+#........
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,6000),ylab=expression(italic(S["t,1"])),main="Vichy-Langeac",cex.main=1.5,cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000),labels=c(0,1000,2000,3000,4000,5000,6000),cex.axis = 1.2,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 1.5,las = 1,col = "grey55")
+text(T,6000,labels=expression(italic("a.")),col = "grey55")
+for(i in 3:T){
+	#whiskers
+	#95%
+	segments(i-0.15,S_vichy_q[i,5],i+0.15,S_vichy_q[i,5])
+	segments(i,S_vichy_q[i,4],i,S_vichy_q[i,5])
+	#5%
+	segments(i-0.15,S_vichy_q[i,1],i+0.15,S_vichy_q[i,1])
+	segments(i,S_vichy_q[i,2],i,S_vichy_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(S_vichy_q[i,2],S_vichy_q[i,2],S_vichy_q[i,4],S_vichy_q[i,4]),col="coral3")
+	#median
+	segments(i-0.3,S_vichy_q[i,3],i+0.3,S_vichy_q[i,3])
+}
+plot(1,1,type="n",axes=FALSE, xlim=c(0.5,T+0.5), xlab="Ann?es", ylim=c(0,1), ylab=expression(italic("ratio G?niteurs")) ,main="Vichy-Langeac",cex.main=1.5,cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 1.2,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 1.5,las = 1,col = "grey55")
+text(T,1,labels=expression(italic("d.")),col = "grey55")
+for(i in 3:T){
+	#whiskers
+	#95%
+	segments(i-0.15,ratio_S_V_q[i,5],i+0.15,ratio_S_V_q[i,5])
+	segments(i,ratio_S_V_q[i,4],i,ratio_S_V_q[i,5])
+	#5%
+	segments(i-0.15,ratio_S_V_q[i,1],i+0.15,ratio_S_V_q[i,1])
+	segments(i,ratio_S_V_q[i,2],i,ratio_S_V_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(ratio_S_V_q[i,2],ratio_S_V_q[i,2],ratio_S_V_q[i,4],ratio_S_V_q[i,4]),col="coral3")
+	#median
+	segments(i-0.3,ratio_S_V_q[i,3],i+0.3,ratio_S_V_q[i,3])
+}
+segments(0,S_juv_JP[1,1]/(S_juv_JP[1,1]+S_juv_JP[2,1]),11.5,S_juv_JP[1,1]/(S_juv_JP[1,1]+S_juv_JP[2,1]),col="grey35",lty=2,lwd=1)
+segments(11.5,S_juv_JP[1,12]/(S_juv_JP[1,12]+S_juv_JP[2,12]+S_juv_JP[3,12]),23.5,S_juv_JP[1,12]/(S_juv_JP[1,12]+S_juv_JP[2,12]+S_juv_JP[3,12]),col="grey35",lty=2,lwd=2)
+segments(23.5,S_juv_JP[1,24]/(S_juv_JP[1,24]+S_juv_JP[2,24]+S_juv_JP[3,24]),29.5,S_juv_JP[1,24]/(S_juv_JP[1,24]+S_juv_JP[2,24]+S_juv_JP[3,24]),col="grey35",lty=2,lwd=2)
+segments(29.5,S_juv_JP[1,30]/(S_juv_JP[1,30]+S_juv_JP[2,30]+S_juv_JP[3,30]),(T+0.5),S_juv_JP[1,30]/(S_juv_JP[1,30]+S_juv_JP[2,30]+S_juv_JP[3,30]),col="grey35",lty=2,lwd=2)
+
+abline(v=11.5,lty=3)
+#..........
+# Langeac
+#..........
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,1200),ylab=expression(italic(S["t,2"])),main="Langeac-Poutes",cex.main=1.5,cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,300,600,900,1200),labels=c(0,300,600,900,1200),cex.axis = 1.2,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 1.5,las = 1,col = "grey55")
+text(T,1200,labels=expression(italic("b.")),col = "grey55")
+for(i in 3:T){
+	#whiskers
+	#95%
+	segments(i-0.15,S_langeac_q[i,5],i+0.15,S_langeac_q[i,5])
+	segments(i,S_langeac_q[i,4],i,S_langeac_q[i,5])
+	#5%
+	segments(i-0.15,S_langeac_q[i,1],i+0.15,S_langeac_q[i,1])
+	segments(i,S_langeac_q[i,2],i,S_langeac_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(S_langeac_q[i,2],S_langeac_q[i,2],S_langeac_q[i,4],S_langeac_q[i,4]),col="coral3")
+	#median
+	segments(i-0.3,S_langeac_q[i,3],i+0.3,S_langeac_q[i,3])
+}
+plot(1,1,type="n",axes=FALSE, xlim=c(0.5,T+0.5), xlab="Ann?es", ylim=c(0,1), ylab=expression(italic("ratio G?niteurs")) ,main="Langeac-Poutes",cex.main=1.5,cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 1.2,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis =1.5,las = 1,col = "grey55")
+text(T,1,labels=expression(italic("e.")),col = "grey55")
+for(i in 3:T){
+	#whiskers
+	#95%
+	segments(i-0.15,ratio_S_L_q[i,5],i+0.15,ratio_S_L_q[i,5])
+	segments(i,ratio_S_L_q[i,4],i,ratio_S_L_q[i,5])
+	#5%
+	segments(i-0.15,ratio_S_L_q[i,1],i+0.15,ratio_S_L_q[i,1])
+	segments(i,ratio_S_L_q[i,2],i,ratio_S_L_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(ratio_S_L_q[i,2],ratio_S_L_q[i,2],ratio_S_L_q[i,4],ratio_S_L_q[i,4]),col="coral3")
+	#median
+	segments(i-0.3,ratio_S_L_q[i,3],i+0.3,ratio_S_L_q[i,3])
+}
+segments(0,S_juv_JP[2,1]/(S_juv_JP[1,1]+S_juv_JP[2,1]),11.5,S_juv_JP[2,1]/(S_juv_JP[1,1]+S_juv_JP[2,1]),col="grey35",lty=2,lwd=2)
+segments(11.5,S_juv_JP[2,12]/(S_juv_JP[1,12]+S_juv_JP[2,12]+S_juv_JP[3,12]),23.5,S_juv_JP[2,12]/(S_juv_JP[1,12]+S_juv_JP[2,12]+S_juv_JP[3,12]),col="grey35",lty=2,lwd=2)
+segments(23.5,S_juv_JP[2,24]/(S_juv_JP[1,24]+S_juv_JP[2,24]+S_juv_JP[3,24]),29.5,S_juv_JP[2,24]/(S_juv_JP[1,24]+S_juv_JP[2,24]+S_juv_JP[3,24]),col="grey35",lty=2,lwd=2)
+segments(29.5,S_juv_JP[2,30]/(S_juv_JP[1,30]+S_juv_JP[2,30]+S_juv_JP[3,30]),(T+0.5),S_juv_JP[2,30]/(S_juv_JP[1,30]+S_juv_JP[2,30]+S_juv_JP[3,30]),col="grey35",lty=2,lwd=2)
+
+abline(v=11.5,lty=3)
+#..........
+# Poutes
+#..........
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,200),ylab=expression(italic(S["t,3"])),main="Amont de Poutes",cex.main=1.5,cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,100,200),labels=c(0,100,200),cex.axis = 1.2,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 1.5,las = 1,col = "grey55")
+points(x=seq(12,T,1),y=S_poutes_counter[12:T],pch=16,col="darkolivegreen3") 
+abline(v=11.5,lty=2)
+text(6,100,paste( "Amont Poutes\n inaccessible"),col = "grey55")
+text(T,200,labels=expression(italic("c.")),col = "grey55")
+plot(1,1,type="n",axes=FALSE, xlim=c(0.5,T+0.5), xlab="Ann?es", ylim=c(0,1), ylab=expression(italic("ratio G?niteurs")) ,main="Amont de Poutes",cex.main=1.5,cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis =1.2,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis =1.5,las = 1,col = "grey55")
+text(T,1,labels=expression(italic("f.")),col = "grey55")
+text(6,0.55,paste( "Amont Poutes\n inaccessible"),col = "grey55")
+for(i in 12:22){
+	#whiskers
+	#95%
+	segments(i-0.15,ratio_S_P_q[i,5],i+0.15,ratio_S_P_q[i,5])
+	segments(i,ratio_S_P_q[i,4],i,ratio_S_P_q[i,5])
+	#5%
+	segments(i-0.15,ratio_S_P_q[i,1],i+0.15,ratio_S_P_q[i,1])
+	segments(i,ratio_S_P_q[i,2],i,ratio_S_P_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(ratio_S_P_q[i,2],ratio_S_P_q[i,2],ratio_S_P_q[i,4],ratio_S_P_q[i,4]),col="darkolivegreen3")
+	#median
+	segments(i-0.3,ratio_S_P_q[i,3],i+0.3,ratio_S_P_q[i,3])
+}
+x=seq(23,T,1)
+points(x,ratio_S_P_q[23:T,3],pch=16,col="darkolivegreen3")
+segments(11.5,S_juv_JP[3,12]/(S_juv_JP[1,12]+S_juv_JP[2,12]+S_juv_JP[3,12]),23.5,S_juv_JP[3,12]/(S_juv_JP[1,12]+S_juv_JP[2,12]+S_juv_JP[3,12]),col="grey35",lty=2,lwd=2)
+segments(23.5,S_juv_JP[3,24]/(S_juv_JP[1,24]+S_juv_JP[2,24]+S_juv_JP[3,24]),29.5,S_juv_JP[3,24]/(S_juv_JP[1,24]+S_juv_JP[2,24]+S_juv_JP[3,24]),col="grey35",lty=2,lwd=2)
+segments(29.5,S_juv_JP[3,30]/(S_juv_JP[1,30]+S_juv_JP[2,30]+S_juv_JP[3,30]),(T+0.5),S_juv_JP[3,30]/(S_juv_JP[1,30]+S_juv_JP[2,30]+S_juv_JP[3,30]),col="grey35",lty=2,lwd=2)
+abline(v=11.5,lty=3)
+dev.off()
+@
+
+\begin{figure}[h]
+     \includegraphics{\Sexpr{imgwd}SpawnersRedds_GeniteursPotentiels_2015_02_10.pdf}
+     \caption[R?partition des adultes dans les diff?rents secteurs]{R?partition
+     des adultes dans les diff?rents secteurs. Distribution \textit{a
+     posteriori} des abondances annuelles absolues et relatives des g?niteurs potentiels dans
+     chaque zones du bassin de l'Allier : Vichy-Langeac (a et d),
+     Langeac-Pout?s (b et e) et Amont de Pout?s (c et f). Les boxplots indiquent
+     les quantiles 2.5, 25, m?diane, 75 et 97.5. Les lignes pointill?es
+     horizontales pour d, e, f indiquent la disponibilit? relative de l'habitat
+     potentiel pour les juv?niles. On notera que pour l'amont de Pout?s, il n'y
+     a pas d'estimation des abondances absolues car le nombre exact est
+     toujours connu (c) et l'abondance relative est connue lorsque les
+     comptages ? Vichy sont disponibles.}
+     \label{fig_repartition_adultes} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Relation entre nombre d'adultes potentiels et comptages fray?res}
+
+<<Relation_adultes_comptages, echo=FALSE, eval=TRUE,results=hide>>=
+#je cr?? un save.image ? partir du script figures_mod?le_VF.R afin de ne r?int?grer que le load 
+#(?a ?vite de pourrir mon rapport rnw) afin de g?n?rer le pdf dans sweave (sinon il ne g?re pas les accents)
+load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2015.02.10.RData")
+
+###########################
+#plot zone_effect /kappa
+###############################
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Redds_kappa_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo"
+par(mfrow=c(3,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,3),ylab=expression(italic( kappa["t,1"])),main="Vichy-Langeac")
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1,2,3),labels=c(0,1,2,3),cex.axis = 0.9,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(T-T+1,T-T+1+5,T-T+1+15,T-T+1+25,T-T+1+35,T),
+		labels=c(1975,1980,1990,2000,2010,2013),
+		cex.axis = 0.9,las = 1,col = "grey55")
+text(T,3,labels=expression(italic("a.")),col = "grey55")
+xx=c(0:(T+1),(T+1):0)
+q_2_5=rep(mu_zone_q[1,1],(T+2))
+q_97_5=rep(mu_zone_q[1,5],(T+2))
+yy=c(q_2_5,rev(q_97_5))
+polygon(xx,yy,col="rosybrown1",border="NA")
+q_25=rep(mu_zone_q[1,2],(T+2))
+q_75=rep(mu_zone_q[1,4],(T+2))
+yy=c(q_25,rev(q_75))
+polygon(xx,yy,col="rosybrown3",border="NA")
+points(x=seq(0,(T+1),1),y=rep(mu_zone_q[1,3],(T+2)),type="l",col="white")
+for(i in 1:T){
+	#whiskers
+	#95%
+	segments(i-0.15,zone_effect_V_q[i,5],i+0.15,zone_effect_V_q[i,5])
+	segments(i,zone_effect_V_q[i,4],i,zone_effect_V_q[i,5])
+	#5%
+	segments(i-0.15,zone_effect_V_q[i,1],i+0.15,zone_effect_V_q[i,1])
+	segments(i,zone_effect_V_q[i,2],i,zone_effect_V_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(zone_effect_V_q[i,2],zone_effect_V_q[i,2],zone_effect_V_q[i,4],zone_effect_V_q[i,4]),col="coral3")
+	#median
+	segments(i-0.3,zone_effect_V_q[i,3],i+0.3,zone_effect_V_q[i,3])
+}
+#####################
+#####################
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,(T+0.5)),xlab="Ann?es",ylim=c(0,3),ylab=expression(italic(kappa["t,2"])),main="Langeac-Poutes")
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1,2,3),labels=c(0,1,2,3),cex.axis = 0.9,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(T-T+1,T-T+1+5,T-T+1+15,T-T+1+25,T-T+1+35,T),
+		labels=c(1975,1980,1990,2000,2010,2013),
+		cex.axis = 0.9,las = 1,col = "grey55")
+text(T,3,labels=expression(italic("b.")),col = "grey55")
+xx=c(0:(T+1),(T+1):0)
+q_2_5=rep(mu_zone_q[1,1],T+2)
+q_97_5=rep(mu_zone_q[1,5],T+2)
+yy=c(q_2_5,rev(q_97_5))
+polygon(xx,yy,col="rosybrown1",border="NA")
+q_25=rep(mu_zone_q[1,2],T+2)
+q_75=rep(mu_zone_q[1,4],T+2)
+yy=c(q_25,rev(q_75))
+polygon(xx,yy,col="rosybrown3",border="NA")
+points(x=seq(0,T+1,1),y=rep(mu_zone_q[1,3],T+2),type="l",col="white")
+for(i in 1:T){
+	#whiskers
+	#95%
+	segments(i-0.15,zone_effect_L_q[i,5],i+0.15,zone_effect_L_q[i,5])
+	segments(i,zone_effect_L_q[i,4],i,zone_effect_L_q[i,5])
+	#5%
+	segments(i-0.15,zone_effect_L_q[i,1],i+0.15,zone_effect_L_q[i,1])
+	segments(i,zone_effect_L_q[i,2],i,zone_effect_L_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(zone_effect_L_q[i,2],zone_effect_L_q[i,2],zone_effect_L_q[i,4],zone_effect_L_q[i,4]),col="coral3")
+	#median
+	segments(i-0.3,zone_effect_L_q[i,3],i+0.3,zone_effect_L_q[i,3])
+}
+#####################
+#####################
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,6),ylab=expression(italic(kappa["t,3"])),main="Amont de Poutes")
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1,2,3,4,5,6),labels=c(0,1,2,3,4,5,6),cex.axis = 0.9,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(T-T+1,T-T+1+5,T-T+1+15,T-T+1+25,T-T+1+35,T),
+		labels=c(1975,1980,1990,2000,2010,2013),
+		cex.axis = 0.9,las = 1,col = "grey55")
+text(T,6,labels=expression(italic("c.")),col = "grey55")
+points(seq(11.5,T+1,0.5),rep(1,(T-10)*2),type="l",col="palegreen4")
+for(i in 12:T){
+	#whiskers
+	#95%
+	segments(i-0.15,zone_effect_P_q[i,5],i+0.15,zone_effect_P_q[i,5])
+	segments(i,zone_effect_P_q[i,4],i,zone_effect_P_q[i,5])
+	#5%
+	segments(i-0.15,zone_effect_P_q[i,1],i+0.15,zone_effect_P_q[i,1])
+	segments(i,zone_effect_P_q[i,2],i,zone_effect_P_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(zone_effect_P_q[i,2],zone_effect_P_q[i,2],zone_effect_P_q[i,4],zone_effect_P_q[i,4]),col="darkolivegreen3")
+	#median
+	segments(i-0.3,zone_effect_P_q[i,3],i+0.3,zone_effect_P_q[i,3])
+}
+abline(v=11.5,lty=2)
+text(4,3,paste( "Amont de Poutes\n inaccessible"))
+dev.off()
+@
+
+La moyenne du ratio \og g?ntieurs:fray?res \fg{} pr?sent?e dans la figure
+\ref{fig_adultes_comptages}, met bien en avant la diff?rence qui existe entre
+d'une part Vichy-Langeac et Langeac-Pout?s, et l'amont de Pout?s d'autre part.
+Ainsi, lorsqu'en amont de Pout?s nous observons une fray?re par g?niteur
+potentiel, nous n'observons en moyenne que 0.65 fray?res pour un g?niteur
+potentiel en aval de Pout?s.
+
+
+\begin{figure}[h]
+     \includegraphics[width=0.7\textwidth,keepaspectratio]{\Sexpr{imgwd}Redds_kappa_2015_02_10.pdf}
+     \caption[Relation entre nombre de g?niteurs potentiels et comptages
+     fray?res]{Relation entre nombre de g?niteurs potentiels et comptages
+     fray?res. Distribution \textit{a posteriori} du ratio \og g?niteurs
+     potentiels:fray?res \fg{} pour chaque zone du bassin de l'Allier : a)
+     Vichy-Langeac, b) Langeac-Pout?s, c) Amont de Pout?s. Les boxplots indiquent les quantiles 2.5, 25, m?diane, 75 et 97.5. Les bandes color?es en arri?re-plan
+     repr?sentent la m?diane (trait blanc) et les quantiles ? 2.5, 25, 75 et
+     97.5 pour l'hyper-param?tre  $\mu\up{\kappa_{down}}$ (moyenne de
+     l'effet zone en aval de Pout?s). L'hyper-param?tre $\mu\up{\kappa_{up}}$ (moyenne
+     de l'effet zone en amont de Pout?s) est quant ? lui fix? ? 1.}
+     \label{fig_adultes_comptages} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Relations de densit?--d?pendance}
+<<Repartition_adultes, echo=FALSE, eval=TRUE,results=hide>>=
+#je cr?? un save.image ? partir du script figures_mod?le_VF.R afin de ne r?int?grer que le load 
+#(?a ?vite de pourrir mon rapport rnw) afin de g?n?rer le pdf dans sweave (sinon il ne g?re pas les accents)
+load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/dd_2015.02.10.RData")
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/dd_2015_02_10.pdf")#,width=800,height=800)
+par(mfrow=c(2,1),mar=c(4,5.5,2,1.5))
+#Graphe densite dependence juvenile sauvage
+plot(1,1,type="n",axes=FALSE,xlim=c(0,0.0025),xlab=expression(paste(S," ",(g?niteurs.m^-2))),ylim=c(0,0.35),ylab=expression(paste(d^sauvage," (0+",.m^-2,")")),main="relation de densit? d?pendance des 0+ sauvages",cex.main=1.5,cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(1,at = c(0,0.00050,0.0010,0.0015, 0.002, 0.0025),
+		labels=c(0,expression(paste(0.5," x ",10^-3)),expression(10^-3),expression(paste(1.5," x ",10^-3)),expression(paste(2," x ",10^-3)),expression(paste(2.5," x ",10^-3)) ),
+		cex.axis = 1.2,las = 1,lwd=2)
+# trace l'axe des abscisses
+axis(2,at = c(0,0.05,0.10,0.15,0.20,0.25,0.30,0.35),
+		labels=c(0,0.05,0.10,0.15,0.20,0.25,0.30,0.35),
+		cex.axis = 1.2,las = 1,lwd=2)
+points(S_vichy_q[1:38,3]/S_juv_JP[1,1:38],dmoy_wild_V_q[2:39,3],pch=16,col="coral3")#"gray15")
+points(S_langeac_q[1:38,3]/S_juv_JP[2,1:38],dmoy_wild_L_q[2:39,3],pch=16,col="darkolivegreen4")#"gray45")
+points(S_poutes_counter[12:38]/S_juv_JP[3,12:38],dmoy_wild_P_q[13:39,3],pch=16,col="darkolivegreen3")#"gray75")
+x=seq(0,0.0025,0.0000001)
+y=exp(log(x/(1/median(a) + x * 1/median(Rmax))) + median(nu_wild[,1]))
+points(x,y,type="l",col="coral3")#"gray15")
+y=exp(log(x/(1/median(a) + x * 1/median(Rmax))) + median(nu_wild[,2]))
+points(x,y,type="l",col="darkolivegreen4")#"gray45")
+text(0.0025,0.35,labels=expression(italic("a.")),col = "grey55",cex=1.5)
+
+#Graphe densite dependence juvenile repeuplement
+plot(1,1,type="n",axes=FALSE,xlim=c(0,1.4),xlab=expression(paste(Stock^juv," ",(0+.m^-2))),ylim=c(0,0.35),ylab=expression(paste(d^juv," (0+",.m^-2,")")),main="relation de densit? d?pendance des 0+ repeupl?s",cex.main=1.5,cex.lab=1.2)
+# trace l'axe des abcisses
+axis(1,at = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4),
+		labels=c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4),
+		cex.axis = 1.2,las = 1)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.05,0.10,0.15,0.2,0.25,0.3,0.35),
+		labels=c(0,0.05,0.10,0.15,0.20,0.25,0.3,0.35),
+		cex.axis = 1.2,las = 1)
+points(stocked_juv_V_d[I_juv_V],dmoy_juv_V_q[I_juv_V,3],pch=15,col="coral3")
+points(stocked_juv_L_d[I_juv_L],dmoy_juv_L_q[I_juv_L,3],pch=15,col="darkolivegreen4")
+points(stocked_juv_P_d[I_juv_P],dmoy_juv_P_q[I_juv_P,3],pch=15,col="darkolivegreen3")
+#x=seq(0,0.35,0.0001)
+points(x,x,type="l",lty=2,col="grey15")
+x=seq(0,1.4,0.0001)
+y=  x / ( ( 1 / exp(median(nu_wild[,1]))) * 1/median(a_juv) + x * 1/median(Rmax)  )   
+points(x,y,type="l",col="coral3")
+y=  x / ( ( 1 / exp(median(nu_wild[,2]))) * 1/median(a_juv) + x * 1/median(Rmax)  )   
+points(x,y,type="l",col="darkolivegreen4")
+text(1.4,0.35,labels=expression(italic("b.")),col = "grey55",cex=1.5)
+#legend(0,0.2,bg="white",legend=c("Vichy-Langeac","Langeac-Poutes","upstream Poutes","downstream Langeac","upstream Langeac"),lty=c(NA,NA,NA,1,1),pch=c(15,15,15,NA,NA),col=c("gray15","gray45","gray75","gray15","gray75"))
+dev.off()
+@
+
+Les relations Beverton \& Holt de stock-recrutement ont ?galement ?t? mises ?
+jour suites aux diff?rentes modifications et am?liorations apport?es au mod?le
+en 2014. Malgr? cette mise ? jour, les conclusions restent les m?mes avec un
+secteur en amont de Langeac bien plus productif que le secteur en aval (figure
+\ref{fig_dd}). Cette diff?rence amont/aval Langeac est la plus marqu?e pour la
+relation stock-recrutement des juv?niles sauvages.
+
+\begin{figure}[!ht]
+     \includegraphics[width=0.7\textwidth,keepaspectratio]{\Sexpr{imgwd}dd_2015_02_10.pdf}
+     \caption[Relation Stock/recrutement]{Relation de densit? d?pendance
+     moyenne entre a) les g?niteurs potentiels d'une ann?e donn?e t et la
+     densit? de juv?niles 0+ sauvages de l'ann?e suivante (t+1) et entre b) le
+     nombre de juv?niles 0+ d?vers?s au printemps et la densit? de juv?niles
+     issu du repeuplement ? l'automne. Les diff?rences spatiales ? l'aval et ?
+     l'amont de Langeac sont repr?sent?es par deux courbes de couleurs
+     diff?rentes (rouge pour l'aval et vert pour l'amont). Les cercles et les
+     carr?s color?s repr?sentent les \og donn?es \fg{} pour chaque zones du
+     bassin de l'Allier : rouge pour la zone Vichy-Langeac, vert fonc? pour la
+     zone Langeac-Pout?s et vert clair pour l'amont de Pout?s.}
+     \label{fig_dd} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Taux de retour du tacon 0+ et du smolt d?vers? ? l'adulte}
+\label{resu_tx_retour}
+<<Repartition_adultes, echo=FALSE, eval=TRUE,results=hide>>=
+#je cr?? un save.image ? partir du script figures_mod?le_VF.R afin de ne r?int?grer que le load 
+#(?a ?vite de pourrir mon rapport rnw) afin de g?n?rer le pdf dans sweave (sinon il ne g?re pas les accents)
+load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/SurvivalJuv2Ad_2015.02.10.RData")
+
+palette_s=rainbow(15,start=0.1,end=2/6)
+palette_s=rev(palette_s)
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SurvivalJuv2Ad_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo")
+par(mfrow=c(2,1),mar=c(4,7.1,2,0.5),col.lab="grey25",col.axis="grey55",col.main="grey25")
+plot(1,1,type="n",axes=FALSE, xlim=c(0.5,39.5), xlab="Ann?es", ylim=c(0,0.05), ylab="",main="Survie moyenne du 0+ ? l'adulte de retour" )
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.01,0.02,0.03,0.04,0.05),labels=c(0,0.01,0.02,0.03,0.04,0.05),cex.axis = 0.9,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,39),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 0.9,las = 1,col = "grey55")
+for(i in 7:21){
+	#whiskers
+	#95%
+	segments(i-0.15,s_q[i,5],i+0.15,s_q[i,5])
+	segments(i,s_q[i,4],i,s_q[i,5])
+	#5%
+	segments(i-0.15,s_q[i,1],i+0.15,s_q[i,1])
+	segments(i,s_q[i,2],i,s_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(s_q[i,2],s_q[i,2],s_q[i,4],s_q[i,4]),col=palette_s[i-6])
+	#median
+	segments(i-0.3,s_q[i,3],i+0.3,s_q[i,3])
+}
+for(i in 22:39){
+	#whiskers
+	#95%
+	segments(i-0.15,s_q[i,5],i+0.15,s_q[i,5])
+	segments(i,s_q[i,4],i,s_q[i,5])
+	#5%
+	segments(i-0.15,s_q[i,1],i+0.15,s_q[i,1])
+	segments(i,s_q[i,2],i,s_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(s_q[i,2],s_q[i,2],s_q[i,4],s_q[i,4]),col=palette_s[15])
+	#median
+	segments(i-0.3,s_q[i,3],i+0.3,s_q[i,3])
+}
+plot(1,1,type="n",axes=FALSE, xlim=c(0.5,39.5), xlab="Ann?es", ylim=c(0,0.05), ylab="",main="Survie moyenne du smolt d?vers? ? l'adulte de retour" )
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.01,0.02,0.03,0.04,0.05),labels=c(0,0.01,0.02,0.03,0.04,0.05),cex.axis = 0.9,las = 1,col = "grey55")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,39),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 0.9,las = 1,col = "grey55")
+for(i in 7:21){
+	#whiskers
+	#95%
+	segments(i-0.15,s_smolt_q[i,5],i+0.15,s_smolt_q[i,5])
+	segments(i,s_smolt_q[i,4],i,s_smolt_q[i,5])
+	#5%
+	segments(i-0.15,s_smolt_q[i,1],i+0.15,s_smolt_q[i,1])
+	segments(i,s_smolt_q[i,2],i,s_smolt_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(s_smolt_q[i,2],s_smolt_q[i,2],s_smolt_q[i,4],s_smolt_q[i,4]),col=palette_s[i-6])
+	#median
+	segments(i-0.3,s_smolt_q[i,3],i+0.3,s_smolt_q[i,3])
+}
+for(i in 22:39){
+	points(i,s_smolt_q[i,3],pch=16,col=palette_s[15])
+	#whiskers
+	#95%
+	#segments(i-0.15,s_smolt_q[i,5],i+0.15,s_smolt_q[i,5])
+	#segments(i,s_smolt_q[i,4],i,s_smolt_q[i,5])
+	#5%
+	#segments(i-0.15,s_smolt_q[i,1],i+0.15,s_smolt_q[i,1])
+	#segments(i,s_smolt_q[i,2],i,s_smolt_q[i,1])
+	#boxplot
+	#polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(s_smolt_q[i,2],s_smolt_q[i,2],s_smolt_q[i,4],s_smolt_q[i,4]),col=palette_s[15])
+	#median
+	#segments(i-0.3,s_smolt_q[i,3],i+0.3,s_smolt_q[i,3])
+}
+dev.off()
+@
+Dans cette nouvelle version du mod?le, un facteur de sur-mortalit? li? aux
+conditions de d?valaison au barrage de Pout?s a ?t? ajout? (section
+\ref{surmortalie_poutes}). Ainsi, nous estimons  en moyenne (cf. Annexe
+\ref{Annexe4}) que seuls 37\% des
+juv?niles produits en amont de Pout?s survivent ? la d?valaison (tous param?tres
+pris en compte : perte dans la retenue, mortalit? dans les turbines, etc.).
+Parall?lement ? ce r?sultat, l'ajout du param?tre de sur-mortalit? li? au
+barrage de Pout?s a eu pour effet d'augmenter le taux de retour du juv?nile 0+ ?
+l'adulte (figure \ref{fig_SurvivalJuv2Ad}), m?me si le patron n'a pas boug?
+(d?crochage observ? du taux au milieu des ann?es 80 comme pr?c?demment). Ainsi,
+nous estimons en  d?but de p?riode (d?but ann?e 80) un taux de transition moyen
+de l'ordre de 2\% contre 0,65\% dans la version pr?c?dente du
+mod?le \citep{dauphin_viability_2013}, soit une augmentation d'un facteur
+3. Le taux de transition actuel est ?galement r??valu? ? la hausse
+(0,56\% contre 0,17\% pr?c?demment).
+
+\begin{figure}[!ht]
+     \includegraphics[width=0.7\textwidth,keepaspectratio]{\Sexpr{imgwd}SurvivalJuv2Ad_2015_02_10.pdf}
+     \caption[Taux de retour du 0+ et du smolt ? l'adulte]{Evolution a) du taux
+     de retour du juv?nile 0+ ? l'adulte et b) du taux de retour du smolt
+     d?vers? ? l'adulte. Les points indiquent la survie moyenne du smolt issu
+     du repeuplement ? l'adulte fix?e ? partir des donn?es de marquage
+     (\mu\up{s\_Sm}=4.81 * 10\up{-4}).}
+     \label{fig_SurvivalJuv2Ad} 
+\end{figure}
+
+\FloatBarrier
+
+\clearpage
+\section{Simulations sans repeuplement et projections ? 20 ans}
+\label{resu_simulations}
+
+\noindent Suite aux diff?rentes corrections et am?liorations apport?es au mod?le
+en 2014, les principaux sc?narios propos?s par \citet{dauphin_viability_2013}
+ont ?t? mis ? jour et sont pr?sent?s dans cette section \footnote{se r?f?rer au
+rapport de \citet{dauphin_viability_2013} pour plus de d?tails sur les
+sc?narios produits}. Il s'agit de :
+\begin{itemize}
+  \item une analyse r?trospective dans un sc?nario o? aucun repeuplement
+  n'aurait jamais eu lieu (section \ref{resu_retour_futur}),
+  \item un sc?nario d'arr?t des repeuplements d?s l'ann?e prochaine avec une
+  projection des retours ? Vichy ? 20 ans (section \ref{resu_retour_20ans}),
+  \item un sc?nario d'arr?t des repeuplements d?s l'ann?e prochaine et une
+  augmentation progressive (sur 10 ans) du taux de transition entre le tacon 0+
+  et l'adulte jusqu'? atteindre 50\% du niveau initial (section
+  \ref{resu_Retour_20ans_survivalImprov50}),
+  \item un sc?nario d'arr?t des repeuplements d?s l'ann?e prochaine et une
+  augmentation progressive (sur 10 ans) du taux de transition entre le tacon 0+
+  et l'adulte jusqu'? atteindre le niveau initial (section
+  \ref{resu_Retour_20ans_survivalImprov100}).
+\end{itemize}
+En plus de ces sc?narios mis ? jour, sont pr?sent?s les r?sultats des sc?narios
+li?s au r?am?nagement futur de Pout?s :
+\begin{itemize}
+  \item un sc?nario d'arr?t des repeuplements d?s l'ann?e prochaine accompagn?
+  d'une am?lioration ? la montaison et ? la d?valaison de 50\% au niveau du
+  barrage de Pout?s (section \ref{resu_poutes50}),
+  \item un sc?nario d'arr?t des repeuplements d?s l'ann?e prochaine accompagn?
+  d'une am?lioration ? la montaison et ? la d?valaison de 100\% au niveau du
+  barrage de Pout?s (section \ref{resu_poutes50}). Ce sc?nario correspond ? un
+  sc?nario de suppression totale de l'ouvrage.
+\end{itemize}
+
+\subsection{Retour vers le futur : Et si on n'avait jamais repeupl? ?}
+\label{resu_retour_futur}
+
+<<Retour_futur_short, echo=FALSE, eval=TRUE,results=hide>>=
+################################################
+# Retour vers le futur
+################################################
+#ATTENTION lors d'une nouvelle cession il faut charger retour_futur_init. Pour la suite on met en eval=false pour acc?lerer la compilation
+#La version longue avec le save() ? la fin est mis juste avant le \end{document} pour ne pas rallonger le script dans les parties utiles
+
+load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/data/2015_01_24_AnalyseRetro_2015.02.09.RData")
+
+N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+
+N_vichy_real_q=array(NA,dim=c((T+20-15),5))
+N_vichy_q=array(NA,dim=c(T,5))
+
+for (t in 1:T){
+	N_vichy_q[t,]=quantile(N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#Attention ? l'ann?e 30 estimation des passages ? Vichy car ann?e jug?e incompl?te
+for (t in 1:22){
+	N_vichy_real_q[t,]=quantile(N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+for(t in 23:23){
+	N_vichy_real_q[(t+7),]=quantile(N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+data_vichy=c(
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,393,267,515,
+		380,400,541,1238,NA,
+		510,950,572,421,491,
+		227,755,861,819)
+
+diff_N_vichy=array(0,dim=c(5000,T))
+for (t in 7:22){
+	for (i in 1:5000){
+		diff_N_vichy[i,t]=N_vichy_real[i,t]-N_vichy[i,t]
+		if(diff_N_vichy[i,t]<0){diff_N_vichy[i,t]=0} }
+} 
+for (t in 23:29){
+	for (i in 1:5000){
+		diff_N_vichy[i,t]=data_vichy[t]-N_vichy[i,t]
+		if(diff_N_vichy[i,t]<0){diff_N_vichy[i,t]=0} }
+} 
+for (t in 30:30){
+	for (i in 1:5000){
+		diff_N_vichy[i,t]=N_vichy_real[i,(t-7)]-N_vichy[i,t]
+		if(diff_N_vichy[i,t]<0){diff_N_vichy[i,t]=0} }
+} 
+for (t in 31:T){
+	for (i in 1:5000){
+		diff_N_vichy[i,t]=data_vichy[t]-N_vichy[i,t] 
+		if(diff_N_vichy[i,t]<0){diff_N_vichy[i,t]=0} }
+} 
+
+diff_N_vichy_q=array(0,dim=c(T,5))
+for (t in 7:T){
+	diff_N_vichy_q[t,]=quantile(diff_N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),na.rm=TRUE,names=FALSE)
+}
+
+pourcentage_N_vichy=array(0,dim=c(5000,T))
+for (t in 7:22){
+	for (i in 1:5000){
+		pourcentage_N_vichy[i,t]=(N_vichy_real[i,t]-N_vichy[i,t])/N_vichy_real[i,t]
+		if(pourcentage_N_vichy[i,t]<0){pourcentage_N_vichy[i,t]=0}}
+} 
+for (t in 23:29){
+	for (i in 1:5000){
+		pourcentage_N_vichy[i,t]=(data_vichy[t]-N_vichy[i,t])/data_vichy[t] 
+		if(pourcentage_N_vichy[i,t]<0){pourcentage_N_vichy[i,t]=0}}
+} 
+#On estime l'ann?e 2004 car comptage partiel. t-7 car ann?e 30 ? la suite des 22 premi?res ann?e soit 23eme ligne de N_vichy_real
+for (t in 30:30){
+	for (i in 1:5000){
+		pourcentage_N_vichy[i,t]=(N_vichy_real[i,(t-7)]-N_vichy[i,t])/N_vichy_real[i,(t-7)]
+		if(pourcentage_N_vichy[i,t]<0){pourcentage_N_vichy[i,t]=0}}
+} 
+for (t in 31:T){
+	for (i in 1:5000){
+		pourcentage_N_vichy[i,t]=(data_vichy[t]-N_vichy[i,t]) /data_vichy[t] 
+		if(pourcentage_N_vichy[i,t]<0){pourcentage_N_vichy[i,t]=0}}
+} 
+
+pourcentage_N_vichy_q=array(0,dim=c(T,5))
+for (t in 7:T){
+	pourcentage_N_vichy_q[t,]=quantile(pourcentage_N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),na.rm=TRUE,names=FALSE)
+}
+
+pdf(file=str_c(imgwd,"/RetourVersLeFutur_2015_02_09.pdf"))#,width=800,height=800)
+
+par(mfrow=c(2,2))
+
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Avec repeuplement",cex.lab=1.2)
+
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 1.2,las = 1,lwd=2,col = "black")
+
+for(i in 3:30){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+
+
+data_vichy=c(
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,393,267,515,
+		380,400,541,1238,NA,
+		510,950,572,421,491,
+		227,755,861,819)
+
+
+
+points(x=seq(23,T,1),data_vichy[23:T],pch=16)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retour ? Vichy",main="Simulation sans repeuplement",cex.lab=1.2)
+
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 1.2,las = 1,lwd=2,col = "black")
+
+
+for(i in 3:6){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+
+
+
+for(i in 7:T){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_q[i,5],i+0.15,N_vichy_q[i,5])
+	segments(i,N_vichy_q[i,4],i,N_vichy_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_q[i,1],i+0.15,N_vichy_q[i,1])
+	segments(i,N_vichy_q[i,2],i,N_vichy_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_q[i,2],N_vichy_q[i,2],N_vichy_q[i,4],N_vichy_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_q[i,3],i+0.3,N_vichy_q[i,3])
+}
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(-500,1500),ylab=expression(Returns^stocking-Returns^without),main="Difference des retours ? Vichy \n avec ou sans repeuplement",cex.lab=1.2)
+
+# trace l'axe des ordonn?es
+axis(2,at = c(-500,0,500,1000,1500),labels=c(-500,0,500,1000,1500),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 1.2,las = 1,lwd=2,col = "black")
+
+
+points(x=c(3,4,5,6),y=c(1,1,1,1),pch=16)
+
+
+for(i in 7:T){
+	#whiskers
+	#95%
+	segments(i-0.15,diff_N_vichy_q[i,5],i+0.15,diff_N_vichy_q[i,5])
+	segments(i,diff_N_vichy_q[i,4],i,diff_N_vichy_q[i,5])
+	#5%
+	segments(i-0.15,diff_N_vichy_q[i,1],i+0.15,diff_N_vichy_q[i,1])
+	segments(i,diff_N_vichy_q[i,2],i,diff_N_vichy_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(diff_N_vichy_q[i,2],diff_N_vichy_q[i,2],diff_N_vichy_q[i,4],diff_N_vichy_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,diff_N_vichy_q[i,3],i+0.3,diff_N_vichy_q[i,3])
+}
+
+segments(1,0,38,lty=2,col="red")
+
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,1),ylab="%repeuplement",main="Contribution du repeuplement \n aux retours d'adultes",cex.lab = 1.2)
+
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T),
+		labels=c(1975,1980,1990,2000,2013),
+		cex.axis = 1.2,las = 1,lwd=2,col = "black")
+
+#text(T,15,labels=expression(italic("a.")))
+
+
+for(i in 7:T){
+	#whiskers
+	#95%
+	segments(i-0.15,pourcentage_N_vichy_q[i,5],i+0.15,pourcentage_N_vichy_q[i,5])
+	segments(i,pourcentage_N_vichy_q[i,4],i,pourcentage_N_vichy_q[i,5])
+	#5%
+	segments(i-0.15,pourcentage_N_vichy_q[i,1],i+0.15,pourcentage_N_vichy_q[i,1])
+	segments(i,pourcentage_N_vichy_q[i,2],i,pourcentage_N_vichy_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(pourcentage_N_vichy_q[i,2],pourcentage_N_vichy_q[i,2],pourcentage_N_vichy_q[i,4],pourcentage_N_vichy_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,pourcentage_N_vichy_q[i,3],i+0.3,pourcentage_N_vichy_q[i,3])
+}
+
+
+dev.off()
+@
+
+L'analyse r?trospective dans le sc?nario o? aucun repeuplement n'auraient eu
+lieu dans le bassin Loire, indique que le repeuplement joue un r?le important
+dans le retour des adultes ? Vichy depuis ces 15 derni?res ann?es (environ 61\%
+des retours sur cette p?riode).
+La contribution des repeuplements dans les retours d'adultes tient compte ici :
+\begin{itemize}
+  \item des adultes de retour issus de repeuplement,
+  \item de la d?scendance \og naturelle \fg{} de g?niteurs issus de
+  repeuplement,
+  \item des effets cumul?s au cours des g?n?rations.
+\end{itemize}
+Cette contribution, bien qu'importante, a ?t? revue ? la baisse dans cette
+nouvelle version du mod?le (61\% contre 67\% en moyenne dans la version
+pr?c?dente \citep{dauphin_viability_2013}). Ceci peut notamment ?tre d? ? la r?vision de
+l'influence des points de d?versement sur les r?sultats des p?ches ?lectriques
+en 5 minutes (section \ref{inf_dev}).
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/RetourVersLeFutur_2015_02_09.pdf}
+     \caption[Retour vers le futur : et si on n'avait jamais repeupl? ?]{a)
+     Distribution \textit{a posteriori} des retours d'adultes ? Vichy, b)
+     Distribution a posteriori des retours d'adultes ? Vichy simul?s si il n'y avait jamais eu de
+     repeuplement, c)Diff?rences annuelles entre les retours d'adultes avec et
+     sans repeuplement, d) Contribution du repeuplement aux retours d'adultes ?
+     Vichy. Les boxplots indiquent les quantiles 2.5, 25, m?diane, 75 et 97.5.}
+     \label{fig_retour_futur} 
+\end{figure}
+
+\FloatBarrier
+\subsection{Projection ? 20 ans sans changement autre que l'arr?t des
+d?versements}
+\label{resu_retour_20ans}
+<<Retour_20ans, echo=FALSE, eval=TRUE, results=hide>>=
+load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
+#============================
+# PROJECTION SUR LES 20 ANS 
+#============================
+#==========================================
+# CHAP : Figure : TotalReturns_proj20years
+#==========================================
+
+# Graph projection 20 years
+bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+N_vichy_real_q=array(NA,dim=c(44,5))#44 car il y a 16 ann?e de suivi station (soit T+20 - 15)
+
+#Attention ? l'ann?e 30 estimation des passages Vichy car ann?e jug?e incompl?te
+for (t in 1:22){
+	N_vichy_real_q[t,]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+for(t in 23:23){
+	N_vichy_real_q[(t+7),]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#N_vichy_proj_q=array(0,dim=c(43,5))
+N_vichy_proj_q=array(0,dim=c(T+20,5))
+for (t in (T+1):(T+20)){
+	N_vichy_proj_q[t,]=quantile(N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+#------------------
+# Graph
+#------------------
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement",cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T,46,T+20),
+		labels=c(1975,1980,1990,2000,2013,2020,2033),
+		cex.axis = 1,las = 1,lwd=2,col = "black")
+for(i in 3:30){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+data_vichy=c(
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,393,267,515,
+		380,400,541,1238,NA,#662,
+		510,950,572,421,491,
+		227,755,861,819)
+points(x=seq(23,T,1),data_vichy[23:T],pch=16)
+
+for(i in (T+1):(T+20)){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_proj_q[i,5],i+0.15,N_vichy_proj_q[i,5])
+	segments(i,N_vichy_proj_q[i,4],i,N_vichy_proj_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_proj_q[i,1],i+0.15,N_vichy_proj_q[i,1])
+	segments(i,N_vichy_proj_q[i,2],i,N_vichy_proj_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_proj_q[i,2],N_vichy_proj_q[i,2],N_vichy_proj_q[i,4],N_vichy_proj_q[i,4]),col="orange")
+	#median
+	segments(i-0.3,N_vichy_proj_q[i,3],i+0.3,N_vichy_proj_q[i,3])
+}
+dev.off()
+
+under_10_vichy=array(0,dim=c(8000,20))
+under_50_vichy=array(0,dim=c(8000,20))
+under_100_vichy=array(0,dim=c(8000,20))
+under_250_vichy=array(0,dim=c(8000,20))
+under_500_vichy=array(0,dim=c(8000,20))
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:5000){
+		if(N_vichy[i,t] < 10){under_10_vichy[i,t-39]=1}  
+		if(N_vichy[i,t] < 50){under_50_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 100){under_100_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 250){under_250_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 500){under_500_vichy[i,t-39]=1}
+		
+	}
+}
+
+
+p_under_10_vichy=rep(0,20)
+p_under_50_vichy=rep(0,20)
+p_under_100_vichy=rep(0,20)
+p_under_250_vichy=rep(0,20)
+p_under_500_vichy=rep(0,20)
+
+
+for (t in 1:20){
+	p_under_10_vichy[t]=mean(under_10_vichy[,t])
+	p_under_50_vichy[t]=mean(under_50_vichy[,t])
+	p_under_100_vichy[t]=mean(under_100_vichy[,t])
+	p_under_250_vichy[t]=mean(under_250_vichy[,t])
+	p_under_500_vichy[t]=mean(under_500_vichy[,t])
+	
+}
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Threshold_2015_02_10.pdf")#,width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="Ann?es",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,9,20),
+		labels=c(2014,2020,2033),
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+
+
+points(x,p_under_10_vichy,col="grey85",pch=16)
+segments(x[1:19],p_under_10_vichy[1:19],x[2:20],p_under_10_vichy[2:20],col="grey85")
+
+points(x,p_under_50_vichy,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col="grey75")
+
+points(x,p_under_100_vichy,col="grey65",pch=16)
+segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col="grey65")
+
+points(x,p_under_250_vichy,col="grey55",pch=16)
+segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col="grey55")
+
+points(x,p_under_500_vichy,col="grey45",pch=16)
+segments(x[1:19],p_under_500_vichy[1:19],x[2:20],p_under_500_vichy[2:20],col="grey45")
+
+
+legend(15,1,legend=c(expression(p^seuils < 500),expression(p^seuils < 250),expression(p^seuils < 100),expression(p^seuils < 50),expression(p^seuils < 10)),
+		pch=c(16,16,16,16,16),col=c("grey45","grey55","grey65","grey75","grey85"),bty="n" )
+
+
+dev.off()
+
+@
+
+L'int?r?t de ce sc?nario est tout particuli?rement de tester la viabilit? de la
+population de saumon de l'Allier. Les r?sultats indiquent que le nombre
+d'adultes ? Vichy tend ? diminuer au cours du temps, t?moignant ainsi d'une
+population qui ne se renouvelle pas suffisamment naturellement (figure
+\ref{fig_retour_20ans}). Dans ce sc?nario, la probabilit? d'observer moins de
+500 individus ? Vichy est non n?gligeable (environ 40\%) (figure
+\ref{fig_seuil_20ans}), bien que cette probabilit? ait ?t? revue ? la baisse
+compar?e ? la version pr?c?dente du mod?le.
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes ? Vichy avec arr?t des repeuplements et
+     projection ? 20 ans]{Retours d'adultes ? Vichy avec arr?t des repeuplements et
+     projection ? 20 ans. Les boxplots indiquent les quantiles 2.5, 25, m?diane,
+     75 et 97.5. Les cercles pleins indiquent les ann?es pour lesquelles la
+     station de comptage de Vichy est op?rationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes ? Vichy pour les 20 prochaines ann?es.}
+     \label{fig_retour_20ans} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/Threshold_2015_02_10.pdf}
+     \caption[Probabilit? d'atteindre certains seuils de nombre
+     d'adultes ? Vichy]{Evolution de la probabilit? p\up{seuils} d'atteindre
+     certains seuils arbitraires de nombre d'adultes de retours ? Vichy sur
+     la p?riode 2014--2033, dans le sc?nario d'arr?t des repeuplements.}
+     \label{fig_seuil_20ans} 
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Projection ? 20 ans avec une am?lioration des conditions de franchissabilit? ? la montaison et une diminution des impacts ? la d?valaison de 50\% au barrage de Pout?s}
+\label{resu_poutes50}
+<<Retour_20ans_poutes50, echo=FALSE, eval=TRUE, results=hide>>=
+load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes50_2015_02_02.RData")
+#============================
+# PROJECTION SUR LES 20 ANS 
+#============================
+#==========================================
+# CHAP : Figure : TotalReturns_proj20years
+#==========================================
+
+# Graph projection 20 years
+bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+N_vichy_real_q=array(NA,dim=c(44,5))#44 car il y a 16 ann?e de suivi station (soit T+20 - 15)
+
+#Attention ? l'ann?e 30 estimation des passages Vichy car ann?e jug?e incompl?te
+for (t in 1:22){
+	N_vichy_real_q[t,]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+for(t in 23:23){
+	N_vichy_real_q[(t+7),]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#N_vichy_proj_q=array(0,dim=c(43,5))
+N_vichy_proj_q=array(0,dim=c(T+20,5))
+for (t in (T+1):(T+20)){
+	N_vichy_proj_q[t,]=quantile(N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+#------------------
+# Graph
+#------------------
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50poutes_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement - Am?lioration ? la montaison  \n et ? la d?valaison ? Pout?s ? hauteur de 50%",cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T,46,T+20),
+		labels=c(1975,1980,1990,2000,2013,2020,2033),
+		cex.axis = 1,las = 1,lwd=2,col = "black")
+for(i in 3:30){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+data_vichy=c(
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,393,267,515,
+		380,400,541,1238,NA,#662,
+		510,950,572,421,491,
+		227,755,861,819)
+points(x=seq(23,T,1),data_vichy[23:T],pch=16)
+
+for(i in (T+1):(T+20)){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_proj_q[i,5],i+0.15,N_vichy_proj_q[i,5])
+	segments(i,N_vichy_proj_q[i,4],i,N_vichy_proj_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_proj_q[i,1],i+0.15,N_vichy_proj_q[i,1])
+	segments(i,N_vichy_proj_q[i,2],i,N_vichy_proj_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_proj_q[i,2],N_vichy_proj_q[i,2],N_vichy_proj_q[i,4],N_vichy_proj_q[i,4]),col="orange")
+	#median
+	segments(i-0.3,N_vichy_proj_q[i,3],i+0.3,N_vichy_proj_q[i,3])
+}
+dev.off()
+
+under_10_vichy=array(0,dim=c(8000,20))
+under_50_vichy=array(0,dim=c(8000,20))
+under_100_vichy=array(0,dim=c(8000,20))
+under_250_vichy=array(0,dim=c(8000,20))
+under_500_vichy=array(0,dim=c(8000,20))
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:5000){
+		if(N_vichy[i,t] < 10){under_10_vichy[i,t-39]=1}  
+		if(N_vichy[i,t] < 50){under_50_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 100){under_100_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 250){under_250_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 500){under_500_vichy[i,t-39]=1}
+		
+	}
+}
+
+
+p_under_10_vichy=rep(0,20)
+p_under_50_vichy=rep(0,20)
+p_under_100_vichy=rep(0,20)
+p_under_250_vichy=rep(0,20)
+p_under_500_vichy=rep(0,20)
+
+
+for (t in 1:20){
+	p_under_10_vichy[t]=mean(under_10_vichy[,t])
+	p_under_50_vichy[t]=mean(under_50_vichy[,t])
+	p_under_100_vichy[t]=mean(under_100_vichy[,t])
+	p_under_250_vichy[t]=mean(under_250_vichy[,t])
+	p_under_500_vichy[t]=mean(under_500_vichy[,t])
+	
+}
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50poutes_Threshold_2015_02_10.pdf")#,width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="Ann?es",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,9,20),
+		labels=c(2014,2020,2033),
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+
+
+points(x,p_under_10_vichy,col="grey85",pch=16)
+segments(x[1:19],p_under_10_vichy[1:19],x[2:20],p_under_10_vichy[2:20],col="grey85")
+
+points(x,p_under_50_vichy,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col="grey75")
+
+points(x,p_under_100_vichy,col="grey65",pch=16)
+segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col="grey65")
+
+points(x,p_under_250_vichy,col="grey55",pch=16)
+segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col="grey55")
+
+points(x,p_under_500_vichy,col="grey45",pch=16)
+segments(x[1:19],p_under_500_vichy[1:19],x[2:20],p_under_500_vichy[2:20],col="grey45")
+
+
+legend(15,1,legend=c(expression(p^seuils < 500),expression(p^seuils < 250),expression(p^seuils < 100),expression(p^seuils < 50),expression(p^seuils < 10)),
+		pch=c(16,16,16,16,16),col=c("grey45","grey55","grey65","grey75","grey85"),bty="n" )
+
+
+dev.off()
+@
+
+Dans ce sc?nario, les repeuplements sont arr?t?s et la migration de montaison et
+de d?valaison est am?lior?e ? hauteur de 50\% ? l'ouvrage de Pout?s. Les retours
+d'adultes diminuent au cours du temps (figure \ref{fig_retour_20ans_poutes50})
+mais les efffectifs attendus sont plus importants que ceux du sc?nario d'arr?t des repeuplements (figure
+\ref{fig_retour_20ans}). La diminution des effectifs ? Vichy est plus lente
+que dans le sc?nario pr?c?dent et la probabilit? d'observer moins de 500
+individus ? Vichy est d'environ 30\% ? la fin de la p?riode (figure
+\ref{fig_seuil_20ans_poutes50}).
+N?anmoins, ? l'horizon de 20 ans on ne constate toujours pas de stabilisation
+des effectifs ? Vichy, ce qui tend ? montrer que cette hypoth?se ne serait pas
+suffisante pour assurer la viabilit? de la population.
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/50poutes_TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes ? Vichy avec arr?t des repeuplements et
+     am?lioration des conditions ? Pout?s de 50\%]{Retours
+     d'adultes ? Vichy avec arr?t des repeuplements et am?lioration
+     des conditions de migration ? la montaison et d?valaison ? Pout?s
+     ? hauteur de 50\%. Une projection des retours d'adultes ? 20 ans est
+     r?alis?e.
+     Les boxplots indiquent les quantiles 2.5, 25, m?diane, 75 et 97.5. Les cercles pleins indiquent les ann?es pour lesquelles la
+     station de comptage de Vichy est op?rationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes ? Vichy pour les 20 prochaines ann?es.}
+     \label{fig_retour_20ans_poutes50} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/50poutes_Threshold_2015_02_10.pdf}
+     \caption[Probabilit? d'atteindre certains seuils de nombre
+     d'adultes ? Vichy avec 50\% d'am?lioration ? Pout?s]{Evolution de la
+     probabilit? p\up{seuils} d'atteindre certains seuils arbitraires de nombre
+     d'adultes de retours ? Vichy sur la p?riode 2014--2033, dans le sc?nario d'arr?t des repeuplements et
+     d'am?lioration des conditions de migration ? la montaison et ? la
+     d?valaison ? Pout?s ? hauteur de 50\%.}
+     \label{fig_seuil_20ans_poutes50} 
+\end{figure}
+
+\FloatBarrier
+
+
+\subsection{Projection ? 20 ans avec la suppression du barrage de Pout?s}
+\label{resu_poutes100}
+<<Retour_20ans_poutes100, echo=FALSE, eval=TRUE, results=hide>>=
+load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes100_2015.02.02.RData")
+#============================
+# PROJECTION SUR LES 20 ANS 
+#============================
+#==========================================
+# CHAP : Figure : TotalReturns_proj20years
+#==========================================
+
+# Graph projection 20 years
+bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+N_vichy_real_q=array(NA,dim=c(44,5))#44 car il y a 16 ann?e de suivi station (soit T+20 - 15)
+
+#Attention ? l'ann?e 30 estimation des passages Vichy car ann?e jug?e incompl?te
+for (t in 1:22){
+	N_vichy_real_q[t,]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+for(t in 23:23){
+	N_vichy_real_q[(t+7),]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#N_vichy_proj_q=array(0,dim=c(43,5))
+N_vichy_proj_q=array(0,dim=c(T+20,5))
+for (t in (T+1):(T+20)){
+	N_vichy_proj_q[t,]=quantile(N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+#------------------
+# Graph
+#------------------
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100poutes_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement - Am?lioration ? la montaison \n et ? la d?valaison ? Pout?s ? hauteur de 100%",cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T,46,T+20),
+		labels=c(1975,1980,1990,2000,2013,2020,2033),
+		cex.axis = 1,las = 1,lwd=2,col = "black")
+for(i in 3:30){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+data_vichy=c(
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,393,267,515,
+		380,400,541,1238,NA,#662,
+		510,950,572,421,491,
+		227,755,861,819)
+points(x=seq(23,T,1),data_vichy[23:T],pch=16)
+
+for(i in (T+1):(T+20)){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_proj_q[i,5],i+0.15,N_vichy_proj_q[i,5])
+	segments(i,N_vichy_proj_q[i,4],i,N_vichy_proj_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_proj_q[i,1],i+0.15,N_vichy_proj_q[i,1])
+	segments(i,N_vichy_proj_q[i,2],i,N_vichy_proj_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_proj_q[i,2],N_vichy_proj_q[i,2],N_vichy_proj_q[i,4],N_vichy_proj_q[i,4]),col="orange")
+	#median
+	segments(i-0.3,N_vichy_proj_q[i,3],i+0.3,N_vichy_proj_q[i,3])
+}
+dev.off()
+
+under_10_vichy=array(0,dim=c(8000,20))
+under_50_vichy=array(0,dim=c(8000,20))
+under_100_vichy=array(0,dim=c(8000,20))
+under_250_vichy=array(0,dim=c(8000,20))
+under_500_vichy=array(0,dim=c(8000,20))
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:5000){
+		if(N_vichy[i,t] < 10){under_10_vichy[i,t-39]=1}  
+		if(N_vichy[i,t] < 50){under_50_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 100){under_100_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 250){under_250_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 500){under_500_vichy[i,t-39]=1}
+		
+	}
+}
+
+
+p_under_10_vichy=rep(0,20)
+p_under_50_vichy=rep(0,20)
+p_under_100_vichy=rep(0,20)
+p_under_250_vichy=rep(0,20)
+p_under_500_vichy=rep(0,20)
+
+
+for (t in 1:20){
+	p_under_10_vichy[t]=mean(under_10_vichy[,t])
+	p_under_50_vichy[t]=mean(under_50_vichy[,t])
+	p_under_100_vichy[t]=mean(under_100_vichy[,t])
+	p_under_250_vichy[t]=mean(under_250_vichy[,t])
+	p_under_500_vichy[t]=mean(under_500_vichy[,t])
+	
+}
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100poutes_Threshold_2015_02_10.pdf")#,width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="Ann?es",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,9,20),
+		labels=c(2014,2020,2033),
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+
+
+points(x,p_under_10_vichy,col="grey85",pch=16)
+segments(x[1:19],p_under_10_vichy[1:19],x[2:20],p_under_10_vichy[2:20],col="grey85")
+
+points(x,p_under_50_vichy,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col="grey75")
+
+points(x,p_under_100_vichy,col="grey65",pch=16)
+segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col="grey65")
+
+points(x,p_under_250_vichy,col="grey55",pch=16)
+segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col="grey55")
+
+points(x,p_under_500_vichy,col="grey45",pch=16)
+segments(x[1:19],p_under_500_vichy[1:19],x[2:20],p_under_500_vichy[2:20],col="grey45")
+
+
+legend(15,1,legend=c(expression(p^seuils < 500),expression(p^seuils < 250),expression(p^seuils < 100),expression(p^seuils < 50),expression(p^seuils < 10)),
+		pch=c(16,16,16,16,16),col=c("grey45","grey55","grey65","grey75","grey85"),bty="n" )
+
+
+dev.off()
+
+
+######Pour pr?sentation Manchester. Threshold 500 puis 100 sur le m?me graph en fonction des 3 sc?narii
+load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
+load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes100_2015.02.02.RData")
+load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes50_2015_02_02.RData")
+
+under_100_vichy_1=array(0,dim=c(8000,20))
+under_100_vichy_2=array(0,dim=c(8000,20))
+under_100_vichy_3=array(0,dim=c(8000,20))
+
+under_500_vichy_1=array(0,dim=c(8000,20))
+under_500_vichy_2=array(0,dim=c(8000,20))
+under_500_vichy_3=array(0,dim=c(8000,20))
+
+p_under_100_vichy_1=rep(0,20)
+p_under_100_vichy_2=rep(0,20)
+p_under_100_vichy_3=rep(0,20)
+
+p_under_500_vichy_1=rep(0,20)
+p_under_500_vichy_2=rep(0,20)
+p_under_500_vichy_3=rep(0,20)
+
+#Scenario 1 = nothing changes
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:5000){
+		if(N_vichy[i,t] < 100){under_100_vichy_1[i,t-39]=1}
+		if(N_vichy[i,t] < 500){under_500_vichy_1[i,t-39]=1}
+		
+	}
+}
+
+#Scenario 2 = removal
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:5000){
+		if(N_vichy[i,t] < 100){under_100_vichy_2[i,t-39]=1}
+		if(N_vichy[i,t] < 500){under_500_vichy_2[i,t-39]=1}
+		
+	}
+}
+
+#Scenario 3 = mitigation
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:5000){
+		if(N_vichy[i,t] < 100){under_100_vichy_3[i,t-39]=1}
+		if(N_vichy[i,t] < 500){under_500_vichy_3[i,t-39]=1}
+		
+	}
+}
+
+
+
+#scenario 1=nothing changes
+
+for (t in 1:20){
+	p_under_100_vichy_1[t]=mean(under_100_vichy_1[,t])
+	p_under_500_vichy_1[t]=mean(under_500_vichy_1[,t])
+	
+}
+
+#scenario 2=removal
+
+for (t in 1:20){
+	p_under_100_vichy_2[t]=mean(under_100_vichy_2[,t])
+	p_under_500_vichy_2[t]=mean(under_500_vichy_2[,t])
+	
+}
+
+#scenario 3=mitigation
+
+for (t in 1:20){
+	p_under_100_vichy_3[t]=mean(under_100_vichy_3[,t])
+	p_under_500_vichy_3[t]=mean(under_500_vichy_3[,t])
+	
+}
+
+png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/poutes_Threshold500_2015_08_27.png")#,width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="Years",ylim=c(0,0.5),ylab=expression(p^threshold==500),cex.lab=1.5)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.1,0.2,0.3,0.4,0.5),labels=c(0,0.1,0.2,0.3,0.4,0.5),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,9,20),
+		labels=c(2014,2020,2033),
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+
+
+#points(x,p_under_10_vichy,col="grey85",pch=16)
+#segments(x[1:19],p_under_10_vichy[1:19],x[2:20],p_under_10_vichy[2:20],col="grey85")
+#
+#points(x,p_under_50_vichy,col="grey75",pch=16)
+#segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col="grey75")
+#
+#points(x,p_under_100_vichy,col="grey65",pch=16)
+#segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col="grey65")
+#
+#points(x,p_under_250_vichy,col="grey55",pch=16)
+#segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col="grey55")
+
+points(x,p_under_500_vichy_1,col="red",pch=16,cex=1.5)
+segments(x[1:19],p_under_500_vichy_1[1:19],x[2:20],p_under_500_vichy_1[2:20],col="red",lwd = 3)
+
+points(x,p_under_500_vichy_2,col="blue",pch=16,cex=1.5)
+segments(x[1:19],p_under_500_vichy_2[1:19],x[2:20],p_under_500_vichy_2[2:20],col="blue",lwd = 3)
+
+points(x,p_under_500_vichy_3,col="green",pch=16,cex=1.5)
+segments(x[1:19],p_under_500_vichy_3[1:19],x[2:20],p_under_500_vichy_3[2:20],col="green",lwd = 3)
+
+legend(5,0.5,legend=c("scenario 1: nothing changes","scenario 2: removal","scenario 3: mitigation"),
+		pch=16,cex=1.5,col=c("red","blue","green"),bty="n" )
+
+
+dev.off()
+
+png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/poutes_Threshold100_2015_08_27.png")#,width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="Years",ylim=c(0,0.05),ylab=expression(p^threshold==100),cex.lab=1.5)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.01,0.02,0.03,0.04,0.05),labels=c(0,0.01,0.02,0.03,0.04,0.05),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,9,20),
+		labels=c(2014,2020,2033),
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+
+
+#points(x,p_under_10_vichy,col="grey85",pch=16)
+#segments(x[1:19],p_under_10_vichy[1:19],x[2:20],p_under_10_vichy[2:20],col="grey85")
+#
+#points(x,p_under_50_vichy,col="grey75",pch=16)
+#segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col="grey75")
+#
+#points(x,p_under_100_vichy,col="grey65",pch=16)
+#segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col="grey65")
+#
+#points(x,p_under_250_vichy,col="grey55",pch=16)
+#segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col="grey55")
+
+points(x,p_under_100_vichy_1,col="red",pch=16,cex=1.5)
+segments(x[1:19],p_under_100_vichy_1[1:19],x[2:20],p_under_100_vichy_1[2:20],col="red",lw=3)
+
+points(x,p_under_100_vichy_2,col="blue",pch=16,cex=1.5)
+segments(x[1:19],p_under_100_vichy_2[1:19],x[2:20],p_under_100_vichy_2[2:20],col="blue",lw=3)
+
+points(x,p_under_100_vichy_3,col="green",pch=16,cex=1.5)
+segments(x[1:19],p_under_100_vichy_3[1:19],x[2:20],p_under_100_vichy_3[2:20],col="green",lw=3)
+
+
+
+legend(5,0.05,legend=c("scenario 1: nothing changes","scenario 2: removal","scenario 3: mitigation"), pch=16,cex=1.5,col=c("red","blue","green"),bty="n" )
+
+
+dev.off()
+
+
+@
+
+Dans ce sc?nario, les repeuplements sont arr?t?s et la migration de montaison et
+de d?valaison est am?lior?e ? hauteur de 100\% ? l'ouvrage de Pout?s. Les
+retours d'adultes semblent quasiment stabilis?s au cours du temps, avec un
+nombre m?dian de \Sexpr{round(median(N_vichy[,46:59]),0)} individus ? Vichy sur
+la p?riode 2020--2033 (figure
+\ref{fig_retour_20ans_poutes100}). N?anmoins, la probabilit? d'observer moins de 500 individus ? Vichy augmente encore (figure \ref{fig_seuil_20ans_poutes100}),
+m?me si cette augmentation est tr?s t?nue. Ce sc?nario permettrait d'observer
+des effectifs ? Vichy ? peu pr?s comparables ? ceux rencontr?s ces derni?res ann?es, mais un doute persiste, sur le long terme, sur la viabilit? de la population.
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/100poutes_TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes ? Vichy avec arr?t des repeuplements et
+     am?lioration des conditions ? Pout?s de 100\%]{Retours
+     d'adultes ? Vichy avec arr?t des repeuplements et am?lioration
+     des conditions de migration ? la montaison et d?valaison ? Pout?s
+     ? hauteur de 100\%. Une projection des retours d'adultes ? 20 ans est
+     r?alis?e.
+     Les boxplots indiquent les quantiles 2.5, 25, m?diane, 75 et 97.5. Les cercles pleins indiquent les ann?es pour lesquelles la
+     station de comptage de Vichy est op?rationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes ? Vichy pour les 20 prochaines ann?es.}
+     \label{fig_retour_20ans_poutes100} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/100poutes_Threshold_2015_02_10.pdf}
+     \caption[Probabilit? d'atteindre certains seuils de nombre
+     d'adultes ? Vichy avec 100\% d'am?lioration ? Pout?s]{Evolution de la
+     probabilit? p\up{seuils} d'atteindre certains seuils arbitraires de nombre
+     d'adultes de retours ? Vichy sur la p?riode 2014--2033, dans le sc?nario
+     d'arr?t des repeuplements et d'am?lioration des conditions de migration ? la montaison et ? la
+     d?valaison ? Pout?s ? hauteur de 100\%.}
+     \label{fig_seuil_20ans_poutes100} 
+\end{figure}
+
+\FloatBarrier
+
+
+\subsection{Projection ? 20 ans avec une augmentation progressive du taux de
+transition entre le tacon 0+ et l'adulte jusqu'? atteindre 50\% du niveau initial}
+\label{resu_Retour_20ans_survivalImprov50}
+<<Retour_20ans_survivalImprov50, echo=FALSE, eval=TRUE, results=hide>>=
+load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie50_2015_02_11.RData")
+#============================
+# PROJECTION SUR LES 20 ANS 
+#============================
+#==========================================
+# CHAP : Figure : TotalReturns_proj20years
+#==========================================
+
+# Graph projection 20 years
+bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+N_vichy_real_q=array(NA,dim=c(44,5))#44 car il y a 16 ann?e de suivi station (soit T+20 - 15)
+
+#Attention ? l'ann?e 30 estimation des passages Vichy car ann?e jug?e incompl?te
+for (t in 1:22){
+	N_vichy_real_q[t,]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+for(t in 23:23){
+	N_vichy_real_q[(t+7),]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#N_vichy_proj_q=array(0,dim=c(43,5))
+N_vichy_proj_q=array(0,dim=c(T+20,5))
+for (t in (T+1):(T+20)){
+	N_vichy_proj_q[t,]=quantile(N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+#------------------
+# Graph
+#------------------
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement - Am?lioration de la survie \n jusqu'? 50% du taux de survie initial",cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T,46,T+20),
+		labels=c(1975,1980,1990,2000,2013,2020,2033),
+		cex.axis = 1,las = 1,lwd=2,col = "black")
+for(i in 3:30){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+data_vichy=c(
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,393,267,515,
+		380,400,541,1238,NA,#662,
+		510,950,572,421,491,
+		227,755,861,819)
+points(x=seq(23,T,1),data_vichy[23:T],pch=16)
+
+for(i in (T+1):(T+20)){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_proj_q[i,5],i+0.15,N_vichy_proj_q[i,5])
+	segments(i,N_vichy_proj_q[i,4],i,N_vichy_proj_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_proj_q[i,1],i+0.15,N_vichy_proj_q[i,1])
+	segments(i,N_vichy_proj_q[i,2],i,N_vichy_proj_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_proj_q[i,2],N_vichy_proj_q[i,2],N_vichy_proj_q[i,4],N_vichy_proj_q[i,4]),col="orange")
+	#median
+	segments(i-0.3,N_vichy_proj_q[i,3],i+0.3,N_vichy_proj_q[i,3])
+}
+dev.off()
+
+under_10_vichy=array(0,dim=c(8000,20))
+under_50_vichy=array(0,dim=c(8000,20))
+under_100_vichy=array(0,dim=c(8000,20))
+under_250_vichy=array(0,dim=c(8000,20))
+under_500_vichy=array(0,dim=c(8000,20))
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:5000){
+		if(N_vichy[i,t] < 10){under_10_vichy[i,t-39]=1}  
+		if(N_vichy[i,t] < 50){under_50_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 100){under_100_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 250){under_250_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 500){under_500_vichy[i,t-39]=1}
+		
+	}
+}
+
+
+p_under_10_vichy=rep(0,20)
+p_under_50_vichy=rep(0,20)
+p_under_100_vichy=rep(0,20)
+p_under_250_vichy=rep(0,20)
+p_under_500_vichy=rep(0,20)
+
+
+for (t in 1:20){
+	p_under_10_vichy[t]=mean(under_10_vichy[,t])
+	p_under_50_vichy[t]=mean(under_50_vichy[,t])
+	p_under_100_vichy[t]=mean(under_100_vichy[,t])
+	p_under_250_vichy[t]=mean(under_250_vichy[,t])
+	p_under_500_vichy[t]=mean(under_500_vichy[,t])
+	
+}
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50ImprovementSurvival_Threshold_2015_02_10.pdf")#,width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="Ann?es",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,9,20),
+		labels=c(2014,2020,2033),
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+
+
+points(x,p_under_10_vichy,col="grey85",pch=16)
+segments(x[1:19],p_under_10_vichy[1:19],x[2:20],p_under_10_vichy[2:20],col="grey85")
+
+points(x,p_under_50_vichy,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col="grey75")
+
+points(x,p_under_100_vichy,col="grey65",pch=16)
+segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col="grey65")
+
+points(x,p_under_250_vichy,col="grey55",pch=16)
+segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col="grey55")
+
+points(x,p_under_500_vichy,col="grey45",pch=16)
+segments(x[1:19],p_under_500_vichy[1:19],x[2:20],p_under_500_vichy[2:20],col="grey45")
+
+
+legend(15,1,legend=c(expression(p^seuils < 500),expression(p^seuils < 250),expression(p^seuils < 100),expression(p^seuils < 50),expression(p^seuils < 10)),
+		pch=c(16,16,16,16,16),col=c("grey45","grey55","grey65","grey75","grey85"),bty="n" )
+
+
+dev.off()
+@
+
+Dans ce sc?nario nous arr?tons les d?versements et nous faisons l'hypoth?se que
+le taux de transition entre le juv?nile 0+ et l'adulte s'am?liore
+progressivement sur les 10 premi?res ann?es des projections puis se stabilise
+pour les dix ann?es suivantes ? la moiti? du taux observ? dans les ann?es 80.
+Sous ces hypoth?ses nous obtenons une stabilit? des retours ? Vichy pour les 20
+prochaines ann?es (nombre m?dian de
+\Sexpr{round(median(N_vichy[,46:59]),0)} individus ? Vichy sur la p?riode
+2020--2033)  (figure
+\ref{fig_retour_20ans_survivalImpro50}), avec une probabilit? relativement faible (p\up{seuils}=8\% en moyenne) d'observer moins
+de 500 adultes de retour ? Vichy (figure \ref{fig_seuil_20ans_survivalImpro50}).
+
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/50ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes ? Vichy avec arr?t des repeuplements et
+     am?lioration de la survie jusqu'? 50\% du niveau initial]{Retours
+     d'adultes ? Vichy avec arr?t des repeuplements et am?lioration de la survie jusqu'? 50\% du niveau initial.
+     Une projection des retours d'adultes ? 20 ans est r?alis?e.
+     Les boxplots indiquent les quantiles 2.5, 25, m?diane, 75 et 97.5. Les cercles pleins indiquent les ann?es pour lesquelles la
+     station de comptage de Vichy est op?rationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes ? Vichy pour les 20 prochaines ann?es.}
+     \label{fig_retour_20ans_survivalImpro50} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/50ImprovementSurvival_Threshold_2015_02_10.pdf}
+     \caption[Probabilit? d'atteindre certains seuils de nombre
+     d'adultes ? Vichy avec arr?t des repeuplements et am?lioration
+     de la survie de 50\%]{Evolution de la probabilit? p\up{seuils} d'atteindre
+     certains seuils arbitraires de nombre d'adultes de retours ? Vichy sur la p?riode 2014--2033, dans le sc?nario d'arr?t des repeuplements et
+     d'am?lioration du taux de survie du juv?nile 0+ ? l'adulte jusqu'? 50\%
+     de son niveau initial.}
+     \label{fig_seuil_20ans_survivalImpro50} 
+\end{figure}
+
+\FloatBarrier
+
+
+\subsection{Projection ? 20 ans avec une augmentation progressive du taux de
+transition entre le tacon 0+ et l'adulte jusqu'? l'atteinte de son niveau
+initial}
+\label{resu_Retour_20ans_survivalImprov100}
+<<Retour_20ans_survivalImprov100, echo=FALSE, eval=TRUE, results=hide>>=
+load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie100_2015_02_11.RData")
+#============================
+# PROJECTION SUR LES 20 ANS 
+#============================
+#==========================================
+# CHAP : Figure : TotalReturns_proj20years
+#==========================================
+
+# Graph projection 20 years
+bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+N_vichy_real_q=array(NA,dim=c(44,5))#44 car il y a 16 ann?e de suivi station (soit T+20 - 15)
+
+#Attention ? l'ann?e 30 estimation des passages Vichy car ann?e jug?e incompl?te
+for (t in 1:22){
+	N_vichy_real_q[t,]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+for(t in 23:23){
+	N_vichy_real_q[(t+7),]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#N_vichy_proj_q=array(0,dim=c(43,5))
+N_vichy_proj_q=array(0,dim=c(T+20,5))
+for (t in (T+1):(T+20)){
+	N_vichy_proj_q[t,]=quantile(N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+#------------------
+# Graph
+#------------------
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement - Am?lioration de la survie  \n jusqu'? l'atteinte de son niveau initial",cex.lab=1.2)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,T,46,T+20),
+		labels=c(1975,1980,1990,2000,2013,2020,2033),
+		cex.axis = 1,las = 1,lwd=2,col = "black")
+for(i in 3:30){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+data_vichy=c(
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,NA,NA,NA,
+		NA,NA,393,267,515,
+		380,400,541,1238,NA,#662,
+		510,950,572,421,491,
+		227,755,861,819)
+points(x=seq(23,T,1),data_vichy[23:T],pch=16)
+
+for(i in (T+1):(T+20)){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_proj_q[i,5],i+0.15,N_vichy_proj_q[i,5])
+	segments(i,N_vichy_proj_q[i,4],i,N_vichy_proj_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_proj_q[i,1],i+0.15,N_vichy_proj_q[i,1])
+	segments(i,N_vichy_proj_q[i,2],i,N_vichy_proj_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_proj_q[i,2],N_vichy_proj_q[i,2],N_vichy_proj_q[i,4],N_vichy_proj_q[i,4]),col="orange")
+	#median
+	segments(i-0.3,N_vichy_proj_q[i,3],i+0.3,N_vichy_proj_q[i,3])
+}
+dev.off()
+
+under_10_vichy=array(0,dim=c(8000,20))
+under_50_vichy=array(0,dim=c(8000,20))
+under_100_vichy=array(0,dim=c(8000,20))
+under_250_vichy=array(0,dim=c(8000,20))
+under_500_vichy=array(0,dim=c(8000,20))
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:5000){
+		if(N_vichy[i,t] < 10){under_10_vichy[i,t-39]=1}  
+		if(N_vichy[i,t] < 50){under_50_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 100){under_100_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 250){under_250_vichy[i,t-39]=1}
+		if(N_vichy[i,t] < 500){under_500_vichy[i,t-39]=1}
+		
+	}
+}
+
+
+p_under_10_vichy=rep(0,20)
+p_under_50_vichy=rep(0,20)
+p_under_100_vichy=rep(0,20)
+p_under_250_vichy=rep(0,20)
+p_under_500_vichy=rep(0,20)
+
+
+for (t in 1:20){
+	p_under_10_vichy[t]=mean(under_10_vichy[,t])
+	p_under_50_vichy[t]=mean(under_50_vichy[,t])
+	p_under_100_vichy[t]=mean(under_100_vichy[,t])
+	p_under_250_vichy[t]=mean(under_250_vichy[,t])
+	p_under_500_vichy[t]=mean(under_500_vichy[,t])
+	
+}
+
+pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100ImprovementSurvival_Threshold_2015_02_10.pdf")#,width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="Ann?es",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
+# trace l'axe des ordonn?es
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,9,20),
+		labels=c(2014,2020,2033),
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+
+
+points(x,p_under_10_vichy,col="grey85",pch=16)
+segments(x[1:19],p_under_10_vichy[1:19],x[2:20],p_under_10_vichy[2:20],col="grey85")
+
+points(x,p_under_50_vichy,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col="grey75")
+
+points(x,p_under_100_vichy,col="grey65",pch=16)
+segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col="grey65")
+
+points(x,p_under_250_vichy,col="grey55",pch=16)
+segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col="grey55")
+
+points(x,p_under_500_vichy,col="grey45",pch=16)
+segments(x[1:19],p_under_500_vichy[1:19],x[2:20],p_under_500_vichy[2:20],col="grey45")
+
+
+legend(15,1,legend=c(expression(p^seuils < 500),expression(p^seuils < 250),expression(p^seuils < 100),expression(p^seuils < 50),expression(p^seuils < 10)),
+		pch=c(16,16,16,16,16),col=c("grey45","grey55","grey65","grey75","grey85"),bty="n" )
+
+
+dev.off()
+@
+Dans ce dernier sc?nario, nous simulons ? 20 ans l'arr?t des repeuplements et
+l'am?lioration progressive sur les 10 premi?re ann?es (puis stabilisation) du
+taux de transition du 0+ ? l'adulte jusqu'? l'atteinte du taux observ?
+dans les ann?es 80.
+Dans ces conditions, nous observons une augmentation des retours d'adultes ?
+Vichy avec un nombre m?dian de \Sexpr{round(median(N_vichy[,46:59]),0)}
+individus ? Vichy sur la p?riode 2020--2033 (figure
+\ref{fig_retour_20ans_survivalImpro100}), et une probabilit? quasi nulle d'observer moins de 500 individus ? vichy (figure
+\ref{fig_seuil_20ans_survivalImpro100}).
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/100ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf}
+     \caption[Retours d'adultes ? Vichy avec arr?t des repeuplements et
+     am?lioration de la survie jusqu'? 100\% du niveau initial]{Retours
+     d'adultes ? Vichy avec arr?t des repeuplements et am?lioration de la survie
+     jusqu'? l'atteinte de son niveau initial.
+     Une projection des retours d'adultes ? 20 ans est r?alis?e.
+     Les boxplots indiquent les quantiles 2.5, 25, m?diane, 75 et 97.5. Les cercles pleins indiquent les ann?es pour lesquelles la
+     station de comptage de Vichy est op?rationnelle et fournit le nombre de
+     retours d'adultes. Les boxplots orange correspondent aux estimations des
+     retours d'adultes ? Vichy pour les 20 prochaines ann?es.}
+     \label{fig_retour_20ans_survivalImpro100} 
+\end{figure}
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}/100ImprovementSurvival_Threshold_2015_02_10.pdf}
+     \caption[Probabilit? d'atteindre certains seuils de nombre
+     d'adultes ? Vichy avec arr?t des repeuplements et am?lioration
+     de la survie de 100\%]{Evolution de la probabilit? p\up{seuils} d'atteindre
+     certains seuils arbitraires de nombre d'adultes de retours ? Vichy sur la p?riode 2014--2033, dans le sc?nario d'arr?t des repeuplements et
+     d'am?lioration du taux de survie du juv?nile 0+ ? l'adulte jusqu'?
+     l'atteinte de son niveau initial.}
+     \label{fig_seuil_20ans_survivalImpro100} 
+\end{figure}
+
+\FloatBarrier
+
+
+\clearpage
+\chapter{Conclusion et perspectives du projet }
+\section{La mod?lisation}
+Comme tous les mod?les, l'outil d?velopp? est une simplification de la r?alit?,
+qui ne d?crit pas sp?cifiquement tous les processus ? l'\oe{}uvre. Il y a
+plusieurs raisons pour expliquer cela :
+\begin{itemize}
+  \item nous ne disposons pas toujours des donn?es n?cessaires ? mod?liser un
+  processus,
+  \item le d?veloppement du mod?le est long et parfois l'ajout d'un processus
+  peut s'av?rer compliqu? et donc n?cessiter beaucoup de temps. 
+\end{itemize}
+Ainsi, certaines am?liorations sont d?j? envisag?es et pourraient ?tre mises
+en \oe{}vre dans les ann?es futures. Il s'agirait notamment de :
+\begin{itemize}
+    \item diff?rencier la \textit{fitness} des juv?niles issus de reproduction
+    naturelle de celle des individus d?vers?s,
+    \item tester une hypoth?se alternative ? notre hypoth?se de priorit? aux
+    juv?niles natifs dans les relations de densit?-d?pendance,
+    \item mieux quantifier les impacts ? la d?valaison et estimer le gain attendu en cas
+    d'am?nagement ? la d?valaison,
+    \item introduire une corr?lation spatiale dans la stochasticit?
+    environnementale (c'est-?-dire consid?rer ? l'?chelle de nos secteurs que lorsque les conditions 
+    environnementales sont propices dans un secteur, elles le sont ?galement
+    dans les autres), en particulier en ce qui concerne le recrutement et la
+    survie des poissons de repeuplement.
+\end{itemize}
+
+\section{Analyse r?trospective}
+L'ajout de l'hypoth?se d'un diff?rentiel de survie amont/aval Pout?s (hypoth?se bas?e sur une ?valuation du barrage ? la d?valaison
+\citep{bagliniere_poutes_2005} et d'un radiopistage de smolts
+\citep{bach_poutes_2007}), a modifi? de fa?on importante les valeurs de survie
+du 0+ ? l'adulte, m?me si le patron reste identique ? celui d?crit dans
+\citet{dauphin_viability_2013}. Nous observons ainsi toujours une
+diminution forte de ce taux de transition au milieu des ann?es 80, mais la
+survie moyenne en d?but de p?riode (d?but des ann?es 80) a ?t? augment?e d'un
+facteur 3 par rapport aux premi?res estimations
+\citep{dauphin_viability_2013}.
+
+\section{Simulation r?trospective sans repeuplement}
+L'exercice de simulation nous permet d'estimer l'?tat de la population si aucun
+repeuplement n'avait eu lieu sur la p?riode consid?r?e par le mod?le
+(1975--2013). Il est important de noter que malgr? la contribution significative
+des repeuplements dans les retours d'adultes ? Vichy, la population ne se serait
+pas ?teinte sans ce soutient d'effectif, m?me si la taille de la population
+aurait ?t? plus petite que celle actuellement observ?e (258 individus en
+moyenne sur les 10 derni?res ann?es contre 684).
+Notons ?galement, que les ?volutions du mod?le en 2014 ont modifi? l'importance
+de la contribution des repeuplements dans les retours ? Vichy dans le sens d'une
+r?duction de cette derni?re. Ainsi, en moyenne 61\% des poissons ? Vichy
+seraient issus de poissons repeupl?s contre 67\% dans la version pr?c?dente. Pour rappel, la
+contribution des repeuplements est ? consid?rer ? la fois en terme de poissons
+d?vers?s (au stade \oe{}uf, alevin ou smolt) de retour ? Vichy, mais ?galement
+en terme de descendance de ces poissons issus de d?versement revenant ? Vichy
+(les g?n?rations se cumulant).
+
+\section{Viabilit? de la population de saumon atlantique dans le bassin Allier}
+Les am?liorations, corrections et ajouts de donn?es, ont permis de modifier
+quelque peu notre vision de la dynamique de population du saumon de l'Allier,
+dans le sens d'une moindre inqui?tude sur l'?tat de cette population.
+N?anmoins, les projections ? 20 ans sans repeuplement (ni am?liorations quelles
+qu'elles soient) indiquent toujours une diminution au cours du temps du nombre
+d'adultes de retour t?moignant ainsi du renouvellement insuffisant de la
+population. A l'horizon de 20 ans la population retournerait ? un niveau plus
+bas que celui actuellement observ?, avec environ 40\% de chance d'observer moins
+de 500 individus ? Vichy ? la fin de cette p?riode de projection.\\
+Les simulations avec arr?t des repeuplements et am?lioration des conditions de
+migration ? hauteur de 50\% voire enl?vement du barrage de Pout?s, montrent tout
+l'int?r?t de ce mod?le dans une optique de gestion. Les r?sultats indiquent
+qu'en am?liorant les conditions de passage ? un seul barrage strat?gique, la
+situation du saumon de l'Allier peut ?tre significativement am?lior?e,
+m?me si un doute persiste sur le fait que cette seule action soit
+suffisante pour assurer sur le long terme la persistence de la population de l'Allier. Au vu de
+nos r?sultats, le r?am?nagement de Pout?s ne peut donc ?tre qu'encourag?.\\
+Le levier le plus fort pour restaurer la population de l'Allier reste
+l'am?lioration du taux de transition entre le 0+ et l'adulte. Avec une
+augmentation de ce taux de transition jusqu'? atteindre 50\% de son niveau
+initial au d?but des ann?es 80, la persistence de la population avec une
+taille de population similaire ? ce qui est observ?e actuelleement semble
+assur?e sur le long terme. Dans l'hypoth?se de l'atteinte du taux de transition
+initial, la population de l'Allier augmenterait progressivement au cours des 20
+ans, avec une probabilit? quasi nulle d'observer moins de 500 individus ? Vichy.
+
+\section{Projet de transfert}
+L'op?ration de transfert du mod?le de dynamique de population de
+l'INRA vers le Tableau de bord SALT, s'est d?roul?e conform?ment ? la fiche projet (Annexe
+\ref{Annexe1}). A l'issu de l'ann?e 2014, le mod?le a ?t? mis ? jour, des
+am?liorations et corrections ont ?t? apport?es, des nouveaux sc?narios de
+gestion li?s au r?am?nagement futur du barrage de Pout?s ont ?t? d?velopp?s et
+une organisation s'est mise en place (constitution d'un comit? de suivi,
+collaboration INRA -- Tableau de bord SALT, etc.). Ce projet a donc montr? tout
+l'int?r?t de ce type de d?marche permettant de continuer ? faire vivre des
+outils mis en place par un organisme scientifique pour r?pondre ? des questions
+de gestion. L'int?r?t des acteurs locaux pour la poursuite du d?veloppement du
+mod?le et les nombreuses propositions de d?veloppement (cf. Annexe
+\ref{Annexe2}), est en ce sens un indicateur positif fort.
+
+
+
+
+\clearpage
+
+\bibliographystyle{cjfas}
+\bibliography{rapport_transfert}
+
+%\printglossaries
+\clearpage
+\appendix
+
+\chapter{Pr?sentation de la fiche-projet du transfert du mod?le de
+dynamique de population}
+\label{Annexe1}
+\includepdf[pages=-]{Fiche_Transfert_Modele_Allier_2014_V2.pdf}
+\clearpage
+
+\chapter{Relev?s de d?cisions des r?unions du groupe de suivi du projet
+de mod?lisation}
+\label{Annexe2}
+%\includegraphics{2014_07_22_ReleveDecision.pdf}
+\includepdf[pages=-]{2014_07_22_ReleveDecision.pdf}
+\includepdf[pages=-]{2014_11_19_ReleveDecision_non_valide.pdf}
+\clearpage
+
+
+\chapter{Densit?s pr?dites pour un
+nombre de tacons 0+ captur? en 5 minutes}
+\label{Annexe4}
+<<Calibration_tab, echo=FALSE, eval=FALSE, results=hide>>=
+
+tab<-round(d_fake_q,2)
+rownames(tab)<-seq(1,300,by=1)
+colnames(tab)<-c("2,5%","25%","50%","75%","97,5%")
+
+#tabl<-latex(tab,title="densit? pr?dite 0+/m2 (quantiles)",
+#		rowname=seq(1,300,by=1),
+#		rowlabel="P?che 5min",
+#		where="ht",
+#		col.just=strsplit("p{1cm} p{2cm} p{2cm} p{2cm} p{2cm} p{2cm}", " ")[[1]],	
+#		label="prediction_IA",
+#		longtable=TRUE,
+#		lines.page=45,
+#		caption="densit? pr?dite 0+/m2 (quantiles)",	
+#		file=str_c(tabwd,"prediction_IA.tex"))
+write.table(tab,"C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/tab/2015_01_24_thin200/predictionIA.csv",sep=";")
+@
+\includepdf[pages=-,nup=2x2,scale=1]{\Sexpr{tabwd}predictionIA.pdf}
+
+\chapter{Pr?sentation des param?tres estim?s par le mod?le}
+\label{Annexe3}
+\includepdf[pages=-,nup=1x2,landscape=true]{SortieOpenbugs_parameters.pdf}
+\clearpage
+
+\chapter{Code du mod?le 2015.01.24}
+\label{Annexe5}
+
+\includepdf[pages=-,nup=1x2,landscape=true]{model_Annexe5.pdf}
+
+
+<<retour_futur, echo=FALSE, eval=FALSE,results=hide >>=
+#taking coda of the first 6 years of Returns to Vichy
+N_vichy_inits=read.coda(str_c(datawd,"N_VichyCODAchain1.txt"),str_c(datawd,"N_VichyCODAindex.txt"))
+#taking coda of the first 6 years of p_langeac
+p_langeac_inits=read.coda(str_c(datawd,"p_langeacCODAchain1.txt"),str_c(datawd,"p_langeacCODAindex.txt"))
+#others parameters required
+s_juv2ad=read.coda(str_c(datawd,"s_juv2adCODAchain1.txt"),str_c(datawd,"s_juv2adCODAindex.txt"))
+surf=c(rep(c(916866,250441,0),11),rep(c(916866,250441,301101),12),rep(c(916866,250441,383049),6),rep(c(1202540,250441,383049),31))
+S_juv_JP<-matrix(surf,nrow=3)
+level_s=read.coda(str_c(datawd,"simulation/level_sCODAchain1.txt"),str_c(datawd,"simulation/level_sCODAindex.txt")) 
+I_surv=read.coda(str_c(datawd,"simulation/I_survCODAchain1.txt"),str_c(datawd,"simulation/I_survCODAindex.txt"))
+rho_station=read.coda(str_c(datawd,"rho_stationCODAchain1.txt"),str_c(datawd,"rho_stationCODAindex.txt"))
+alpha_dd=read.coda(str_c(datawd,"simulation/alpha_ddCODAchain1.txt"),str_c(datawd,"simulation/alpha_ddCODAindex.txt"))
+beta_dd=read.coda(str_c(datawd,"simulation/beta_ddCODAchain1.txt"),str_c(datawd,"simulation/beta_ddCODAindex.txt"))
+nu_wild=read.coda(str_c(datawd,"nu_wildCODAchain1.txt"),str_c(datawd,"nu_wildCODAindex.txt"))
+res_wild_vichy=read.coda(str_c(datawd,"simulation/res_wild_vichyCODAchain1.txt"),str_c(datawd,"simulation/res_wild_vichyCODAindex.txt"))
+res_wild_langeac=read.coda(str_c(datawd,"simulation/res_wild_langeacCODAchain1.txt"),str_c(datawd,"simulation/res_wild_langeacCODAindex.txt "))
+res_wild_poutes=read.coda(str_c(datawd,"simulation/res_wild_poutesCODAchain1.txt"),str_c(datawd,"simulation/res_wild_poutesCODAindex.txt "))
+
+S_vichy=array(0,dim=c(5000,T))
+S_langeac=array(0,dim=c(5000,T))
+S_poutes=array(0,dim=c(5000,T))
+
+N_langeac=array(0,dim=c(5000,T))
+N_poutes=array(0,dim=c(5000,T))
+
+d_moy_vichy=array(0,dim=c(5000,T+1))
+d_moy_langeac=array(0,dim=c(5000,T+1))
+d_moy_poutes=array(0,dim=c(5000,T+1))
+
+juv_vichy=array(0,dim=c(5000,T+1))
+juv_langeac=array(0,dim=c(5000,T+1))
+juv_poutes=array(0,dim=c(5000,T+1))
+
+juv_tot_vichy=array(0,dim=c(5000,T+1))
+juv_tot_langeac=array(0,dim=c(5000,T+1))
+juv_tot_poutes=array(0,dim=c(5000,T+1))
+juv_tot_system=array(0,dim=c(5000,T+1))
+
+ratio_habitat=array(0,dim=c(3,T+20))
+
+for (t in 1:(T+20)){
+	for (i in 1:3){
+		ratio_habitat[i,t] <- S_juv_JP[i,t] /( S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t])
+	}
+}
+
+ratio_juv_prod_V=array(rep(0,T*5000),dim=c(5000,T))
+ratio_juv_prod_L=array(rep(0,T*5000),dim=c(5000,T))
+ratio_juv_prod_P=array(rep(0,T*5000),dim=c(5000,T))
+
+ratio_juv_V=array(rep(0,T*5000),dim=c(5000,T))
+ratio_juv_L=array(rep(0,T*5000),dim=c(5000,T))
+ratio_juv_P=array(rep(0,T*5000),dim=c(5000,T))
+
+res_p_langeac=read.coda(str_c(datawd,"simulation/res_p_langeacCODAchain1.txt"),str_c(datawd,"simulation/res_p_langeacCODAindex.txt"))
+res_p_poutes=read.coda(str_c(datawd,"simulation/res_p_poutesCODAchain1.txt"),str_c(datawd,"simulation/res_p_poutesCODAindex.txt "))
+
+adjust_p_L=read.coda(str_c(datawd,"simulation/adjust_p_LCODAchain1.txt"),str_c(datawd,"simulation/adjust_p_LCODAindex.txt"))
+adjust_p_P=read.coda(str_c(datawd,"simulation/adjust_p_PCODAchain1.txt"),str_c(datawd,"simulation/adjust_p_PCODAindex.txt"))
+
+p_langeac=array(0,185,dim=c(5000,T))
+p_poutes=array(0,185,dim=c(5000,T))
+
+N_vichy=array(0,185,dim=c(5000,T))
+
+res_vichy=read.coda(str_c(datawd,"simulation/res_vichyCODAchain1.txt"),str_c(datawd,"simulation/res_vichyCODAindex.txt"))
+juv_tot_sys=read.coda(str_c(datawd,"simulation/juv_tot_sysCODAchain1.txt"),str_c(datawd,"simulation/juv_tot_sysCODAindex.txt"))
+ratio_juv_prod_L_inits=read.coda(str_c(datawd,"simulation/ratio_juv_prod_LCODAchain1.txt"),str_c(datawd,"simulation/ratio_juv_prod_LCODAindex.txt"))
+p_reach_V=read.coda(str_c(datawd,"p_reach_VCODAchain1.txt"),str_c(datawd,"p_reach_VCODAindex.txt"))
+
+C_dwn=c(
+		420,439,77,124,190,
+		318,819,388,169,286,
+		438,614,385,731,260,
+		196,0,0,0,0,
+		0,0,0,0,0,
+		0,0,0,0,0,
+		0,0,0,0,0,
+		0,0,0,0)
+
+
+C_up=c(
+		1190,700,315,220,200,
+		1280,514,1163,410,314,
+		807,72,91,425,140,
+		88,135,110,112,0,
+		0,0,0,0,0,
+		0,0,0,0,0,
+		0,0,0,0,0,
+		0,0,0,0)
+
+
+dmoy_tot_V=read.coda(str_c(datawd,"dmoytot_VCODAchain1.txt"),str_c(datawd,"dmoytot_VCODAindex.txt"))
+dmoy_tot_L=read.coda(str_c(datawd,"dmoytot_LCODAchain1.txt"),str_c(datawd,"dmoytot_LCODAindex.txt"))
+dmoy_tot_P=read.coda(str_c(datawd,"dmoytot_PCODAchain1.txt"),str_c(datawd,"dmoytot_PCODAindex.txt"))
+
+dmoy_wild_V=read.coda(str_c(datawd,"dmoywild_VCODAchain1.txt"),str_c(datawd,"dmoywild_VCODAindex.txt"))
+dmoy_wild_L=read.coda(str_c(datawd,"dmoywild_LCODAchain1.txt"),str_c(datawd,"dmoywild_LCODAindex.txt"))
+dmoy_wild_P=read.coda(str_c(datawd,"dmoywild_PCODAchain1.txt"),str_c(datawd,"dmoywild_PCODAindex.txt"))
+
+ratio_wild=array(0,dim=c(5000,T))
+
+for (t in 7:15){
+	for (i in 1:5000){	
+		ratio_wild[i,t] = (dmoy_wild_V[i,t-6] + dmoy_wild_L[i,t-6] + dmoy_wild_V[i,t-5] + dmoy_wild_L[i,t-5] + dmoy_wild_V[i,t-4] + dmoy_wild_L[i,t-4]) / (dmoy_tot_V[i,t-6] + dmoy_tot_L[i,t-6] + dmoy_tot_V[i,t-5] + dmoy_tot_L[i,t-5] +dmoy_tot_V[i,t-4] + dmoy_tot_L[i,t-4])
+	}
+}
+
+for (t in 16:16){
+	for (i in 1:5000){	
+		ratio_wild[i,t] = (dmoy_wild_V[i,t-6] + dmoy_wild_L[i,t-6] + dmoy_wild_V[i,t-5] + dmoy_wild_L[i,t-5] + dmoy_wild_V[i,t-4] + dmoy_wild_L[i,t-4] + dmoy_wild_P[i,t-13]) / (dmoy_tot_V[i,t-6] + dmoy_tot_L[i,t-6] + dmoy_tot_V[i,t-5] + dmoy_tot_L[i,t-5] +dmoy_tot_V[i,t-4] + dmoy_tot_L[i,t-4]+ dmoy_tot_P[i,t-13])
+	}
+}
+
+for (t in 17:17){
+	for (i in 1:5000){	
+		ratio_wild[i,t] = (dmoy_wild_V[i,t-6] + dmoy_wild_L[i,t-6] + dmoy_wild_V[i,t-5] + dmoy_wild_L[i,t-5]+ dmoy_wild_P[i,t-14] + dmoy_wild_V[i,t-4] + dmoy_wild_L[i,t-4] + dmoy_wild_P[i,t-13]) / (dmoy_tot_V[i,t-6] + dmoy_tot_L[i,t-6] + dmoy_tot_V[i,t-5] + dmoy_tot_L[i,t-5]+ dmoy_tot_P[i,t-14] +dmoy_tot_V[i,t-4] + dmoy_tot_L[i,t-4]+ dmoy_tot_P[i,t-13])
+	}
+}
+
+for (t in 18:39){
+	for (i in 1:5000){	
+		ratio_wild[i,t] = (dmoy_wild_V[i,t-6] + dmoy_wild_L[i,t-6]+ dmoy_wild_P[i,t-15] + dmoy_wild_V[i,t-5] + dmoy_wild_L[i,t-5]+ dmoy_wild_P[i,t-14] + dmoy_wild_V[i,t-4] + dmoy_wild_L[i,t-4] + dmoy_wild_P[i,t-13]) / (dmoy_tot_V[i,t-6] + dmoy_tot_L[i,t-6] + dmoy_tot_P[i,t-15]+ dmoy_tot_V[i,t-5] + dmoy_tot_L[i,t-5]+ dmoy_tot_P[i,t-14] +dmoy_tot_V[i,t-4] + dmoy_tot_L[i,t-4]+ dmoy_tot_P[i,t-13])
+	}
+}
+
+rho_poutes=read.coda(str_c(datawd,"rho_poutesCODAchain1.txt"),str_c(datawd,"rho_poutesCODAindex.txt"))
+
+for (t in 1:6){
+	for (i in 1:5000){ 
+		
+		N_langeac[i,t]=p_langeac_inits[i,t]* (N_vichy_inits[i,t]-C_up[t]-p_reach_V[i] * C_dwn[t])
+		
+		S_vichy[i,t]= N_vichy_inits[i,t]-N_langeac[i,t]-C_up[t]-p_reach_V[i] * C_dwn[t]
+		S_langeac[i,t]= N_langeac[i,t]
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+				
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+	}
+}
+
+
+for (t in 7:7){
+	for (i in 1:5000){
+		
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] 
+		
+		ratio_juv_prod_L[i,t] =  juv_tot_langeac[i,t] / ( juv_tot_vichy[i,t] + juv_tot_langeac[i,t] )
+		ratio_juv_prod_V[i,t] =1 - ratio_juv_prod_L[i,t]	
+		
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] )
+		
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * 1  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]= N_langeac[i,t]
+		
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+		
+	}
+}
+
+
+for (t in 8:11){
+	for (i in 1:5000){
+		
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] 
+		
+		ratio_juv_prod_L[i,t] =  juv_tot_langeac[i,t] / ( juv_tot_vichy[i,t] + juv_tot_langeac[i,t] )
+		ratio_juv_prod_V[i,t] =1 - ratio_juv_prod_L[i,t]	
+		
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] )
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]= N_langeac[i,t]
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+		
+	}
+}
+
+for (t in 12:14){
+	for (i in 1:5000){
+		
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] 			
+		
+		ratio_juv_prod_L[i,t] =  juv_tot_langeac[i,t] / ( juv_tot_vichy[i,t] + juv_tot_langeac[i,t] )
+		ratio_juv_prod_V[i,t] =1 - ratio_juv_prod_L[i,t]
+		
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] )
+		
+		ratio_juv_prod_P[i,t] = 0
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] ) 
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=p_poutes[i,t]*N_langeac[i,t]	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1]= exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) )) * exp(nu_wild[i,3]))+ res_wild_poutes[i,t] ))
+		
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]#2014.12.02 Attention S_juv_JP ?tait en t au lieu de t+1
+	}
+	
+}
+
+for (t in 15:15){
+	for (i in 1:5000){
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] 	
+		
+		ratio_juv_prod_L[i,t] =  juv_tot_langeac[i,t] / ( juv_tot_vichy[i,t] + juv_tot_langeac[i,t] )
+		ratio_juv_prod_V[i,t] =1 - ratio_juv_prod_L[i,t]
+		
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] )
+		
+		ratio_juv_prod_P[i,t] = 0
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] ) 
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		N_poutes[i,t]=p_poutes[i,t]*N_langeac[i,t]	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1]= exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) )) * exp(nu_wild[i,3]))+ res_wild_poutes[i,t] ))
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]
+	}
+	
+}
+
+for (t in 16:16){
+	for (i in 1:5000){
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3] 	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t] 
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+		
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=p_poutes[i,t]*N_langeac[i,t]	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1]= exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) )) * exp(nu_wild[i,3]))+ res_wild_poutes[i,t] ))		
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]
+	}
+}
+
+
+for (t in 17:17){	
+	for (i in 1:5000){
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3] + rho_poutes[i]*(1/3) * juv_poutes[i,t-4] 	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t] 
+		
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+		
+		
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=p_poutes[i,t]*N_langeac[i,t]	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		
+		d_moy_vichy[i,t+1]  = exp((log(((S_vichy[i,t]/S_juv_JP[1,t])   / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) ))   * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1] = exp((log(((S_poutes[i,t]/S_juv_JP[3,t])  / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) ))  * exp(nu_wild[i,3]))+ res_wild_poutes[i,t] ))
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]
+		
+	}
+}
+
+for (t in 18:21){
+	for (i in 1:5000){	
+		juv_tot_vichy[i,t]  = (1/3) * juv_vichy[i,t-3]   + (1/3) * juv_vichy[i,t-4]   + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t]= (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3]  + rho_poutes[i]*(1/3) * juv_poutes[i,t-4]  + rho_poutes[i]*(1/3) * juv_poutes[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t]
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+		
+		
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )
+		
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = (1/3) * juv_poutes[i,t-3] + (1/3) * juv_poutes[i,t-4] + (1/3) * juv_poutes[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=p_poutes[i,t]*N_langeac[i,t]	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1]= exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) )) * exp(nu_wild[i,3]))+ res_wild_poutes[i,t-11] ))
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]
+	}
+}
+
+
+
+for (t in 22:24){
+	for (i in 1:5000){	
+		juv_tot_vichy[i,t]  = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t]= (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3] + rho_poutes[i]*(1/3) * juv_poutes[i,t-4] + rho_poutes[i]*(1/3) * juv_poutes[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t] 
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+		
+		
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )	
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=p_poutes[i,t]*N_langeac[i,t]	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1]= exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) )) * exp(nu_wild[i,3]))+ res_wild_poutes[i,t-11] ))
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]
+	}
+}
+
+
+for (t in 25:27){
+	for (i in 1:5000){	
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3] + rho_poutes[i]*(1/3) * juv_poutes[i,t-4] + rho_poutes[i]*(1/3) * juv_poutes[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t] 
+		
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+		
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )	
+	
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=p_langeac[i,t]* max( N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=p_poutes[i,t]*N_langeac[i,t]	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		
+		d_moy_vichy[i,t+1]  = exp((log(((S_vichy[i,t]/S_juv_JP[1,t])  / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) ))   * exp(nu_wild[i,1])) + res_wild_vichy[i,t]    ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t])/ (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2])) + res_wild_langeac[i,t]  ))
+		d_moy_poutes[i,t+1] = exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) ))  * exp(nu_wild[i,3])) + res_wild_poutes[i,t-11]))
+		
+		juv_vichy[i,t+1]  =d_moy_vichy[i,t+1]  *S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1] =d_moy_poutes[i,t+1] *S_juv_JP[3,t+1]
+	}
+}
+
+for (t in 28:31){
+	for (i in 1:5000){	
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3] + rho_poutes[i]*(1/3) * juv_poutes[i,t-4] + rho_poutes[i]*(1/3) * juv_poutes[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t] 
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+		
+		
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )	
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=max(p_langeac[i,t]*  N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=max(p_poutes[i,t]*N_langeac[i,t],1)	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1]= exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) )) * exp(nu_wild[i,3]))+ res_wild_poutes[i,t-11] ))
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]
+	}
+}
+
+for (t in 32:34){
+	for (i in 1:5000){	
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3] + rho_poutes[i]*(1/3) * juv_poutes[i,t-4] + rho_poutes[i]*(1/3) * juv_poutes[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t]
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+				
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )	
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=max(p_langeac[i,t]*  N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=max(p_poutes[i,t]*N_langeac[i,t],1)	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+		
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1]= exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) )) * exp(nu_wild[i,3]))+ res_wild_poutes[i,t-11] ))
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]
+	}
+}
+
+for (t in 35:36){
+	for (i in 1:5000){	
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3] + rho_poutes[i]*(1/3) * juv_poutes[i,t-4] + rho_poutes[i]*(1/3) * juv_poutes[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t] 
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+		
+		
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )	
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		N_langeac[i,t]=max(p_langeac[i,t]*  N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		
+		N_poutes[i,t]=max(p_poutes[i,t]*N_langeac[i,t],1)
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+	
+		d_moy_vichy[i,t+1]= exp((log(((S_vichy[i,t]/S_juv_JP[1,t]) / (alpha_dd[i] + beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) * exp(nu_wild[i,1]))+ res_wild_vichy[i,t] ))
+		d_moy_langeac[i,t+1]= exp((log(((S_langeac[i,t]/S_juv_JP[2,t]) / (alpha_dd[i] + beta_dd[i] * (S_langeac[i,t]/S_juv_JP[2,t]) )) * exp(nu_wild[i,2]))+ res_wild_langeac[i,t] ))
+		d_moy_poutes[i,t+1]= exp((log(((S_poutes[i,t]/S_juv_JP[3,t]) / (alpha_dd[i] + beta_dd[i] * (S_poutes[i,t]/S_juv_JP[3,t]) )) * exp(nu_wild[i,3]))+ res_wild_poutes[i,t-11] ))
+		
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[2,t+1]
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[3,t+1]
+	}
+}
+
+for (t in 37:T){
+	for (i in 1:5000){	
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = rho_poutes[i]*(1/3) * juv_poutes[i,t-3] + rho_poutes[i]*(1/3) * juv_poutes[i,t-4] + rho_poutes[i]*(1/3) * juv_poutes[i,t-5]	
+		
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]
+		
+		ratio_juv_prod_L[i,t] =  (juv_tot_langeac[i,t] + juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t] +juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_V[i,t] =1 - ratio_juv_prod_L[i,t] 
+		
+		ratio_juv_L[i,t]= rho_station[i] * (ratio_habitat[2,t]+ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_L[i,t]
+		
+		p_langeac[i,t]=inv.logit( logit(ratio_juv_L[i,t]) + adjust_p_L[i] + res_p_langeac[i,t] ) 
+		
+		
+		ratio_juv_prod_P[i,t] =  juv_tot_poutes[i,t] / (juv_tot_langeac[i,t] + juv_tot_poutes[i,t] )
+		ratio_juv_P[i,t]= rho_station[i] * (ratio_habitat[3,t]) + (1 -  rho_station[i]) * ratio_juv_prod_P[i,t]
+		
+		p_poutes[i,t]=inv.logit( logit(ratio_juv_P[i,t]) + adjust_p_P[i] + res_p_poutes[i,t-11] )	
+		
+		
+		N_vichy[i,t]=exp( log( exp(level_s[i] * I_surv[i,t-7]  ) *s_juv2ad[i] * juv_tot_system[i,t]) +res_vichy[i,t-6] )
+		
+		
+		temp=p_langeac[i,t]*  N_vichy[i,t] - ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t])
+		N_langeac[i,t]=max(temp,1)
+		
+		N_poutes[i,t]=max(p_poutes[i,t]*N_langeac[i,t],1)	
+		
+		S_vichy[i,t]= max(N_vichy[i,t]-N_langeac[i,t]- ratio_wild[i,t] *(C_up[t]+p_reach_V[i] * C_dwn[t]),1)
+		S_langeac[i,t]=max( N_langeac[i,t]-N_poutes[i,t],1)
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		
+	}
+}
+save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/data/2015_01_24_AnalyseRetro_2015.02.09.RData")
+@
+
+\end{document}

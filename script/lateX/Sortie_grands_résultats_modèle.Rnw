@@ -1,0 +1,892 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage[utf8]{inputenc} %encodage du fichier source
+\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf) 
+\usepackage[french]{babel}
+\usepackage{float}
+\usepackage[document]{ragged2e} % pour que le texte soit aligné à gauche
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage{amsmath} % equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption} % pour les subfigures
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\pagestyle{empty}
+
+
+\title{Sortie des principaux résultats du modèle 2025\_07 (avec mise à jour des
+données jusqu'en 2024)}
+\author{Marion LEGRAND - LOGRAMI}
+
+\begin{document}
+
+\maketitle
+
+
+<< init, echo=FALSE, eval=TRUE,results=hide >>=
+#datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+#imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+#tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+
+datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2025_07/"
+imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/"
+tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/"
+
+#quand on lance sous eclipse le setwd n'est pas défini (va sur C:/WINDOWS/system32)
+#ça met la zone quand on lance la fonction bugs2jags. On définit le setwd au niveau
+#du datawd pour qu'il enregistre le data_model.R au bon endroit
+setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2025_07/")
+
+library(coda)
+library(boot)
+library(stringr)
+require(xtable)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+#pour les anciens modèles (avant maj données 2021-2022
+#surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-8)))
+
+bugs2jags(str_c(datawd,"data.txt"),"data_model.R")
+source("data_model.R")
+S_juv_JP<-t(S_juv_JP)	
+
+@
+
+\section{Production en juvéniles}
+<< production_juveniles, echo=FALSE, eval=TRUE,results=hide >>=
+
+dmoy_tot_V=read.coda(str_c(datawd,"dmoytot_VCODAchain1.txt"),str_c(datawd,"dmoytot_VCODAindex.txt"))
+dmoy_tot_A=read.coda(str_c(datawd,"dmoytot_ACODAchain1.txt"),str_c(datawd,"dmoytot_ACODAindex.txt"))
+dmoy_tot_L=read.coda(str_c(datawd,"dmoytot_LCODAchain1.txt"),str_c(datawd,"dmoytot_LCODAindex.txt"))
+dmoy_tot_P=read.coda(str_c(datawd,"dmoytot_PCODAchain1.txt"),str_c(datawd,"dmoytot_PCODAindex.txt"))
+
+juv_tot=array(rep(0,(10000*T)),dim=c(10000,T))#296000
+juv_tot_q=array(rep(0,T*5),dim=c(T,5))
+
+for (t in 2:12){
+	juv_tot[,t]= dmoy_tot_V[,t-1] * S_juv_JP[1,t] + dmoy_tot_A[,t-1] * S_juv_JP[2,t] + dmoy_tot_L[,t-1] * S_juv_JP[3,t]
+}
+for (t in 13:T){
+	juv_tot[,t]= dmoy_tot_V[,t-1] * S_juv_JP[1,t] + dmoy_tot_A[,t-1] * S_juv_JP[2,t] + dmoy_tot_L[,t-1] *S_juv_JP[3,t] + dmoy_tot_P[,t-12] * S_juv_JP[4,t]	
+}
+
+for (i in 1:T){
+	juv_tot_q[i,]=quantile(juv_tot[,i],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
+}
+
+
+max(juv_tot_q)#487582.5
+mean(juv_tot_q[,3])#170850.1
+mean(juv_tot_q[(T-4):T,3])#204350.9
+mean(juv_tot)#178155.5
+mean(juv_tot[,(T-4):T])#207356.5
+
+png(file=str_c(imgwd,"production_juveniles.png"),width=800,height=800)
+par(mar = c(5, 4, 4, 5) + 0.1) #on augmente la marge à droite pour qu'on puisse lire en entier le chiffre moyen de production
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Années",ylim=c(0,500000),ylab="")
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,100000,200000,300000,400000,500000),
+		labels=c(
+				expression(0),
+				expression(paste(100," x ", 10^3)),
+				expression(paste(200," x ", 10^3)),
+				expression(paste(300," x ", 10^3)),
+				expression(paste(400," x ", 10^3)),
+				expression(paste(500," x ", 10^3))),
+		cex.axis = 0.8,las = 1,col = "grey55")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,1974+T)
+axis(1,at = c(1,6,16,26,T),
+		labels=lab1,
+		cex.axis = 0.9,las = 1,col = "grey55")
+
+for(i in 2:T){
+	#whiskers
+	#95%
+	segments(i-0.15,juv_tot_q[i,5],i+0.15,juv_tot_q[i,5])
+	segments(i,juv_tot_q[i,4],i,juv_tot_q[i,5])
+	#5%
+	segments(i-0.15,juv_tot_q[i,1],i+0.15,juv_tot_q[i,1])
+	segments(i,juv_tot_q[i,2],i,juv_tot_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(juv_tot_q[i,2],juv_tot_q[i,2],juv_tot_q[i,4],juv_tot_q[i,4]),col="grey85")
+	#median
+	segments(i-0.3,juv_tot_q[i,3],i+0.3,juv_tot_q[i,3])
+}
+segments(x0=0,y0=mean(juv_tot),y1=mean(juv_tot),x1=T+1,col="red")
+mtext(round(mean(juv_tot),0),side=4,line=0,at=mean(juv_tot),cex = 0.8,col="red",las=1)
+
+dev.off()
+
+#on crée le tableau avec les valeurs
+tabl <- as.data.frame(juv_tot_q)
+colnames(tabl) <- c("2.5%","25%","50%","75%","97.5%")
+rownames(tabl) <- 1975:(1974+T)
+tabl <- tabl[-1,]
+
+tabl[] <- lapply(tabl, function(x) as.integer(round(x))) #on arrondit pour avoir des nombres entiers de poissons
+
+
+# Capturer la table en LaTeX dans une variable
+tab <- xtable(x = tabl, label = "prod_juv", caption = "Production totale de juveniles (sauvages + elevage)")
+
+# Convertir en chaîne LaTeX
+table_latex <- print(tab, include.rownames = TRUE, print.results = FALSE)
+
+# Remplacer les valeurs de la colonne "50%" par la version en gras. Attention comme il y a un rowname la colonne du milieu devient la 4eme
+table_latex <- gsub("([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+)",
+		"\\1 & \\2 & \\3 & \\\\textbf{\\4} ", 
+		table_latex)
+
+# Sauvegarder dans un fichier
+writeLines(table_latex, con = str_c(tabwd, "prod_juv.tex"))
+@
+
+\begin{figure}[ht]
+     \includegraphics[width=0.9\textwidth]{\Sexpr{imgwd}production_juveniles.png}
+     \caption{Production totale en juvéniles 0+ (sauvages + déversés) sur l'ensemble des secteurs du modèle}
+     \label{prod_juv_tot} 
+\end{figure}
+
+\input{\Sexpr{tabwd}prod_juv.tex}
+
+\clearpage
+
+\subsection{Production en juvéniles sur le secteur Vichy-Langeac}
+
+<< production_juv_VL, echo=FALSE, eval=TRUE,results=hide >>=
+dmoy_tot_V=read.coda(str_c(datawd,"dmoytot_VCODAchain1.txt"),str_c(datawd,"dmoytot_VCODAindex.txt"))
+
+juv_tot_V=array(rep(0,10000*T),dim=c(10000,T))#296000
+juv_tot_V_q=array(rep(0,T*5),dim=c(T,5))
+
+for (t in 2:T){
+	juv_tot_V[,t]= dmoy_tot_V[,t-1] * S_juv_JP[1,t]
+}
+
+for (i in 1:T){
+	juv_tot_V_q[i,]=quantile(juv_tot_V[,i],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
+}
+
+png(file=str_c(imgwd,"production_juveniles_Vichy_Langeac.png"),width=800,height=800)
+par(mar = c(5, 4, 4, 5) + 0.1) #on augmente la marge à droite pour qu'on puisse lire en entier le chiffre moyen de production
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Années",ylim=c(0,350000),ylab="")
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,100000,200000,300000),
+		labels=c(
+				expression(0),
+				expression(paste(100," x ", 10^3)),
+				expression(paste(200," x ", 10^3)),
+				expression(paste(300," x ", 10^3))),
+		cex.axis = 0.8,las = 1,col = "grey55")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,1974+T)
+axis(1,at = c(1,6,16,26,T),
+		labels=lab1,
+		cex.axis = 0.9,las = 1,col = "grey55")
+
+for(i in 2:T){
+	#whiskers
+	#95%
+	segments(i-0.15,juv_tot_V_q[i,5],i+0.15,juv_tot_V_q[i,5])
+	segments(i,juv_tot_V_q[i,4],i,juv_tot_V_q[i,5])
+	#5%
+	segments(i-0.15,juv_tot_V_q[i,1],i+0.15,juv_tot_V_q[i,1])
+	segments(i,juv_tot_V_q[i,2],i,juv_tot_V_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(juv_tot_V_q[i,2],juv_tot_V_q[i,2],juv_tot_V_q[i,4],juv_tot_V_q[i,4]),col="grey85")
+	#median
+	segments(i-0.3,juv_tot_V_q[i,3],i+0.3,juv_tot_V_q[i,3])
+}
+segments(x0=0,y0=mean(juv_tot_V),y1=mean(juv_tot_V),x1=T+1,col="red")
+mtext(round(mean(juv_tot_V),0),side=4,line=0,at=mean(juv_tot_V),cex = 0.8,col="red",las=1)
+
+dev.off()
+
+#on crée le tableau avec les valeurs
+tabl <- as.data.frame(juv_tot_V_q)
+colnames(tabl) <- c("2.5%","25%","50%","75%","97.5%")
+rownames(tabl) <- 1975:(1974+T)
+tabl <- tabl[-1,]
+
+tabl[] <- lapply(tabl, function(x) as.integer(round(x))) #on arrondit pour avoir des nombres entiers de poissons
+
+
+# Capturer la table en LaTeX dans une variable
+tab <- xtable(x = tabl, label = "prod_juv_V", caption = "Production totale de juveniles (sauvages + elevage) sur le secteur Vichy-Langeac")
+
+# Convertir en chaîne LaTeX
+table_latex <- print(tab, include.rownames = TRUE, print.results = FALSE)
+
+# Remplacer les valeurs de la colonne "50%" par la version en gras. Attention comme il y a un rowname la colonne du milieu devient la 4eme
+table_latex <- gsub("([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+)",
+		"\\1 & \\2 & \\3 & \\\\textbf{\\4} ", 
+		table_latex)
+
+# Sauvegarder dans un fichier
+writeLines(table_latex, con = str_c(tabwd, "prod_juv_V.tex"))
+@
+
+\begin{figure}[ht]
+     \includegraphics[width=\textwidth]{\Sexpr{imgwd}production_juveniles_Vichy_Langeac.png}
+     \caption{Production totale en juvéniles 0+ (sauvages + déversés) sur le
+     secteur Vichy-Langeac}
+     \label{prod_juv_V_tot} 
+\end{figure}
+
+\input{\Sexpr{tabwd}prod_juv_V.tex}
+
+\clearpage
+
+\subsection{Production en juvéniles sur la rivière Alagnon}
+
+<< production_juv_Ala, echo=FALSE, eval=TRUE,results=hide >>=
+dmoy_tot_A=read.coda(str_c(datawd,"dmoytot_ACODAchain1.txt"),str_c(datawd,"dmoytot_ACODAindex.txt"))
+
+juv_tot_A=array(rep(0,10000*T),dim=c(10000,T))#296000
+juv_tot_A_q=array(rep(0,T*5),dim=c(T,5))
+
+for (t in 2:T){
+	juv_tot_A[,t]= dmoy_tot_A[,t-1] * S_juv_JP[2,t]
+}
+
+for (i in 1:T){
+	juv_tot_A_q[i,]=quantile(juv_tot_A[,i],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
+}
+
+png(file=str_c(imgwd,"production_juveniles_Alagnon.png"),width=800,height=800)
+par(mar = c(5, 4, 4, 5) + 0.1) #on augmente la marge à droite pour qu'on puisse lire en entier le chiffre moyen de production
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Années",ylim=c(0,200000),ylab="")
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,50000,100000,150000,200000),
+		labels=c(
+				expression(0),
+				expression(paste(50," x ", 10^3)),
+				expression(paste(100," x ", 10^3)),
+				expression(paste(150," x ", 10^3)),
+				expression(paste(200," x ", 10^3))),
+		cex.axis = 0.8,las = 1,col = "grey55")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,1974+T)
+axis(1,at = c(1,6,16,26,T),
+		labels=lab1,
+		cex.axis = 0.9,las = 1,col = "grey55")
+
+for(i in 2:T){
+	#whiskers
+	#95%
+	segments(i-0.15,juv_tot_A_q[i,5],i+0.15,juv_tot_A_q[i,5])
+	segments(i,juv_tot_A_q[i,4],i,juv_tot_A_q[i,5])
+	#5%
+	segments(i-0.15,juv_tot_A_q[i,1],i+0.15,juv_tot_A_q[i,1])
+	segments(i,juv_tot_A_q[i,2],i,juv_tot_A_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(juv_tot_A_q[i,2],juv_tot_A_q[i,2],juv_tot_A_q[i,4],juv_tot_A_q[i,4]),col="grey85")
+	#median
+	segments(i-0.3,juv_tot_A_q[i,3],i+0.3,juv_tot_A_q[i,3])
+}
+segments(x0=0,y0=mean(juv_tot_A),y1=mean(juv_tot_A),x1=T+1,col="red")
+mtext(round(mean(juv_tot_A),0),side=4,line=0,at=mean(juv_tot_A),cex = 0.8,col="red",las=1)
+
+dev.off()
+
+#on crée le tableau avec les valeurs
+tabl <- as.data.frame(juv_tot_A_q)
+colnames(tabl) <- c("2.5%","25%","50%","75%","97.5%")
+rownames(tabl) <- 1975:(1974+T)
+tabl <- tabl[-1,]
+
+tabl[] <- lapply(tabl, function(x) as.integer(round(x))) #on arrondit pour avoir des nombres entiers de poissons
+
+
+# Capturer la table en LaTeX dans une variable
+tab <- xtable(x = tabl, label = "prod_juv_A", caption = "Production totale de juveniles (sauvages + elevage) sur la riviere Alagnon")
+
+# Convertir en chaîne LaTeX
+table_latex <- print(tab, include.rownames = TRUE, print.results = FALSE)
+
+# Remplacer les valeurs de la colonne "50%" par la version en gras. Attention comme il y a un rowname la colonne du milieu devient la 4eme
+table_latex <- gsub("([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+)",
+		"\\1 & \\2 & \\3 & \\\\textbf{\\4} ", 
+		table_latex)
+
+# Sauvegarder dans un fichier
+writeLines(table_latex, con = str_c(tabwd, "prod_juv_A.tex"))
+@
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{\Sexpr{imgwd}production_juveniles_Alagnon.png}
+\caption{Production totale en juvéniles 0+ (sauvages + déversés) sur la rivière
+Alagnon}
+\label{prod_juv_A_tot} 
+\end{figure}
+
+\input{\Sexpr{tabwd}prod_juv_A.tex}
+
+\clearpage
+
+\subsection{Production en juvéniles sur le secteur Langeac-Poutès}
+
+<< production_juv_LP, echo=FALSE, eval=TRUE,results=hide >>=
+dmoy_tot_L=read.coda(str_c(datawd,"dmoytot_LCODAchain1.txt"),str_c(datawd,"dmoytot_LCODAindex.txt"))
+
+juv_tot_L=array(rep(0,10000*T),dim=c(10000,T))#296000
+juv_tot_L_q=array(rep(0,T*5),dim=c(T,5))
+
+for (t in 2:T){
+	juv_tot_L[,t]= dmoy_tot_L[,t-1] * S_juv_JP[3,t]
+}
+
+for (i in 1:T){
+	juv_tot_L_q[i,]=quantile(juv_tot_L[,i],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
+}
+
+png(file=str_c(imgwd,"production_juveniles_Langeac_Poutes.png"),width=800,height=800)
+par(mar = c(5, 4, 4, 5) + 0.1) #on augmente la marge à droite pour qu'on puisse lire en entier le chiffre moyen de production
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Années",ylim=c(0,200000),ylab="")
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,50000,100000,150000,200000),
+		labels=c(
+				expression(0),
+				expression(paste(50," x ", 10^3)),
+				expression(paste(100," x ", 10^3)),
+				expression(paste(150," x ", 10^3)),
+				expression(paste(200," x ", 10^3))),
+		cex.axis = 0.8,las = 1,col = "grey55")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,1974+T)
+axis(1,at = c(1,6,16,26,T),
+		labels=lab1,
+		cex.axis = 0.9,las = 1,col = "grey55")
+
+for(i in 2:T){
+	#whiskers
+	#95%
+	segments(i-0.15,juv_tot_L_q[i,5],i+0.15,juv_tot_L_q[i,5])
+	segments(i,juv_tot_L_q[i,4],i,juv_tot_L_q[i,5])
+	#5%
+	segments(i-0.15,juv_tot_L_q[i,1],i+0.15,juv_tot_L_q[i,1])
+	segments(i,juv_tot_L_q[i,2],i,juv_tot_L_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(juv_tot_L_q[i,2],juv_tot_L_q[i,2],juv_tot_L_q[i,4],juv_tot_L_q[i,4]),col="grey85")
+	#median
+	segments(i-0.3,juv_tot_L_q[i,3],i+0.3,juv_tot_L_q[i,3])
+}
+segments(x0=0,y0=mean(juv_tot_L),y1=mean(juv_tot_L),x1=T+1,col="red")
+mtext(round(mean(juv_tot_L),0),side=4,line=0,at=mean(juv_tot_L),cex = 0.8,col="red",las=1)
+
+dev.off()
+
+#on crée le tableau avec les valeurs
+tabl <- as.data.frame(juv_tot_L_q)
+colnames(tabl) <- c("2.5%","25%","50%","75%","97.5%")
+rownames(tabl) <- 1975:(1974+T)
+tabl <- tabl[-1,]
+
+tabl[] <- lapply(tabl, function(x) as.integer(round(x))) #on arrondit pour avoir des nombres entiers de poissons
+
+
+# Capturer la table en LaTeX dans une variable
+tab <- xtable(x = tabl, label = "prod_juv_L", caption = "Production totale de juveniles (sauvages + elevage) sur le secteur Langeac-Poutes")
+
+# Convertir en chaîne LaTeX
+table_latex <- print(tab, include.rownames = TRUE, print.results = FALSE)
+
+# Remplacer les valeurs de la colonne "50%" par la version en gras. Attention comme il y a un rowname la colonne du milieu devient la 4eme
+table_latex <- gsub("([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+)",
+		"\\1 & \\2 & \\3 & \\\\textbf{\\4} ", 
+		table_latex)
+
+# Sauvegarder dans un fichier
+writeLines(table_latex, con = str_c(tabwd, "prod_juv_L.tex"))
+@
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{\Sexpr{imgwd}production_juveniles_Langeac_Poutes.png}
+\caption{Production totale en juvéniles 0+ (sauvages + déversés) sur le secteur
+Langeac-Poutès}
+\label{prod_juv_L_tot} 
+\end{figure}
+
+\input{\Sexpr{tabwd}prod_juv_L.tex}
+
+\clearpage
+
+\subsection{Production en juvéniles par secteur - Amont Poutès}
+<< production_juv_P, echo=FALSE, eval=TRUE,results=hide >>=
+dmoy_tot_P=read.coda(str_c(datawd,"dmoytot_PCODAchain1.txt"),str_c(datawd,"dmoytot_PCODAindex.txt"))
+
+juv_tot_P=array(rep(0,10000*T),dim=c(10000,T))#296000
+juv_tot_P_q=array(rep(0,T*5),dim=c(T,5))
+
+for (t in 13:T){
+	juv_tot_P[,t]= dmoy_tot_P[,t-12] * S_juv_JP[4,t]	
+}
+
+for (i in 1:T){
+	juv_tot_P_q[i,]=quantile(juv_tot_P[,i],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
+}
+
+#on remplace les 0 par des NA
+juv_tot_P_q[juv_tot_P_q[,3]==0,] <- NA
+
+png(file=str_c(imgwd,"production_juveniles_Amont_Poutes.png"),width=800,height=800)
+par(mar = c(5, 4, 4, 5) + 0.1) #on augmente la marge à droite pour qu'on puisse lire en entier le chiffre moyen de production
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Années",ylim=c(0,150000),ylab="")
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,50000,100000,150000),
+		labels=c(
+				expression(0),
+				expression(paste(50," x ", 10^3)),
+				expression(paste(100," x ", 10^3)),
+				expression(paste(150," x ", 10^3))),
+		cex.axis = 0.8,las = 1,col = "grey55")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,1974+T)
+axis(1,at = c(1,6,16,26,T),
+		labels=lab1,
+		cex.axis = 0.9,las = 1,col = "grey55")
+
+for(i in 2:T){
+	#whiskers
+	#95%
+	segments(i-0.15,juv_tot_P_q[i,5],i+0.15,juv_tot_P_q[i,5])
+	segments(i,juv_tot_P_q[i,4],i,juv_tot_P_q[i,5])
+	#5%
+	segments(i-0.15,juv_tot_P_q[i,1],i+0.15,juv_tot_P_q[i,1])
+	segments(i,juv_tot_P_q[i,2],i,juv_tot_P_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(juv_tot_P_q[i,2],juv_tot_P_q[i,2],juv_tot_P_q[i,4],juv_tot_P_q[i,4]),col="grey85")
+	#median
+	segments(i-0.3,juv_tot_P_q[i,3],i+0.3,juv_tot_P_q[i,3])
+}
+segments(x0=0,y0=mean(juv_tot_P),y1=mean(juv_tot_P),x1=T+1,col="red")
+mtext(round(mean(juv_tot_P),0),side=4,line=0,at=mean(juv_tot_P),cex = 0.8,col="red",las=1)
+
+dev.off()
+
+#on crée le tableau avec les valeurs
+tabl <- na.omit(as.data.frame(juv_tot_P_q))
+colnames(tabl) <- c("2.5%","25%","50%","75%","97.5%")
+rownames(tabl) <- 1987:(1974+T)
+
+tabl[] <- lapply(tabl, function(x) as.integer(round(x))) #on arrondit pour avoir des nombres entiers de poissons
+
+
+# Capturer la table en LaTeX dans une variable
+tab <- xtable(x = tabl, label = "prod_juv_P", caption = "Production totale de juveniles (sauvages + elevage) sur le secteur amont Poutes")
+
+# Convertir en chaîne LaTeX
+table_latex <- print(tab, include.rownames = TRUE, print.results = FALSE)
+
+# Remplacer les valeurs de la colonne "50%" par la version en gras. Attention comme il y a un rowname la colonne du milieu devient la 4eme
+table_latex <- gsub("([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+) & ([0-9\\.]+)",
+		"\\1 & \\2 & \\3 & \\\\textbf{\\4} ", 
+		table_latex)
+
+# Sauvegarder dans un fichier
+writeLines(table_latex, con = str_c(tabwd, "prod_juv_P.tex"))
+@
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{\Sexpr{imgwd}production_juveniles_Amont_Poutes.png}
+\caption{Production totale en juvéniles 0+ (sauvages + déversés) sur le secteur
+amont Poutès}
+\label{prod_juv_P_tot} 
+\end{figure}
+
+\input{\Sexpr{tabwd}prod_juv_P.tex}
+
+\subsection{Production en juvéniles - statistiques}
+<< production_juv_stat, echo=FALSE, eval=TRUE,results=hide >>=
+#moyenne série +/- ET : sur ensemble secteur d'étude et par secteur
+#médiane série : sur ensemble secteur d'étude et par secteur
+#moyenne 5 dernières années +/- ET : sur ensemble secteur d'étude et par secteur
+#tendance par rapport aux 5 dernières années (--> tx variation) : sur ensemble secteur d'étude et par secteur
+#ratio de chacun des secteurs sur l'ensemble de la série
+#ratio de chacun des secteurs sur les 5 dernières années
+#ratio de chacun des secteurs la dernière année
+
+dmoy_tot_V=read.coda(str_c(datawd,"dmoytot_VCODAchain1.txt"),str_c(datawd,"dmoytot_VCODAindex.txt"))
+dmoy_tot_A=read.coda(str_c(datawd,"dmoytot_ACODAchain1.txt"),str_c(datawd,"dmoytot_ACODAindex.txt"))
+dmoy_tot_L=read.coda(str_c(datawd,"dmoytot_LCODAchain1.txt"),str_c(datawd,"dmoytot_LCODAindex.txt"))
+dmoy_tot_P=read.coda(str_c(datawd,"dmoytot_PCODAchain1.txt"),str_c(datawd,"dmoytot_PCODAindex.txt"))
+
+juv_tot=array(rep(0,(10000*T)),dim=c(10000,T))#296000
+juv_tot_q=array(rep(0,T*5),dim=c(T,5))
+
+for (t in 2:12){
+	juv_tot[,t]= dmoy_tot_V[,t-1] * S_juv_JP[1,t] + dmoy_tot_A[,t-1] * S_juv_JP[2,t] + dmoy_tot_L[,t-1] * S_juv_JP[3,t]
+}
+for (t in 13:T){
+	juv_tot[,t]= dmoy_tot_V[,t-1] * S_juv_JP[1,t] + dmoy_tot_A[,t-1] * S_juv_JP[2,t] + dmoy_tot_L[,t-1] *S_juv_JP[3,t] + dmoy_tot_P[,t-12] * S_juv_JP[4,t]	
+}
+
+ratio_juv_V=array(0,c(10000,T))
+ratio_juv_A=array(0,c(10000,T))
+ratio_juv_L=array(0,c(10000,T))
+ratio_juv_P=array(0,c(10000,T))
+for (t in 2:T){
+	ratio_juv_V[,t]=juv_tot_V[,t]/juv_tot[,t]
+	ratio_juv_A[,t]=juv_tot_A[,t]/juv_tot[,t]
+	ratio_juv_L[,t]=juv_tot_L[,t]/juv_tot[,t]
+	ratio_juv_P[,t]=juv_tot_P[,t]/juv_tot[,t]
+}
+
+tableau <- data.frame(moyenne_serie=c(round(mean(juv_tot_V),0),
+								   round(mean(juv_tot_A),0),
+								   round(mean(juv_tot_L),0),
+								   round(mean(juv_tot_P),0),
+								   round(mean(juv_tot),0)),
+					ET_serie=c(round(sd(juv_tot_V),0),
+							   round(sd(juv_tot_A),0),
+							   round(sd(juv_tot_L),0),
+							   round(sd(juv_tot_P),0),
+							   round(sd(juv_tot),0)),
+					moyenne_5yr=c(round(mean(juv_tot_V[,(T-5):(T-1)]),0),
+								  round(mean(juv_tot_A[,(T-5):(T-1)]),0),
+								  round(mean(juv_tot_L[,(T-5):(T-1)]),0),
+								  round(mean(juv_tot_P[,(T-5):(T-1)]),0),
+								  round(mean(juv_tot[,(T-5):(T-1)]),0)),
+				    ET_5yr=c(round(sd(juv_tot_V[,(T-5):(T-1)]),0),
+							 round(sd(juv_tot_A[,(T-5):(T-1)]),0),
+							 round(sd(juv_tot_L[,(T-5):(T-1)]),0),
+							 round(sd(juv_tot_P[,(T-5):(T-1)]),0),
+							 round(sd(juv_tot[,(T-5):(T-1)]),0)),
+					year=c(round(mean(juv_tot_V[,T]),0),
+							round(mean(juv_tot_A[,T]),0),
+							round(mean(juv_tot_L[,T]),0),
+							round(mean(juv_tot_P[,T]),0),
+							round(mean(juv_tot[,T]),0)),
+					year_sd=c(round(sd(juv_tot_V[,T]),0),
+							round(sd(juv_tot_A[,T]),0),
+							round(sd(juv_tot_L[,T]),0),
+							round(sd(juv_tot_P[,T]),0),
+							round(sd(juv_tot[,T]),0)),
+					tx_variation_5yr=c(paste(round((mean(juv_tot_V[,T])-mean(juv_tot_V[,(T-5):(T-1)]))/mean(juv_tot_V[,(T-5):(T-1)]) *100,0), "%", sep=" "), #(Valeur d'arrivée - Valeur de départ)/valeur de départ *100
+										paste(round((mean(juv_tot_A[,T])-mean(juv_tot_A[,(T-5):(T-1)]))/mean(juv_tot_A[,(T-5):(T-1)]) *100,0), "%", sep=" "),
+										paste(round((mean(juv_tot_L[,T])-mean(juv_tot_L[,(T-5):(T-1)]))/mean(juv_tot_L[,(T-5):(T-1)]) *100,0), "%", sep=" "),
+										paste(round((mean(juv_tot_P[,T])-mean(juv_tot_P[,(T-5):(T-1)]))/mean(juv_tot_P[,(T-5):(T-1)]) *100,0), "%", sep=" "),
+										paste(round((mean(juv_tot[,T])-mean(juv_tot[,(T-5):(T-1)]))/mean(juv_tot[,(T-5):(T-1)]) *100,0), "%", sep=" ")))
+tableau2 <- data.frame(
+					ratio_serie=c(round(mean(ratio_juv_V),2),
+								  round(mean(ratio_juv_A),2),
+								  round(mean(ratio_juv_L),2),
+								  round(mean(ratio_juv_P),2)),
+					ratio_5yr=c(round(mean(ratio_juv_V[,(T-5):(T-1)]),2),
+								  round(mean(ratio_juv_A[,(T-5):(T-1)]),2),
+								  round(mean(ratio_juv_L[,(T-5):(T-1)]),2),
+								  round(mean(ratio_juv_P[,(T-5):(T-1)]),2)),
+					ratio_year=c(round(mean(ratio_juv_V[,T]),2),
+								  round(mean(ratio_juv_A[,T]),2),
+								  round(mean(ratio_juv_L[,T]),2),
+								  round(mean(ratio_juv_P[,T]),2))				 
+			)	
+			
+colnames(tableau) <- c(paste0("moy_1976_", (1974+T)),
+					   "sd_serie",
+					   paste0("moy_",(1974+T-5),"_", (1974+T-1)),
+					   "sd_5yrs",
+					   paste0("moy_",(1974+T)),
+					   "sd",
+					   "Tx_var_5yr")
+			   
+colnames(tableau2) <- c(paste0("ratio_1976_", (1974+T)),
+					   paste0("ratio_",(1974+T-5),"_", (1974+T-1)),
+					   paste0("ratio_",(1974+T))
+					   )
+rownames(tableau) <- c("Vichy-Langeac","Alagnon","Langeac-Poutes","amont Poutes","Tous les secteurs")
+rownames(tableau2) <- c("Vichy-Langeac","Alagnon","Langeac-Poutes","amont Poutes")
+
+
+# Capturer la table en LaTeX dans une variable
+tab <- xtable(x = tableau, label = "prod_juv_stat", caption = "Chiffres cle sur la production en juveniles. Le Tx\\_var\\_5yr correspond au taux de variation entre l'annee la plus recente et la moyenne des 5 annees passees",digits = c(0, 0, 0, 0, 0, 0, 0, 0))
+tab2 <- xtable(x = tableau2, label = "prod_juv_stat2", caption = "Ratio de la production en juveniles par secteur")
+
+# Convertir en chaîne LaTeX
+o<-print(tab, file = str_c(tabwd,"prod_juv_stat.tex"), 
+		table.placement = "htbp",
+		caption.placement = "top",
+		NA.string = "",
+		include.rownames=TRUE
+)
+o2<-print(tab2, file = str_c(tabwd,"prod_juv_stat2.tex"), 
+		table.placement = "htbp",
+		caption.placement = "top",
+		NA.string = "",
+		include.rownames=TRUE
+)
+@
+
+\clearpage
+
+\input{\Sexpr{tabwd}prod_juv_stat.tex}
+
+\input{\Sexpr{tabwd}prod_juv_stat2.tex}
+
+\clearpage
+
+\section{Répartition des adultes dans les différents secteurs}
+
+\subsection{Adultes migrant dans l'Alagnon}
+%====================================
+<< N_alagnon, echo=FALSE, eval=TRUE,results=hide >>=
+N_alagnon=read.coda(str_c(datawd,"N_alagnonCODAchain1.txt"),str_c(datawd,"N_alagnonCODAindex.txt"))
+
+sum=summary(N_alagnon, probs=seq(0,1,0.1))
+N_alagnon_q<-sum$quantiles
+mean_res<-cbind(sum$statistics[,"Mean"])
+
+
+png(filename=str_c(imgwd,"N_alagnon.png"),width=800,height=800)
+plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1000),ylab="N_alagnon")
+
+# trace l'axe des ordonnées
+axis(2,at = seq(0,1000,by=200),labels=c(0,200,400,600,800,1000),cex.axis = 0.9,las = 1,col = "grey55")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,2010,1974+T)
+axis(1,at = c(1,6,16,26,36,T),
+		labels=lab1,
+		cex.axis = 0.9,las = 1,col = "grey55")
+
+for(i in 1:T){
+	#whiskers
+	#95%
+	segments(i-0.15,N_alagnon_q[i,5],i+0.15,N_alagnon_q[i,5])
+	segments(i,N_alagnon_q[i,4],i,N_alagnon_q[i,5])
+	#5%
+	segments(i-0.15,N_alagnon_q[i,1],i+0.15,N_alagnon_q[i,1])
+	segments(i,N_alagnon_q[i,2],i,N_alagnon_q[i,1])
+#	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_alagnon_q[i,2],N_alagnon_q[i,2],N_alagnon_q[i,4],N_alagnon_q[i,4]),col="green")
+#	#mean
+#	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
+	segments(i-0.3,N_alagnon_q[i,3],i+0.3,N_alagnon_q[i,3])
+}
+
+
+segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
+mtext(round(mean(mean_res),3),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
+dev.off()
+
+
+tabl<-as.data.frame(N_alagnon_q)
+#colnames(tabl) <- c("2.5%","25%","50%","75%","97.5%")
+colnames(tabl) <- c("2.5","25","50","75","97.5")
+
+rownames(tabl) <- 1975:(1974+T)
+
+tabl[] <- lapply(tabl, function(x) as.integer(round(x))) #on arrondit pour avoir des nombres entiers de poissons
+
+# Fonction pour mettre en gras la colonne du milieu
+table_latex<-tabl %>%
+		mutate(`50` = paste0("\\textbf{", `50`, "}")) #\\\\textbf{\\4}
+#		kbl(format = "latex", booktabs = TRUE, escape=TRUE,caption = "Effectifs d'adultes migrant sur l'Alagnon",
+#				align = 'rrrrr',row.names=TRUE) %>%
+#		kable_styling(latex_options = c("hold_position"))
+
+tab <- xtable(x = table_latex, label = "N_alagnon", caption = "Effectif d'adultes migrant dans l'Alagnon pour les quantiles 2.5, 25, 50, 75 et 97.5",align='rrrrrr')
+
+# Convertir en chaîne LaTeX
+table_latex <- print(tab, include.rownames = TRUE, print.results = FALSE, sanitize.text.function = function(x) x)
+
+		
+# Sauvegarder dans un fichier
+#save_kable(table_latex, file = str_c(tabwd, "N_alagnon.tex"))
+writeLines(table_latex, con = str_c(tabwd, "N_alagnon.tex"))
+@
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}N_alagnon.png}%{a_juv.png}
+     \caption{Effectifs d'adultes migrant sur l'Alagnon}
+     \label{N_alagnon} 
+\end{figure}
+
+\input{\Sexpr{tabwd}N_alagnon.tex}
+
+\clearpage
+
+\subsection{Adultes ayant franchi Langeac}
+%====================================
+<< N_langeac, echo=FALSE, eval=TRUE,results=hide >>=
+N_langeac=read.coda(str_c(datawd,"N_langeacCODAchain1.txt"),str_c(datawd,"N_langeacCODAindex.txt"))
+
+sum=summary(N_langeac, probs=seq(0,1,0.1))
+N_langeac_q<-sum$quantiles
+mean_res<-cbind(sum$statistics[,"Mean"])
+
+png(filename=str_c(imgwd,"N_langeac.png"),width=800,height=800)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,5000),ylab="N_poutes")
+
+# trace l'axe des ordonnées
+axis(2,at = seq(0,5000,by=1000),labels=seq(0,5000,by=1000),cex.axis = 0.9,las = 1,col = "grey55")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,2010,1974+T)
+axis(1,at = c(1,6,16,26,36,T),
+		labels=lab1,
+		cex.axis = 0.9,las = 1,col = "grey55")
+
+for(i in 1:T){
+	#whiskers
+	#95%
+	segments(i-0.15,N_langeac_q[(i),5],i+0.15,N_langeac_q[(i),5])
+	segments(i,N_langeac_q[(i),4],i,N_langeac_q[(i),5])
+	#5%
+	segments(i-0.15,N_langeac_q[(i),1],i+0.15,N_langeac_q[(i),1])
+	segments(i,N_langeac_q[(i),2],i,N_langeac_q[(i),1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_langeac_q[(i),2],N_langeac_q[(i),2],N_langeac_q[(i),4],N_langeac_q[(i),4]),col="green")
+	#mean
+	segments(i-0.3,mean_res[(i),],i+0.3,mean_res[(i),])
+}
+
+segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
+mtext(round(mean(mean_res),2),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
+dev.off()
+
+
+tabl<-as.data.frame(N_langeac_q)
+#colnames(tabl) <- c("2.5%","25%","50%","75%","97.5%")
+colnames(tabl) <- c("2.5","25","50","75","97.5")
+
+rownames(tabl) <- 1975:(1974+T) #année où on commence à estimer les effectifs à Poutès
+
+tabl[] <- lapply(tabl, function(x) as.integer(round(x))) #on arrondit pour avoir des nombres entiers de poissons
+
+# Fonction pour mettre en gras la colonne du milieu
+table_latex<-tabl %>%
+		mutate(`50` = paste0("\\textbf{", `50`, "}")) #\\\\textbf{\\4}
+#		kbl(format = "latex", booktabs = TRUE, escape=TRUE,caption = "Effectifs d'adultes migrant sur l'Alagnon",
+#				align = 'rrrrr',row.names=TRUE) %>%
+#		kable_styling(latex_options = c("hold_position"))
+
+tab <- xtable(x = table_latex, label = "N_langeac", caption = "Estimation du nombre d'adultes ayant franchi Langeac pour les quantiles 2.5, 25, 50, 75 et 97.5",align='rrrrrr')
+
+# Convertir en chaîne LaTeX
+table_latex <- print(tab, include.rownames = TRUE, print.results = FALSE, sanitize.text.function = function(x) x)
+
+		
+# Sauvegarder dans un fichier
+writeLines(table_latex, con = str_c(tabwd, "N_langeac.tex"))
+@
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}N_langeac.png}%{a_juv.png}
+     \caption{Estimation du nombre d'adultes ayant franchi Langeac}
+     \label{N_langeac} 
+\end{figure}
+
+\input{\Sexpr{tabwd}N_langeac.tex}
+
+\clearpage
+
+\subsection{Adultes ayant franchi Poutès}
+%====================================
+<< N_poutes, echo=FALSE, eval=TRUE,results=hide >>=
+N_poutes=read.coda(str_c(datawd,"N_poutesCODAchain1.txt"),str_c(datawd,"N_poutesCODAindex.txt"))
+
+sum=summary(N_poutes, probs=seq(0,1,0.1))
+N_poutes_q<-sum$quantiles
+mean_res<-cbind(sum$statistics[,"Mean"])
+N_poutes_tot<-c(N[12:44,4],as.vector(cbind(sum$statistics[,"Mean"])))
+
+
+adulte_poutes<-array(NA,dim=c(10000,T))
+
+for (t in 1:11){
+	for (i in 1:10000){
+		adulte_poutes[i,t]<-0
+	}
+}
+for (t in 12:44){
+	for (i in 1:10000){
+		adulte_poutes[i,t]<-N[t,4]
+	}
+}
+for (t in 45:T){
+	for (i in 1:10000){
+		adulte_poutes[i,t]<-N_poutes[i,(t-44)]
+	}
+}
+
+
+png(filename=str_c(imgwd,"N_poutes.png"),width=800,height=800)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,200),ylab="N_poutes")
+
+# trace l'axe des ordonnées
+axis(2,at = seq(0,200,by=50),labels=seq(0,200,by=50),cex.axis = 0.9,las = 1,col = "grey55")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,2010,1974+T)
+axis(1,at = c(1,6,16,26,36,T),
+		labels=lab1,
+		cex.axis = 0.9,las = 1,col = "grey55")
+
+points(x=seq(12,44,1),N[12:44,4],pch=16)
+
+for(i in 45:T){
+	#whiskers
+	#95%
+	segments(i-0.15,N_poutes_q[(i-44),5],i+0.15,N_poutes_q[(i-44),5])
+	segments(i,N_poutes_q[(i-44),4],i,N_poutes_q[(i-44),5])
+	#5%
+	segments(i-0.15,N_poutes_q[(i-44),1],i+0.15,N_poutes_q[(i-44),1])
+	segments(i,N_poutes_q[(i-44),2],i,N_poutes_q[(i-44),1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_poutes_q[(i-44),2],N_poutes_q[(i-44),2],N_poutes_q[(i-44),4],N_poutes_q[(i-44),4]),col="green")
+	#mean
+	segments(i-0.3,mean_res[(i-44),],i+0.3,mean_res[(i-44),])
+}
+
+segments(x0=0,y0=mean(N_poutes_tot),y1=mean(N_poutes_tot),x1=T+1,col="red")
+mtext(round(mean(N_poutes_tot),2),side=4,line=0,at=mean(N_poutes_tot),cex = 0.8,col="red",las=1)
+dev.off()
+
+
+tabl<-as.data.frame(N_poutes_q)
+#colnames(tabl) <- c("2.5%","25%","50%","75%","97.5%")
+colnames(tabl) <- c("2.5","25","50","75","97.5")
+
+rownames(tabl) <- 2019:(1974+T) #année où on commence à estimer les effectifs à Poutès
+
+tabl[] <- lapply(tabl, function(x) as.integer(round(x))) #on arrondit pour avoir des nombres entiers de poissons
+
+# Fonction pour mettre en gras la colonne du milieu
+table_latex<-tabl %>%
+		mutate(`50` = paste0("\\textbf{", `50`, "}")) #\\\\textbf{\\4}
+#		kbl(format = "latex", booktabs = TRUE, escape=TRUE,caption = "Effectifs d'adultes migrant sur l'Alagnon",
+#				align = 'rrrrr',row.names=TRUE) %>%
+#		kable_styling(latex_options = c("hold_position"))
+
+tab <- xtable(x = table_latex, label = "N_poutes", caption = "Estimation du nombre d'adultes ayant franchi Poutes pour les quantiles 2.5, 25, 50, 75 et 97.5",align='rrrrrr')
+
+# Convertir en chaîne LaTeX
+table_latex <- print(tab, include.rownames = TRUE, print.results = FALSE, sanitize.text.function = function(x) x)
+
+		
+# Sauvegarder dans un fichier
+writeLines(table_latex, con = str_c(tabwd, "N_poutes.tex"))
+@
+
+\begin{figure}[ht]
+     \includegraphics{\Sexpr{imgwd}N_poutes.png}%{a_juv.png}
+     \caption{Estimation du nombre d'adultes ayant franchi Poutès}
+     \label{N_poutes} 
+\end{figure}
+
+\input{\Sexpr{tabwd}N_poutes.tex}
+
+\clearpage
+
+\end{document}

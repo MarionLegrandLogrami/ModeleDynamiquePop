@@ -1,0 +1,3056 @@
+---
+title: "Projection à 20 ans sans déversement et avec hypothèses sur évolution des débits"
+author: "Marion Legrand & Etienne Prévost"
+date: "2023-09-01"
+output:
+  html_document:
+    df_print: paged
+
+---
+
+```{r consignes, eval=FALSE,echo=FALSE}
+# Consignes pour l'exécution du script
+
+Le script doit être lancé à la main (chunk après chunk) depuis le chunk "init".
+2 choix sont à faire :
+  1_ le type de modèle : inclue ou non le modèle de distribution de mélange à Vichy
+  2_ le scénario d''évolution des débits : "sans_Q" / "identique" / "diminu_5" / "diminue_10"
+
+Une fois que init et charge_data sont lancés, on peut faire un save.image qu''on pourra recharger dans le chunck "init_quick" pour gagner du temps.
+
+Pour faire fonctionner le script il faut lancer les chunk "init" (c''est là qu''on pourra faire le choix entre modèle de mélange ou non), "charge data", puis choisir son scénario dans le chunck "scenario_Q", à la suite de quoi on peut lancer "model_avec_distri_melange" (si on travaille sur ce modèle) ou "model_sans_distri_melange" qui réalise tous les calculs pour les 20 ans de projection puis le chunk "save_calcul" (ou "save_calcul_ss_distri_melange") pour sauver les jeux de données et "graph_proj_20yr" (ou "graph_proj_20yr_ss_distri_melange") pour sauvegarder les graphs des retours à Vichy sur les 20 ans de projection.
+Une fois tout cela fait pour les différents scénarios de débits souhaité (il faut refaire toutes ces étapes pour chacun des scénarios) et pour les différents types de modèle, on peut kniter le document pour générer le fichier html.
+```
+
+```{r setup, eval=TRUE,echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/")
+```
+
+```{r init_quick, eval=TRUE,echo=FALSE}
+
+library(coda)
+library(faraway) #pour fonction ilogit()
+library(boot)
+library(stringr)
+library(ggplot2)
+library(Rlab) #pour fonction rbern
+
+#......................................
+# Modèle avec distribution de mélange
+#......................................
+load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_09_01_Projection_sensibilite_evolution_Q_init_ModelMelange.Rdata")
+
+#......................................
+# Modèle sans distribution de mélange
+#......................................
+load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_09_01_Projection_sensibilite_evolution_Q_init_WithoutModelMelange.Rdata")
+```
+
+```{r init, eval=FALSE,echo=FALSE}
+
+type_mod<-"WithoutModelMelange" #"ModelMelange" / "WithoutModelMelange"
+
+if(type_mod=="ModelMelange"){
+  datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps/"
+  imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/"
+  tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2023_05/2_Model_melange_homogenisation_Q_printemps/"
+}
+if(type_mod=="WithoutModelMelange"){
+  datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/"
+  imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/"
+  tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2023_05/3_Model_sans_distribution_melange/"
+}
+
+library(coda)
+library(faraway) #pour fonction ilogit()
+library(boot)
+library(stringr)
+library(ggplot2)
+library(Rlab) #pour fonction rbern
+T=48
+
+source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+#-- Appel à la fonction du script "fct_data.R" pour récupérer les surfaces productives
+S_juv_JP<-keep_good_surf(surf_2021=TRUE)
+```
+
+
+```{r charge_data,echo=FALSE,include=FALSE,eval=TRUE}
+#On choisit le nbr d'itération qu'on veut conserver
+iteration=10000
+
+#..................................................................................
+# Récupération des paramètres dans le posterior joint
+#..................................................................................
+bugs_ratio_juv_prod_L=read.coda(str_c(datawd,"simulation/ratio_juv_prod_LCODAchain1.txt"),str_c(datawd,"simulation/ratio_juv_prod_LCODAindex.txt"))
+bugs_rho_station=read.coda(str_c(datawd,"rho_stationCODAchain1.txt"),str_c(datawd,"rho_stationCODAindex.txt"))
+bugs_adjust_p_A=read.coda(str_c(datawd,"simulation/adjust_p_ACODAchain1.txt"),str_c(datawd,"simulation/adjust_p_ACODAindex.txt"))
+bugs_adjust_p_L=read.coda(str_c(datawd,"simulation/adjust_p_LCODAchain1.txt"),str_c(datawd,"simulation/adjust_p_LCODAindex.txt"))
+bugs_adjust_p_P=read.coda(str_c(datawd,"simulation/adjust_p_PCODAchain1.txt"),str_c(datawd,"simulation/adjust_p_PCODAindex.txt"))
+bugs_sigma_p_alagnon=read.coda(str_c(datawd,"sigma_p_alagnonCODAchain1.txt"),str_c(datawd,"sigma_p_alagnonCODAindex.txt"))
+bugs_sigma_p_langeac=read.coda(str_c(datawd,"sigma_p_langeacCODAchain1.txt"),str_c(datawd,"sigma_p_langeacCODAindex.txt"))
+bugs_sigma_p_poutes=read.coda(str_c(datawd,"sigma_p_poutesCODAchain1.txt"),str_c(datawd,"sigma_p_poutesCODAindex.txt"))
+bugs_sigma_vichy=read.coda(str_c(datawd,"sigma_vichyCODAchain1.txt"),str_c(datawd,"sigma_vichyCODAindex.txt"))
+bugs_sigma_wild_moy=read.coda(str_c(datawd,"parameters/sigma_wild_moyCODAchain1.txt"),str_c(datawd,"parameters/sigma_wild_moyCODAindex.txt"))
+bugs_sigma_juv_moy=read.coda(str_c(datawd,"parameters/sigma_juv_moyCODAchain1.txt"),str_c(datawd,"parameters/sigma_juv_moyCODAindex.txt"))
+#bugs_I_surv=read.coda(str_c(datawd,"simulation/I_survCODAchain1.txt"),str_c(datawd,"simulation/I_survCODAindex.txt"))
+#bugs_level_s=read.coda(str_c(datawd,"simulation/level_sCODAchain1.txt"),str_c(datawd,"simulation/level_sCODAindex.txt"))
+bugs_s_juv2ad=read.coda(str_c(datawd,"simulation/s_juv2adCODAchain1.txt"),str_c(datawd,"simulation/s_juv2adCODAindex.txt"))
+bugs_alpha_dd=read.coda(str_c(datawd,"simulation/alpha_ddCODAchain1.txt"),str_c(datawd,"simulation/alpha_ddCODAindex.txt"))
+bugs_beta_dd=read.coda(str_c(datawd,"simulation/beta_ddCODAchain1.txt"),str_c(datawd,"simulation/beta_ddCODAindex.txt"))
+bugs_a_juv=read.coda(str_c(datawd,"a_juvCODAchain1.txt"),str_c(datawd,"a_juvCODAindex.txt"))
+bugs_a=read.coda(str_c(datawd,"aCODAchain1.txt"),str_c(datawd,"aCODAindex.txt"))
+bugs_a=read.coda(str_c(datawd,"aCODAchain1.txt"),str_c(datawd,"aCODAindex.txt"))
+bugs_Rmax=read.coda(str_c(datawd,"RmaxCODAchain1.txt"),str_c(datawd,"RmaxCODAindex.txt"))
+bugs_res_wild_vichy=read.coda(str_c(datawd,"simulation/res_wild_vichyCODAchain1.txt"),str_c(datawd,"simulation/res_wild_vichyCODAindex.txt"))
+bugs_res_wild_alagnon=read.coda(str_c(datawd,"simulation/res_wild_alagnonCODAchain1.txt"),str_c(datawd,"simulation/res_wild_alagnonCODAindex.txt"))
+bugs_res_wild_langeac=read.coda(str_c(datawd,"simulation/res_wild_langeacCODAchain1.txt"),str_c(datawd,"simulation/res_wild_langeacCODAindex.txt"))
+bugs_res_wild_poutes=read.coda(str_c(datawd,"simulation/res_wild_poutesCODAchain1.txt"),str_c(datawd,"simulation/res_wild_poutesCODAindex.txt"))
+bugs_dmoy_tot_V=read.coda(str_c(datawd,"dmoytot_VCODAchain1.txt"),str_c(datawd,"dmoytot_VCODAindex.txt"))
+bugs_dmoy_tot_A=read.coda(str_c(datawd,"dmoytot_ACODAchain1.txt"),str_c(datawd,"dmoytot_ACODAindex.txt"))
+bugs_dmoy_tot_L=read.coda(str_c(datawd,"dmoytot_LCODAchain1.txt"),str_c(datawd,"dmoytot_LCODAindex.txt"))
+bugs_dmoy_tot_P=read.coda(str_c(datawd,"dmoytot_PCODAchain1.txt"),str_c(datawd,"dmoytot_PCODAindex.txt"))
+bugs_res_wild_vichy=read.coda(str_c(datawd,"res_wild_VCODAchain1.txt"),str_c(datawd,"res_wild_VCODAindex.txt"))
+bugs_res_wild_alagnon=read.coda(str_c(datawd,"res_wild_ACODAchain1.txt"),str_c(datawd,"res_wild_ACODAindex.txt"))
+bugs_res_wild_langeac=read.coda(str_c(datawd,"res_wild_LCODAchain1.txt"),str_c(datawd,"res_wild_LCODAindex.txt"))
+bugs_res_wild_poutes=read.coda(str_c(datawd,"res_wild_PCODAchain1.txt"),str_c(datawd,"res_wild_PCODAindex.txt"))
+bugs_nu_d=read.coda(str_c(datawd,"nu_dCODAchain1.txt"),str_c(datawd,"nu_dCODAindex.txt"))
+
+bugs_beta_Q_VB_deval=read.coda(str_c(datawd,"beta_Q_VB_devalCODAchain1.txt"),str_c(datawd,"beta_Q_VB_devalCODAindex.txt"))
+bugs_beta_Q_MSL_deval=read.coda(str_c(datawd,"beta_Q_MSL_devalCODAchain1.txt"),str_c(datawd,"beta_Q_MSL_devalCODAindex.txt"))
+bugs_beta_Q_MSL_mont=read.coda(str_c(datawd,"beta_Q_MSL_montCODAchain1.txt"),str_c(datawd,"beta_Q_MSL_montCODAindex.txt"))
+
+bugs_beta_Q_VB_mont_P=read.coda(str_c(datawd,"beta_Q_VB_mont_PCODAchain1.txt"),str_c(datawd,"beta_Q_VB_mont_PCODAindex.txt"))
+bugs_beta_Q_VB_mont_A=read.coda(str_c(datawd,"beta_Q_VB_mont_ACODAchain1.txt"),str_c(datawd,"beta_Q_VB_mont_ACODAindex.txt"))
+bugs_beta_Q_L_mont_P=read.coda(str_c(datawd,"beta_Q_L_mont_PCODAchain1.txt"),str_c(datawd,"beta_Q_L_mont_PCODAindex.txt"))
+bugs_beta_Q_L_mont_A=read.coda(str_c(datawd,"beta_Q_L_mont_ACODAchain1.txt"),str_c(datawd,"beta_Q_L_mont_ACODAindex.txt"))
+bugs_beta_Q_P_mont_P=read.coda(str_c(datawd,"beta_Q_P_mont_PCODAchain1.txt"),str_c(datawd,"beta_Q_P_mont_PCODAindex.txt"))
+bugs_beta_Q_P_mont_A=read.coda(str_c(datawd,"beta_Q_P_mont_ACODAchain1.txt"),str_c(datawd,"beta_Q_P_mont_ACODAindex.txt"))
+
+source(str_c(datawd,"data.R"))
+
+#On renomme les données récupérées de bugs pour pas qu'il y ait de confusion plus loin
+bugs_Q_VB_mont_P<-Q_VB_mont_P
+rm(Q_VB_mont_P)
+bugs_Q_VB_mont_A<-Q_VB_mont_A
+rm(Q_VB_mont_A)
+bugs_Q_L_mont_P<-Q_L_mont_P
+rm(Q_L_mont_P)
+bugs_Q_L_mont_A<-Q_L_mont_A
+rm(Q_L_mont_A)
+bugs_Q_P_mont_P<-Q_P_mont_P
+rm(Q_P_mont_P)
+bugs_Q_P_mont_A<-Q_P_mont_A
+rm(Q_P_mont_A)
+
+bugs_Q_VB_deval<-Q_VB_deval
+rm(Q_VB_deval)
+bugs_Q_MSL_mont<-Q_MSL_mont
+rm(Q_MSL_mont)
+bugs_Q_MSL_deval<-Q_MSL_deval
+rm(Q_MSL_deval)
+
+#on recalcul les débits centrés-réduits qu'on a utilisé dans openbugs
+bugs_L_Q_VB_mont_P<-array(0,dim=T)
+bugs_L_Q_VB_mont_A<-array(0,dim=T)
+bugs_L_Q_L_mont_P<-array(0,dim=T)
+bugs_L_Q_L_mont_A<-array(0,dim=T)
+bugs_L_Q_P_mont_P<-array(0,dim=T)
+bugs_L_Q_P_mont_A<-array(0,dim=T)
+
+bugs_L_Q_VB_deval<-array(0,dim=T)
+bugs_L_Q_MSL_mont<-array(0,dim=T)
+bugs_L_Q_MSL_deval<-array(0,dim=T)
+
+bugs_L_Q_L_mont_P_cr<-array(0,dim=T)
+bugs_L_Q_L_mont_A_cr<-array(0,dim=T)
+bugs_L_Q_VB_mont_P_cr<-array(0,dim=T)
+bugs_L_Q_VB_mont_A_cr<-array(0,dim=T)
+bugs_L_Q_P_mont_P_cr<-array(0,dim=T)
+bugs_L_Q_P_mont_A_cr<-array(0,dim=T)
+
+bugs_L_Q_VB_deval_cr<-array(0,dim=T)
+bugs_L_Q_MSL_mont_cr<-array(0,dim=T)
+bugs_L_Q_MSL_deval_cr<-array(0,dim=T)
+
+
+for (t in 1:T){
+  bugs_L_Q_VB_mont_P[t]<-log(bugs_Q_VB_mont_P[t])
+  bugs_L_Q_L_mont_P_cr[t]<-(bugs_L_Q_VB_mont_P[t]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+  bugs_L_Q_VB_mont_A[t]<-log(bugs_Q_VB_mont_A[t])
+  bugs_L_Q_VB_mont_A_cr[t]<-(bugs_L_Q_VB_mont_A[t]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+  bugs_L_Q_L_mont_P[t]<-log(bugs_Q_L_mont_P[t])
+  bugs_L_Q_L_mont_P_cr[t]<-(bugs_L_Q_L_mont_P[t]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+  bugs_L_Q_L_mont_A[t]<-log(bugs_Q_L_mont_A[t])
+  bugs_L_Q_L_mont_A_cr[t]<-(bugs_L_Q_L_mont_A[t]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+  bugs_L_Q_P_mont_P[t]<-log(bugs_Q_P_mont_P[t])
+  bugs_L_Q_P_mont_P_cr[t]<-(bugs_L_Q_P_mont_P[t]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+  bugs_L_Q_P_mont_A[t]<-log(bugs_Q_P_mont_A[t])
+  bugs_L_Q_P_mont_A_cr[t]<-(bugs_L_Q_P_mont_A[t]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+  
+  bugs_L_Q_VB_deval[t]<-log(bugs_Q_VB_deval[t])
+  bugs_L_Q_VB_deval_cr[t]<-(bugs_L_Q_VB_deval[t]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+  bugs_L_Q_MSL_mont[t]<-log(bugs_Q_MSL_mont[t])
+  bugs_L_Q_MSL_mont_cr[t]<-(bugs_L_Q_MSL_mont[t]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+  bugs_L_Q_MSL_deval[t]<-log(bugs_Q_MSL_deval[t])
+  bugs_L_Q_MSL_deval_cr[t]<-(bugs_L_Q_MSL_deval[t]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+  }
+
+Qvb_deval<-array(0,dim=c(iteration,T+20))
+Qmsl_mont<-array(0,dim=c(iteration,T+20))
+Qmsl_deval<-array(0,dim=c(iteration,T+20))
+
+s_juv2ad_20yr<-array(0,dim=c(iteration,T+20))
+L_s_juv2ad_20yr<-array(0,dim=c(iteration,T+20))
+
+save.image(file=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_09_01_Projection_sensibilite_evolution_Q_init_",type_mod,".Rdata"))
+
+```
+
+Pour commencer à regarder la sensibilité du modèle aux hypothèses d'évolution des débits, on réalise des projections à 20 ans sous 4 scénarios d'évolution des débits différents :
+  
+  * Projection à 20 ans sans influence des débits. Scénario nommé "sans_Q" : on fait tourner les projections sans prise en compte de l'influence des débits sur les 20 ans de projection. Ce scénario consiste à mettre tous les débits à 0 afin d'avoir un modèle "toute chose égale par ailleurs".
+
+
+```{r détail_scenario_sans_q, echo=TRUE,eval=FALSE}
+if(scenario=="sans_Q"){
+    for (t in (T+1):(T+20)){
+      for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-0
+        L_Q_L_mont_A_20yr_cr[i,t]<-0
+        L_Q_VB_mont_P_20yr_cr[i,t]<-0
+        L_Q_VB_mont_A_20yr_cr[i,t]<-0
+        L_Q_P_mont_P_20yr_cr[i,t]<-0
+        L_Q_P_mont_A_20yr_cr[i,t]<-0
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-0
+        L_Q_MSL_mont_20yr_cr[i,t]<-0
+        L_Q_MSL_deval_20yr_cr[i,t]<-0
+      }
+    }
+}
+```
+
+ * Les débits restent les mêmes sur la période de projection à 20 ans. Scénario nommé "identique" : durant les 20 ans de projection les débits sont suposés être les mêmes que ceux observés durant les 20 dernières années de la période rétrospective.
+
+
+```{r détail_scenario_identique, echo=TRUE,eval=FALSE}
+
+if(scenario=="identique"){
+  for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+    
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+   
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+```
+
+avec "bugs_Q_L_mont_P_20yr"/"bugs_Q_VB_mont_P_20yr"/"bugs_Q_P_mont_P_20yr", etc. les débits utilisés dans bugs mais qu'on limite au 20 dernières années de la période rétrospective
+
+
+ * Les débits diminuent de 5% par rapport aux débits moyens des 20 dernières années (variance identique). Scénario nommé "diminue_5" : durant les 20 ans de projection les débits sont suposés être en diminution de 5% de ce qui était observé durant les 20 dernières années de la périodes rétrospectives.
+
+
+
+```{r détail_scenario_diminue5, echo=TRUE,eval=FALSE}
+
+if(scenario=="diminue_5"){
+   for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_P_20yr[i,t]<-L_Q_L_mont_P_20yr[i,t] + log(0.95)
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-L_Q_L_mont_A_20yr[i,t] + log(0.95)
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_P_20yr[i,t]<-L_Q_VB_mont_P_20yr[i,t] + log(0.95)
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<- L_Q_VB_mont_A_20yr[i,t] + log(0.95)
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_P_20yr[i,t]<-L_Q_P_mont_P_20yr[i,t] + log(0.95)
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-L_Q_P_mont_A_20yr[i,t] + log(0.95)
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_deval_20yr[i,t]<-L_Q_MSL_deval_20yr[i,t] + log(0.95)
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-L_Q_MSL_mont_20yr[i,t] + log(0.95)
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+      L_Q_VB_deval_20yr[i,t]<-L_Q_VB_deval_20yr[i,t] + log(0.95)
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+```
+avec "bugs_Q_L_mont_P_20yr"/"bugs_Q_VB_mont_P_20yr"/"bugs_Q_P_mont_P_20yr", etc. les débits utilisés dans bugs mais qu'on limite au 20 dernières années de la période rétrospective
+
+ * Les débits diminuent de 10% par rapport aux débits moyens des 20 dernières années (variance identique). Scénario nommé "diminue_10" : durant les 20 ans de projection les débits sont suposés être en diminution de 10% de ce qui était observé durant les 20 dernières années de la périodes rétrospectives.
+  
+  
+```{r détail_scenario_diminue10, echo=TRUE,eval=FALSE}
+if(scenario=="diminue_10"){
+   for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_P_20yr[i,t]<-L_Q_L_mont_P_20yr[i,t] + log(0.90)
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-L_Q_L_mont_A_20yr[i,t] + log(0.90)
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_P_20yr[i,t]<-L_Q_VB_mont_P_20yr[i,t] + log(0.90)
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<- L_Q_VB_mont_A_20yr[i,t] + log(0.90)
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_P_20yr[i,t]<-L_Q_P_mont_P_20yr[i,t] + log(0.90)
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-L_Q_P_mont_A_20yr[i,t] + log(0.90)
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_deval_20yr[i,t]<-L_Q_MSL_deval_20yr[i,t] + log(0.90)
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-L_Q_MSL_mont_20yr[i,t] + log(0.90)
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+      L_Q_VB_deval_20yr[i,t]<-L_Q_VB_deval_20yr[i,t] + log(0.90)
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+```
+avec "bugs_Q_L_mont_P_20yr"/"bugs_Q_VB_mont_P_20yr"/"bugs_Q_P_mont_P_20yr", etc. les débits utilisés dans bugs mais qu'on limite au 20 dernières années de la période rétrospective
+
+```{r détail_scenario_augmente5, echo=TRUE,eval=FALSE}
+if(scenario=="augmente_5"){
+   for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_P_20yr[i,t]<-L_Q_L_mont_P_20yr[i,t] + log(1.05)
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-L_Q_L_mont_A_20yr[i,t] + log(1.05)
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_P_20yr[i,t]<-L_Q_VB_mont_P_20yr[i,t] + log(1.05)
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<- L_Q_VB_mont_A_20yr[i,t] + log(1.05)
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_P_20yr[i,t]<-L_Q_P_mont_P_20yr[i,t] + log(1.05)
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-L_Q_P_mont_A_20yr[i,t] + log(1.05)
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_deval_20yr[i,t]<-L_Q_MSL_deval_20yr[i,t] + log(1.05)
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-L_Q_MSL_mont_20yr[i,t] + log(1.05)
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+      L_Q_VB_deval_20yr[i,t]<-L_Q_VB_deval_20yr[i,t] + log(1.05)
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+```
+```{r détail_scenario_augmente10, echo=TRUE,eval=FALSE}
+if(scenario=="augmente_10"){
+   for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_P_20yr[i,t]<-L_Q_L_mont_P_20yr[i,t] + log(1.10)
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-L_Q_L_mont_A_20yr[i,t] + log(1.10)
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_P_20yr[i,t]<-L_Q_VB_mont_P_20yr[i,t] + log(1.10)
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<- L_Q_VB_mont_A_20yr[i,t] + log(1.10)
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_P_20yr[i,t]<-L_Q_P_mont_P_20yr[i,t] + log(1.10)
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-L_Q_P_mont_A_20yr[i,t] + log(1.10)
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_deval_20yr[i,t]<-L_Q_MSL_deval_20yr[i,t] + log(1.10)
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-L_Q_MSL_mont_20yr[i,t] + log(1.10)
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+      L_Q_VB_deval_20yr[i,t]<-L_Q_VB_deval_20yr[i,t] + log(1.10)
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+```
+
+```{r scenario_Q, echo=FALSE, eval=TRUE}
+
+#Choix du scénario
+scenario = "augmente_10" #choisir dans "sans_Q" / "identique" / "diminue_5" / "diminue_10" / "augmente_5" / "augmente_10"
+
+Q_L_mont_P_20yr<-array(0,dim=c(iteration,20))
+Q_L_mont_A_20yr<-array(0,dim=c(iteration,20))
+Q_VB_mont_P_20yr<-array(0,dim=c(iteration,20))
+Q_VB_mont_A_20yr<-array(0,dim=c(iteration,20))
+Q_P_mont_P_20yr<-array(0,dim=c(iteration,20))
+Q_P_mont_A_20yr<-array(0,dim=c(iteration,20))
+Q_VB_deval_20yr<-array(0,dim=c(iteration,20))
+Q_MSL_deval_20yr<-array(0,dim=c(iteration,20))
+Q_MSL_mont_20yr<-array(0,dim=c(iteration,20))
+
+L_Q_L_mont_P_20yr<-array(0,dim=c(iteration,20))
+L_Q_L_mont_A_20yr<-array(0,dim=c(iteration,20))
+L_Q_VB_mont_P_20yr<-array(0,dim=c(iteration,20))
+L_Q_VB_mont_A_20yr<-array(0,dim=c(iteration,20))
+L_Q_P_mont_P_20yr<-array(0,dim=c(iteration,20))
+L_Q_P_mont_A_20yr<-array(0,dim=c(iteration,20))
+L_Q_VB_deval_20yr<-array(0,dim=c(iteration,20))
+L_Q_MSL_deval_20yr<-array(0,dim=c(iteration,20))
+L_Q_MSL_mont_20yr<-array(0,dim=c(iteration,20))
+
+L_Q_L_mont_P_20yr_cr<-array(0,dim=c(iteration,T+20))
+L_Q_L_mont_A_20yr_cr<-array(0,dim=c(iteration,T+20))
+L_Q_VB_mont_P_20yr_cr<-array(0,dim=c(iteration,T+20))
+L_Q_VB_mont_A_20yr_cr<-array(0,dim=c(iteration,T+20))
+L_Q_P_mont_P_20yr_cr<-array(0,dim=c(iteration,T+20))
+L_Q_P_mont_A_20yr_cr<-array(0,dim=c(iteration,T+20))
+L_Q_VB_deval_20yr_cr<-array(0,dim=c(iteration,T+20))
+L_Q_MSL_deval_20yr_cr<-array(0,dim=c(iteration,T+20))
+L_Q_MSL_mont_20yr_cr<-array(0,dim=c(iteration,T+20))
+
+#On utilise les données de bugs pour la moyenne et sd des distributions dans lesquelles on va venir tirer pour les données à utiliser pour les 20 ans de projection
+bugs_Q_L_mont_P_20yr<-bugs_Q_L_mont_P[(T-19):T] #on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_L_mont_P_20yr<-log(bugs_Q_L_mont_P_20yr)
+bugs_Q_L_mont_A_20yr<-bugs_Q_L_mont_A[(T-19):T]#on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_L_mont_A_20yr<-log(bugs_Q_L_mont_A_20yr)
+
+bugs_Q_VB_mont_P_20yr<-bugs_Q_VB_mont_P[(T-19):T]#on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_VB_mont_P_20yr<-log(bugs_Q_VB_mont_P_20yr)
+bugs_Q_VB_mont_A_20yr<-bugs_Q_VB_mont_A[(T-19):T]#on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_VB_mont_A_20yr<-log(bugs_Q_VB_mont_A_20yr)
+
+bugs_Q_P_mont_P_20yr<-bugs_Q_P_mont_P[(T-19):T]#on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_P_mont_P_20yr<-log(bugs_Q_P_mont_P_20yr)
+bugs_Q_P_mont_A_20yr<-bugs_Q_P_mont_A[(T-19):T]#on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_P_mont_A_20yr<-log(bugs_Q_P_mont_A_20yr)
+
+
+bugs_Q_MSL_deval_20yr<-bugs_Q_MSL_deval[(T-19):T]#on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_MSL_deval_20yr<-log(bugs_Q_MSL_deval_20yr)
+
+bugs_Q_MSL_mont_20yr<-bugs_Q_MSL_mont[(T-19):T]#on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_MSL_mont_20yr<-log(bugs_Q_MSL_mont_20yr)
+
+bugs_Q_VB_deval_20yr<-bugs_Q_VB_deval[(T-19):T]#on ne calcule que sur les 20 dernières années de la série bugs
+bugs_L_Q_VB_deval_20yr<-log(bugs_Q_VB_deval_20yr)
+
+if(scenario=="sans_Q"){
+    for (t in (T+1):(T+20)){
+      for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-0
+        L_Q_L_mont_A_20yr_cr[i,t]<-0
+        L_Q_VB_mont_P_20yr_cr[i,t]<-0
+        L_Q_VB_mont_A_20yr_cr[i,t]<-0
+        L_Q_P_mont_P_20yr_cr[i,t]<-0
+        L_Q_P_mont_A_20yr_cr[i,t]<-0
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-0
+        L_Q_MSL_mont_20yr_cr[i,t]<-0
+        L_Q_MSL_deval_20yr_cr[i,t]<-0
+      }
+    }
+}
+
+if(scenario=="identique"){
+  for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+    
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+   
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+
+if(scenario=="diminue_5"){
+   for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_P_20yr[i,t]<-L_Q_L_mont_P_20yr[i,t] + log(0.95)
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-L_Q_L_mont_A_20yr[i,t] + log(0.95)
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_P_20yr[i,t]<-L_Q_VB_mont_P_20yr[i,t] + log(0.95)
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<- L_Q_VB_mont_A_20yr[i,t] + log(0.95)
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_P_20yr[i,t]<-L_Q_P_mont_P_20yr[i,t] + log(0.95)
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-L_Q_P_mont_A_20yr[i,t] + log(0.95)
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_deval_20yr[i,t]<-L_Q_MSL_deval_20yr[i,t] + log(0.95)
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-L_Q_MSL_mont_20yr[i,t] + log(0.95)
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+      L_Q_VB_deval_20yr[i,t]<-L_Q_VB_deval_20yr[i,t] + log(0.95)
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+
+if(scenario=="diminue_10"){
+   for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_P_20yr[i,t]<-L_Q_L_mont_P_20yr[i,t] + log(0.90)
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-L_Q_L_mont_A_20yr[i,t] + log(0.90)
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_P_20yr[i,t]<-L_Q_VB_mont_P_20yr[i,t] + log(0.90)
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<- L_Q_VB_mont_A_20yr[i,t] + log(0.90)
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_P_20yr[i,t]<-L_Q_P_mont_P_20yr[i,t] + log(0.90)
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-L_Q_P_mont_A_20yr[i,t] + log(0.90)
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_deval_20yr[i,t]<-L_Q_MSL_deval_20yr[i,t] + log(0.90)
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-L_Q_MSL_mont_20yr[i,t] + log(0.90)
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+      L_Q_VB_deval_20yr[i,t]<-L_Q_VB_deval_20yr[i,t] + log(0.90)
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+
+if(scenario=="augmente_5"){
+   for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_P_20yr[i,t]<-L_Q_L_mont_P_20yr[i,t] + log(1.05)
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-L_Q_L_mont_A_20yr[i,t] + log(1.05)
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_P_20yr[i,t]<-L_Q_VB_mont_P_20yr[i,t] + log(1.05)
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<- L_Q_VB_mont_A_20yr[i,t] + log(1.05)
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_P_20yr[i,t]<-L_Q_P_mont_P_20yr[i,t] + log(1.05)
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-L_Q_P_mont_A_20yr[i,t] + log(1.05)
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_deval_20yr[i,t]<-L_Q_MSL_deval_20yr[i,t] + log(1.05)
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-L_Q_MSL_mont_20yr[i,t] + log(1.05)
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+      L_Q_VB_deval_20yr[i,t]<-L_Q_VB_deval_20yr[i,t] + log(1.05)
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+
+if(scenario=="augmente_10"){
+   for(t in 1:20){
+    for (i in 1:iteration){
+      #Débit montaison Lempdes sur Alagnon
+      L_Q_L_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_P_20yr), sd = sd(bugs_L_Q_L_mont_P_20yr))
+      L_Q_L_mont_P_20yr[i,t]<-L_Q_L_mont_P_20yr[i,t] + log(1.10)
+      L_Q_L_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_L_mont_A_20yr), sd = sd(bugs_L_Q_L_mont_A_20yr))
+      L_Q_L_mont_A_20yr[i,t]<-L_Q_L_mont_A_20yr[i,t] + log(1.10)
+      #Débit montaison à Vieille-Brioude (secteur Langeac-Poutès)
+      L_Q_VB_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_P_20yr), sd = sd(bugs_L_Q_VB_mont_P_20yr))
+      L_Q_VB_mont_P_20yr[i,t]<-L_Q_VB_mont_P_20yr[i,t] + log(1.10)
+      L_Q_VB_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_mont_A_20yr), sd = sd(bugs_L_Q_VB_mont_A_20yr))
+      L_Q_VB_mont_A_20yr[i,t]<- L_Q_VB_mont_A_20yr[i,t] + log(1.10)
+      #Débit montaison à Prades (secteur amont Poutès)
+      L_Q_P_mont_P_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_P_20yr), sd = sd(bugs_L_Q_P_mont_P_20yr))
+      L_Q_P_mont_P_20yr[i,t]<-L_Q_P_mont_P_20yr[i,t] + log(1.10)
+      L_Q_P_mont_A_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_P_mont_A_20yr), sd = sd(bugs_L_Q_P_mont_A_20yr))
+      L_Q_P_mont_A_20yr[i,t]<-L_Q_P_mont_A_20yr[i,t] + log(1.10)
+       #Influence des débits sur la survie
+      L_Q_MSL_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_deval_20yr), sd = sd(bugs_L_Q_MSL_deval_20yr))
+      L_Q_MSL_deval_20yr[i,t]<-L_Q_MSL_deval_20yr[i,t] + log(1.10)
+      L_Q_MSL_mont_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_MSL_mont_20yr), sd = sd(bugs_L_Q_MSL_mont_20yr))
+      L_Q_MSL_mont_20yr[i,t]<-L_Q_MSL_mont_20yr[i,t] + log(1.10)
+      L_Q_VB_deval_20yr[i,t]<-rnorm(n = 1, mean = mean(bugs_L_Q_VB_deval_20yr), sd = sd(bugs_L_Q_VB_deval_20yr))
+      L_Q_VB_deval_20yr[i,t]<-L_Q_VB_deval_20yr[i,t] + log(1.10)
+  
+    }
+  }
+   #Attention on centre-réduit en utilisant les données historiques de bugs car on veut bien mettre toute la série (retrospective et projection) sur la même "échelle" 
+  for (t in (T+1):(T+20)){
+     for (i in 1:iteration){
+        L_Q_L_mont_P_20yr_cr[i,t]<-(L_Q_L_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_P))/sd(bugs_L_Q_L_mont_P)
+        L_Q_L_mont_A_20yr_cr[i,t]<-(L_Q_L_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_L_mont_A))/sd(bugs_L_Q_L_mont_A)
+        L_Q_VB_mont_P_20yr_cr[i,t]<-(L_Q_VB_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_P))/sd(bugs_L_Q_VB_mont_P)
+        L_Q_VB_mont_A_20yr_cr[i,t]<-(L_Q_VB_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_VB_mont_A))/sd(bugs_L_Q_VB_mont_A)
+        L_Q_P_mont_P_20yr_cr[i,t]<-(L_Q_P_mont_P_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_P))/sd(bugs_L_Q_P_mont_P)
+        L_Q_P_mont_A_20yr_cr[i,t]<-(L_Q_P_mont_A_20yr[i,(t-T)]-mean(bugs_L_Q_P_mont_A))/sd(bugs_L_Q_P_mont_A)
+        
+        L_Q_VB_deval_20yr_cr[i,t]<-(L_Q_VB_deval_20yr[i,(t-T)]-mean(bugs_L_Q_VB_deval))/sd(bugs_L_Q_VB_deval)
+        L_Q_MSL_mont_20yr_cr[i,t]<-(L_Q_MSL_mont_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_mont))/sd(bugs_L_Q_MSL_mont)
+        L_Q_MSL_deval_20yr_cr[i,t]<-(L_Q_MSL_deval_20yr[i,(t-T)]-mean(bugs_L_Q_MSL_deval))/sd(bugs_L_Q_MSL_deval)
+     }
+  }
+}
+
+```
+
+
+
+```{r model_avec_distri_melange, echo=FALSE, eval=FALSE}
+
+bugs_I_mm=read.coda(str_c(datawd,"I_mmCODAchain1.txt"),str_c(datawd,"I_mmCODAindex.txt"))
+bugs_ratio_surv=read.coda(str_c(datawd,"ratio_survCODAchain1.txt"),str_c(datawd,"ratio_survCODAindex.txt"))
+bugs_m_surv=read.coda(str_c(datawd,"m_survCODAchain1.txt"),str_c(datawd,"m_survCODAindex.txt"))
+bugs_p_surv=read.coda(str_c(datawd,"p_survCODAchain1.txt"),str_c(datawd,"p_survCODAindex.txt"))
+
+
+S_juv_JP<-keep_good_surf(surf_2021=TRUE)
+
+
+#On met T+26 ou 25 pour pouvoir avoir à la fin un taux de renouvellement sur 20 ans (indicé t-5). Sur 20 ans en partant de T=42 +20 = 62 mais avec t-5 il faut finalement avoir t=67 (voire t=68 pour les t+1) pour calculer sur 20 ans
+ratio_juv_prod_V=array(0,dim=c(iteration,T+26))
+ratio_juv_prod_A=array(0,dim=c(iteration,T+26))
+ratio_juv_prod_L=array(0,dim=c(iteration,T+26))
+ratio_juv_prod_P=array(0,dim=c(iteration,T+26))
+ratio_juv_A=array(0,dim=c(iteration,T+26))
+ratio_juv_L=array(0,dim=c(iteration,T+26))
+ratio_juv_P=array(0,dim=c(iteration,T+26))
+L_ratio_juv_A=array(0,dim=c(iteration,T+26))
+L_ratio_juv_L=array(0,dim=c(iteration,T+26))
+L_ratio_juv_P=array(0,dim=c(iteration,T+26))
+L_mu_Vichy_nm=array(0,dim=c(iteration,T+26))
+L_mu_p_alagnon=array(0,dim=c(iteration,T+26))
+L_mu_p_langeac=array(0,dim=c(iteration,T+26))
+L_mu_p_poutes=array(0,dim=c(iteration,T+26))
+L_mu_d_wild_vichy=array(0,dim=c(iteration,T+27))
+L_mu_d_wild_alagnon=array(0,dim=c(iteration,T+27))
+L_mu_d_wild_langeac=array(0,dim=c(iteration,T+27))
+L_mu_d_wild_poutes=array(0,dim=c(iteration,T+27))
+L_p_alagnon=array(0,dim=c(iteration,T+26))
+L_p_langeac=array(0,dim=c(iteration,T+26))
+L_p_poutes=array(0,dim=c(iteration,T+26))
+L_d_moy_vichy=array(0,dim=c(iteration,T+27))
+L_d_moy_alagnon=array(0,dim=c(iteration,T+27))
+L_d_moy_langeac=array(0,dim=c(iteration,T+27))
+L_d_moy_poutes=array(0,dim=c(iteration,T+27))
+res_vichy=array(0,dim=c(iteration,T+26))
+res_p_alagnon=array(0,dim=c(iteration,T+26))
+res_p_langeac=array(0,dim=c(iteration,T+26))
+res_p_poutes=array(0,dim=c(iteration,T+26))
+p_alagnon=array(0,dim=c(iteration,T+26))
+p_langeac=array(0,dim=c(iteration,T+26))
+p_poutes=array(0,dim=c(iteration,T+26))
+N_vichy=array(0,dim=c(iteration,T+26))
+N_vichy_temp=array(0,dim=c(iteration,T+26))
+N_alagnon=array(0,dim=c(iteration,T+26))
+N_langeac=array(0,dim=c(iteration,T+26))
+N_poutes=array(0,dim=c(iteration,T+26))
+min_N_langeac=array(0,dim=c(iteration,T+26))
+S_vichy=array(0,dim=c(iteration,T+26))
+S_alagnon=array(0,dim=c(iteration,T+26))
+S_langeac=array(0,dim=c(iteration,T+26))
+S_poutes=array(0,dim=c(iteration,T+26))
+d_moy_vichy=array(0,dim=c(iteration,T+27))
+d_moy_alagnon=array(0,dim=c(iteration,T+27))
+d_moy_langeac=array(0,dim=c(iteration,T+27))
+d_moy_poutes=array(0,dim=c(iteration,T+27))
+juv_vichy=array(0,dim=c(iteration,T+27))
+juv_alagnon=array(0,dim=c(iteration,T+27))
+juv_langeac=array(0,dim=c(iteration,T+27))
+juv_poutes=array(0,dim=c(iteration,T+27))
+juv_tot_vichy=array(0,dim=c(iteration,T+26))
+juv_tot_alagnon=array(0,dim=c(iteration,T+26))
+juv_tot_langeac=array(0,dim=c(iteration,T+26))
+juv_tot_poutes=array(0,dim=c(iteration,T+26))
+juv_tot_system=array(0,dim=c(iteration,T+26))
+bugs_juv_vichy=array(0,dim=c(iteration,T+26))
+bugs_juv_alagnon=array(0,dim=c(iteration,T+26))
+bugs_juv_langeac=array(0,dim=c(iteration,T+26))
+bugs_juv_poutes=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_vichy=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_alagnon=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_langeac=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_poutes=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_system=array(0,dim=c(iteration,T+26))
+ratio_habitat=array(0,dim=c(4,T+26))
+I_mm=array(0,dim=c(iteration,T+20))
+
+coef_juv_1<-array(rep(0,T*5000),dim=c(iteration,T+25))
+coef_juv_2<-array(rep(0,T*5000),dim=c(iteration,T+25))
+coef_juv_3<-array(rep(0,T*5000),dim=c(iteration,T+25))
+renew_rate=array(0,dim=c(iteration,T+20))
+renew_rate_q=array(0,dim=c((T+20),5))
+
+for (t in 1:(T+26)){
+	for (i in 1:4){
+		ratio_habitat[i,t] <- S_juv_JP[i,t] /( S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t])
+	}
+}
+
+#Pour avoir les premiers juv_tot sans les recalculer car fout la zone dans R car en a besoin pour calculer la suite
+#On commence à T-6 et non T-5 pour avoir les juv qu'il faut pour calculer les coef_juv de l'année T (il faut donc calculer de t-2 à t-6)
+for(t in (T-5):T){
+	for (i in 1:iteration){ 
+		bugs_juv_vichy[i,t]=bugs_dmoy_tot_V[i,t-1]*S_juv_JP[1,t]
+		bugs_juv_alagnon[i,t]=bugs_dmoy_tot_A[i,t-1]*S_juv_JP[2,t]
+		bugs_juv_langeac[i,t]=bugs_dmoy_tot_L[i,t-1]*S_juv_JP[3,t]
+		bugs_juv_poutes[i,t]=bugs_dmoy_tot_P[i,t-12]*S_juv_JP[4,t]
+	}
+}	
+
+
+#On démarre à T-1 pour pouvoir calculer les diagnostiques de conservation
+for (t in (T-1):T){
+	for (i in 1:iteration){ 
+		bugs_juv_tot_vichy[i,t] = (1/3) * bugs_juv_vichy[i,t-3] + (1/3) * bugs_juv_vichy[i,t-4] + (1/3) * bugs_juv_vichy[i,t-5] 
+		bugs_juv_tot_alagnon[i,t] = (1/3) * bugs_juv_alagnon[i,t-3] + (1/3) * bugs_juv_alagnon[i,t-4] + (1/3) * bugs_juv_alagnon[i,t-5] 
+		bugs_juv_tot_langeac[i,t] = (1/3) * bugs_juv_langeac[i,t-3] + (1/3) * bugs_juv_langeac[i,t-4] + (1/3) * bugs_juv_langeac[i,t-5] 
+		bugs_juv_tot_poutes[i,t] = (1/3) * bugs_juv_poutes[i,t-3] + (1/3) * bugs_juv_poutes[i,t-4] + (1/3) * bugs_juv_poutes[i,t-5]
+		bugs_juv_tot_system[i,t] = bugs_juv_tot_vichy[i,t] + bugs_juv_tot_alagnon[i,t] + bugs_juv_tot_langeac[i,t] +bugs_juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- bugs_juv_tot_alagnon[i,t] / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t]) / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])# *bugs_rho_poutes[i] *bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*bugs_L_Q_L_mont_P_cr[t] + bugs_beta_Q_L_mont_A[i]*bugs_L_Q_L_mont_A_cr[t]
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+		
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*bugs_L_Q_VB_mont_P_cr[t] + bugs_beta_Q_VB_mont_A[i]*bugs_L_Q_VB_mont_A_cr[t]
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+
+		ratio_juv_prod_P[i,t] <-  bugs_juv_tot_poutes[i,t]/(bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*bugs_L_Q_P_mont_P_cr[t] + bugs_beta_Q_P_mont_A[i]*bugs_L_Q_P_mont_A_cr[t]
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(bugs_s_juv2ad[i,(t-6)]*bugs_juv_tot_system[i,t] * bugs_ratio_surv[i]^bugs_I_mm[i,(t-6)]) #indice bugs_s_juv2ad sur le temps depuis ajout influence Q /  * pow(ratio_surv,I_mm[i,t])  pour modèle de mélange t-6 car bugs_I_mm commence à 7
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+	
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+		
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+			
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+				
+		}
+}
+
+#On scinde dans un nouveau bloc pour ajouter l'évolution des débits sur la survie et répartition des adultes
+#qui intervient à partir de T+1
+for (t in (T+1):(T+3)){
+	for (i in 1:iteration){ 
+
+#on recalcule I_mm à partir de bugs_p_surv pour les projections
+I_mm[i,t]<-rbern(1,bugs_p_surv[i])
+Qvb_deval[i,t] <- bugs_beta_Q_VB_deval[i]*L_Q_VB_deval_20yr_cr[i,t]
+Qmsl_deval[i,t] <- bugs_beta_Q_MSL_deval[i]*L_Q_MSL_deval_20yr_cr[i,t]
+Qmsl_mont[i,t] <- bugs_beta_Q_MSL_mont[i]*L_Q_MSL_mont_20yr_cr[i,t]
+s_juv2ad_20yr[i,t] <- bugs_m_surv[i]* ilogit(Qvb_deval[i,t]) * ilogit(Qmsl_deval[i,t]) * ilogit(Qmsl_mont[i,t])
+L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
+
+		bugs_juv_tot_vichy[i,t] = (1/3) * bugs_juv_vichy[i,t-3] + (1/3) * bugs_juv_vichy[i,t-4] + (1/3) * bugs_juv_vichy[i,t-5] 
+		bugs_juv_tot_alagnon[i,t] = (1/3) * bugs_juv_alagnon[i,t-3] + (1/3) * bugs_juv_alagnon[i,t-4] + (1/3) * bugs_juv_alagnon[i,t-5] 
+		bugs_juv_tot_langeac[i,t] = (1/3) * bugs_juv_langeac[i,t-3] + (1/3) * bugs_juv_langeac[i,t-4] + (1/3) * bugs_juv_langeac[i,t-5] 
+		bugs_juv_tot_poutes[i,t] = (1/3) * bugs_juv_poutes[i,t-3] + (1/3) * bugs_juv_poutes[i,t-4] + (1/3) * bugs_juv_poutes[i,t-5]
+		bugs_juv_tot_system[i,t] = bugs_juv_tot_vichy[i,t] + bugs_juv_tot_alagnon[i,t] + bugs_juv_tot_langeac[i,t] +bugs_juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- bugs_juv_tot_alagnon[i,t] / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t]) / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])# *bugs_rho_poutes[i] *bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*L_Q_L_mont_P_20yr_cr[i,t] + bugs_beta_Q_L_mont_A[i]*L_Q_L_mont_A_20yr_cr[i,t] #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+		
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*L_Q_VB_mont_P_20yr_cr[i,t] + bugs_beta_Q_VB_mont_A[i]*L_Q_VB_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+
+		ratio_juv_prod_P[i,t] <-  bugs_juv_tot_poutes[i,t]/(bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*L_Q_P_mont_P_20yr_cr[i,t] + bugs_beta_Q_P_mont_A[i]*L_Q_P_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(s_juv2ad_20yr[i,t]*bugs_juv_tot_system[i,t] * bugs_ratio_surv[i]^I_mm[i,t]) #on remplace bugs_s_juv2ad par s_juv2ad_20yr qui a été recalculé pour conserver l'effet des Q sur la survie
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+	
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+		
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+			
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+				
+		}
+}
+
+#Les juvéniles t-3 sont maintenant ceux calculés à la fin de la première boucle et non plus ceux issus directement d'openbugs
+for (t in (T+4):(T+4)){
+	for (i in 1:iteration){ 
+	  
+#on recalcule I_mm à partir de bugs_p_surv pour les projections
+I_mm[i,t]<-rbern(1,bugs_p_surv[i])	  
+Qvb_deval[i,t] <- bugs_beta_Q_VB_deval[i]*L_Q_VB_deval_20yr_cr[i,t]
+Qmsl_deval[i,t] <- bugs_beta_Q_MSL_deval[i]*L_Q_MSL_deval_20yr_cr[i,t]
+Qmsl_mont[i,t] <- bugs_beta_Q_MSL_mont[i]*L_Q_MSL_mont_20yr_cr[i,t]
+s_juv2ad_20yr[i,t] <- bugs_m_surv[i]* ilogit(Qvb_deval[i,t]) * ilogit(Qmsl_deval[i,t]) * ilogit(Qmsl_mont[i,t])
+L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
+
+		bugs_juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * bugs_juv_vichy[i,t-4] + (1/3) * bugs_juv_vichy[i,t-5] 
+		bugs_juv_tot_alagnon[i,t] = (1/3) * juv_alagnon[i,t-3] + (1/3) * bugs_juv_alagnon[i,t-4] + (1/3) * bugs_juv_alagnon[i,t-5] 
+		bugs_juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * bugs_juv_langeac[i,t-4] + (1/3) * bugs_juv_langeac[i,t-5] 
+		bugs_juv_tot_poutes[i,t] = (1/3) * juv_poutes[i,t-3] + (1/3) * bugs_juv_poutes[i,t-4] + (1/3) * bugs_juv_poutes[i,t-5] 
+		bugs_juv_tot_system[i,t] = bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t] +bugs_juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- bugs_juv_tot_alagnon[i,t] / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t]) / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*L_Q_L_mont_P_20yr_cr[i,t] + bugs_beta_Q_L_mont_A[i]*L_Q_L_mont_A_20yr_cr[i,t] #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+		
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*L_Q_VB_mont_P_20yr_cr[i,t] + bugs_beta_Q_VB_mont_A[i]*L_Q_VB_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+		
+		ratio_juv_prod_P[i,t] <-  bugs_juv_tot_poutes[i,t]/(bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*L_Q_P_mont_P_20yr_cr[i,t] + bugs_beta_Q_P_mont_A[i]*L_Q_P_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+	
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(s_juv2ad_20yr[i,t]*bugs_juv_tot_system[i,t] * bugs_ratio_surv[i]^I_mm[i,t]) 
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+		
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+				
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+		
+	}
+}
+
+#Les juvéniles t-3 et t-4 sont maintenant ceux calculés à la fin des boucles précédentes et non plus ceux issus directement d'openbugs
+for (t in (T+5):(T+5)){
+	for (i in 1:iteration){ 
+
+	#on recalcule I_mm à partir de bugs_p_surv pour les projections
+I_mm[i,t]<-rbern(1,bugs_p_surv[i])  	  
+Qvb_deval[i,t] <- bugs_beta_Q_VB_deval[i]*L_Q_VB_deval_20yr_cr[i,t]
+Qmsl_deval[i,t] <- bugs_beta_Q_MSL_deval[i]*L_Q_MSL_deval_20yr_cr[i,t]
+Qmsl_mont[i,t] <- bugs_beta_Q_MSL_mont[i]*L_Q_MSL_mont_20yr_cr[i,t]
+s_juv2ad_20yr[i,t] <- bugs_m_surv[i]* ilogit(Qvb_deval[i,t]) * ilogit(Qmsl_deval[i,t]) * ilogit(Qmsl_mont[i,t])
+L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
+
+		bugs_juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * bugs_juv_vichy[i,t-5] 
+		bugs_juv_tot_alagnon[i,t] = (1/3) * juv_alagnon[i,t-3] + (1/3) * juv_alagnon[i,t-4] + (1/3) * bugs_juv_alagnon[i,t-5] 
+		bugs_juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * bugs_juv_langeac[i,t-5] 
+		bugs_juv_tot_poutes[i,t] = (1/3) * juv_poutes[i,t-3] + (1/3) * juv_poutes[i,t-4] + (1/3) * bugs_juv_poutes[i,t-5] 
+		bugs_juv_tot_system[i,t] = bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t] +bugs_juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- bugs_juv_tot_alagnon[i,t] / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t]) / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*L_Q_L_mont_P_20yr_cr[i,t] + bugs_beta_Q_L_mont_A[i]*L_Q_L_mont_A_20yr_cr[i,t] #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+		
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*L_Q_VB_mont_P_20yr_cr[i,t] + bugs_beta_Q_VB_mont_A[i]*L_Q_VB_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+		
+		ratio_juv_prod_P[i,t] <-  bugs_juv_tot_poutes[i,t]/(bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*L_Q_P_mont_P_20yr_cr[i,t] + bugs_beta_Q_P_mont_A[i]*L_Q_P_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+	
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(s_juv2ad_20yr[i,t]*bugs_juv_tot_system[i,t] * bugs_ratio_surv[i]^I_mm[i,t]) 
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+		
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+		
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+		
+	}
+}
+
+#Les juvéniles t-3 et t-4 t-5 sont maintenant ceux calculés à la fin des boucles précédentes et non plus ceux issus directement d'openbugs
+#On va jusqu'à T+21 pour pouvoir calculer renew_rate sur 20 ans (sinon manque une année car on a besoin de faire N_vichy[T+21]
+for (t in (T+6):(T+20)){
+	for (i in 1:iteration){ 
+
+#on recalcule I_mm à partir de bugs_p_surv pour les projections
+I_mm[i,t]<-rbern(1,bugs_p_surv[i])	  
+Qvb_deval[i,t] <- bugs_beta_Q_VB_deval[i]*L_Q_VB_deval_20yr_cr[i,t]
+Qmsl_deval[i,t] <- bugs_beta_Q_MSL_deval[i]*L_Q_MSL_deval_20yr_cr[i,t]
+Qmsl_mont[i,t] <- bugs_beta_Q_MSL_mont[i]*L_Q_MSL_mont_20yr_cr[i,t]
+s_juv2ad_20yr[i,t] <- bugs_m_surv[i]* ilogit(Qvb_deval[i,t]) * ilogit(Qmsl_deval[i,t]) * ilogit(Qmsl_mont[i,t])
+L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
+
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_alagnon[i,t] = (1/3) * juv_alagnon[i,t-3] + (1/3) * juv_alagnon[i,t-4] + (1/3) * juv_alagnon[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = (1/3) * juv_poutes[i,t-3] + (1/3) * juv_poutes[i,t-4] + (1/3) * juv_poutes[i,t-5] 
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_alagnon[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- juv_tot_alagnon[i,t] / (juv_tot_vichy[i,t]+juv_tot_alagnon[i,t]+juv_tot_langeac[i,t]+juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (juv_tot_langeac[i,t]+juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t]+juv_tot_langeac[i,t]+juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*L_Q_L_mont_P_20yr_cr[i,t] + bugs_beta_Q_L_mont_A[i]*L_Q_L_mont_A_20yr_cr[i,t] #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+				
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*L_Q_VB_mont_P_20yr_cr[i,t] + bugs_beta_Q_VB_mont_A[i]*L_Q_VB_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+	
+		ratio_juv_prod_P[i,t] <-  juv_tot_poutes[i,t]/(juv_tot_langeac[i,t]+juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*L_Q_P_mont_P_20yr_cr[i,t] + bugs_beta_Q_P_mont_A[i]*L_Q_P_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+	
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(s_juv2ad_20yr[i,t]*juv_tot_system[i,t] * bugs_ratio_surv[i]^I_mm[i,t]) 
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+		
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+				
+		
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+		
+	}
+}
+
+```
+
+
+
+```{r model_sans_distri_melange, echo=FALSE, eval=FALSE}
+bugs_m_surv=read.coda(str_c(datawd,"m_survCODAchain1.txt"),str_c(datawd,"m_survCODAindex.txt"))
+
+S_juv_JP<-keep_good_surf(surf_2021=TRUE)
+
+
+#On met T+26 ou 25 pour pouvoir avoir à la fin un taux de renouvellement sur 20 ans (indicé t-5). Sur 20 ans en partant de T=42 +20 = 62 mais avec t-5 il faut finalement avoir t=67 (voire t=68 pour les t+1) pour calculer sur 20 ans
+ratio_juv_prod_V=array(0,dim=c(iteration,T+26))
+ratio_juv_prod_A=array(0,dim=c(iteration,T+26))
+ratio_juv_prod_L=array(0,dim=c(iteration,T+26))
+ratio_juv_prod_P=array(0,dim=c(iteration,T+26))
+ratio_juv_A=array(0,dim=c(iteration,T+26))
+ratio_juv_L=array(0,dim=c(iteration,T+26))
+ratio_juv_P=array(0,dim=c(iteration,T+26))
+L_ratio_juv_A=array(0,dim=c(iteration,T+26))
+L_ratio_juv_L=array(0,dim=c(iteration,T+26))
+L_ratio_juv_P=array(0,dim=c(iteration,T+26))
+L_mu_Vichy_nm=array(0,dim=c(iteration,T+26))
+L_mu_p_alagnon=array(0,dim=c(iteration,T+26))
+L_mu_p_langeac=array(0,dim=c(iteration,T+26))
+L_mu_p_poutes=array(0,dim=c(iteration,T+26))
+L_mu_d_wild_vichy=array(0,dim=c(iteration,T+27))
+L_mu_d_wild_alagnon=array(0,dim=c(iteration,T+27))
+L_mu_d_wild_langeac=array(0,dim=c(iteration,T+27))
+L_mu_d_wild_poutes=array(0,dim=c(iteration,T+27))
+L_p_alagnon=array(0,dim=c(iteration,T+26))
+L_p_langeac=array(0,dim=c(iteration,T+26))
+L_p_poutes=array(0,dim=c(iteration,T+26))
+L_d_moy_vichy=array(0,dim=c(iteration,T+27))
+L_d_moy_alagnon=array(0,dim=c(iteration,T+27))
+L_d_moy_langeac=array(0,dim=c(iteration,T+27))
+L_d_moy_poutes=array(0,dim=c(iteration,T+27))
+res_vichy=array(0,dim=c(iteration,T+26))
+res_p_alagnon=array(0,dim=c(iteration,T+26))
+res_p_langeac=array(0,dim=c(iteration,T+26))
+res_p_poutes=array(0,dim=c(iteration,T+26))
+p_alagnon=array(0,dim=c(iteration,T+26))
+p_langeac=array(0,dim=c(iteration,T+26))
+p_poutes=array(0,dim=c(iteration,T+26))
+N_vichy=array(0,dim=c(iteration,T+26))
+N_vichy_temp=array(0,dim=c(iteration,T+26))
+N_alagnon=array(0,dim=c(iteration,T+26))
+N_langeac=array(0,dim=c(iteration,T+26))
+N_poutes=array(0,dim=c(iteration,T+26))
+min_N_langeac=array(0,dim=c(iteration,T+26))
+S_vichy=array(0,dim=c(iteration,T+26))
+S_alagnon=array(0,dim=c(iteration,T+26))
+S_langeac=array(0,dim=c(iteration,T+26))
+S_poutes=array(0,dim=c(iteration,T+26))
+d_moy_vichy=array(0,dim=c(iteration,T+27))
+d_moy_alagnon=array(0,dim=c(iteration,T+27))
+d_moy_langeac=array(0,dim=c(iteration,T+27))
+d_moy_poutes=array(0,dim=c(iteration,T+27))
+juv_vichy=array(0,dim=c(iteration,T+27))
+juv_alagnon=array(0,dim=c(iteration,T+27))
+juv_langeac=array(0,dim=c(iteration,T+27))
+juv_poutes=array(0,dim=c(iteration,T+27))
+juv_tot_vichy=array(0,dim=c(iteration,T+26))
+juv_tot_alagnon=array(0,dim=c(iteration,T+26))
+juv_tot_langeac=array(0,dim=c(iteration,T+26))
+juv_tot_poutes=array(0,dim=c(iteration,T+26))
+juv_tot_system=array(0,dim=c(iteration,T+26))
+bugs_juv_vichy=array(0,dim=c(iteration,T+26))
+bugs_juv_alagnon=array(0,dim=c(iteration,T+26))
+bugs_juv_langeac=array(0,dim=c(iteration,T+26))
+bugs_juv_poutes=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_vichy=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_alagnon=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_langeac=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_poutes=array(0,dim=c(iteration,T+26))
+bugs_juv_tot_system=array(0,dim=c(iteration,T+26))
+ratio_habitat=array(0,dim=c(4,T+26))
+I_mm=array(0,dim=c(iteration,T+20))
+
+coef_juv_1<-array(rep(0,T*5000),dim=c(iteration,T+25))
+coef_juv_2<-array(rep(0,T*5000),dim=c(iteration,T+25))
+coef_juv_3<-array(rep(0,T*5000),dim=c(iteration,T+25))
+renew_rate=array(0,dim=c(iteration,T+20))
+renew_rate_q=array(0,dim=c((T+20),5))
+
+for (t in 1:(T+26)){
+	for (i in 1:4){
+		ratio_habitat[i,t] <- S_juv_JP[i,t] /( S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t])
+	}
+}
+
+#Pour avoir les premiers juv_tot sans les recalculer car fout la zone dans R car en a besoin pour calculer la suite
+#On commence à T-6 et non T-5 pour avoir les juv qu'il faut pour calculer les coef_juv de l'année T (il faut donc calculer de t-2 à t-6)
+for(t in (T-5):T){
+	for (i in 1:iteration){ 
+		bugs_juv_vichy[i,t]=bugs_dmoy_tot_V[i,t-1]*S_juv_JP[1,t]
+		bugs_juv_alagnon[i,t]=bugs_dmoy_tot_A[i,t-1]*S_juv_JP[2,t]
+		bugs_juv_langeac[i,t]=bugs_dmoy_tot_L[i,t-1]*S_juv_JP[3,t]
+		bugs_juv_poutes[i,t]=bugs_dmoy_tot_P[i,t-12]*S_juv_JP[4,t]
+	}
+}	
+
+
+#On démarre à T-1 pour pouvoir calculer les diagnostiques de conservation
+for (t in (T-1):T){
+	for (i in 1:iteration){ 
+		bugs_juv_tot_vichy[i,t] = (1/3) * bugs_juv_vichy[i,t-3] + (1/3) * bugs_juv_vichy[i,t-4] + (1/3) * bugs_juv_vichy[i,t-5] 
+		bugs_juv_tot_alagnon[i,t] = (1/3) * bugs_juv_alagnon[i,t-3] + (1/3) * bugs_juv_alagnon[i,t-4] + (1/3) * bugs_juv_alagnon[i,t-5] 
+		bugs_juv_tot_langeac[i,t] = (1/3) * bugs_juv_langeac[i,t-3] + (1/3) * bugs_juv_langeac[i,t-4] + (1/3) * bugs_juv_langeac[i,t-5] 
+		bugs_juv_tot_poutes[i,t] = (1/3) * bugs_juv_poutes[i,t-3] + (1/3) * bugs_juv_poutes[i,t-4] + (1/3) * bugs_juv_poutes[i,t-5]
+		bugs_juv_tot_system[i,t] = bugs_juv_tot_vichy[i,t] + bugs_juv_tot_alagnon[i,t] + bugs_juv_tot_langeac[i,t] +bugs_juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- bugs_juv_tot_alagnon[i,t] / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t]) / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])# *bugs_rho_poutes[i] *bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*bugs_L_Q_L_mont_P_cr[t] + bugs_beta_Q_L_mont_A[i]*bugs_L_Q_L_mont_A_cr[t]
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+		
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*bugs_L_Q_VB_mont_P_cr[t] + bugs_beta_Q_VB_mont_A[i]*bugs_L_Q_VB_mont_A_cr[t]
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+
+		ratio_juv_prod_P[i,t] <-  bugs_juv_tot_poutes[i,t]/(bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*bugs_L_Q_P_mont_P_cr[t] + bugs_beta_Q_P_mont_A[i]*bugs_L_Q_P_mont_A_cr[t]
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(bugs_s_juv2ad[i,(t-6)]*bugs_juv_tot_system[i,t]) #indice bugs_s_juv2ad sur le temps depuis ajout influence Q /  * pow(ratio_surv,I_mm[t])  pour modèle de mélange
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+	
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+		
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+			
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+				
+		}
+}
+
+#On scinde dans un nouveau bloc pour ajouter l'évolution des débits sur la survie et répartition des adultes
+#qui intervient à partir de T+1
+for (t in (T+1):(T+3)){
+	for (i in 1:iteration){ 
+
+Qvb_deval[i,t] <- bugs_beta_Q_VB_deval[i]*L_Q_VB_deval_20yr_cr[i,t]
+Qmsl_deval[i,t] <- bugs_beta_Q_MSL_deval[i]*L_Q_MSL_deval_20yr_cr[i,t]
+Qmsl_mont[i,t] <- bugs_beta_Q_MSL_mont[i]*L_Q_MSL_mont_20yr_cr[i,t]
+s_juv2ad_20yr[i,t] <- bugs_m_surv[i]* ilogit(Qvb_deval[i,t]) * ilogit(Qmsl_deval[i,t]) * ilogit(Qmsl_mont[i,t])
+L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
+
+		bugs_juv_tot_vichy[i,t] = (1/3) * bugs_juv_vichy[i,t-3] + (1/3) * bugs_juv_vichy[i,t-4] + (1/3) * bugs_juv_vichy[i,t-5] 
+		bugs_juv_tot_alagnon[i,t] = (1/3) * bugs_juv_alagnon[i,t-3] + (1/3) * bugs_juv_alagnon[i,t-4] + (1/3) * bugs_juv_alagnon[i,t-5] 
+		bugs_juv_tot_langeac[i,t] = (1/3) * bugs_juv_langeac[i,t-3] + (1/3) * bugs_juv_langeac[i,t-4] + (1/3) * bugs_juv_langeac[i,t-5] 
+		bugs_juv_tot_poutes[i,t] = (1/3) * bugs_juv_poutes[i,t-3] + (1/3) * bugs_juv_poutes[i,t-4] + (1/3) * bugs_juv_poutes[i,t-5]
+		bugs_juv_tot_system[i,t] = bugs_juv_tot_vichy[i,t] + bugs_juv_tot_alagnon[i,t] + bugs_juv_tot_langeac[i,t] +bugs_juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- bugs_juv_tot_alagnon[i,t] / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t]) / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])# *bugs_rho_poutes[i] *bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*L_Q_L_mont_P_20yr_cr[i,t] + bugs_beta_Q_L_mont_A[i]*L_Q_L_mont_A_20yr_cr[i,t] #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+		
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*L_Q_VB_mont_P_20yr_cr[i,t] + bugs_beta_Q_VB_mont_A[i]*L_Q_VB_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+
+		ratio_juv_prod_P[i,t] <-  bugs_juv_tot_poutes[i,t]/(bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*L_Q_P_mont_P_20yr_cr[i,t] + bugs_beta_Q_P_mont_A[i]*L_Q_P_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(s_juv2ad_20yr[i,t]*bugs_juv_tot_system[i,t]) #on remplace bugs_s_juv2ad par s_juv2ad_20yr qui a été recalculé pour conserver l'effet des Q sur la survie
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+	
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+		
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+			
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+				
+		}
+}
+
+#Les juvéniles t-3 sont maintenant ceux calculés à la fin de la première boucle et non plus ceux issus directement d'openbugs
+for (t in (T+4):(T+4)){
+	for (i in 1:iteration){ 
+	  
+Qvb_deval[i,t] <- bugs_beta_Q_VB_deval[i]*L_Q_VB_deval_20yr_cr[i,t]
+Qmsl_deval[i,t] <- bugs_beta_Q_MSL_deval[i]*L_Q_MSL_deval_20yr_cr[i,t]
+Qmsl_mont[i,t] <- bugs_beta_Q_MSL_mont[i]*L_Q_MSL_mont_20yr_cr[i,t]
+s_juv2ad_20yr[i,t] <- bugs_m_surv[i]* ilogit(Qvb_deval[i,t]) * ilogit(Qmsl_deval[i,t]) * ilogit(Qmsl_mont[i,t])
+L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
+
+		bugs_juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * bugs_juv_vichy[i,t-4] + (1/3) * bugs_juv_vichy[i,t-5] 
+		bugs_juv_tot_alagnon[i,t] = (1/3) * juv_alagnon[i,t-3] + (1/3) * bugs_juv_alagnon[i,t-4] + (1/3) * bugs_juv_alagnon[i,t-5] 
+		bugs_juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * bugs_juv_langeac[i,t-4] + (1/3) * bugs_juv_langeac[i,t-5] 
+		bugs_juv_tot_poutes[i,t] = (1/3) * juv_poutes[i,t-3] + (1/3) * bugs_juv_poutes[i,t-4] + (1/3) * bugs_juv_poutes[i,t-5] 
+		bugs_juv_tot_system[i,t] = bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t] +bugs_juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- bugs_juv_tot_alagnon[i,t] / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t]) / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*L_Q_L_mont_P_20yr_cr[i,t] + bugs_beta_Q_L_mont_A[i]*L_Q_L_mont_A_20yr_cr[i,t] #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+		
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*L_Q_VB_mont_P_20yr_cr[i,t] + bugs_beta_Q_VB_mont_A[i]*L_Q_VB_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+		
+		ratio_juv_prod_P[i,t] <-  bugs_juv_tot_poutes[i,t]/(bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*L_Q_P_mont_P_20yr_cr[i,t] + bugs_beta_Q_P_mont_A[i]*L_Q_P_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+	
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(s_juv2ad_20yr[i,t]*bugs_juv_tot_system[i,t]) 
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+		
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+				
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+		
+	}
+}
+
+#Les juvéniles t-3 et t-4 sont maintenant ceux calculés à la fin des boucles précédentes et non plus ceux issus directement d'openbugs
+for (t in (T+5):(T+5)){
+	for (i in 1:iteration){ 
+
+Qvb_deval[i,t] <- bugs_beta_Q_VB_deval[i]*L_Q_VB_deval_20yr_cr[i,t]
+Qmsl_deval[i,t] <- bugs_beta_Q_MSL_deval[i]*L_Q_MSL_deval_20yr_cr[i,t]
+Qmsl_mont[i,t] <- bugs_beta_Q_MSL_mont[i]*L_Q_MSL_mont_20yr_cr[i,t]
+s_juv2ad_20yr[i,t] <- bugs_m_surv[i]* ilogit(Qvb_deval[i,t]) * ilogit(Qmsl_deval[i,t]) * ilogit(Qmsl_mont[i,t])
+L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
+
+		bugs_juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * bugs_juv_vichy[i,t-5] 
+		bugs_juv_tot_alagnon[i,t] = (1/3) * juv_alagnon[i,t-3] + (1/3) * juv_alagnon[i,t-4] + (1/3) * bugs_juv_alagnon[i,t-5] 
+		bugs_juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * bugs_juv_langeac[i,t-5] 
+		bugs_juv_tot_poutes[i,t] = (1/3) * juv_poutes[i,t-3] + (1/3) * juv_poutes[i,t-4] + (1/3) * bugs_juv_poutes[i,t-5] 
+		bugs_juv_tot_system[i,t] = bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t] +bugs_juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- bugs_juv_tot_alagnon[i,t] / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_alagnon[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t]) / (bugs_juv_tot_vichy[i,t]+bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*L_Q_L_mont_P_20yr_cr[i,t] + bugs_beta_Q_L_mont_A[i]*L_Q_L_mont_A_20yr_cr[i,t] #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+		
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*L_Q_VB_mont_P_20yr_cr[i,t] + bugs_beta_Q_VB_mont_A[i]*L_Q_VB_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+		
+		ratio_juv_prod_P[i,t] <-  bugs_juv_tot_poutes[i,t]/(bugs_juv_tot_langeac[i,t]+bugs_juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*L_Q_P_mont_P_20yr_cr[i,t] + bugs_beta_Q_P_mont_A[i]*L_Q_P_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+	
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(s_juv2ad_20yr[i,t]*bugs_juv_tot_system[i,t]) 
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+		
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+		
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+		
+	}
+}
+
+#Les juvéniles t-3 et t-4 t-5 sont maintenant ceux calculés à la fin des boucles précédentes et non plus ceux issus directement d'openbugs
+#On va jusqu'à T+21 pour pouvoir calculer renew_rate sur 20 ans (sinon manque une année car on a besoin de faire N_vichy[T+21]
+for (t in (T+6):(T+20)){
+	for (i in 1:iteration){ 
+
+Qvb_deval[i,t] <- bugs_beta_Q_VB_deval[i]*L_Q_VB_deval_20yr_cr[i,t]
+Qmsl_deval[i,t] <- bugs_beta_Q_MSL_deval[i]*L_Q_MSL_deval_20yr_cr[i,t]
+Qmsl_mont[i,t] <- bugs_beta_Q_MSL_mont[i]*L_Q_MSL_mont_20yr_cr[i,t]
+s_juv2ad_20yr[i,t] <- bugs_m_surv[i]* ilogit(Qvb_deval[i,t]) * ilogit(Qmsl_deval[i,t]) * ilogit(Qmsl_mont[i,t])
+L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
+
+		juv_tot_vichy[i,t] = (1/3) * juv_vichy[i,t-3] + (1/3) * juv_vichy[i,t-4] + (1/3) * juv_vichy[i,t-5] 
+		juv_tot_alagnon[i,t] = (1/3) * juv_alagnon[i,t-3] + (1/3) * juv_alagnon[i,t-4] + (1/3) * juv_alagnon[i,t-5] 
+		juv_tot_langeac[i,t] = (1/3) * juv_langeac[i,t-3] + (1/3) * juv_langeac[i,t-4] + (1/3) * juv_langeac[i,t-5] 
+		juv_tot_poutes[i,t] = (1/3) * juv_poutes[i,t-3] + (1/3) * juv_poutes[i,t-4] + (1/3) * juv_poutes[i,t-5] 
+		juv_tot_system[i,t] = juv_tot_vichy[i,t]+juv_tot_alagnon[i,t]+juv_tot_langeac[i,t] +juv_tot_poutes[i,t]#*bugs_rho_poutes[i]
+		
+		ratio_juv_prod_A[i,t] <- juv_tot_alagnon[i,t] / (juv_tot_vichy[i,t]+juv_tot_alagnon[i,t]+juv_tot_langeac[i,t]+juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		ratio_juv_prod_L[i,t] <- (juv_tot_langeac[i,t]+juv_tot_poutes[i,t]) / (juv_tot_vichy[i,t]+juv_tot_langeac[i,t]+juv_tot_poutes[i,t])#*bugs_rho_poutes[i])	
+		#ratio_juv_prod_V[i,t] <- 1-ratio_juv_prod_L[i,t]
+		
+		ratio_juv_A[i,t]<- bugs_rho_station[i]*(S_juv_JP[2,t]/(S_juv_JP[1,t]+S_juv_JP[2,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_A[i,t]
+		L_ratio_juv_A[i,t] <- logit(ratio_juv_A[i,t])
+		L_mu_p_alagnon[i,t]<-L_ratio_juv_A[i,t]+bugs_adjust_p_A[i]+ bugs_beta_Q_L_mont_P[i]*L_Q_L_mont_P_20yr_cr[i,t] + bugs_beta_Q_L_mont_A[i]*L_Q_L_mont_A_20yr_cr[i,t] #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		
+		L_p_alagnon[i,t]<-rnorm(1,L_mu_p_alagnon[i,t],bugs_sigma_p_alagnon[i]) 
+		res_p_alagnon[i,t] <- L_p_alagnon[i,t]-L_mu_p_alagnon[i,t]
+				
+		ratio_juv_L[i,t]<- bugs_rho_station[i]*((S_juv_JP[3,t]+S_juv_JP[4,t])/(S_juv_JP[1,t]+S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_L[i,t]
+		L_ratio_juv_L[i,t] <- logit(ratio_juv_L[i,t])
+		L_mu_p_langeac[i,t]<-L_ratio_juv_L[i,t]+bugs_adjust_p_L[i]+ bugs_beta_Q_VB_mont_P[i]*L_Q_VB_mont_P_20yr_cr[i,t] + bugs_beta_Q_VB_mont_A[i]*L_Q_VB_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+		L_p_langeac[i,t]<-rnorm(1,L_mu_p_langeac[i,t],bugs_sigma_p_langeac[i]) 
+		res_p_langeac[i,t] <- L_p_langeac[i,t]-L_mu_p_langeac[i,t]
+	
+		ratio_juv_prod_P[i,t] <-  juv_tot_poutes[i,t]/(juv_tot_langeac[i,t]+juv_tot_poutes[i,t])#*bugs_rho_poutes[i])
+		ratio_juv_P[i,t]<- bugs_rho_station[i]*(S_juv_JP[4,t]/(S_juv_JP[3,t]+S_juv_JP[4,t]))+(1-bugs_rho_station[i])*ratio_juv_prod_P[i,t]
+		L_ratio_juv_P[i,t] <- logit(ratio_juv_P[i,t])
+		L_mu_p_poutes[i,t]<-L_ratio_juv_P[i,t]+bugs_adjust_p_P[i]+ bugs_beta_Q_P_mont_P[i]*L_Q_P_mont_P_20yr_cr[i,t] + bugs_beta_Q_P_mont_A[i]*L_Q_P_mont_A_20yr_cr[i,t]  #on met les nouveaux débits centrés-réduits calculé dans le chunk "simulation_q_identique"
+	
+		L_p_poutes[i,t]<-rnorm(1,L_mu_p_poutes[i,t],bugs_sigma_p_poutes[i]) 
+		res_p_poutes[i,t] <- L_p_poutes[i,t]-L_mu_p_poutes[i,t]
+		
+		L_mu_Vichy_nm[i,t]<- log(s_juv2ad_20yr[i,t]*juv_tot_system[i,t]) 
+		N_vichy[i,t]<-rlnorm(1,L_mu_Vichy_nm[i,t],bugs_sigma_vichy[i])
+			if (N_vichy[i,t]<3) {N_vichy[i,t]=3}
+			if (N_vichy[i,t]>15000) {N_vichy[i,t]=15000}#I(3,15000)
+		res_vichy[i,t] <- log(N_vichy[i,t])-L_mu_Vichy_nm[i,t]
+		
+		p_alagnon[i,t]=inv.logit(L_p_alagnon[i,t])	
+		p_langeac[i,t]=inv.logit(L_p_langeac[i,t])	
+		p_poutes[i,t]=inv.logit(L_p_poutes[i,t])	
+		N_alagnon[i,t]=rbinom(1,round(N_vichy[i,t],0),p_alagnon[i,t])
+		N_langeac[i,t]=rbinom(1,round(N_vichy[i,t]-N_alagnon[i,t],0),p_langeac[i,t])
+		N_poutes[i,t]=rbinom(1,round(N_langeac[i,t],0),p_poutes[i,t])
+		min_N_langeac[i,t]<-N_poutes[i,t]+1
+			if(N_langeac[i,t]<min_N_langeac[i,t]){N_langeac[i,t]=min_N_langeac[i,t]}
+				
+		
+		S_poutes[i,t]=max(N_poutes[i,t],1)
+		S_langeac[i,t]=max(N_langeac[i,t]-N_poutes[i,t],1)
+		S_alagnon[i,t]=max(N_alagnon[i,t],1)
+		S_vichy[i,t]= max(N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t],1)
+		
+		L_mu_d_wild_vichy[i,t+1]=log( (S_vichy[i,t]/S_juv_JP[1,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_vichy[i,t]/S_juv_JP[1,t]) )) + bugs_nu_d[i,1]
+		L_d_moy_vichy[i,t+1]=rnorm(1,L_mu_d_wild_vichy[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_vichy[i,t+1]=exp(L_d_moy_vichy[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_vichy[i,t+1]=d_moy_vichy[i,t+1]*S_juv_JP[1,t+1]
+		
+		L_mu_d_wild_alagnon[i,t+1]=log( (S_alagnon[i,t]/S_juv_JP[2,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_alagnon[i,t]/S_juv_JP[2,t]) )) + bugs_nu_d[i,2]
+		L_d_moy_alagnon[i,t+1]=rnorm(1,L_mu_d_wild_alagnon[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_alagnon[i,t+1]=exp(L_d_moy_alagnon[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_alagnon[i,t+1]=d_moy_alagnon[i,t+1]*S_juv_JP[2,t+1]
+		
+		L_mu_d_wild_langeac[i,t+1]=log( (S_langeac[i,t]/S_juv_JP[3,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_langeac[i,t]/S_juv_JP[3,t]) )) + bugs_nu_d[i,3]
+		L_d_moy_langeac[i,t+1]=rnorm(1,L_mu_d_wild_langeac[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_langeac[i,t+1]=exp(L_d_moy_langeac[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_langeac[i,t+1]=d_moy_langeac[i,t+1]*S_juv_JP[3,t+1]
+		
+		L_mu_d_wild_poutes[i,t+1]=log( (S_poutes[i,t]/S_juv_JP[4,t]) / (bugs_alpha_dd[i] + bugs_beta_dd[i] * (S_poutes[i,t]/S_juv_JP[4,t]) )) + bugs_nu_d[i,4]
+		L_d_moy_poutes[i,t+1]=rnorm(1,L_mu_d_wild_poutes[i,t+1],bugs_sigma_wild_moy[i])
+		d_moy_poutes[i,t+1]=exp(L_d_moy_poutes[i,t+1])#d_moy_vichy=d_wild_moy_vichy car projection sans repeuplement
+		juv_poutes[i,t+1]=d_moy_poutes[i,t+1]*S_juv_JP[4,t+1]
+		
+	}
+}
+
+```
+
+
+```{r save_calcul, eval=FALSE, echo=FALSE}
+
+save.image(file =str_c( "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_",type_mod,"_",scenario,"_2023_09_22.RData"))
+save(N_vichy,file =str_c( "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_",type_mod,"_",scenario,"_2023_09_22.RData"))
+```
+
+```{r graph_proj_20yr_avec_distri_melange,eval=FALSE,echo=FALSE}
+#..............................
+# PROJECTION SUR LES 20 ANS 
+#..............................
+
+# Graph projection 20 years
+bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+N_vichy_real_q=array(NA,dim=c(30,5)) #30 car 22 ans sans STACOMI Vichy puis une année non exhaustive la 30eme années
+
+#Attention à l'année 30 estimation des passages Vichy car année jugée incomplète
+for (t in 1:22){
+	N_vichy_real_q[t,]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+for(t in 23:23){
+	N_vichy_real_q[(t+7),]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#N_vichy_proj_q=array(0,dim=c(43,5))
+N_vichy_proj_q=array(0,dim=c(T+20,5))
+for (t in (T+1):(T+20)){
+	N_vichy_proj_q[t,]=quantile(N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#..........
+# Graph
+#..........
+
+
+
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/TotalReturns_WithoutStocking_SensibiliteModel_",scenario,"_withModelMelange_2023_08_31.png"),width=800,height=800)
+
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="années",ylim=c(0,9000),ylab="Retours à Vichy",main=str_c("Projection sans repeuplement dans le scenario de débit : ",scenario),cex.lab=1.2)
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,1974+T,1974+T+10,1974+T+20)
+axis(1,at = c(1,6,16,26,T,T+10,T+20),
+		labels=lab1,
+		cex.axis = 1,las = 1,lwd=2,col = "black")
+
+
+for(i in 3:30){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+
+source(str_c(datawd,"data.R"))
+data_vichy<-N[,1]
+
+points(x=seq(23,T,1),data_vichy[23:T],pch=16)
+
+for(i in (T+1):(T+20)){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_proj_q[i,5],i+0.15,N_vichy_proj_q[i,5])
+	segments(i,N_vichy_proj_q[i,4],i,N_vichy_proj_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_proj_q[i,1],i+0.15,N_vichy_proj_q[i,1])
+	segments(i,N_vichy_proj_q[i,2],i,N_vichy_proj_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_proj_q[i,2],N_vichy_proj_q[i,2],N_vichy_proj_q[i,4],N_vichy_proj_q[i,4]),col="orange")
+	#median
+	segments(i-0.3,N_vichy_proj_q[i,3],i+0.3,N_vichy_proj_q[i,3])
+}
+
+
+dev.off()
+
+
+```
+```{r graph_threshold_avec_distri_melange,eval=FALSE,echo=FALSE}
+
+
+under_50_vichy=array(NA,dim=c(iteration,20))
+under_100_vichy=array(NA,dim=c(iteration,20))
+under_250_vichy=array(NA,dim=c(iteration,20))
+under_500_vichy=array(NA,dim=c(iteration,20))
+
+p_under_50_vichy=rep(NA,20)
+p_under_100_vichy=rep(NA,20)
+p_under_250_vichy=rep(NA,20)
+p_under_500_vichy=rep(NA,20)
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:iteration){
+		if(N_vichy[i,t] < 50){under_50_vichy[i,t-T]=1} else{under_50_vichy[i,t-T]=0}
+		if(N_vichy[i,t] < 100){under_100_vichy[i,t-T]=1}else{under_100_vichy[i,t-T]=0}
+		if(N_vichy[i,t] < 250){under_250_vichy[i,t-T]=1}else{under_250_vichy[i,t-T]=0}
+		if(N_vichy[i,t] < 500){under_500_vichy[i,t-T]=1}else{under_500_vichy[i,t-T]=0}
+	}
+}
+
+
+for (t in 1:20){
+	p_under_50_vichy[t]=mean(under_50_vichy[,t])
+	p_under_100_vichy[t]=mean(under_100_vichy[,t])
+	p_under_250_vichy[t]=mean(under_250_vichy[,t])
+	p_under_500_vichy[t]=mean(under_500_vichy[,t])
+
+}
+
+#..............
+# Graph
+#..............
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_",scenario,"_",type_mod,"_2023_08_31.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+color<-ifelse(scenario=="sans_Q","blue",
+              ifelse(scenario=="identique","green",
+                     ifelse(scenario=="diminue_5","orange",
+                            ifelse(scenario=="diminue_10","red",""))))
+#points(x,p_under_50_vichy_sans_Q,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col=color,lwd=2)
+
+segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col=color,lwd=2,lty=2)
+
+segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col=color,lwd=2,lty=3)
+
+segments(x[1:19],p_under_500_vichy[1:19],x[2:20],p_under_500_vichy[2:20],col=color,lwd=2,lty=4)
+
+
+legend("topleft",
+       legend=c(expression(p^seuils < 500),expression(p^seuils < 250),expression(p^seuils < 100),expression(p^seuils < 50)),
+		    lty=c(4,3,2,1),#16),
+	    	col=rep(color,4), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+```
+
+```{r graph_threshold_compare_avec_ss_distri_melange,eval=FALSE,echo=FALSE}
+#sans_Q
+load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData")
+N_vichy_av_melange<-N_vichy
+rm(N_vichy)
+#SS_model_melange
+load(file ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData")
+N_vichy_ss_melange<-N_vichy
+rm(N_vichy)
+
+#identique
+load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData")
+N_vichy_av_melange<-N_vichy
+rm(N_vichy)
+#SS_model_melange
+load(file ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData")
+N_vichy_ss_melange<-N_vichy
+rm(N_vichy)
+
+#diminue_5
+load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData")
+N_vichy_av_melange<-N_vichy
+rm(N_vichy)
+#SS_model_melange
+load(file ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData")
+N_vichy_ss_melange<-N_vichy
+rm(N_vichy)
+
+#diminue_10
+load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData")
+N_vichy_av_melange<-N_vichy
+rm(N_vichy)
+#SS_model_melange
+load(file ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData")
+N_vichy_ss_melange<-N_vichy
+rm(N_vichy)
+
+under_50_vichy=array(NA,dim=c(iteration,20))
+under_100_vichy=array(NA,dim=c(iteration,20))
+under_250_vichy=array(NA,dim=c(iteration,20))
+under_500_vichy=array(NA,dim=c(iteration,20))
+p_under_50_vichy=rep(NA,20)
+p_under_100_vichy=rep(NA,20)
+p_under_250_vichy=rep(NA,20)
+p_under_500_vichy=rep(NA,20)
+
+under_50_vichy_ss_melange=array(NA,dim=c(iteration,20))
+under_100_vichy_ss_melange=array(NA,dim=c(iteration,20))
+under_250_vichy_ss_melange=array(NA,dim=c(iteration,20))
+under_500_vichy_ss_melange=array(NA,dim=c(iteration,20))
+p_under_50_vichy_ss_melange=rep(NA,20)
+p_under_100_vichy_ss_melange=rep(NA,20)
+p_under_250_vichy_ss_melange=rep(NA,20)
+p_under_500_vichy_ss_melange=rep(NA,20)
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:iteration){
+		if(N_vichy_av_melange[i,t] < 50){under_50_vichy[i,t-T]=1} else{under_50_vichy[i,t-T]=0}
+		if(N_vichy_av_melange[i,t] < 100){under_100_vichy[i,t-T]=1}else{under_100_vichy[i,t-T]=0}
+		if(N_vichy_av_melange[i,t] < 250){under_250_vichy[i,t-T]=1}else{under_250_vichy[i,t-T]=0}
+		if(N_vichy_av_melange[i,t] < 500){under_500_vichy[i,t-T]=1}else{under_500_vichy[i,t-T]=0}
+	  
+	  if(N_vichy_ss_melange[i,t] < 50){under_50_vichy_ss_melange[i,t-T]=1} else{under_50_vichy_ss_melange[i,t-T]=0}
+		if(N_vichy_ss_melange[i,t] < 100){under_100_vichy_ss_melange[i,t-T]=1}else{under_100_vichy_ss_melange[i,t-T]=0}
+		if(N_vichy_ss_melange[i,t] < 250){under_250_vichy_ss_melange[i,t-T]=1}else{under_250_vichy_ss_melange[i,t-T]=0}
+		if(N_vichy_ss_melange[i,t] < 500){under_500_vichy_ss_melange[i,t-T]=1}else{under_500_vichy_ss_melange[i,t-T]=0}
+	}
+}
+
+
+for (t in 1:20){
+	p_under_50_vichy[t]=mean(under_50_vichy[,t])
+	p_under_100_vichy[t]=mean(under_100_vichy[,t])
+	p_under_250_vichy[t]=mean(under_250_vichy[,t])
+	p_under_500_vichy[t]=mean(under_500_vichy[,t])
+	
+	p_under_50_vichy_ss_melange[t]=mean(under_50_vichy_ss_melange[,t])
+	p_under_100_vichy_ss_melange[t]=mean(under_100_vichy_ss_melange[,t])
+	p_under_250_vichy_ss_melange[t]=mean(under_250_vichy_ss_melange[,t])
+	p_under_500_vichy_ss_melange[t]=mean(under_500_vichy_ss_melange[,t])
+
+}
+
+scenario<-"diminue_10"  #choisir dans "sans_Q" / "identique" / "diminue_5" / "diminue_10"
+#..............
+# Graph
+#..............
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/Threshold_",scenario,"_compare_With_Without_Melange_2023_09_01.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+#points(x,p_under_50_vichy_sans_Q,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col="blue",lwd=2)
+segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col="blue",lwd=2,lty=2)
+segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col="blue",lwd=2,lty=3)
+segments(x[1:19],p_under_500_vichy[1:19],x[2:20],p_under_500_vichy[2:20],col="blue",lwd=2,lty=4)
+
+segments(x[1:19],p_under_50_vichy_ss_melange[1:19],x[2:20],p_under_50_vichy_ss_melange[2:20],col="green",lwd=2)
+segments(x[1:19],p_under_100_vichy_ss_melange[1:19],x[2:20],p_under_100_vichy_ss_melange[2:20],col="green",lwd=2,lty=2)
+segments(x[1:19],p_under_250_vichy_ss_melange[1:19],x[2:20],p_under_250_vichy_ss_melange[2:20],col="green",lwd=2,lty=3)
+segments(x[1:19],p_under_500_vichy_ss_melange[1:19],x[2:20],p_under_500_vichy_ss_melange[2:20],col="green",lwd=2,lty=4)
+
+
+legend("topleft",
+       legend=c(expression(p^seuils < 500),expression(p^seuils < 250),expression(p^seuils < 100),expression(p^seuils < 50),"Avec Mélange","Sans Mélange"),
+		    lty=c(4,3,2,1,NA,NA),#16),
+       pch=c(NA,NA,NA,NA,16,16),
+	    	col=c(rep("black",4),"blue","green"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+```
+
+```{r graph_threshold_compare_scenario_avec_distri_melange,eval=FALSE,echo=FALSE}
+library(stringr)
+iteration=10000
+T=48
+type_mod="ModelMelange"
+
+#On charge les différents N_Vichy
+load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData")
+N_vichy_sans_Q<-N_vichy
+rm(N_vichy)
+
+under_10_vichy_sans_Q=array(NA,dim=c(iteration,20))
+under_50_vichy_sans_Q=array(NA,dim=c(iteration,20))
+under_100_vichy_sans_Q=array(NA,dim=c(iteration,20))
+under_250_vichy_sans_Q=array(NA,dim=c(iteration,20))
+under_500_vichy_sans_Q=array(NA,dim=c(iteration,20))
+
+p_under_10_vichy_sans_Q=rep(NA,20)
+p_under_50_vichy_sans_Q=rep(NA,20)
+p_under_100_vichy_sans_Q=rep(NA,20)
+p_under_250_vichy_sans_Q=rep(NA,20)
+p_under_500_vichy_sans_Q=rep(NA,20)
+
+#identique
+load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData")
+N_vichy_Q_identique<-N_vichy
+rm(N_vichy)
+
+under_10_vichy_Q_identique=array(NA,dim=c(iteration,20))
+under_50_vichy_Q_identique=array(NA,dim=c(iteration,20))
+under_100_vichy_Q_identique=array(NA,dim=c(iteration,20))
+under_250_vichy_Q_identique=array(NA,dim=c(iteration,20))
+under_500_vichy_Q_identique=array(NA,dim=c(iteration,20))
+
+p_under_10_vichy_Q_identique=rep(NA,20)
+p_under_50_vichy_Q_identique=rep(NA,20)
+p_under_100_vichy_Q_identique=rep(NA,20)
+p_under_250_vichy_Q_identique=rep(NA,20)
+p_under_500_vichy_Q_identique=rep(NA,20)
+
+#diminue_5
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData")  
+N_vichy_diminue_5<-N_vichy
+rm(N_vichy)
+
+under_10_vichy_diminue_5=array(NA,dim=c(iteration,20))
+under_50_vichy_diminue_5=array(NA,dim=c(iteration,20))
+under_100_vichy_diminue_5=array(NA,dim=c(iteration,20))
+under_250_vichy_diminue_5=array(NA,dim=c(iteration,20))
+under_500_vichy_diminue_5=array(NA,dim=c(iteration,20))
+
+p_under_10_vichy_diminue_5=rep(NA,20)
+p_under_50_vichy_diminue_5=rep(NA,20)
+p_under_100_vichy_diminue_5=rep(NA,20)
+p_under_250_vichy_diminue_5=rep(NA,20)
+p_under_500_vichy_diminue_5=rep(NA,20)
+
+#diminue_10
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData")
+N_vichy_diminue_10<-N_vichy
+rm(N_vichy)
+
+under_50_vichy_diminue_10=array(NA,dim=c(iteration,20))
+under_100_vichy_diminue_10=array(NA,dim=c(iteration,20))
+under_250_vichy_diminue_10=array(NA,dim=c(iteration,20))
+under_500_vichy_diminue_10=array(NA,dim=c(iteration,20))
+
+p_under_50_vichy_diminue_10=rep(NA,20)
+p_under_100_vichy_diminue_10=rep(NA,20)
+p_under_250_vichy_diminue_10=rep(NA,20)
+p_under_500_vichy_diminue_10=rep(NA,20)
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:iteration){
+		if(N_vichy_sans_Q[i,t] < 50){under_50_vichy_sans_Q[i,t-T]=1} else{under_50_vichy_sans_Q[i,t-T]=0}
+		if(N_vichy_sans_Q[i,t] < 100){under_100_vichy_sans_Q[i,t-T]=1}else{under_100_vichy_sans_Q[i,t-T]=0}
+		if(N_vichy_sans_Q[i,t] < 250){under_250_vichy_sans_Q[i,t-T]=1}else{under_250_vichy_sans_Q[i,t-T]=0}
+		if(N_vichy_sans_Q[i,t] < 500){under_500_vichy_sans_Q[i,t-T]=1}else{under_500_vichy_sans_Q[i,t-T]=0}
+	  #identique
+	  if(N_vichy_Q_identique[i,t] < 50){under_50_vichy_Q_identique[i,t-T]=1} else{under_50_vichy_Q_identique[i,t-T]=0}
+		if(N_vichy_Q_identique[i,t] < 100){under_100_vichy_Q_identique[i,t-T]=1}else{under_100_vichy_Q_identique[i,t-T]=0}
+		if(N_vichy_Q_identique[i,t] < 250){under_250_vichy_Q_identique[i,t-T]=1}else{under_250_vichy_Q_identique[i,t-T]=0}
+		if(N_vichy_Q_identique[i,t] < 500){under_500_vichy_Q_identique[i,t-T]=1}else{under_500_vichy_Q_identique[i,t-T]=0}
+	  #diminue5
+	 	if(N_vichy_diminue_5[i,t] < 50){under_50_vichy_diminue_5[i,t-T]=1} else{under_50_vichy_diminue_5[i,t-T]=0}
+		if(N_vichy_diminue_5[i,t] < 100){under_100_vichy_diminue_5[i,t-T]=1}else{under_100_vichy_diminue_5[i,t-T]=0}
+		if(N_vichy_diminue_5[i,t] < 250){under_250_vichy_diminue_5[i,t-T]=1}else{under_250_vichy_diminue_5[i,t-T]=0}
+		if(N_vichy_diminue_5[i,t] < 500){under_500_vichy_diminue_5[i,t-T]=1}else{under_500_vichy_diminue_5[i,t-T]=0}
+	  #diminue10
+	  if(N_vichy_diminue_10[i,t] < 50){under_50_vichy_diminue_10[i,t-T]=1} else{under_50_vichy_diminue_10[i,t-T]=0}
+		if(N_vichy_diminue_10[i,t] < 100){under_100_vichy_diminue_10[i,t-T]=1}else{under_100_vichy_diminue_10[i,t-T]=0}
+		if(N_vichy_diminue_10[i,t] < 250){under_250_vichy_diminue_10[i,t-T]=1}else{under_250_vichy_diminue_10[i,t-T]=0}
+		if(N_vichy_diminue_10[i,t] < 500){under_500_vichy_diminue_10[i,t-T]=1}else{under_500_vichy_diminue_10[i,t-T]=0}
+	}
+}
+
+
+for (t in 1:20){
+	p_under_50_vichy_sans_Q[t]=mean(under_50_vichy_sans_Q[,t])
+	p_under_100_vichy_sans_Q[t]=mean(under_100_vichy_sans_Q[,t])
+	p_under_250_vichy_sans_Q[t]=mean(under_250_vichy_sans_Q[,t])
+	p_under_500_vichy_sans_Q[t]=mean(under_500_vichy_sans_Q[,t])
+	#identique
+	p_under_50_vichy_Q_identique[t]=mean(under_50_vichy_Q_identique[,t])
+	p_under_100_vichy_Q_identique[t]=mean(under_100_vichy_Q_identique[,t])
+	p_under_250_vichy_Q_identique[t]=mean(under_250_vichy_Q_identique[,t])
+	p_under_500_vichy_Q_identique[t]=mean(under_500_vichy_Q_identique[,t])
+	#diminue5
+	p_under_50_vichy_diminue_5[t]=mean(under_50_vichy_diminue_5[,t])
+	p_under_100_vichy_diminue_5[t]=mean(under_100_vichy_diminue_5[,t])
+	p_under_250_vichy_diminue_5[t]=mean(under_250_vichy_diminue_5[,t])
+	p_under_500_vichy_diminue_5[t]=mean(under_500_vichy_diminue_5[,t])
+	#diminue10
+	p_under_50_vichy_diminue_10[t]=mean(under_50_vichy_diminue_10[,t])
+	p_under_100_vichy_diminue_10[t]=mean(under_100_vichy_diminue_10[,t])
+	p_under_250_vichy_diminue_10[t]=mean(under_250_vichy_diminue_10[,t])
+	p_under_500_vichy_diminue_10[t]=mean(under_500_vichy_diminue_10[,t])
+	
+}
+
+#..............
+# Graph
+#..............
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_50_compare_scenario","_",type_mod,"_2023_09_01.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)< 50),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+#points(x,p_under_50_vichy_sans_Q,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy_sans_Q[1:19],x[2:20],p_under_50_vichy_sans_Q[2:20],col="blue",lwd=2)
+segments(x[1:19],p_under_50_vichy_Q_identique[1:19],x[2:20],p_under_50_vichy_Q_identique[2:20],col="green",lwd=2)
+segments(x[1:19],p_under_50_vichy_diminue_5[1:19],x[2:20],p_under_50_vichy_diminue_5[2:20],col="orange",lwd=2)
+segments(x[1:19],p_under_50_vichy_diminue_10[1:19],x[2:20],p_under_50_vichy_diminue_10[2:20],col="red",lwd=2)
+
+legend("topleft",title=expression(p^seuils < 50),
+       legend=c("sans_q","identique","diminue_5","diminue_10"),#,expression(p^seuils < 10)),
+		    lty=c(1,1,1,1),#16),
+	    	col=c("blue","green","orange","red"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_100_compare_scenario","_",type_mod,"_2023_09_01.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)< 100),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+#points(x,p_under_100_vichy_sans_Q,col="grey65",pch=16)
+segments(x[1:19],p_under_100_vichy_sans_Q[1:19],x[2:20],p_under_100_vichy_sans_Q[2:20],col="blue",lwd=2)
+segments(x[1:19],p_under_100_vichy_Q_identique[1:19],x[2:20],p_under_100_vichy_Q_identique[2:20],col="green",lwd=2)
+segments(x[1:19],p_under_100_vichy_diminue_5[1:19],x[2:20],p_under_100_vichy_diminue_5[2:20],col="orange",lwd=2)
+segments(x[1:19],p_under_100_vichy_diminue_10[1:19],x[2:20],p_under_100_vichy_diminue_10[2:20],col="red",lwd=2)
+
+legend("topleft",title=expression(p^seuils < 100),
+       legend=c("sans_q","identique","diminue_5","diminue_10"),#,expression(p^seuils < 10)),
+		    lty=c(1,1,1,1),#16),
+	    	col=c("blue","green","orange","red"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_250_compare_scenario","_",type_mod,"_2023_09_01.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)< 250),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+#points(x,p_under_250_vichy_sans_Q,col="grey55",pch=16)
+segments(x[1:19],p_under_250_vichy_sans_Q[1:19],x[2:20],p_under_250_vichy_sans_Q[2:20],col="blue",lwd=2)
+segments(x[1:19],p_under_250_vichy_Q_identique[1:19],x[2:20],p_under_250_vichy_Q_identique[2:20],col="green",lwd=2)
+segments(x[1:19],p_under_250_vichy_diminue_5[1:19],x[2:20],p_under_250_vichy_diminue_5[2:20],col="orange",lwd=2)
+segments(x[1:19],p_under_250_vichy_diminue_10[1:19],x[2:20],p_under_250_vichy_diminue_10[2:20],col="red",lwd=2)
+
+legend("topleft",title=expression(p^seuils < 250),
+       legend=c("sans_q","identique","diminue_5","diminue_10"),#,expression(p^seuils < 10)),
+		    lty=c(1,1,1,1),#16),
+	    	col=c("blue","green","orange","red"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_500_compare_scenario","_",type_mod,"_2023_09_01.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)< 500),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+#points(x,p_under_500_vichy_sans_Q,col="grey45",pch=16)
+segments(x[1:19],p_under_500_vichy_sans_Q[1:19],x[2:20],p_under_500_vichy_sans_Q[2:20],col="blue",lwd=2)
+segments(x[1:19],p_under_500_vichy_Q_identique[1:19],x[2:20],p_under_500_vichy_Q_identique[2:20],col="green",lwd=2)
+segments(x[1:19],p_under_500_vichy_diminue_5[1:19],x[2:20],p_under_500_vichy_diminue_5[2:20],col="orange",lwd=2)
+segments(x[1:19],p_under_500_vichy_diminue_10[1:19],x[2:20],p_under_500_vichy_diminue_10[2:20],col="red",lwd=2)
+
+legend("topleft",title=expression(p^seuils < 500),
+       legend=c("sans_q","identique","diminue_5","diminue_10"),#,expression(p^seuils < 10)),
+		    lty=c(1,1,1,1),#16),
+	    	col=c("blue","green","orange","red"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+```
+
+```{r graph_proj_20yr_ss_distri_melange,eval=FALSE,echo=FALSE}
+#..............................
+# PROJECTION SUR LES 20 ANS 
+#..............................
+
+# Graph projection 20 years
+bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+N_vichy_real_q=array(NA,dim=c(30,5)) #30 car 22 ans sans STACOMI Vichy puis une année non exhaustive la 30eme années
+
+#Attention à l'année 30 estimation des passages Vichy car année jugée incomplète
+for (t in 1:22){
+	N_vichy_real_q[t,]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+for(t in 23:23){
+	N_vichy_real_q[(t+7),]=quantile(bugs_N_vichy_real[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#N_vichy_proj_q=array(0,dim=c(43,5))
+N_vichy_proj_q=array(0,dim=c(T+20,5))
+for (t in (T+1):(T+20)){
+	N_vichy_proj_q[t,]=quantile(N_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
+}
+
+#..........
+# Graph
+#..........
+
+
+
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/TotalReturns_WithoutStocking_Sensibilite_",scenario,"_",type_mod,"_2023_09_22.png"),width=800,height=800)
+
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="années",ylim=c(0,9000),ylab="Retours à Vichy",main=str_c("Projection sans repeuplement dans le scenario de débit : ",scenario),cex.lab=1.2)
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),labels=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000),cex.axis = 1,las = 1,lwd=2,col = "black")
+# trace l'axe des abscisses
+lab1=c(1975,1980,1990,2000,1974+T,1974+T+10,1974+T+20)
+axis(1,at = c(1,6,16,26,T,T+10,T+20),
+		labels=lab1,
+		cex.axis = 1,las = 1,lwd=2,col = "black")
+
+
+for(i in 3:30){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_real_q[i,5],i+0.15,N_vichy_real_q[i,5])
+	segments(i,N_vichy_real_q[i,4],i,N_vichy_real_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_real_q[i,1],i+0.15,N_vichy_real_q[i,1])
+	segments(i,N_vichy_real_q[i,2],i,N_vichy_real_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_real_q[i,2],N_vichy_real_q[i,2],N_vichy_real_q[i,4],N_vichy_real_q[i,4]),col="light grey")
+	#median
+	segments(i-0.3,N_vichy_real_q[i,3],i+0.3,N_vichy_real_q[i,3])
+}
+
+source(str_c(datawd,"data.R"))
+data_vichy<-N[,1]
+
+points(x=seq(23,T,1),data_vichy[23:T],pch=16)
+
+for(i in (T+1):(T+20)){
+	#whiskers
+	#95%
+	segments(i-0.15,N_vichy_proj_q[i,5],i+0.15,N_vichy_proj_q[i,5])
+	segments(i,N_vichy_proj_q[i,4],i,N_vichy_proj_q[i,5])
+	#5%
+	segments(i-0.15,N_vichy_proj_q[i,1],i+0.15,N_vichy_proj_q[i,1])
+	segments(i,N_vichy_proj_q[i,2],i,N_vichy_proj_q[i,1])
+	#boxplot
+	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_proj_q[i,2],N_vichy_proj_q[i,2],N_vichy_proj_q[i,4],N_vichy_proj_q[i,4]),col="orange")
+	#median
+	segments(i-0.3,N_vichy_proj_q[i,3],i+0.3,N_vichy_proj_q[i,3])
+}
+
+
+dev.off()
+
+```
+```{r graph_threshold_ss_distri_melange,eval=FALSE,echo=FALSE}
+
+
+under_50_vichy=array(NA,dim=c(iteration,20))
+under_100_vichy=array(NA,dim=c(iteration,20))
+under_250_vichy=array(NA,dim=c(iteration,20))
+under_500_vichy=array(NA,dim=c(iteration,20))
+
+p_under_50_vichy=rep(NA,20)
+p_under_100_vichy=rep(NA,20)
+p_under_250_vichy=rep(NA,20)
+p_under_500_vichy=rep(NA,20)
+
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:iteration){
+		if(N_vichy[i,t] < 50){under_50_vichy[i,t-T]=1} else{under_50_vichy[i,t-T]=0}
+		if(N_vichy[i,t] < 100){under_100_vichy[i,t-T]=1}else{under_100_vichy[i,t-T]=0}
+		if(N_vichy[i,t] < 250){under_250_vichy[i,t-T]=1}else{under_250_vichy[i,t-T]=0}
+		if(N_vichy[i,t] < 500){under_500_vichy[i,t-T]=1}else{under_500_vichy[i,t-T]=0}
+	}
+}
+
+
+for (t in 1:20){
+	p_under_50_vichy[t]=mean(under_50_vichy[,t])
+	p_under_100_vichy[t]=mean(under_100_vichy[,t])
+	p_under_250_vichy[t]=mean(under_250_vichy[,t])
+	p_under_500_vichy[t]=mean(under_500_vichy[,t])
+
+}
+
+#..............
+# Graph
+#..............
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_",scenario,"_",type_mod,"_2023_09_22.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+color<-ifelse(scenario=="sans_Q","blue",
+              ifelse(scenario=="identique","green",
+                     ifelse(scenario=="diminue_5","orange",
+                            ifelse(scenario=="diminue_10","red",
+                               ifelse(scenario=="augmente_5","magenta",
+                                  ifelse(scenario=="augmente_10","darkorchid4",""))))))
+#points(x,p_under_50_vichy_sans_Q,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy[1:19],x[2:20],p_under_50_vichy[2:20],col=color,lwd=2)
+
+segments(x[1:19],p_under_100_vichy[1:19],x[2:20],p_under_100_vichy[2:20],col=color,lwd=2,lty=2)
+
+segments(x[1:19],p_under_250_vichy[1:19],x[2:20],p_under_250_vichy[2:20],col=color,lwd=2,lty=3)
+
+segments(x[1:19],p_under_500_vichy[1:19],x[2:20],p_under_500_vichy[2:20],col=color,lwd=2,lty=4)
+
+
+legend("topleft",
+       legend=c(expression(p^seuils < 500),expression(p^seuils < 250),expression(p^seuils < 100),expression(p^seuils < 50)),
+		    lty=c(4,3,2,1),#16),
+	    	col=rep(color,4), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+```
+
+```{r graph_threshold_compare_scenario_ss_distri_melange,eval=FALSE,echo=FALSE}
+library(stringr)
+iteration=10000
+T=48
+type_mod="WithoutModelMelange"
+
+#On charge les différents N_Vichy
+load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData")
+N_vichy_sans_Q<-N_vichy
+rm(N_vichy)
+
+under_10_vichy_sans_Q=array(NA,dim=c(iteration,20))
+under_50_vichy_sans_Q=array(NA,dim=c(iteration,20))
+under_100_vichy_sans_Q=array(NA,dim=c(iteration,20))
+under_250_vichy_sans_Q=array(NA,dim=c(iteration,20))
+under_500_vichy_sans_Q=array(NA,dim=c(iteration,20))
+
+p_under_10_vichy_sans_Q=rep(NA,20)
+p_under_50_vichy_sans_Q=rep(NA,20)
+p_under_100_vichy_sans_Q=rep(NA,20)
+p_under_250_vichy_sans_Q=rep(NA,20)
+p_under_500_vichy_sans_Q=rep(NA,20)
+
+#identique
+load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData")
+N_vichy_Q_identique<-N_vichy
+rm(N_vichy)
+
+under_10_vichy_Q_identique=array(NA,dim=c(iteration,20))
+under_50_vichy_Q_identique=array(NA,dim=c(iteration,20))
+under_100_vichy_Q_identique=array(NA,dim=c(iteration,20))
+under_250_vichy_Q_identique=array(NA,dim=c(iteration,20))
+under_500_vichy_Q_identique=array(NA,dim=c(iteration,20))
+
+p_under_10_vichy_Q_identique=rep(NA,20)
+p_under_50_vichy_Q_identique=rep(NA,20)
+p_under_100_vichy_Q_identique=rep(NA,20)
+p_under_250_vichy_Q_identique=rep(NA,20)
+p_under_500_vichy_Q_identique=rep(NA,20)
+
+#diminue_5
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData")  
+N_vichy_diminue_5<-N_vichy
+rm(N_vichy)
+
+under_10_vichy_diminue_5=array(NA,dim=c(iteration,20))
+under_50_vichy_diminue_5=array(NA,dim=c(iteration,20))
+under_100_vichy_diminue_5=array(NA,dim=c(iteration,20))
+under_250_vichy_diminue_5=array(NA,dim=c(iteration,20))
+under_500_vichy_diminue_5=array(NA,dim=c(iteration,20))
+
+p_under_10_vichy_diminue_5=rep(NA,20)
+p_under_50_vichy_diminue_5=rep(NA,20)
+p_under_100_vichy_diminue_5=rep(NA,20)
+p_under_250_vichy_diminue_5=rep(NA,20)
+p_under_500_vichy_diminue_5=rep(NA,20)
+
+#diminue_10
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData")
+N_vichy_diminue_10<-N_vichy
+rm(N_vichy)
+
+under_50_vichy_diminue_10=array(NA,dim=c(iteration,20))
+under_100_vichy_diminue_10=array(NA,dim=c(iteration,20))
+under_250_vichy_diminue_10=array(NA,dim=c(iteration,20))
+under_500_vichy_diminue_10=array(NA,dim=c(iteration,20))
+
+p_under_50_vichy_diminue_10=rep(NA,20)
+p_under_100_vichy_diminue_10=rep(NA,20)
+p_under_250_vichy_diminue_10=rep(NA,20)
+p_under_500_vichy_diminue_10=rep(NA,20)
+
+#augmente_5
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_augmente_5_2023_09_22.RData")  
+N_vichy_augmente_5<-N_vichy
+rm(N_vichy)
+
+under_10_vichy_augmente_5=array(NA,dim=c(iteration,20))
+under_50_vichy_augmente_5=array(NA,dim=c(iteration,20))
+under_100_vichy_augmente_5=array(NA,dim=c(iteration,20))
+under_250_vichy_augmente_5=array(NA,dim=c(iteration,20))
+under_500_vichy_augmente_5=array(NA,dim=c(iteration,20))
+
+p_under_10_vichy_augmente_5=rep(NA,20)
+p_under_50_vichy_augmente_5=rep(NA,20)
+p_under_100_vichy_augmente_5=rep(NA,20)
+p_under_250_vichy_augmente_5=rep(NA,20)
+p_under_500_vichy_augmente_5=rep(NA,20)
+
+#augmente_10
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_augmente_10_2023_09_22.RData")
+N_vichy_augmente_10<-N_vichy
+rm(N_vichy)
+
+under_50_vichy_augmente_10=array(NA,dim=c(iteration,20))
+under_100_vichy_augmente_10=array(NA,dim=c(iteration,20))
+under_250_vichy_augmente_10=array(NA,dim=c(iteration,20))
+under_500_vichy_augmente_10=array(NA,dim=c(iteration,20))
+
+p_under_50_vichy_augmente_10=rep(NA,20)
+p_under_100_vichy_augmente_10=rep(NA,20)
+p_under_250_vichy_augmente_10=rep(NA,20)
+p_under_500_vichy_augmente_10=rep(NA,20)
+
+for (t in (T+1):(T+20)){
+	
+	for (i in 1:iteration){
+		if(N_vichy_sans_Q[i,t] < 50){under_50_vichy_sans_Q[i,t-T]=1} else{under_50_vichy_sans_Q[i,t-T]=0}
+		if(N_vichy_sans_Q[i,t] < 100){under_100_vichy_sans_Q[i,t-T]=1}else{under_100_vichy_sans_Q[i,t-T]=0}
+		if(N_vichy_sans_Q[i,t] < 250){under_250_vichy_sans_Q[i,t-T]=1}else{under_250_vichy_sans_Q[i,t-T]=0}
+		if(N_vichy_sans_Q[i,t] < 500){under_500_vichy_sans_Q[i,t-T]=1}else{under_500_vichy_sans_Q[i,t-T]=0}
+	  #identique
+	  if(N_vichy_Q_identique[i,t] < 50){under_50_vichy_Q_identique[i,t-T]=1} else{under_50_vichy_Q_identique[i,t-T]=0}
+		if(N_vichy_Q_identique[i,t] < 100){under_100_vichy_Q_identique[i,t-T]=1}else{under_100_vichy_Q_identique[i,t-T]=0}
+		if(N_vichy_Q_identique[i,t] < 250){under_250_vichy_Q_identique[i,t-T]=1}else{under_250_vichy_Q_identique[i,t-T]=0}
+		if(N_vichy_Q_identique[i,t] < 500){under_500_vichy_Q_identique[i,t-T]=1}else{under_500_vichy_Q_identique[i,t-T]=0}
+	  #diminue5
+	 	if(N_vichy_diminue_5[i,t] < 50){under_50_vichy_diminue_5[i,t-T]=1} else{under_50_vichy_diminue_5[i,t-T]=0}
+		if(N_vichy_diminue_5[i,t] < 100){under_100_vichy_diminue_5[i,t-T]=1}else{under_100_vichy_diminue_5[i,t-T]=0}
+		if(N_vichy_diminue_5[i,t] < 250){under_250_vichy_diminue_5[i,t-T]=1}else{under_250_vichy_diminue_5[i,t-T]=0}
+		if(N_vichy_diminue_5[i,t] < 500){under_500_vichy_diminue_5[i,t-T]=1}else{under_500_vichy_diminue_5[i,t-T]=0}
+	  #diminue10
+	  if(N_vichy_diminue_10[i,t] < 50){under_50_vichy_diminue_10[i,t-T]=1} else{under_50_vichy_diminue_10[i,t-T]=0}
+		if(N_vichy_diminue_10[i,t] < 100){under_100_vichy_diminue_10[i,t-T]=1}else{under_100_vichy_diminue_10[i,t-T]=0}
+		if(N_vichy_diminue_10[i,t] < 250){under_250_vichy_diminue_10[i,t-T]=1}else{under_250_vichy_diminue_10[i,t-T]=0}
+		if(N_vichy_diminue_10[i,t] < 500){under_500_vichy_diminue_10[i,t-T]=1}else{under_500_vichy_diminue_10[i,t-T]=0}
+	  #augmente5
+	 	if(N_vichy_augmente_5[i,t] < 50){under_50_vichy_augmente_5[i,t-T]=1} else{under_50_vichy_augmente_5[i,t-T]=0}
+		if(N_vichy_augmente_5[i,t] < 100){under_100_vichy_augmente_5[i,t-T]=1}else{under_100_vichy_augmente_5[i,t-T]=0}
+		if(N_vichy_augmente_5[i,t] < 250){under_250_vichy_augmente_5[i,t-T]=1}else{under_250_vichy_augmente_5[i,t-T]=0}
+		if(N_vichy_augmente_5[i,t] < 500){under_500_vichy_augmente_5[i,t-T]=1}else{under_500_vichy_augmente_5[i,t-T]=0}
+	  #augmente10
+	  if(N_vichy_augmente_10[i,t] < 50){under_50_vichy_augmente_10[i,t-T]=1} else{under_50_vichy_augmente_10[i,t-T]=0}
+		if(N_vichy_augmente_10[i,t] < 100){under_100_vichy_augmente_10[i,t-T]=1}else{under_100_vichy_augmente_10[i,t-T]=0}
+		if(N_vichy_augmente_10[i,t] < 250){under_250_vichy_augmente_10[i,t-T]=1}else{under_250_vichy_augmente_10[i,t-T]=0}
+		if(N_vichy_augmente_10[i,t] < 500){under_500_vichy_augmente_10[i,t-T]=1}else{under_500_vichy_augmente_10[i,t-T]=0}
+	}
+}
+
+
+for (t in 1:20){
+	p_under_50_vichy_sans_Q[t]=mean(under_50_vichy_sans_Q[,t])
+	p_under_100_vichy_sans_Q[t]=mean(under_100_vichy_sans_Q[,t])
+	p_under_250_vichy_sans_Q[t]=mean(under_250_vichy_sans_Q[,t])
+	p_under_500_vichy_sans_Q[t]=mean(under_500_vichy_sans_Q[,t])
+	#identique
+	p_under_50_vichy_Q_identique[t]=mean(under_50_vichy_Q_identique[,t])
+	p_under_100_vichy_Q_identique[t]=mean(under_100_vichy_Q_identique[,t])
+	p_under_250_vichy_Q_identique[t]=mean(under_250_vichy_Q_identique[,t])
+	p_under_500_vichy_Q_identique[t]=mean(under_500_vichy_Q_identique[,t])
+	#diminue5
+	p_under_50_vichy_diminue_5[t]=mean(under_50_vichy_diminue_5[,t])
+	p_under_100_vichy_diminue_5[t]=mean(under_100_vichy_diminue_5[,t])
+	p_under_250_vichy_diminue_5[t]=mean(under_250_vichy_diminue_5[,t])
+	p_under_500_vichy_diminue_5[t]=mean(under_500_vichy_diminue_5[,t])
+	#diminue10
+	p_under_50_vichy_diminue_10[t]=mean(under_50_vichy_diminue_10[,t])
+	p_under_100_vichy_diminue_10[t]=mean(under_100_vichy_diminue_10[,t])
+	p_under_250_vichy_diminue_10[t]=mean(under_250_vichy_diminue_10[,t])
+	p_under_500_vichy_diminue_10[t]=mean(under_500_vichy_diminue_10[,t])
+	#augmente5
+	p_under_50_vichy_augmente_5[t]=mean(under_50_vichy_augmente_5[,t])
+	p_under_100_vichy_augmente_5[t]=mean(under_100_vichy_augmente_5[,t])
+	p_under_250_vichy_augmente_5[t]=mean(under_250_vichy_augmente_5[,t])
+	p_under_500_vichy_augmente_5[t]=mean(under_500_vichy_augmente_5[,t])
+	#augmente10
+	p_under_50_vichy_augmente_10[t]=mean(under_50_vichy_augmente_10[,t])
+	p_under_100_vichy_augmente_10[t]=mean(under_100_vichy_augmente_10[,t])
+	p_under_250_vichy_augmente_10[t]=mean(under_250_vichy_augmente_10[,t])
+	p_under_500_vichy_augmente_10[t]=mean(under_500_vichy_augmente_10[,t])
+	
+}
+
+#..............
+# Graph
+#..............
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_50_compare_scenario","_",type_mod,"_2023_09_22.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)< 50),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+
+#points(x,p_under_50_vichy_sans_Q,col="grey75",pch=16)
+segments(x[1:19],p_under_50_vichy_sans_Q[1:19],x[2:20],p_under_50_vichy_sans_Q[2:20],col="blue",lwd=2,lty=2)
+segments(x[1:19],p_under_50_vichy_Q_identique[1:19],x[2:20],p_under_50_vichy_Q_identique[2:20],col="green",lwd=2,lty=2)
+segments(x[1:19],p_under_50_vichy_diminue_5[1:19],x[2:20],p_under_50_vichy_diminue_5[2:20],col="orange",lwd=2,lty=2)
+segments(x[1:19],p_under_50_vichy_diminue_10[1:19],x[2:20],p_under_50_vichy_diminue_10[2:20],col="red",lwd=2,lty=2)
+segments(x[1:19],p_under_50_vichy_augmente_5[1:19],x[2:20],p_under_50_vichy_augmente_5[2:20],col="magenta",lwd=2,lty=2)
+segments(x[1:19],p_under_50_vichy_augmente_10[1:19],x[2:20],p_under_50_vichy_augmente_10[2:20],col="darkorchid4",lwd=2,lty=2)
+
+legend("topleft",title=expression(p^seuils < 50),
+       legend=c("sans_q","identique","diminue_5","diminue_10","augmente_5","augmente_10"),#,expression(p^seuils < 10)),
+		    lty=c(2,2,2,2,2,2),#16),
+	    	col=c("blue","green","orange","red","magenta","darkorchid4"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_100_compare_scenario","_",type_mod,"_2023_09_22.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)< 100),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+#points(x,p_under_100_vichy_sans_Q,col="grey65",pch=16)
+segments(x[1:19],p_under_100_vichy_sans_Q[1:19],x[2:20],p_under_100_vichy_sans_Q[2:20],col="blue",lwd=2,lty=2)
+segments(x[1:19],p_under_100_vichy_Q_identique[1:19],x[2:20],p_under_100_vichy_Q_identique[2:20],col="green",lwd=2,lty=2)
+segments(x[1:19],p_under_100_vichy_diminue_5[1:19],x[2:20],p_under_100_vichy_diminue_5[2:20],col="orange",lwd=2,lty=2)
+segments(x[1:19],p_under_100_vichy_diminue_10[1:19],x[2:20],p_under_100_vichy_diminue_10[2:20],col="red",lwd=2,lty=2)
+segments(x[1:19],p_under_100_vichy_augmente_5[1:19],x[2:20],p_under_100_vichy_augmente_5[2:20],col="magenta",lwd=2,lty=2)
+segments(x[1:19],p_under_100_vichy_augmente_10[1:19],x[2:20],p_under_100_vichy_augmente_10[2:20],col="darkorchid4",lwd=2,lty=2)
+
+legend("topleft",title=expression(p^seuils < 100),
+        legend=c("sans_q","identique","diminue_5","diminue_10","augmente_5","augmente_10"),#,expression(p^seuils < 10)),
+		    lty=c(2,2,2,2,2,2),#16),
+	    	col=c("blue","green","orange","red","magenta","darkorchid4"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_250_compare_scenario","_",type_mod,"_2023_09_22.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)< 250),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+#points(x,p_under_250_vichy_sans_Q,col="grey55",pch=16)
+segments(x[1:19],p_under_250_vichy_sans_Q[1:19],x[2:20],p_under_250_vichy_sans_Q[2:20],col="blue",lwd=2,lty=2)
+segments(x[1:19],p_under_250_vichy_Q_identique[1:19],x[2:20],p_under_250_vichy_Q_identique[2:20],col="green",lwd=2,lty=2)
+segments(x[1:19],p_under_250_vichy_diminue_5[1:19],x[2:20],p_under_250_vichy_diminue_5[2:20],col="orange",lwd=2,lty=2)
+segments(x[1:19],p_under_250_vichy_diminue_10[1:19],x[2:20],p_under_250_vichy_diminue_10[2:20],col="red",lwd=2,lty=2)
+segments(x[1:19],p_under_250_vichy_augmente_5[1:19],x[2:20],p_under_250_vichy_augmente_5[2:20],col="magenta",lwd=2,lty=2)
+segments(x[1:19],p_under_250_vichy_augmente_10[1:19],x[2:20],p_under_250_vichy_augmente_10[2:20],col="darkorchid4",lwd=2,lty=2)
+
+legend("topleft",title=expression(p^seuils < 250),
+        legend=c("sans_q","identique","diminue_5","diminue_10","augmente_5","augmente_10"),#,expression(p^seuils < 10)),
+		    lty=c(2,2,2,2,2,2),#16),
+	    	col=c("blue","green","orange","red","magenta","darkorchid4"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_500_compare_scenario","_",type_mod,"_2023_09_22.png"),width=800,height=800)
+
+par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,20.5),xlab="années",ylim=c(0,1),ylab=expression(italic(p^seuils)< 500),cex.lab=1.5) #expression(italic(p^seuils))
+# trace l'axe des ordonnées
+axis(2,at = c(0,0.2,0.4,0.6,0.8,1),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+lab2=c(1975+T,1975+T+9,1975+T+19)
+axis(1,at = c(1,10,20),
+		labels=lab2,
+		cex.axis = 0.9,las = 1,col = "black")
+
+x=seq(1,20,1)
+#points(x,p_under_500_vichy_sans_Q,col="grey45",pch=16)
+segments(x[1:19],p_under_500_vichy_sans_Q[1:19],x[2:20],p_under_500_vichy_sans_Q[2:20],col="blue",lwd=2,lty=2)
+segments(x[1:19],p_under_500_vichy_Q_identique[1:19],x[2:20],p_under_500_vichy_Q_identique[2:20],col="green",lwd=2,lty=2)
+segments(x[1:19],p_under_500_vichy_diminue_5[1:19],x[2:20],p_under_500_vichy_diminue_5[2:20],col="orange",lwd=2,lty=2)
+segments(x[1:19],p_under_500_vichy_diminue_10[1:19],x[2:20],p_under_500_vichy_diminue_10[2:20],col="red",lwd=2,lty=2)
+segments(x[1:19],p_under_500_vichy_augmente_5[1:19],x[2:20],p_under_500_vichy_augmente_5[2:20],col="magenta",lwd=2,lty=2)
+segments(x[1:19],p_under_500_vichy_augmente_10[1:19],x[2:20],p_under_500_vichy_augmente_10[2:20],col="darkorchid4",lwd=2,lty=2)
+
+legend("topleft",title=expression(p^seuils < 500),
+       legend=c("sans_q","identique","diminue_5","diminue_10","augmente_5","augmente_10"),#,expression(p^seuils < 10)),
+		    lty=c(2,2,2,2,2,2),#16),
+	    	col=c("blue","green","orange","red","magenta","darkorchid4"), #,"grey75","grey85"),
+	    	bty="n")
+	#	horiz = TRUE)
+
+
+dev.off()
+
+```
+
+
+## Scénario de débit "sans_Q"
+
+Afin de comparer les résultats, on réalise les projections à 20 ans pour deux types de modèle : celui incluant un modèle de mélange sur les effectifs de retour à Vichy et celui n'incluant pas ce modèle de mélange.
+
+### Projection à 20 ans pour le modèle incluant la distribution de mélange à Vichy
+
+```{r graph_print_sans_q, echo=FALSE, include=TRUE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits nuls"}
+#Je rencontre des soucis pour faire afficher le graph à cause de souci de chemin relatif ou non. Je trouve la solution de passer par normalizePath ici : https://stackoverflow.com/questions/76052222/file-not-found-with-knitrinclude-graphics-in-rmarkdown-via-rstudio-when-data-a
+#ça fonctionne pour moi donc je laisse comme ça
+
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/TotalReturns_WithoutStocking_SensibiliteModel_sans_Q_withModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+
+Dans ce scénario sans prise en compte de l'influence des débits sur les 20 ans de projection (débit à 0), la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
+
+```{r nb_adult_vichy_sans_q,eval=TRUE,include=TRUE,echo=FALSE}
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData")
+round(mean(N_vichy[,(T+20-4):(T+20)]),0)
+```
+
+```{r threshold_print_sans_q, echo=FALSE, include=FALSE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits nuls"}
+#Je rencontre des soucis pour faire afficher le graph à cause de souci de chemin relatif ou non. Je trouve la solution de passer par normalizePath ici : https://stackoverflow.com/questions/76052222/file-not-found-with-knitrinclude-graphics-in-rmarkdown-via-rstudio-when-data-a
+#ça fonctionne pour moi donc je laisse comme ça
+
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/Threshold_sans_Q_ModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+### Projection à 20 ans pour le modèle n'incluant pas de distribution de mélange à Vichy
+```{r graph_print_sans_q_ss_melange, echo=FALSE, include=TRUE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits nuls - Modèle sans distribution de mélange à Vichy"}
+#Je rencontre des soucis pour faire afficher le graph à cause de souci de chemin relatif ou non. Je trouve la solution de passer par normalizePath ici : https://stackoverflow.com/questions/76052222/file-not-found-with-knitrinclude-graphics-in-rmarkdown-via-rstudio-when-data-a
+#ça fonctionne pour moi donc je laisse comme ça
+
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/TotalReturns_WithoutStocking_Sensibilite_sans_Q_WithoutModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+
+Dans ce scénario sans prise en compte de l'influence des débits sur les 20 ans de projection (débit à 0), la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
+
+```{r nb_adult_vichy_sans_q_ss_melange,eval=TRUE,include=TRUE,echo=FALSE}
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData")
+round(mean(N_vichy[,(T+20-4):(T+20)]),0)
+```
+
+```{r threshold_print_sans_q_ss_melange, echo=FALSE, include=FALSE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits nuls - Modèle sans distribution de mélange à Vichy"}
+#Je rencontre des soucis pour faire afficher le graph à cause de souci de chemin relatif ou non. Je trouve la solution de passer par normalizePath ici : https://stackoverflow.com/questions/76052222/file-not-found-with-knitrinclude-graphics-in-rmarkdown-via-rstudio-when-data-a
+#ça fonctionne pour moi donc je laisse comme ça
+
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/Threshold_sans_Q_WithoutModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+```{r threshold_print_sans_q_compare, echo=FALSE, include=TRUE,out.width="100%", fig.cap="Comparaison de la probabilité d'observer moins d'un certain nombre d'individus à Vichy entre les modèles avec et sans modèle de mélange pour le scénario de débit sans_Q"}
+#Je rencontre des soucis pour faire afficher le graph à cause de souci de chemin relatif ou non. Je trouve la solution de passer par normalizePath ici : https://stackoverflow.com/questions/76052222/file-not-found-with-knitrinclude-graphics-in-rmarkdown-via-rstudio-when-data-a
+#ça fonctionne pour moi donc je laisse comme ça
+
+knitr::include_graphics(normalizePath("Threshold_sans_Q_compare_With_Without_Melange_2023_09_01.png"), rel_path = FALSE)
+```
+
+## Scénario de débit "identique"
+### Projection à 20 ans pour le modèle incluant la distribution de mélange à Vichy
+```{r graph_print_q_identique, echo=FALSE, include=TRUE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits identiques à ceux observés durant les 20 dernières années de la période rétrospective"}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/TotalReturns_WithoutStocking_SensibiliteModel_identique_withModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+
+Dans ce scénario de débits identiques à ce qui a été observé durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
+
+```{r nb_adult_vichy_identique,eval=TRUE,include=TRUE,echo=FALSE}
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData") 
+round(mean(N_vichy[,(T+20-4):(T+20)]),0)
+```
+```{r threshold_print_q_identique, echo=FALSE, include=FALSE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits identiques à ceux observés durant les 20 dernières années de la période rétrospective"}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/Threshold_identique_ModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+### Projection à 20 ans pour le modèle n'incluant pas de distribution de mélange à Vichy
+```{r graph_print_q_identique_ss_melange, echo=FALSE, include=TRUE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits identiques à ceux observés durant les 20 dernières années de la période rétrospective - Modèle sans distribution de mélange à Vichy"}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/TotalReturns_WithoutStocking_Sensibilite_identique_WithoutModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+
+Dans ce scénario de débits identiques à ce qui a été observé durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
+
+```{r nb_adult_vichy_identique_ss_melange,eval=TRUE,include=TRUE,echo=FALSE}
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData") 
+round(mean(N_vichy[,(T+20-4):(T+20)]),0)
+```
+
+```{r threshold_print_q_identique_ss_melange, echo=FALSE, include=FALSE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits identiques à ceux observés durant les 20 dernières années de la période rétrospective - Modèle sans distribution de mélange à Vichy"}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/Threshold_identique_WithoutModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+```{r threshold_print_identique_compare, echo=FALSE, include=TRUE,out.width="100%", fig.cap="Comparaison de la probabilité d'observer moins d'un certain nombre d'individus à Vichy entre les modèles avec et sans modèle de mélange pour le scénario de débit identique"}
+#Je rencontre des soucis pour faire afficher le graph à cause de souci de chemin relatif ou non. Je trouve la solution de passer par normalizePath ici : https://stackoverflow.com/questions/76052222/file-not-found-with-knitrinclude-graphics-in-rmarkdown-via-rstudio-when-data-a
+#ça fonctionne pour moi donc je laisse comme ça
+
+knitr::include_graphics(normalizePath("Threshold_identique_compare_With_Without_Melange_2023_09_01.png"), rel_path = FALSE)
+```
+
+## Scénario de débit "diminue_5 "
+### Projection à 20 ans pour le modèle incluant la distribution de mélange à Vichy
+
+```{r graph_print_q_diminue5,eval=TRUE,include=TRUE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 5% par rapport à ceux observés durant les 20 dernières années de la période rétrospective", out.width = '100%'}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/TotalReturns_WithoutStocking_SensibiliteModel_diminue_5_withModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+Dans ce scénario de débits en diminution de 5% par rapport aux débits observés durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
+
+```{r nb_adult_vichy_diminue5,eval=TRUE,include=TRUE,echo=FALSE}
+load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData")
+round(mean(N_vichy[,(T+20-4):(T+20)]),0)
+```
+
+```{r threshold_print_q_diminue5,eval=FALSE,include=FALSE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 5% par rapport à ceux observés durant les 20 dernières années de la période rétrospective", out.width = '100%'}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/Threshold_diminue_5_ModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+### Projection à 20 ans pour le modèle n'incluant pas de distribution de mélange à Vichy
+
+```{r graph_print_q_diminue5_ss_melange,eval=TRUE,include=TRUE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 5% par rapport à ceux observés durant les 20 dernières années de la période rétrospective - Modèle sans distribution de mélange à Vichy", out.width = '100%'}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/TotalReturns_WithoutStocking_Sensibilite_diminue_5_WithoutModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+Dans ce scénario de débits en diminution de 5% par rapport aux débits observés durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
+
+```{r nb_adult_vichy_diminue5_ss_melange,eval=TRUE,include=TRUE,echo=FALSE}
+load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData")
+round(mean(N_vichy[,(T+20-4):(T+20)]),0)
+```
+```{r threshold_print_q_diminue5_ss_melange,eval=FALSE,include=FALSE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 5% par rapport à ceux observés durant les 20 dernières années de la période rétrospective - Modèle sans distribution de mélange à Vichy", out.width = '100%'}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/Threshold_diminue_5_WithoutModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+```{r threshold_print_diminue_5_compare, echo=FALSE, include=TRUE,out.width="100%", fig.cap="Comparaison de la probabilité d'observer moins d'un certain nombre d'individus à Vichy entre les modèles avec et sans modèle de mélange pour le scénario de débit diminue_5"}
+#Je rencontre des soucis pour faire afficher le graph à cause de souci de chemin relatif ou non. Je trouve la solution de passer par normalizePath ici : https://stackoverflow.com/questions/76052222/file-not-found-with-knitrinclude-graphics-in-rmarkdown-via-rstudio-when-data-a
+#ça fonctionne pour moi donc je laisse comme ça
+
+knitr::include_graphics(normalizePath("Threshold_diminue_5_compare_With_Without_Melange_2023_09_01.png"), rel_path = FALSE)
+```
+
+## Scénario de débit "diminue_10 "
+### Projection à 20 ans pour le modèle incluant la distribution de mélange à Vichy
+```{r graph_print_q_diminue10,eval=TRUE,include=TRUE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 10% par rapport à ceux observés durant les 20 dernières années de la période rétrospective", out.width = '100%'}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/TotalReturns_WithoutStocking_SensibiliteModel_diminue_10_withModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+Dans ce scénario de débits en diminution de 10% par rapport aux débits observés durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
+
+```{r nb_adult_vichy_diminue10,eval=TRUE,include=TRUE,echo=FALSE}
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData")  
+
+round(mean(N_vichy[,(T+20-4):(T+20)]),0)
+```
+```{r threshold_print_q_diminue10,eval=FALSE,include=FALSE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 10% par rapport à ceux observés durant les 20 dernières années de la période rétrospective", out.width = '100%'}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/Threshold_diminue_10_ModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+### Projection à 20 ans pour le modèle n'incluant pas de distribution de mélange à Vichy
+```{r graph_print_q_diminue10_ss_melange,eval=TRUE,include=TRUE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 10% par rapport à ceux observés durant les 20 dernières années de la période rétrospective - Modèle sans distribution de mélange à Vichy", out.width = '100%'}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/TotalReturns_WithoutStocking_Sensibilite_diminue_10_WithoutModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+Dans ce scénario de débits en diminution de 10% par rapport aux débits observés durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
+
+```{r nb_adult_vichy_diminue10_ss_melange,eval=TRUE,include=TRUE,echo=FALSE}
+load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData")  
+
+round(mean(N_vichy[,(T+20-4):(T+20)]),0)
+```
+```{r threshold_print_q_diminue10_ss_melange,eval=FALSE,include=FALSE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 10% par rapport à ceux observés durant les 20 dernières années de la période rétrospective - Modèle sans distribution de mélange à Vichy", out.width = '100%'}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/Threshold_diminue_10_WithoutModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+```{r threshold_print_diminue_10_compare, echo=FALSE, include=TRUE,out.width="100%", fig.cap="Comparaison de la probabilité d'observer moins d'un certain nombre d'individus à Vichy entre les modèles avec et sans modèle de mélange pour le scénario de débit diminue_10"}
+#Je rencontre des soucis pour faire afficher le graph à cause de souci de chemin relatif ou non. Je trouve la solution de passer par normalizePath ici : https://stackoverflow.com/questions/76052222/file-not-found-with-knitrinclude-graphics-in-rmarkdown-via-rstudio-when-data-a
+#ça fonctionne pour moi donc je laisse comme ça
+
+knitr::include_graphics(normalizePath("Threshold_diminue_10_compare_With_Without_Melange_2023_09_01.png"), rel_path = FALSE)
+```
+
+## Comparaison des scénarios
+### Seuil 50 individus à Vichy
+#### Modèle avec mélange
+
+```{r threshold_50_print_avec_melange,eval=TRUE,include=TRUE,echo=FALSE, out.width = '100%'}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/Threshold_50_compare_scenario_ModelMelange_2023_08_31.png"), rel_path = FALSE)
+```
+
+#### Modèle sans mélange
+
+```{r threshold_50_print_ss_melange,eval=TRUE,include=TRUE,echo=FALSE, out.width = '100%'}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/Threshold_50_compare_scenario_WithoutModelMelange_2023_09_01.png"), rel_path = FALSE)
+```
+
+### Seuil 100 individus à Vichy
+#### Modèle avec mélange
+
+```{r threshold_100_print_avec_melange,eval=TRUE,include=TRUE,echo=FALSE, out.width = '100%'}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/Threshold_100_compare_scenario_ModelMelange_2023_09_01.png"), rel_path = FALSE)
+```
+
+#### Modèle sans mélange
+
+```{r threshold_100_print_ss_melange,eval=TRUE,include=TRUE,echo=FALSE, out.width = '100%'}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/Threshold_100_compare_scenario_WithoutModelMelange_2023_09_01.png"), rel_path = FALSE)
+```
+
+### Seuil 250 individus à Vichy
+#### Modèle avec mélange
+
+```{r threshold_250_print_avec_melange,eval=TRUE,include=TRUE,echo=FALSE, out.width = '100%'}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/Threshold_250_compare_scenario_ModelMelange_2023_09_01.png"), rel_path = FALSE)
+```
+
+#### Modèle sans mélange
+
+```{r threshold_250_print_ss_melange,eval=TRUE,include=TRUE,echo=FALSE, out.width = '100%'}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/Threshold_250_compare_scenario_WithoutModelMelange_2023_09_01.png"), rel_path = FALSE)
+```
+
+### Seuil 500 individus à Vichy
+#### Modèle avec mélange
+
+```{r threshold_500_print_avec_melange,eval=TRUE,include=TRUE,echo=FALSE, out.width = '100%'}
+knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemps/Threshold_500_compare_scenario_ModelMelange_2023_09_01.png"), rel_path = FALSE)
+```
+
+#### Modèle sans mélange
+
+```{r threshold_500_print_ss_melange,eval=TRUE,include=TRUE,echo=FALSE, out.width = '100%'}
+knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/Threshold_500_compare_scenario_WithoutModelMelange_2023_09_01.png"), rel_path = FALSE)
+```
+

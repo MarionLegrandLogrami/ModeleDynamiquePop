@@ -1,0 +1,833 @@
+%##########################################################################
+% Analyses des co-variables environnementales pour import dans le modèle
+% Auteur : Marion LEGRAND - LOGRAMI
+%##########################################################################
+
+\section{Les débits}
+% Après analyse des timing de migration sur les données LOGRAMI (à Poutès et Vichy), CNSS (tambour à Chanteuges et Alleyras) et pêcheurs pro (guideau à Varades)
+% (voir tableau récapitulatif : "C:\Users\marion.legrand\Documents\Tableau de Bord\PROJETS\ModeleDynamiquePopSaumon\DévalaisonSmolt_timing.xlsx"), on s'accorde 
+% avec Etienne sur la période 01/03 au 30/04 à la station de Vieille-Brioude et 15/03 au 15/05 pour la station de Montjean sur Loire
+% Par acquis de conscience on regarde si la période 01/03 au 31/05 est très différente ou non de la période 01/03 au 30/04 à Vieille brioude
+<<init,echo=FALSE, eval=FALSE,results=hide >>=
+library(dplyr)	
+library(lubridate)
+library(ggridges) #pour density plot sur les débits
+library(cowplot) #pour combiner des ggplot
+library(sqldf)
+library(RPostgreSQL)
+library(ggplot2)
+library(DBI) #pour connexion base de données
+library(RPostgres) #pour connexion base de données
+
+#=============================================
+# On configure la connexion vers le serveur
+#=============================================
+
+options(sqldf.RPostgreSQL.user = userserver,
+		sqldf.RPostgreSQL.password = passwordserver,
+		sqldf.RPostgreSQL.dbname = "bd_contmig_nat",
+		sqldf.RPostgreSQL.host = "intranet.logrami.fr", 
+		sqldf.RPostgreSQL.port = 5433)
+
+datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+@
+
+<<date_entree_SAT,echo=FALSE, eval=FALSE,results=hide >>=
+	sat<-read.csv(file="C:/Users/marion.legrand/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/CaptureSAT_Loire.csv",sep=";")
+	#on reformate le champ date 
+	#Sys.setlocale('LC_TIME', "French_France")
+	Sys.setlocale("LC_TIME", "English_United States")
+	sat$date2<-as.Date(sat$date,"%d-%b-%y")
+	sat$year<-year(sat$date2)
+	sat$month<-month(sat$date2)
+	colnames(sat)[2]<-"riv"
+	sat<-sat[!(sat$riv=="ARROUX"),]
+	
+	sat_yr_month<-sat%>%group_by(riv,year,month)%>%summarise(count=n())
+	
+	p<-ggplot(data=sat_yr_month,aes(x=as.factor(month),y=count,fill=as.factor(year)))+
+			geom_bar(stat="identity",position="dodge")+
+			facet_wrap(~riv,ncol=1)+
+			xlab("Mois")+
+			scale_fill_discrete(name=iconv("Année","UTF8"))+
+			theme(legend.position="bottom")
+	
+	png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CaptureSAT_1987-1993.png",height=600,width=800)
+	print(p)
+	dev.off()
+@
+
+<<passage_stacomi,echo=FALSE, eval=FALSE,results=hide>>=
+	
+stacomi<-sqldf("Select  s.sta_nom,dc.dic_code,op.ope_date_debut,t.tax_nom_commun,st.std_libelle,l.lot_effectif, CASE WHEN car_par_code='C001' THEN car_valeur_quantitatif ELSE NULL END as taille
+				From logrami.t_station_sta s
+				left join logrami.t_ouvrage_ouv o on (s.sta_code=o.ouv_sta_code)
+				left join logrami.t_dispositiffranchissement_dif df on (df.dif_ouv_identifiant=o.ouv_identifiant)
+				left join logrami.t_dispositifcomptage_dic dc on (dc.dic_dif_identifiant=df.dif_dis_identifiant)
+				left join logrami.t_operation_ope op on (op.ope_dic_identifiant = dc.dic_dis_identifiant)
+				left join logrami.t_lot_lot l on (l.lot_ope_identifiant = op.ope_identifiant)
+				left join logrami.tj_caracteristiquelot_car c on (c.car_lot_identifiant=l.lot_identifiant and c.car_par_code='C001')
+				JOIN ref.tr_taxon_tax t ON (t.tax_code::text = l.lot_tax_code::text)
+				JOIN ref.tr_stadedeveloppement_std st on (st.std_code=l.lot_std_code)
+				where l.lot_lot_identifiant is null and l.lot_tax_code='2220' and st.std_libelle='Adulte' and (sta_nom like'Vichy' OR sta_nom like 'Langeac')
+				order by 1,2,3,4,5")
+
+#verif effectif
+as.data.frame(stacomi%>%group_by(sta_nom,year(ope_date_debut))%>%summarise(sum=sum(lot_effectif,na.rm=TRUE)))
+stacomi$year<-year(stacomi$ope_date_debut)
+stacomi$month<-month(stacomi$ope_date_debut)
+stacomi$jj<-yday(stacomi$ope_date_debut)
+stacomi_yr_month<-stacomi%>%group_by(sta_nom,year,month)%>%summarise(sum=sum(lot_effectif,na.rm=TRUE))
+p<-ggplot(stacomi_yr_month, aes(x=as.factor(month),y=sum,fill=as.factor(year)))+
+		geom_bar(stat="identity",position="dodge")+
+			facet_wrap(~sta_nom,ncol=1,scale="free_y")+
+			xlab("Mois")+
+			ylab("Effectifs")+
+			scale_fill_discrete(name=iconv("Année","UTF8"))+
+			theme(legend.position="bottom")
+
+	png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/Passage_SAT_stacomi.png",height=600,width=800)
+	print(p)
+	dev.off()
+
+stacomi_jj<-stacomi%>%group_by(sta_nom,jj)%>%summarise(sum=sum(lot_effectif,na.rm=TRUE))
+p<-ggplot(stacomi, aes(x=sta_nom,y=jj))+
+		geom_boxplot()+
+		xlab("Station")+
+		ylab("Jour Julien")+
+		geom_segment(x=0,xend=2.4,y=60,yend=60,linetype="dashed")+
+		geom_text(y=60,x=2.5,label="Mars",size=3)+
+		geom_segment(x=0,xend=2.4,y=91,yend=91,linetype="dashed")+
+		geom_text(y=91,x=2.5,label="Avril",size=3)+
+		geom_segment(x=0,xend=2.4,y=121,yend=121,linetype="dashed")+
+		geom_text(y=121,x=2.5,label="Mai",size=3)+
+		geom_segment(x=0,xend=2.4,y=274,yend=274,linetype="dashed")+
+		geom_text(y=274,x=2.5,label="Octobre",size=3)+
+		geom_segment(x=0,xend=2.4,y=305,yend=305,linetype="dashed")+
+		geom_text(y=305,x=2.5,label="Novembre",size=3)
+
+png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/Passage_SAT_stacomi_boxplot.png",height=600,width=800)
+print(p)
+dev.off()
+@
+
+
+<<data_Q,echo=FALSE, eval=FALSE,results=hide >>=
+
+###Les débits sont maintenant rentrés dans la base bd_envir et mis à jour tous les jours. On peut donc aller les récupérer directement !
+con_bd_envir <- DBI::dbConnect(drv = Postgres(),
+		host = "intranet.logrami.fr",
+		dbname = "bd_envir",
+		user  = userserver,
+		password  = passwordserver)
+
+vb<-dbGetQuery(con_bd_envir,
+		"select sta_nom,date(mes_date_debut) as date_debut, extract(year from mes_date_debut) as year,round(mes_valeur::numeric,1)
+				from public.t_station_sta
+				left join public.t_stationmatos_stm on sta_id =stm_sta_id
+				left join public.t_mesure_mes on mes_stm_id=stm_id
+				where stm_mat_code=2 and sta_nom='Vieille-Brioude'
+				")
+
+## Au printemps
+#On filtre sur les mois de mars à juin et on calcule la moyenne pour chaque année
+#q_vb_mont<-vb%>%filter(between(month(date_debut),3,5),between(year,1975,(1974+T)))%>%group_by(year)%>%summarise(meanMAM=mean(round,na.rm=TRUE))
+q_vb_mont_printemps<-vb%>%filter(between(month(date_debut),3,6),between(year,1975,(1974+T)))%>%group_by(year)%>%summarise(meanMAM=mean(round,na.rm=TRUE))
+
+## A l'automne : septembre-novembre
+q_vb_mont_automne<-vb%>%filter(between(month(date_debut),9,11),between(year,1975,(1974+T)))%>%group_by(year)%>%summarise(meanMAM=mean(round,na.rm=TRUE))
+
+paste0(q_vb_mont_printemps$meanMAM,collapse=",")
+paste0(q_vb_mont_automne$meanMAM,collapse=",")
+
+## A l'hiver : décembre + janvier/février t+1
+
+
+#------------ Lempdes sur Alagnon -------------#
+q_Lempdes_mont<-dbGetQuery(con_bd_envir,
+		"select sta_nom,date(mes_date_debut) as date_debut, extract(year from mes_date_debut) as year,round(mes_valeur::numeric,1)
+				from public.t_station_sta
+				left join public.t_stationmatos_stm on sta_id =stm_sta_id
+				left join public.t_mesure_mes on mes_stm_id=stm_id
+				where stm_mat_code=2 and sta_nom='Lempdes sur Alagnon'
+				")
+#Attention année 1979 à 1981 à estimer d'après Joursac
+#----- Joursac sur l'Alagnon pour régression linéaire avec Lempdes pour combler les 3 années manquantes sur Lempdes -----#
+#----- A Joursac les données sont complètes pour les années 1979, 1980 et 1981 -----#
+q_J_mont<-dbGetQuery(con_bd_envir,
+		"select sta_nom,date(mes_date_debut) as date_debut, extract(year from mes_date_debut) as year,round(mes_valeur::numeric,1)
+				from public.t_station_sta
+				left join public.t_stationmatos_stm on sta_id =stm_sta_id
+				left join public.t_mesure_mes on mes_stm_id=stm_id
+				where stm_mat_code=2 and sta_nom='Joursac'
+				")
+
+q_L_mont<-rbind(q_Lempdes_mont,q_J_mont)
+q_L_mont<-reshape(q_L_mont, #the data set to reshape
+		idvar = "date_debut", #variable(s) used as the unique identifier for unstacking
+		timevar = "sta_nom", #variable(s) to unstack by where each category becomes a column per variable in v.names
+		v.names = c("round"), #variables to be unstacked into columns
+		direction = "wide") #whether to make the data long (stacked) or wide (unstacked)
+colnames(q_L_mont)<-c("date_debut","year","Q_Lempdes","Q_Joursac")
+
+##Estimation de la relation entre les 2 station
+mod1<-lm(log(Q_Lempdes)~log(Q_Joursac),data=q_L_mont)
+summary(mod1)
+#plot(mod1)
+#plot(log(Q_pont_seuges)~log(Q_amont_pont),data=q_P_mont)
+
+
+start = as.Date("1979-01-01")
+end = as.Date("1981-12-31")
+#au printemps
+newdata<-data.frame(date=seq(from = start, to = end, by = 1))
+#newdata<-newdata[between(month(newdata$date),4,6), ]
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,q_L_mont[,c("date_debut","Q_Joursac")],by.x="date",by.y="date_debut",all.x=TRUE)
+newdata$pred<-predict(mod1, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+#on ajoute ces données estimées au jeu de données
+add_data<-data.frame(sta_nom=rep("Joursac",nrow(newdata)),date_debut=newdata$date,year=year(newdata$date),round=newdata$pred_nat)
+
+titi<-rbind(q_Lempdes_mont,add_data)
+
+Q_Lempdes<-arrange(titi,date_debut)
+q_l_mont_printemps<-Q_Lempdes%>%filter(between(month(date_debut),3,6),between(year,1975,(1974+T)))%>%group_by(year)%>%summarise(meanL=mean(round,na.rm=TRUE))
+
+paste0(q_l_mont_printemps$meanL,collapse=",")
+
+#automne
+q_l_mont_automne<-q_L_mont%>%filter(between(month(date_debut),9,11),between(year,1975,(1974+T)))%>%group_by(year)%>%summarise(mean=mean(round,na.rm=TRUE))
+
+
+paste0(q_l_mont_automne$mean,collapse=",")
+
+
+#------------ Prades -------------#
+#2 stations une "amont du pont" 1968-2008 et l'autre "pont de seuges" 2003-2022
+#On utilise  la station amont pont entre 2003 et 2008 pour la calibration et en estime les Q à pont de seuges sur l'historique
+
+q_P_mont1<-dbGetQuery(con_bd_envir,
+		"select sta_nom,date(mes_date_debut) as date_debut, extract(year from mes_date_debut) as year,round(mes_valeur::numeric,1)
+				from public.t_station_sta
+				left join public.t_stationmatos_stm on sta_id =stm_sta_id
+				left join public.t_mesure_mes on mes_stm_id=stm_id
+				where stm_mat_code=2 and sta_nom='Prades - amont du pont'
+				")
+
+q_P_mont2<-dbGetQuery(con_bd_envir,
+		"select sta_nom,date(mes_date_debut) as date_debut, extract(year from mes_date_debut) as year,round(mes_valeur::numeric,1)
+				from public.t_station_sta
+				left join public.t_stationmatos_stm on sta_id =stm_sta_id
+				left join public.t_mesure_mes on mes_stm_id=stm_id
+				where stm_mat_code=2 and sta_nom='Prades - pont amont Seuges'
+				")
+q_P_mont<-rbind(q_P_mont1,q_P_mont2)
+q_P_mont<-reshape(q_P_mont, #the data set to reshape
+		idvar = "date_debut", #variable(s) used as the unique identifier for unstacking
+		timevar = "sta_nom", #variable(s) to unstack by where each category becomes a column per variable in v.names
+		v.names = c("round"), #variables to be unstacked into columns
+		direction = "wide") #whether to make the data long (stacked) or wide (unstacked)
+colnames(q_P_mont)<-c("date_debut","year","Q_amont_pont","Q_pont_seuges")
+
+##Estimation de la relation entre les 2 station
+mod1<-lm(log(Q_pont_seuges)~log(Q_amont_pont),data=q_P_mont)
+summary(mod1)
+plot(mod1)
+plot(log(Q_pont_seuges)~log(Q_amont_pont),data=q_P_mont)
+
+
+start = as.Date("1975-01-01")
+end = as.Date("2002-12-31")
+#au printemps
+newdata<-data.frame(date=seq(from = start, to = end, by = 1))
+#newdata<-newdata[between(month(newdata$date),4,6), ]
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,q_P_mont[,c("date_debut","Q_amont_pont")],by.x="date",by.y="date_debut",all.x=TRUE)
+newdata$pred<-predict(mod1, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+#on ajoute ces données estimées au jeu de données
+add_data<-data.frame(sta_nom=rep("Prades - pont amont Seuges",nrow(newdata)),date_debut=newdata$date,year=year(newdata$date),round=newdata$pred_nat)
+
+titi<-rbind(q_P_mont2,add_data)
+
+Q_prades<-arrange(titi,date_debut)
+
+q_p_mont_printemps<-Q_prades%>%filter(between(month(date_debut),3,6),between(year,1975,(1974+T)))%>%group_by(year)%>%summarise(mean=mean(round,na.rm=TRUE))
+q_p_mont_automne<-Q_prades%>%filter(between(month(date_debut),9,11),between(year,1975,(1974+T)))%>%group_by(year)%>%summarise(mean=mean(round,na.rm=TRUE))
+
+paste0(q_p_mont_printemps$mean,collapse=",")
+paste0(q_p_mont_automne$mean,collapse=",")
+
+#---OLD ----#
+
+#------------- Vieille Brioude pour répartition des adultes 01/04 au 30/06 = montaison
+#dans les premières versions du modèle avec ajout de la covariable débit dans la survie s_juv2ad on avait essayé de mettre en fonctin des débits à VB pour la montaison sur la période mars_mai. Mais le paramètre n'était pas mis à jour (coef toujours centré sur 0 indiquant que pas d'effet). On a donc revu la façon de voir ces débits à la montaison et semble mieux de les incorporer dans les probabilités qu'ont les adultes de se répartir dans les zones (au prorata des surfaces et du homing + un paramètre de blocage + les débits)
+
+data_Q<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Vieille-Brioude_1919-2020.csv",sep=";",dec=",")
+#on reformate le champ date 
+data_Q$date<-as.Date(data_Q$Jour,"%d/%m/%Y")
+data_Q[is.na(data_Q$Q),]
+
+#data_Q_avril_juin<-data_Q[between(month(data_Q$date),4 ,6),]
+#data_Q_avril_juin$year<-year(data_Q_avril_juin$date)
+#mean_data_Q_AJ<-data_Q_avril_juin%>%group_by(year)%>%summarise(mean=mean(Q,na.rm=TRUE))
+#mean_data_Q_AJ<-as.data.frame(mean_data_Q_AJ[between(mean_data_Q_AJ$year,1975,2020),])
+#mean_data_Q_AJ$mean #pour copier/coller dans openbugs
+
+#data_Q_mars_avril<-data_Q[between(month(data_Q$date),3 ,4),]
+data_Q_mars_avril_mai<-data_Q[between(month(data_Q$date),3 ,5),]
+#unique(month(data_Q_mars_avril$date))
+unique(month(data_Q_mars_avril_mai$date))
+#data_Q_mars_avril$year<-year(data_Q_mars_avril$date)
+data_Q_mars_avril_mai$year<-year(data_Q_mars_avril_mai$date)
+
+#mean_data_Q_MA<-data_Q_mars_avril%>%group_by(year)%>%summarise(meanMA=mean(Q,na.rm=TRUE))
+mean_data_Q_MAM<-data_Q_mars_avril_mai%>%group_by(year)%>%summarise(meanMAM=mean(Q,na.rm=TRUE))
+#mean_data_Q<-merge(mean_data_Q_MA,mean_data_Q_MAM)
+#mean_data_Q<-cbind(year=rep(seq(1919,2020,1),2),stack(mean_data_Q[,2:3]))
+
+p<-ggplot(data=mean_data_Q[between(mean_data_Q$year,1975,2020),],aes(x=year,y=values,color=ind))+
+		geom_line(size=1)+
+		scale_color_discrete(name = iconv("Série de données","UTF8"), labels = c("Q sur Mars-Avril", "Q sur Mars-Avril-Mai"))+
+		ylab(iconv("Débit moyen sur la période (m3/s)","UTF8"))+
+		theme_bw()+
+		theme(legend.position="bottom",
+				axis.text=element_text(size=12),
+				axis.title=element_text(size=14,face="bold"))
+#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_1975-2018.png",height=600,width=800)
+png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_1975-2020.png",height=600,width=800)
+print(p)
+dev.off()
+
+
+p1<-ggplot(data_Q_mars_avril, aes(x = Q, y = as.factor(year), fill = as.factor(year))) +
+		geom_density_ridges() +
+		geom_vline(xintercept=43.05,linetype="dashed")+
+		geom_text(x=60, y=46.5, label="Moyenne mensuelle", size=3)+
+		ggtitle(iconv("Débits entre mars et avril","UTF8"))+
+		xlim(0,150)+
+		xlab(iconv("Débit (m3/s)","UTF8"))+
+		ylab (iconv("Année","UTF8"))+
+		theme_ridges() +
+		theme(legend.position = "none")
+
+
+p2<-ggplot(data_Q_mars_avril_mai, aes(x = Q, y = as.factor(year), fill = as.factor(year))) +
+		geom_density_ridges() +
+		geom_vline(xintercept=41.2,linetype="dashed")+
+		geom_text(x=60, y=46.5, label="Moyenne mensuelle", size=3)+
+		ggtitle(iconv("Débits entre mars et mai","UTF8"))+
+		xlim(0,150)+
+		xlab(iconv("Débit (m3/s)","UTF8"))+
+		ylab (iconv("Année","UTF8"))+
+		theme_ridges() +
+		theme(legend.position = "none")
+
+p3<-plot_grid(p1, p2, ncol=2)
+
+png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_comparaison.png",height=800,width=900)
+print(p3)
+dev.off()
+
+
+##Pour récupérer les données pour OpenBugs
+mean_data_Q_MAM<-as.data.frame(mean_data_Q_MAM) #pour Q_VB_mont
+as.data.frame(mean_data_Q_MA)[2] #pour Q_VB_deval
+#mean_data_Q_MAM$log_Q<-log(mean_data_Q_MAM$meanMAM)
+#mean(mean_data_Q_MAM$log_Q) #paramètre mean_L_Q_VB
+#sd(mean_data_Q_MAM$log_Q) #paramètre sd_Q_VB
+
+#------------- Vieille Brioude 01/03 au 30/04 = dévalaison
+#Attention on travaille sur les smolts mais s_juv2ad indicé t sur les retours d'adultes.
+#Les adultes sont issus du retour des juvéniles produit en t-3,t-4 et t-5 pour 1/3 chaque.
+#Les smolts ont une année de plus par rapport à l'année de production, d'où pour une année t de retour il faut considérer les Q des année t-2, t-3 et t-4 à 1/3 chaque
+data_Q<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Vieille-Brioude_1919-2020.csv",sep=";",dec=",")
+#on reformate le champ date 
+data_Q$date<-as.Date(data_Q$Jour,"%d/%m/%Y")
+data_Q[is.na(data_Q$Q),]
+
+data_Q_mars_avril<-data_Q[between(month(data_Q$date),3 ,4),]
+data_Q_mars_avril$year<-year(data_Q_mars_avril$date)
+mean_data_Q_MA<-data_Q_mars_avril%>%group_by(year)%>%summarise(meanMA=mean(Q,na.rm=TRUE))
+running.mean<- function(x, n = 3){stats::filter(x, rep(1 / n, n), sides = 1)}
+#calculer la moyenne pondérée avec poids identique (1/3) revient à calculer une moyenne glissante sur fenêtre 3 ans
+#plus facile de faire comme ça sinon il faut trouver comment se décaler sur les plages d'années avec moyenne pondérée
+mean_indic_adult<-running.mean(mean_data_Q_MA,3)
+#Il faut changer les années en face de chaque moyenne pondérée car la première valeur correspond aux juvéniles à l'origine des adultes de retour en 1979
+year<-seq(1975,2020,1)
+mean_indic_adult<-cbind(year,as.vector(mean_indic_adult[55:100,2])) #commence à 55 car 1ere année retour adulte=1975 qui sont issus des juv 1971 à 1973 centré sur 1972 (t=55) et finit à 44 car dernière année pour les retours adultes 2020=2018 c-à-d période 2016-2018 qui est centrée sur 2017 soit t=100
+
+
+#------------- Montjean sur Loire
+data_Q2<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Montjean_1863-2020_V3.csv",sep=";",dec=",")
+#on reformate le champ date 
+data_Q2$date<-as.Date(data_Q2$Jour,"%d/%m/%Y")
+data_Q2$date[is.na(data_Q2$date)]<-as.Date(data_Q2$Jour[is.na(data_Q2$date)],"%Y-%m-%d") #des date sont formatées dans un autre format
+nrow(data_Q2[is.na(data_Q2$Q),]) #28 jour avec des débit en NA uniquement sur 2021
+data_Q2$year<-year(data_Q2$date)
+data_Q2$month<-month(data_Q2$date)
+#-- Avec Etienne on s'est accordé sur les périodes suivantes 
+	#....Montaison : 15 décembre - 15 mars
+
+#Ancien code faux car ne prenait pas décembre de l'année n-1
+#data_Q2_mont<-data_Q2[between(data_Q2$month,1 ,2),] #on récupère les mois complets
+#on ajoute les mois tronqués
+#data_Q2_dec<-data_Q2[data_Q2$month==12 & day(data_Q2$date)>=15,]
+#data_Q2_mars<-data_Q2[data_Q2$month==3 & day(data_Q2$date)<=15,]
+#On assemble les 3 jeux de données
+#data_Q2_mont<-rbind(data_Q2_dec,data_Q2_mont,data_Q2_mars)
+
+#data_Q2_mont_yr<-data_Q2_mont%>%group_by(year)%>%summarise(mean=mean(Q))
+
+#Code modifié le 2025-02-19
+data_Q2_mont_yr <- data_Q2 %>% 
+                filter((month(date) == 12 & day(date) >= 15) | 
+                       (month(date) %in% c(1, 2)) | 
+                       (month(date) == 3 & day(date) <= 15)) %>%
+                mutate(annee_hydro = ifelse(month(date) == 12, year(date) + 1, year(date))) %>%
+                filter(annee_hydro <= 1974 + T) %>%
+                group_by (annee_hydro) %>%
+			          summarise(mean=mean(round,na.rm=TRUE))
+data_Q2_mont_yr_model<-as.data.frame(data_Q2_mont_yr[between(data_Q2_mont_yr$year,1970,2020),])
+data_Q2_mont_yr_model$mean[6:51] #pour copier/coller dans openbugs
+
+	
+	#....Dévalaison : 15 mars - 15 mai
+data_Q2_deval<-data_Q2[data_Q2$month==4,] #on sélectionne sur les mois complets
+unique(data_Q2_deval$month)
+#on ajoute les mois tronqués
+data_Q2_mars<-data_Q2[data_Q2$month==3 & day(data_Q2$date)>=15,]
+data_Q2_mai<-data_Q2[data_Q2$month==5 & day(data_Q2$date)<=15,]
+#On assemble les 3 jeux de données
+data_Q2_deval<-rbind(data_Q2_mars,data_Q2_deval,data_Q2_mai)
+data_Q2_deval_yr<-data_Q2_deval%>%group_by(year)%>%summarise(mean=mean(Q))
+data_Q2_deval_yr_model<-as.data.frame(data_Q2_deval_yr[between(data_Q2_deval_yr$year,1970,2020),])
+# data_Q2_deval_yr_model$mean #pour copier/coller dans openbugs
+
+running.mean<- function(x, n = 3){stats::filter(x, rep(1 / n, n), sides = 1)}
+#calculer la moyenne pondérée avec poids identique (1/3) revient à calculer une moyenne glissante sur fenêtre 3 ans
+#plus facile de faire comme ça sinon il faut trouver comment se décaler sur les plages d'années avec moyenne pondérée
+mean_indic_adult_MSL<-running.mean(data_Q2_deval_yr_model,3)
+#Il faut changer les années en face de chaque moyenne pondérée car la première valeur correspond aux juvéniles à l'origine des adultes de retour en 1979
+year<-seq((min(data_Q2_deval_yr_model$year)+4),2020,1)
+mean_indic_adult_MSL<-cbind(year,as.vector(mean_indic_adult_MSL[3:48,2])) #commence à 3 car avant NA et finit à 48 car dernière année pour les retours adultes 2020=2018 c-à-d période 2016-2018 qui est centrée sur 2017 soit t=48
+mean_indic_adult_MSL[,2]
+
+#---------------------
+# Figure évolution Q
+#---------------------
+data_Q2_mont_yr_model$ind<-1
+data_Q2_deval_yr_model$ind<-2
+data_MSL<-rbind(data_Q2_mont_yr_model,data_Q2_deval_yr_model)
+data_MSL$ind<-as.factor(data_MSL$ind)
+p<-ggplot(data=data_MSL,aes(x=year,y=mean,color=ind))+
+		geom_line(size=1)+
+		scale_color_discrete(name = "Série de données", labels = c("Q montaison (15/12 - 15/03)", "Q dévalaison (15/03 - 15/05)"))+
+		ylab("Débit moyen sur la période (m3/s)")+
+		theme_bw()+
+		theme(legend.position="bottom",
+				axis.text=element_text(size=12),
+				axis.title=element_text(size=14,face="bold"))
+
+png(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/co-variables_env/Mean_Q_Montjean_1970-2018.png",height=600,width=800)
+print(p)
+dev.off()
+
+
+#------------- Lempdes Alagnon 01/03 au 31/05 = montaison
+data_Q<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Lempdes_1967-2021.csv",sep=";",dec=",")
+#on reformate le champ date 
+data_Q$date<-as.Date(data_Q$Jour,"%d/%m/%Y")
+data_Q[is.na(data_Q$Q),]# plusieurs NA mais sur les moois de septembre, décembre,août et juillet + en 2021
+data_Q$year<-year(data_Q$date)
+data_Q$month<-month(data_Q$date)
+#On ne garde les Q que jusqu'en 2018 et à partir de 1975
+data_Q<-data_Q[between(data_Q$year,1975,2020),]
+
+data_Q_avril_juin<-data_Q[between(month(data_Q$date),4 ,6),]
+#Pour débit à l'automne on garde entre septembre et novembre
+data_Q_sept_nov<-data_Q[between(month(data_Q$date),9 ,11),]
+
+data_Q_lempdes_yr<-data_Q_avril_juin%>%group_by(year)%>%summarise(mean=mean(Q))
+seq<-data.frame(year=seq(1979,1981,1),mean=rep(NA,3))
+data_Q_lempdes_yr<-rbind(data_Q_lempdes_yr,seq)
+data_Q_lempdes_yr<-arrange(data_Q_lempdes_yr,year)
+data_Q_lempdes_yr$mean #pour copier/coller dans openbugs
+mean(data_Q_lempdes_yr$mean,na.rm=TRUE)#13.89604
+sd(data_Q_lempdes_yr$mean,na.rm=TRUE)#7.175608
+
+### Il manque les années 1979,1980 et 1981 (1978 et 1982 sont complètes)
+
+#----- Joursac sur l'Alagnon pour régression linéaire avec Lempdes pour combler les 3 années manquantes sur Lempdes -----#
+#----- A Joursac les données sont complètes pour les années 1979, 1980 et 1981 -----#
+data_Q_joursac<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Joursac_1975_2018.csv",sep=";",dec=",")
+#on reformate le champ date 
+data_Q_joursac$date<-as.Date(data_Q_joursac$Jour,"%d/%m/%Y")
+data_Q_joursac[is.na(data_Q_joursac$Q),]# plusieurs NA en 1999 et 2001
+data_Q_joursac$year<-year(data_Q_joursac$date)
+data_Q_joursac$month<-month(data_Q_joursac$date)
+#On ne garde les Q que jusqu'en 2018 et à partir de 1975
+data_Q_joursac<-data_Q_joursac[between(data_Q_joursac$year,1975,2018),]
+#On ne garde que les débits sur avril-juin
+data_Q_joursac<-data_Q_joursac[between(month(data_Q_joursac$date),4 ,6),]
+#Pour la relation à l'automne : on ne garde que les débits entre septembre et novembre
+data_Q_joursac_A<-data_Q_joursac[between(month(data_Q_joursac$date),9 ,11),]
+
+
+#-- pour faire la régression il faut récupérer dans un même tableau les débits des 2 stations.
+
+data_Q_L_J<-merge(data_Q_avril_juin[,c("date","Q")],data_Q_joursac[,c("date","Q")],by.x="date",by.y="date")
+colnames(data_Q_L_J)<-c("date","Q_L","Q_J")
+#on ajoute les jours juliens
+#data_Q_L_J$jj<-yday(data_Q_L_J$date)
+data_Q_L_J_automne<-merge(data_Q_sept_nov[,c("date","Q")],data_Q_joursac_A[,c("date","Q")],by.x="date",by.y="date")
+colnames(data_Q_L_J_automne)<-c("date","Q_L","Q_J")
+
+ggplot(data_Q_L_J_automne, aes(x=Q_L, y=Q_J)) +
+  geom_point() +
+  geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
+  theme_bw()
+
+mod<-lm(data=data_Q_L_J,Q_L~Q_J)
+summary(mod)
+plot(mod)
+
+#les résidus ne sont pas normalement distribués. On essaie de log transformer
+
+mod1<-lm(log(Q_L)~log(Q_J),data=data_Q_L_J)
+summary(mod1)
+plot(mod1)
+
+#à l'automne
+mod2<-lm(log(Q_L)~log(Q_J),data=data_Q_L_J_automne)
+summary(mod2)
+plot(mod2)
+#ça a une meilleure tête
+
+start = as.Date("1979-01-01")
+end = as.Date("1981-12-31")
+#au printemps
+newdata<-data.frame(date=seq(from = start, to = end, by = 1))
+newdata<-newdata[between(month(newdata$date),3,6), ]
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,data_Q_joursac[,c("date","Q")],by.x="newdata",by.y="date",all.x=TRUE)
+newdata$Q_J<-log(newdata$Q)
+newdata<-newdata[,c("newdata","Q_J")]
+colnames(newdata)<-c("date","Q_J")
+newdata$pred<-predict(mod1, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+#A l'automne
+newdata<-data.frame(date=seq(from = start, to = end, by = 1))
+newdata<-newdata[between(month(newdata$date),9,11), ]
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,data_Q_joursac_A[,c("date","Q")],by.x="newdata",by.y="date",all.x=TRUE)
+newdata$Q_J_A<-log(newdata$Q)
+newdata<-newdata[,c("newdata","Q_J")]
+colnames(newdata)<-c("date","Q_J")
+newdata$pred<-predict(mod2, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+#on ajoute ces données estimées au jeu de données Q_Lempdes
+add_data<-data.frame(nomCoursEau=rep("L'Alagnon",nrow(newdata)),codeStation=rep("K2593010",nrow(newdata)),nomStation=rep("Lempdes",nrow(newdata)),Jour=rep(NA,nrow(newdata)),Q=newdata$pred_nat,V=rep(NA,nrow(newdata)),date=newdata$date,year=year(newdata$date),month=month(newdata$date))
+
+titi<-rbind(data_Q_avril_juin,add_data)
+
+Q_lempdes<-arrange(titi,date)
+Q_lempdes_yr<-Q_lempdes%>%group_by(year)%>%summarise(mean=mean(Q))
+Q_lempdes_yr$mean #pour copier/coller dans openbugs
+
+mean(Q_lempdes_yr$mean)
+sd(Q_lempdes_yr$mean)
+
+#A l'automne :
+#on ajoute ces données estimées au jeu de données Q_Lempdes
+add_data<-data.frame(nomCoursEau=rep("L'Alagnon",nrow(newdata)),codeStation=rep("K2593010",nrow(newdata)),nomStation=rep("Lempdes",nrow(newdata)),Jour=rep(NA,nrow(newdata)),Q=newdata$pred_nat,V=rep(NA,nrow(newdata)),date=newdata$date,year=year(newdata$date),month=month(newdata$date))
+
+titi<-rbind(data_Q_sept_nov,add_data)
+
+Q_lempdes<-arrange(titi,date)
+Q_lempdes_yr<-Q_lempdes%>%group_by(year)%>%summarise(mean=mean(Q))
+Q_lempdes_yr$mean #pour copier/coller dans openbugs
+
+#---- Données pour expliquer répartition adultes en amont de Poutès ---------#
+
+#D'après Quentin, 2 solutions : soit prendre les Q de Prades qui représentent assez bien les Q pour le secteur amont Poutès
+#Soit on essaie de reconstituer les Q passant à Poutès en sommant St Haon (Allier) et St Bonnet de Montauroux (Chapeauroux)
+#On choisit de prendre les Q de Prades
+#Soucis :
+# 	+ Prades a fonctionné entre 1968 et 1970. Puis interruption jusqu'à décembre 2002
+#	+ Concernant Prades à partir de 1975 seulement 2 années manquantes (quand on regarde les Q entre septembre et novembre : 2001 et 2002)
+#	+ 4 années pour les Q au printemps (avril-juin) : 1975/1983/2001/2002
+#Pour 2001/2002, ces débits existent pour St Haon. On regarde si on peut caler une relation entre Prades et St Haon pour estimer ces 2 années
+## ATTENTION : ces Q servent pour la répartition en amont de Poutès, donc on n'a pas besoin de données avant 1986...
+data_Q_prades_st_haon<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Prades_St_Haon.csv",sep=";",dec=",")
+#on reformate le champ date 
+data_Q_prades_st_haon$date<-str_c(data_Q_prades_st_haon$annee,"-",data_Q_prades_st_haon$mois,"-",data_Q_prades_st_haon$jour)
+data_Q_prades_st_haon$date<-as.Date(data_Q_prades_st_haon$date,"%Y-%m-%d")
+
+#On ne garde que les débits sur septembre-novembre
+data_Q_prades_st_haon_sept_nov<-data_Q_prades_st_haon[between(month(data_Q_prades_st_haon$date),9 ,11),]
+#On ne garde que les débits sur avril_juin
+data_Q_prades_st_haon_avr_juin<-data_Q_prades_st_haon[between(month(data_Q_prades_st_haon$date),4 ,6),]
+
+#il me faut les Q des 2 stations sur 2 colonnes différentes
+data_Q_prades_st_haon_sept_nov<-reshape(data_Q_prades_st_haon_sept_nov, #the data set to reshape
+        idvar = "date", #variable(s) used as the unique identifier for unstacking
+        timevar = "station", #variable(s) to unstack by where each category becomes a column per variable in v.names
+        v.names = c("Q"), #variables to be unstacked into columns
+        direction = "wide") #whether to make the data long (stacked) or wide (unstacked)
+              
+colnames(data_Q_prades_st_haon_sept_nov)[5:6]<-c("Q_Prades","Q_StHaon")
+data_Q_prades_st_haon_sept_nov$Q_Prades<-as.numeric(data_Q_prades_st_haon_sept_nov$Q_Prades)
+data_Q_prades_st_haon_sept_nov$Q_StHaon<-as.numeric(data_Q_prades_st_haon_sept_nov$Q_StHaon)
+
+ggplot(data_Q_prades_st_haon_sept_nov, aes(x=Q_Prades, y=Q_StHaon)) +
+		geom_point() +
+		geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
+		theme_bw()
+# au printemps
+data_Q_prades_st_haon_avr_juin<-reshape(data_Q_prades_st_haon_avr_juin, #the data set to reshape
+		idvar = "date", #variable(s) used as the unique identifier for unstacking
+		timevar = "station", #variable(s) to unstack by where each category becomes a column per variable in v.names
+		v.names = c("Q"), #variables to be unstacked into columns
+		direction = "wide") #whether to make the data long (stacked) or wide (unstacked)
+
+colnames(data_Q_prades_st_haon_avr_juin)[5:6]<-c("Q_Prades","Q_StHaon")
+data_Q_prades_st_haon_avr_juin$Q_Prades<-as.numeric(data_Q_prades_st_haon_avr_juin$Q_Prades)
+data_Q_prades_st_haon_avr_juin$Q_StHaon<-as.numeric(data_Q_prades_st_haon_avr_juin$Q_StHaon)
+
+ggplot(data_Q_prades_st_haon_avr_juin, aes(x=Q_Prades, y=Q_StHaon)) +
+		geom_point() +
+		geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
+		theme_bw()
+
+#les résidus ne sont pas normalement distribués. On essaie de log transformer
+
+mod1<-lm(log(Q_Prades)~log(Q_StHaon),data=data_Q_prades_st_haon_sept_nov)
+summary(mod1)
+#plot(mod1)
+#ça a une meilleure tête
+
+#Les 2 années à estimer sont 2001 et 2002
+start = as.Date("2001-09-01")
+end = as.Date("2001-11-30")
+start2 = as.Date("2002-09-01")
+end2 = as.Date("2002-11-30")
+
+newdata<-data.frame(date=c(seq(from = start, to = end, by = 1),seq(from = start2, to = end2, by = 1)))
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,data_Q_prades_st_haon_sept_nov[,c("date","Q_StHaon")],by.x="date",by.y="date",all.x=TRUE)
+newdata$Q_StHaon<-log(newdata$Q_StHaon)
+newdata$pred<-predict(mod1, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+#on construit un jeu complet pour les Q_prades
+Q_prades<-data_Q_prades_st_haon_sept_nov[,c("date","Q_Prades")]
+Q_prades<-Q_prades[!(is.na(Q_prades$Q_Prades)),]
+#on ajoute ces données estimées au jeu de données Q_Prades
+add_data<-data.frame(date=newdata$date,Q_Prades=newdata$pred_nat)
+
+titi<-rbind(Q_prades,add_data)
+
+Q_prades2<-arrange(titi,date)
+Q_prades2$year<-year(Q_prades2$date)
+Q_prades_yr<-Q_prades2%>%group_by(year)%>%summarise(mean=mean(Q_Prades))
+Q_prades_yr$mean #pour copier/coller dans openbugs
+
+mean(Q_prades_yr$mean)
+sd(Q_prades_yr$mean)
+
+#---- corrélogramme sur les données de débit en moyenne -----------#
+library(corrplot)
+data_Q_lempdes_yr<-as.data.frame(data_Q_lempdes_yr)
+#data_Q_lempdes_yr$sta<-"Lempdes_04_06"
+mean_indic_adult<-as.data.frame(mean_indic_adult)
+#mean_indic_adult$sta<-"VB_deval_03_04"
+#data_Q2_mont_yr_model$sta<-"MSL_mont_15-12_15-03"
+mean_indic_adult_MSL<-as.data.frame(mean_indic_adult_MSL)
+#mean_indic_adult_MSL$sta<-"MSL_deval_15-03_15-04"
+
+colnames(data_Q_lempdes_yr)[2]<-"Lempdes_04_06"
+data_Q_lempdes_yr<-data_Q_lempdes_yr[,1:2]
+#manque les années 1979 à 1981 on met NA
+seq<-data.frame(year=seq(1979,1981,1),Lempdes_04_06=rep(NA,3))
+data_Q_lempdes_yr<-rbind(data_Q_lempdes_yr,seq)
+data_Q_lempdes_yr<-arrange(data_Q_lempdes_yr,year)
+
+colnames(mean_indic_adult)[2]<-"VB_deval_03_04"
+mean_indic_adult<-mean_indic_adult[,1:2]
+
+colnames(data_Q2_mont_yr_model)[2]<-"MSL_mont_15-12_15-03"
+data_Q2_mont_yr_model<-data_Q2_mont_yr_model[,1:2]
+
+colnames(mean_indic_adult_MSL)[2]<-"MSL_deval_15-03_15-05"
+mean_indic_adult_MSL<-mean_indic_adult_MSL[,1:2]
+
+Q_VB_MSL_Lemp<-cbind(data_Q_lempdes_yr,mean_indic_adult,data_Q2_mont_yr_model,mean_indic_adult_MSL)
+rownames(Q_VB_MSL_Lemp)<-Q_VB_MSL_Lemp$year
+Q_VB_MSL_Lemp<-Q_VB_MSL_Lemp[,c(2,4,6,8)]
+corrplot(cor(Q_VB_MSL_Lemp,use = "complete.obs",method = "pearson"), method = "circle", addCoef.col="black",number.cex = 0.8, order="AOE",type="upper",tl.srt=45)
+
+#------ représentation des séries qu'on intégre dans bugs
+data_Q_lempdes_yr$sta<-"Lempdes_04_06"
+colnames(data_Q_lempdes_yr)[2]<-"mean"
+data_Q_lempdes_yr$logQ<-log(data_Q_lempdes_yr$mean)
+data_Q_lempdes_yr$crQ<-scale(data_Q_lempdes_yr$logQ)
+
+mean_indic_adult$sta<-"VB_deval_03_04"
+colnames(mean_indic_adult)[2]<-"mean"
+mean_indic_adult$logQ<-log(mean_indic_adult$mean)
+mean_indic_adult$crQ<-scale(mean_indic_adult$logQ)
+
+data_Q2_mont_yr_model$sta<-"MSL_mont_15-12_15-03"
+colnames(data_Q2_mont_yr_model)[2]<-"mean"
+data_Q2_mont_yr_model$logQ<-log(data_Q2_mont_yr_model$mean)
+data_Q2_mont_yr_model$crQ<-scale(data_Q2_mont_yr_model$logQ)
+
+
+mean_indic_adult_MSL$sta<-"MSL_deval_15-03_15-05"
+colnames(mean_indic_adult_MSL)[2]<-"mean"
+mean_indic_adult_MSL$logQ<-log(mean_indic_adult_MSL$mean)
+mean_indic_adult_MSL$crQ<-scale(mean_indic_adult_MSL$logQ)
+
+Q_serie_bugs<-rbind(data_Q_lempdes_yr, mean_indic_adult,data_Q2_mont_yr_model,mean_indic_adult_MSL)
+
+
+ggplot(data=Q_serie_bugs,aes(x=year,y=crQ))+
+  geom_line()+
+  facet_wrap(~sta,scales="free_y",ncol=1)
+
+#---- test loi binomial
+
+barplot(dbinom(0:186,186,0.6))
+@
+
+<<graph_data_Q_model,echo=FALSE, eval=FALSE,results=hide >>=
+library(coda)
+library(stringr)
+path_model<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/"
+bugs2jags(str_c(path_model,"data.txt"),"data_model.R")
+source("data_model.R")
+
+L_Q_L_mont_A_cr<-(log(Q_L_mont_A)-mean(log(Q_L_mont_A)))/sd(log(Q_L_mont_A))
+L_Q_L_mont_P_cr<-(log(Q_L_mont_P)-mean(log(Q_L_mont_P)))/sd(log(Q_L_mont_P))
+L_Q_P_mont_A_cr<-(log(Q_P_mont_A)-mean(log(Q_P_mont_A)))/sd(log(Q_P_mont_A))
+L_Q_P_mont_P_cr<-(log(Q_P_mont_P)-mean(log(Q_P_mont_P)))/sd(log(Q_P_mont_P))
+L_Q_VB_mont_A_cr<-(log(Q_VB_mont_A)-mean(log(Q_VB_mont_A)))/sd(log(Q_VB_mont_A))
+L_Q_VB_mont_P_cr<-(log(Q_VB_mont_P)-mean(log(Q_VB_mont_P)))/sd(log(Q_VB_mont_P))
+
+L_Q_L_mont_A_cr<-data.frame(sta=rep("Lempdes-sur-Alagnon",48),saison=rep("Automne",48),year=1975:2022,Q=L_Q_L_mont_A_cr)
+L_Q_L_mont_P_cr<-data.frame(sta=rep("Lempdes-sur-Alagnon",48),saison=rep("Printemps",48),year=1975:2022,Q=L_Q_L_mont_P_cr)
+L_Q_VB_mont_A_cr<-data.frame(sta=rep("Vieille-Brioude",48),saison=rep("Automne",48),year=1975:2022,Q=L_Q_VB_mont_A_cr)
+L_Q_VB_mont_P_cr<-data.frame(sta=rep("Vieille-Brioude",48),saison=rep("Printemps",48),year=1975:2022,Q=L_Q_VB_mont_P_cr)
+L_Q_P_mont_A_cr<-data.frame(sta=rep("Prades",48),saison=rep("Automne",48),year=1975:2022,Q=L_Q_P_mont_A_cr)
+L_Q_P_mont_P_cr<-data.frame(sta=rep("Prades",48),saison=rep("Printemps",48),year=1975:2022,Q=L_Q_P_mont_P_cr)
+
+
+q_rep<-rbind(L_Q_L_mont_A_cr,L_Q_L_mont_P_cr,L_Q_P_mont_A_cr,L_Q_P_mont_P_cr,L_Q_VB_mont_A_cr,L_Q_VB_mont_P_cr)
+q_rep$saison <- factor(q_rep$saison, levels=c('Printemps', 'Automne'))
+q_rep$sta <- factor(q_rep$sta, levels=c('Lempdes-sur-Alagnon', 'Vieille-Brioude','Prades'))
+library(ggplot2)
+g<-ggplot(data=q_rep)+
+		geom_line(aes(x=year,y=Q,col=sta),size=1)+
+		geom_hline(yintercept=0)+
+		facet_grid(sta~saison)+
+		ylab("Débit log-transformé et centré-réduit")+
+		theme_bw()
+
+ggsave(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_log_cr_used_in_model.png",g)
+
+#en débit naturel
+Q_L_mont_A<-data.frame(sta=rep("Lempdes-sur-Alagnon",48),saison=rep("Automne",48),year=1975:2022,Q=Q_L_mont_A)
+Q_L_mont_P<-data.frame(sta=rep("Lempdes-sur-Alagnon",48),saison=rep("Printemps",48),year=1975:2022,Q=Q_L_mont_P)
+Q_VB_mont_A<-data.frame(sta=rep("Vieille-Brioude",48),saison=rep("Automne",48),year=1975:2022,Q=Q_VB_mont_A)
+Q_VB_mont_P<-data.frame(sta=rep("Vieille-Brioude",48),saison=rep("Printemps",48),year=1975:2022,Q=Q_VB_mont_P)
+Q_P_mont_A<-data.frame(sta=rep("Prades",48),saison=rep("Automne",48),year=1975:2022,Q=Q_P_mont_A)
+Q_P_mont_P<-data.frame(sta=rep("Prades",48),saison=rep("Printemps",48),year=1975:2022,Q=Q_P_mont_P)
+
+
+q_rep_nat<-rbind(Q_L_mont_A,Q_L_mont_P,Q_P_mont_A,Q_P_mont_P,Q_VB_mont_A,Q_VB_mont_P)
+q_rep_nat$saison <- factor(q_rep_nat$saison, levels=c('Printemps', 'Automne'))
+q_rep_nat$sta <- factor(q_rep_nat$sta, levels=c('Lempdes-sur-Alagnon', 'Vieille-Brioude','Prades'))
+g_nat<-ggplot(data=q_rep_nat)+
+		geom_line(aes(x=year,y=Q,col=sta),size=1)+
+		#geom_hline(yintercept=0)+
+		facet_grid(sta~saison,scales="free_y")+
+		ylab("Débit m3/s")+
+		theme_bw()
+
+ggsave(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_naturel_used_in_model.png",g_nat)
+
+#Q influence survie
+
+L_Q_VB_deval_cr<-(log(Q_VB_deval)-mean(log(Q_VB_deval)))/sd(log(Q_VB_deval))
+L_Q_MSL_deval_cr<-(log(Q_MSL_deval)-mean(log(Q_MSL_deval)))/sd(log(Q_MSL_deval))
+L_Q_MSL_mont_cr<-(log(Q_MSL_mont)-mean(log(Q_MSL_mont)))/sd(log(Q_MSL_mont))
+
+L_Q_VB_deval_cr<-data.frame(sta=rep("Vieille-Brioude",48),migration=rep("Dévalaison",48),year=1975:2022,Q=L_Q_VB_deval_cr)
+L_Q_MSL_deval_cr<-data.frame(sta=rep("Montjean-sur-Loire",48),migration=rep("Dévalaison",48),year=1975:2022,Q=L_Q_MSL_deval_cr)
+L_Q_MSL_mont_cr<-data.frame(sta=rep("Montjean-sur-Loire",48),migration=rep("Montaison",48),year=1975:2022,Q=L_Q_MSL_mont_cr)
+
+q_rep_surv<-rbind(L_Q_VB_deval_cr,L_Q_MSL_deval_cr,L_Q_MSL_mont_cr)
+q_rep_surv$migration <- factor(q_rep_surv$migration, levels=c('Montaison', 'Dévalaison'))
+q_rep_surv$sta <- factor(q_rep_surv$sta, levels=c('Montjean-sur-Loire','Vieille-Brioude'))
+
+g_surv<-ggplot(data=q_rep_surv)+
+		geom_line(aes(x=year,y=Q,col=sta),size=1)+
+		geom_hline(yintercept=0)+
+		facet_grid(sta~migration)+
+		ylab("Débit log-transformé et centré-réduit")+
+		theme_bw()
+
+ggsave(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_surv_log_cr_used_in_model.png",g_surv)
+
+#débit naturel
+Q_VB_deval<-data.frame(sta=rep("Vieille-Brioude",48),migration=rep("Dévalaison",48),year=1975:2022,Q=Q_VB_deval)
+Q_MSL_deval<-data.frame(sta=rep("Montjean-sur-Loire",48),migration=rep("Dévalaison",48),year=1975:2022,Q=Q_MSL_deval)
+Q_MSL_mont<-data.frame(sta=rep("Montjean-sur-Loire",48),migration=rep("Montaison",48),year=1975:2022,Q=Q_MSL_mont)
+
+q_rep_surv<-rbind(Q_VB_deval,Q_MSL_deval,Q_MSL_mont)
+q_rep_surv$migration <- factor(q_rep_surv$migration, levels=c('Montaison', 'Dévalaison'))
+q_rep_surv$sta <- factor(q_rep_surv$sta, levels=c('Montjean-sur-Loire','Vieille-Brioude'))
+q_rep_surv$mean<-NA
+q_rep_surv$mean[q_rep_surv$sta=="Montjean-sur-Loire"&q_rep_surv$migration=="Montaison"]<-mean(q_rep_surv$Q[q_rep_surv$sta=="Montjean-sur-Loire"&q_rep_surv$migration=="Montaison"])
+q_rep_surv$mean[q_rep_surv$sta=="Montjean-sur-Loire"&q_rep_surv$migration=="Dévalaison"]<-mean(q_rep_surv$Q[q_rep_surv$sta=="Montjean-sur-Loire"&q_rep_surv$migration=="Dévalaison"])
+q_rep_surv$mean[q_rep_surv$sta!="Montjean-sur-Loire"]<-mean(q_rep_surv$Q[q_rep_surv$sta!="Montjean-sur-Loire"])
+
+g_surv<-ggplot(data=q_rep_surv)+
+		geom_line(aes(x=year,y=Q,col=sta),size=1)+
+		geom_hline(aes(yintercept = mean))+
+		facet_grid(sta~migration,scales="free_y")+
+		ylab("Débit m3/s")+
+		theme_bw()
+
+ggsave(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_surv_naturel_used_in_model.png",g_surv)
+
+@
+
+<<mean_surv,echo=FALSE, eval=FALSE,results=hide>>=
+library(coda)
+library(stringr)
+s_juv2ad=read.coda(str_c(datawd,"s_juv2adCODAchain1.txt"),str_c(datawd,"s_juv2adCODAindex.txt"))
+mean(s_juv2ad) # 0.002765181
+
+library(faraway)
+logit(0.1)
+
+#Estimation adultes poutès
+library(coda)
+N_poutes=read.coda("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/N_poutesCODAchain1.txt","D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/N_poutesCODAindex.txt")
+summary(N_poutes)
+mean(N_poutes[,2])
+@
+
+

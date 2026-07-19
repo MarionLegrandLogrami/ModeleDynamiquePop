@@ -1,0 +1,26 @@
+%latex.default(tab[, 2], title = str_c(), rowname = "", rowlabel = "",     where = "ht", longtable = FALSE, col.just = strsplit("l l l",         " ")[[1]], rgroup = c("2014", "2015", "2016"), n.rgroup = table(tab$annee),     label = "avancement", size = "tiny", caption = "", caption.lot = "",     file = str_c(tabwd, "tavanc_annee.tex"))%
+\begin{table}[ht]
+{\tiny
+\caption[]{\label{avancement}} 
+\begin{center}
+\begin{tabular}{ll}
+\hline\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{}\tabularnewline
+\hline
+{\bfseries 2014}&\tabularnewline
+~~&Conversion des surfaces productives selon la formule des ERR développée sur l'Allier (Minster\&Bomassi, 1999)\tabularnewline
+~~&Prise en compte plus fine des surfaces sous influence des déversements (jusqu'à l'année 2005)\tabularnewline
+~~&Mise à jour des données 2012 et 2013\tabularnewline
+~~&Développement des projections liées au réaménagement de Poutès (50\% d'amélioration et suppression de l'ouvrage)\tabularnewline
+\hline
+{\bfseries 2015}&\tabularnewline
+~~&Différence de fitness entre les juvéniles issus de reproduction naturelle et les juvéniles déversés (bibliographie). Le travail n'a pas conclu sur l'utilité de modifier les hypothèses antérieures du modèle\tabularnewline
+~~&Mise à jour des données 2014\tabularnewline
+~~&Développement d'un scénario de gestion (simulation à 20 ans) concernant la suppression des impacts à la dévalaison dans les ouvrages hydroélectriques situés dans le secteur du modèle dynamique de population\tabularnewline
+\hline
+{\bfseries 2016}&\tabularnewline
+~~&Ajout d'une quatrième zone dans le modèle en extrayant l'Alagnon du secteur aval du modèle qui comprenait jusque là l'Allier en aval de Langeac + la Dore + l'Alagnon\tabularnewline
+~~&Mise à jour des données 2015\tabularnewline
+\hline
+\end{tabular}\end{center}}
+\end{table}

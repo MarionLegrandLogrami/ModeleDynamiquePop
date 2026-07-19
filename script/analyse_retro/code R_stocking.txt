@@ -1,0 +1,154 @@
+egg=read.table("eggs.txt",h=F)
+juv=read.table("juv.txt",h=F)
+smolt=read.table("smolt.txt",h=F)
+
+par(mfrow=c(3,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,37.5),xlab="Years",ylim=c(0,405000),ylab="",main="stocked eggs")
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,100000,200000,300000,400000),labels=c(0,expression(paste(100," x ",10^3)),expression(paste(200," x ",10^3)),expression(paste(300," x ",10^3)),expression(paste(400," x ",10^3))
+),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,37),
+labels=c(1975,1980,1990,2000,2011),
+cex.axis = 0.9,las = 1,col = "black")
+
+
+x=seq(1,37,1)
+
+points(x[3],egg[3,2],pch=16,col="darkred")
+points(x[5],egg[5,2],pch=16,col="darkred")
+points(x[10],egg[10,2],pch=16,col="darkred")
+points(x[22:37],egg[22:37,2],pch=16,col="darkred")
+
+segments(x[22:36]+0.1,egg[22:36,2],x[23:37]-0.1,egg[23:37,2],lty=2,col="darkred")
+
+
+points(x[3],egg[3,3],pch=16,col="darkorange")
+points(x[24:34],egg[24:34,3],pch=16,col="darkorange")
+
+segments(x[24:33]+0.1,egg[24:33,3],x[25:34]-0.1,egg[25:34,3],lty=2,col="darkorange")
+
+legend(x=1, y=400000, legend=c("Vichy-Langeac","Langeac-Poutès"), col=c("darkred","darkorange"),pch=c(16,16) )
+
+
+text(37,400000,expression(italic("a.")))
+
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,37.5),xlab="Years",ylim=c(0,700000),ylab="",main="stocked 0+")
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,100000,200000,300000,400000,500000,600000,700000),labels=c(0,expression(paste(100," x ",10^3)),expression(paste(200," x ",10^3)),expression(paste(300," x ",10^3)),expression(paste(400," x ",10^3)),
+expression(paste(500," x ",10^3)),expression(paste(600," x ",10^3)),expression(paste(700," x ",10^3)) ),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,37),
+labels=c(1975,1980,1990,2000,2011),
+cex.axis = 0.9,las = 1,col = "black")
+
+
+points(x[1:2],juv[1:2,2],pch=16,col="darkred")
+points(x[4],juv[4,2],pch=16,col="darkred")
+points(x[6:8],juv[6:8,2],pch=16,col="darkred")
+points(x[10:11],juv[10:11,2],pch=16,col="darkred")
+points(x[18],juv[18,2],pch=16,col="darkred")
+points(x[21:30],juv[21:30,2],pch=16,col="darkred")
+points(x[32:37],juv[32:37,2],pch=16,col="darkred")
+
+
+segments(x[1]+0.1,juv[1,2],x[2]-0.1,juv[2,2],lty=2,col="darkred")
+segments(x[6:7]+0.1,juv[6:7,2],x[7:8]-0.1,juv[7:8,2],lty=2,col="darkred")
+segments(x[10]+0.1,juv[10,2],x[11]-0.1,juv[11,2],lty=2,col="darkred")
+segments(x[21:29]+0.1,juv[21:29,2],x[22:30]-0.1,juv[22:30,2],lty=2,col="darkred")
+segments(x[32:36]+0.1,juv[32:36,2],x[33:37]-0.1,juv[33:37,2],lty=2,col="darkred")
+
+
+points(x[6],juv[6,3],pch=16,col="darkorange")
+points(x[17],juv[17,3],pch=16,col="darkorange")
+points(x[21:24],juv[21:24,3],pch=16,col="darkorange")
+points(x[26:29],juv[26:29,3],pch=16,col="darkorange")
+points(x[31:32],juv[31:32,3],pch=16,col="darkorange")
+
+segments(x[21:23]+0.1,juv[21:23,3],x[22:24]-0.1,juv[22:24,3],lty=2,col="darkorange")
+segments(x[26:28]+0.1,juv[26:28,3],x[27:29]-0.1,juv[27:29,3],lty=2,col="darkorange")
+segments(x[31]+0.1,juv[31,3],x[32]-0.1,juv[32,3],lty=2,col="darkorange")
+
+
+points(x[1],juv[1,4],pch=16,col="darkgreen")
+points(x[9:10],juv[9:10,4],pch=16,col="darkgreen")
+points(x[18:25],juv[18:25,4],pch=16,col="darkgreen")
+points(x[27:29],juv[27:29,4],pch=16,col="darkgreen")
+points(x[31:33],juv[31:33,4],pch=16,col="darkgreen")
+
+
+segments(x[9]+0.1,juv[9,4],x[10]-0.1,juv[10,4],lty=2,col="darkgreen")
+segments(x[18:24]+0.1,juv[18:24,4],x[19:25]-0.1,juv[19:25,4],lty=2,col="darkgreen")
+segments(x[27:28]+0.1,juv[27:28,4],x[28:29]-0.1,juv[28:29,4],lty=2,col="darkgreen")
+segments(x[31:32]+0.1,juv[31:32,4],x[32:33]-0.1,juv[32:33,4],lty=2,col="darkgreen")
+
+
+legend(x=1, y=700000, legend=c("Vichy-Langeac","Langeac-Poutès","Upstream Poutès"), col=c("darkred","darkorange","darkgreen"),pch=c(16,16,16) )
+
+
+
+text(37,700000,expression(italic("b.")))
+
+
+
+
+
+
+plot(1,1,type="n",axes=FALSE,xlim=c(0.5,37.5),xlab="Years",ylim=c(0,255000),ylab="",main="stocked 'smolts' (1+ and older)")
+
+# trace l'axe des ordonnées
+axis(2,at = c(0,50000,100000,150000,200000,250000),labels=c(0,expression(paste(50," x ",10^3)),expression(paste(100," x ",10^3)),expression(paste(150," x ",10^3)),expression(paste(200," x ",10^3)),
+expression(paste(250," x ",10^3)) ),cex.axis = 0.9,las = 1,col = "black")
+# trace l'axe des abscisses
+axis(1,at = c(1,6,16,26,37),
+labels=c(1975,1980,1990,2000,2011),
+cex.axis = 0.9,las = 1,col = "black")
+
+
+
+points(x[1:37],smolt[1:37,2],pch=16,col="darkred")
+segments(x[1:36]+0.1,smolt[1:36,2],x[2:37]-0.1,smolt[2:37,2],lty=2,col="darkred")
+
+
+
+points(x[2:6],smolt[2:6,3],pch=16,col="darkorange")
+points(x[8:10],smolt[8:10,3],pch=16,col="darkorange")
+points(x[12:14],smolt[12:14,3],pch=16,col="darkorange")
+points(x[16],smolt[16,3],pch=16,col="darkorange")
+points(x[18:21],smolt[18:21,3],pch=16,col="darkorange")
+points(x[27:34],smolt[27:34,3],pch=16,col="darkorange")
+
+segments(x[2:5]+0.1,smolt[2:5,3],x[3:6]-0.1,smolt[3:6,3],lty=2,col="darkorange")
+segments(x[8:9]+0.1,smolt[8:9,3],x[9:10]-0.1,smolt[9:10,3],lty=2,col="darkorange")
+segments(x[12:13]+0.1,smolt[12:13,3],x[13:14]-0.1,smolt[13:14,3],lty=2,col="darkorange")
+segments(x[18:20]+0.1,smolt[18:20,3],x[19:21]-0.1,smolt[19:21,3],lty=2,col="darkorange")
+segments(x[27:33]+0.1,smolt[27:33,3],x[28:34]-0.1,smolt[28:34,3],lty=2,col="darkorange")
+
+
+points(x[2],smolt[2,4],pch=16,col="darkgreen")
+points(x[9],smolt[9,4],pch=16,col="darkgreen")
+points(x[11:15],smolt[11:15,4],pch=16,col="darkgreen")
+points(x[20:21],smolt[20:21,4],pch=16,col="darkgreen")
+
+segments(x[11:14]+0.1,smolt[11:14,4],x[12:15]-0.1,smolt[12:15,4],lty=2,col="darkgreen")
+segments(x[20]+0.1,smolt[20,4],x[21]-0.1,smolt[21,4],lty=2,col="darkgreen")
+
+
+
+legend(x=1, y=250000, legend=c("Vichy-Langeac","Langeac-Poutès","Upstream Poutès"), col=c("darkred","darkorange","darkgreen"),pch=c(16,16,16) )
+
+text(37,245000,expression(italic("c.")))
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,48 @@
+%latex.default(tab_hypo[, 2:4], title = str_c(""), rowname = "",     rowlabel = "", rgroup = levels(as.factor(tab_hypo$"type\\_hypo"))[c(2,         3, 1)], n.rgroup = c(6, 7, 7), col.just = c("p{5cm}",         "p{5cm}", "p{5cm}"), collabel.just = c("p{5cm}", "p{5cm}",         "p{5cm}"), where = "htbp", caption = "Hypothèses sur les processus et les données réalisées dans le cadre du modèle dynamique de population du saumon de l'Allier et évolution au court du temps de ces hypothèses.",     size = "tiny", longtable = TRUE, lines.page = 4000, label = "tab_hypo",     table.env = FALSE, file = str_c(tabwd, "tab_hypo.tex"))%
+\setlongtables{\tiny
+\begin{longtable}{lp{5cm}p{5cm}p{5cm}}\caption{Hypothèses sur les processus et les données réalisées dans le cadre du modèle dynamique de population du saumon de l'Allier et évolution au court du temps de ces hypothèses.} \tabularnewline
+\hline\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{p{5cm}}{2012}&\multicolumn{1}{p{5cm}}{2014}&\multicolumn{1}{p{5cm}}{2015}\tabularnewline
+\hline
+\endfirsthead\caption[]{\em (continued)} \tabularnewline*
+\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{p{5cm}}{2012}&\multicolumn{1}{p{5cm}}{2014}&\multicolumn{1}{p{5cm}}{2015}\tabularnewline
+\hline
+\endhead
+\hline
+\endfoot
+\label{tab_hypo}
+{\bfseries modèle frayère}&&&\tabularnewline*
+~~&\textbullet Le ratio nids:géniteurs est potentiellement différent selon les secteurs.&\textbullet Les données de surfaces productives sont converties en \textit{équivalent radier-rapide}\footnote{$ \frac{1}{5} $*PLA + RAB + RAD + RAP + CLO, avec PLA= plat courant, RAB= radier à bloc, RAD= radier, RAP= rapide et CLO= chenaux lotiques}.&\tabularnewline*
+~~&\textbullet La répartition des géniteurs combine 2 mécanismes : elle reflète la distribution de l'habitat disponible et prend en compte le phénomène de \textit{homing}. Afin de rendre compte des difficultés de migration (ou des mortalités qui peuvent intervenir), un paramètre supplémentaire a été ajouté pour les secteurs de Langeac-Poutès et amont de Poutès \footnote{Ce paramètre permet de mieux ajuster les paramètres aux données lorsqu'il y a moins d'adultes dans une zone que ce qu'on pourrait y attendre en ne prenant en compte que la disponibilité des habitats et le phénomène de \textit{homing}}.&\textbullet Le linéaire prospecté d'une année est rapporté au linéaire total accessible \footnote{Les limites amont de l'ensemble des cours d'eau intégrés dans le modèle ont été définies afin de
+			quantifier ce linéaire total accessible}.&\tabularnewline*
+~~&\textbullet Il y a un effet méthode dans le comptage des nids entre la période historique où ils étaient comptés à pied et la période actuelle où ils sont comptés par survol en hélicoptère.&&\tabularnewline*
+~~&\textbullet Au niveau des stations de comptage, Vichy et Poutès sont considérées comme exhaustives
+		(sauf en 2004 pour Vichy), tandis que les données à Langeac sont vues comme un nombre minimum de saumons.&&\tabularnewline*
+~~&\textbullet Les données des surfaces productives utilisées ne sont pas en \textit{équivalent radier-rapide}, l'ensemble des faciès productifs ont été considérés comme contribuant de la même façon 
+		\footnote{Les surfaces productives sont ainsi calculées de la façon suivante : PLA + RAB + RAD + RAP avec PLA= plat courant, RAB= radier à bloc, RAD= radier et RAP= rapide}.&&\tabularnewline*
+~~&\textbullet Le linéaire prospecté pour le comptage des nids d'une année est rapporté au linéaire maximum prospecté
+		sur l'ensemble de la série chronologique.&&\tabularnewline
+\hline
+{\bfseries modèle juvénile}&&&\tabularnewline*
+~~&\textbullet La productivité en juvéniles des habitats n'est pas la même en fonction des secteurs (effet spatial).&\textbullet Les points de pêche et les points de déversement ont été croisés afin de déterminer plus finement les secteurs sous influence des déversements et ceux qui ne l'étaient pas. Ce croisement n'a pu être fait qu'à partir de l'année 2005. Les années antérieures sont traitées selon la méthode mise en place en 2012 \footnote{1 point de déversement dans un secteur suffit pour que l'ensemble du secteur soit considéré
+			comme étant sous influence des déversements}.&\tabularnewline*
+~~&\textbullet Il existe une relation de densité-dépendance entre la densité de géniteurs et de juvéniles sauvages.&&\tabularnewline*
+~~&\textbullet Il existe une relation de densité-dépendance entre la densité d'alevins déversés (pisciculture) et de juvéniles sauvages.&&\tabularnewline*
+~~&\textbullet Les juvéniles déversés prennent la place restante laissée disponible par la reproduction naturelle 
+		\footnote{La densité de juvéniles 0+ sauvages a un effet sur la survie des poissons de repeuplement mais pas l'inverse}.&&\tabularnewline*
+~~&\textbullet Un seul site de déversement suffit pour considérer tout le secteur comme étant sous influence des déversements.&&\tabularnewline*
+~~&\textbullet Le linéaire d'influence d'un incubateur de terrain (oeufs) est de 1600m (Beall et al., 1994).&&\tabularnewline*
+~~&\textbullet Les pêches électriques sont représentatives de chacun des secteurs.&&\tabularnewline
+\hline
+{\bfseries modèle dynamique}&&&\tabularnewline*
+~~&\textbullet Les retours d'adultes à Vichy sont conditionnés par 3 années de production de juvéniles (t-3, t-4 et t-5) et par les smolts de pisciculture déversés 2 à 3 ans plus tôt ; 
+		la contribution de chacune de ces cohortes au retour d'adultes est considérée comme étant équivalente.&\textbullet Ajout d'un nouveau paramètre permettant d'estimer un différentiel de survie entre l'amont et l'aval de Poutès entre le 0+ et l'adulte.&\textbullet Essai infructueux de l'ajout d'un différentiel de \textit{fitness} entre les tacons 0+ sauvages et les tacons 0+ issus de déversement au stade alevin \footnote{Nous n'avons pas assez de données pour le faire mais il est probable que la \textit{fitness} diffère, notamment en ce qui concerne le succès reproducteur. Il est ainsi possible que dans les projections sans repeuplement nous offrons une vision assez pessimiste de la faculté de la population sauvage à se renouveler.}.\tabularnewline*
+~~&\textbullet Le taux de transition entre le 0+ et l'adulte est global, en intégrant sur les 3 zones de production de juvéniles.&&\tabularnewline*
+~~&\textbullet Il n'y a pas d'hypothèse de différentiel de \textit{fitness} des poissons issus du repeuplement.&&\tabularnewline*
+~~&\textbullet Il y a un décrochage dans la série temporelle de la survie du 0+ à l'adulte (modification de la survie en mer).&&\tabularnewline*
+~~&\textbullet Le taux de survie des smolts déversés jusqu'à l'adulte est celui qui est observé à Vichy et est considéré comme suivant les variations de la survie des juvéniles issus de reproduction naturel, mais à un facteur multiplicatif près.&&\tabularnewline*
+~~&\textbullet Le taux de survie des oeufs en incubateur est identique pour tous les sites et pour toutes les années.&&\tabularnewline*
+~~&\textbullet Avant la mise en place de la station de Vichy, le nombre de saumon à Vichy est estimé à partir des données de capture et des prélèvements de géniteurs réalisés pour alimenter la pisciculture.&&\tabularnewline
+\hline
+\end{longtable}}

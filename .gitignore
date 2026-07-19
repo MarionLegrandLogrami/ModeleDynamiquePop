@@ -1,0 +1,36 @@
+# Données (volumineuses, non versionnées - voir data/CODA dans le README/.ai/CONTEXT.md)
+/data/
+/Docear/
+/img/
+/tab/
+/Script_R/
+Rdata_av2021.zip
+*.RData
+*.Rdata
+
+# État local IDE / éditeurs
+.dbeaver/
+.settings/
+.vscode/
+.Rhistory
+.Rproj.user/
+
+# Artefacts de compilation LaTeX / Sweave (regénérés à partir des .Rnw)
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.glo
+*.gls
+*.glg
+*.acn
+*.acr
+*.alg
+*.xdy
+*.synctex.gz
+*-concordance.tex
+hs_err_pid*.log

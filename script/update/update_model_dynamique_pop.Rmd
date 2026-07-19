@@ -1,0 +1,1905 @@
+---
+title: "Script détaillant la mise à jour des données du modèle de dynamique de population"
+author: "Marion Legrand - LOGRAMI & Etienne Prévost - INRAe"
+date: "2023-04-18"
+output: 
+  html_document :
+    toc: true
+    toc_depth: 3
+    number_sections: true #Numérotation des titres
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(faraway) #pour la fonciton logit/ilogit
+library(xlsx)
+library(janitor) #pour nettoyer les fichiers excel chargé
+library(DBI) #pour connexion base de données
+library(RPostgres) #pour connexion base de données
+library(sf) #pour charger des données géographique depuis la base de données
+library(ggmap) #pour ajouter des fonds de cartes google maps
+library(leaflet)
+
+
+options(
+			host= decrypt_string(hostserver, mainpass2),
+			password= decrypt_string(passwordserver, mainpass2),
+			user= decrypt_string(userserver, mainpass2),
+			port= 5432 )
+
+
+
+con_bd_saumon <- dbConnect(Postgres(), 
+              		dbname="bd_saumon", 
+              		host=getOption("host"),
+              		port=getOption("port"), 
+              		user= getOption("user"), 
+              		password= getOption("password"))
+con_bd_habitats <- dbConnect(Postgres(), 
+                		dbname="bd_habitats", 
+                		host=getOption("host"),
+                		port=getOption("port"), 
+                		user= getOption("user"), 
+                		password= getOption("password"))
+con_bd_envir <- dbConnect(Postgres(), 
+              		dbname="bd_envir", 
+              		host=getOption("host"),
+              		port=getOption("port"), 
+              		user= getOption("user"), 
+              		password= getOption("password"))
+con_bd_stacomi <- dbConnect(Postgres(), 
+                		dbname="bd_contmig_nat", 
+                		host=getOption("host"),
+                		port=getOption("port"), 
+                		user= getOption("user"), 
+                		password= getOption("password"))
+```
+
+
+
+<!-- ## Suivi des versions du modèle -->
+
+<!-- |Date (nom dossier)|Mot clé|Année MAJ données|Lien vers le script du modèle|Description| -->
+<!-- |-----------|-----------|-----------|-----------|-----------| -->
+<!-- |2022_11|Q_survie_répartition_modelMélange|2020|D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Script/2022.11/InfluenceQ + répartition + modèle_mélange/temp.odc|Modèle incluant influence du débit sur la répartition des adultes et sur leur survie. De plus, on a réécrit les effectifs à Vichy. Au lieu de tirer dans une LogNorm, on fait un modèle de mélange qui dit que surmortalité lors des mauvaises années (avec indicatrice I qui indique si on se trouve dans bonne ou mauvais année). Qd dans bonnes années (I_mm=0) s_juv2ad inchangé, quand mauvaise année (I_mm=1) s_juv2ad multiplié par un coefficient de surmortalité (ratio_surv)| -->
+<!-- |2022_11|Q_survie_répartition|2018|<D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Script/2022.11/influence Q + répartition/temp.odc>|Travail à St Pée du 22 au 24 novembre 2022. Sur modèle avec influence Q sur survie (2021_06), ajout de l'influence des Q sur la répartition des adultes| -->
+
+
+
+## Mise à jour des données
+
+**T** : représente le nombre d'année utilisées dans le modèle (depuis l'année 1975). Lors de la mise à jour des données, il suffit de l'augmenter d'autant d'année qu'on en ajoute (exemple : +1 pour la mise à jour d'une nouvelle année)
+
+```{r data_T,eval=TRUE}
+
+T=51 #Année 2025
+annee=(1974+T)
+
+```
+
+
+### Données concernant les adultes et les géniteurs (comptage frayère, comptages aux stations, etc.)
+
+**L_p_area** : linéaire prospecté lors du comptage frayère (donnée transformée en logit). La donnée peut être retrouvée dans les bases de données de LOGRAMI concernant le survol des frayères en hélicoptère (indication du point amont/aval du survol).
+
+```{r data_L_p_area,echo=FALSE}
+area<-read.xlsx("D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/MAJ/2021/surface prospectée par secteur_maj_LineaireTotal_2016_11_04.xlsx",1,endRow=60,colIndex=1:12)
+area<-clean_names(area)
+
+#On peut regarder le power query "Nid_SAT_PowerQuery.xlsx" pour savoir si comptage frayère a été réalisé telle année
+#et avec quels moyens : hélico (= comptage considéré comme exhaustif vs comptage à pied = partiel)
+
+#2025 : comptage hélico uniquement sur l'Allier
+
+#2024 : pas de survol hélico quelques comptages à pied
+
+#2023 : comptage hélico uniquement sur l'Allier
+
+#2022 : pas de survol hélico
+
+#2021 : survol de l'Allier et de l'Alagnon uniquement
+#on reconstruit la ou les lignes à ajouter
+#"annee","riviere","limite_amont","secteur_amont","limite_aval","secteur_aval"            
+#"total_lineaire_prospecte","lineaire_prospecte_s1","lineaire_prospecte_s2"   
+#"lineaire_prospecte_s3","lineaire_prospecte_s4","lineaire_prospecte_s5"   
+
+
+allier_2021<-data.frame(2021,"ALLIER","Amont LAveyrune","S1","Issoire","S5",177,15,46,29,41,46)
+colnames(allier_2021)<-colnames(area)
+area<-rbind(area,allier_2021)
+
+alagnon_2021<-data.frame(2021,"ALAGNON","Massiac","S2","Saut-du-Loup","S3",34,0,24,10,NA,NA)
+colnames(alagnon_2021)<-colnames(area)
+area<-rbind(area,alagnon_2021)
+
+allier_2023<-data.frame(2023,"ALLIER","Amont LAveyrune","S1","Issoire","S5",177,15,46,29,41,46)
+colnames(allier_2023)<-colnames(area)
+area<-rbind(area,allier_2023)
+
+allier_2025<-data.frame(2025,"ALLIER","Amont LAveyrune","S1","Issoire","S5",177,15,46,29,41,46)
+colnames(allier_2025)<-colnames(area)
+area<-rbind(area,allier_2025)
+
+max_area_prosp<-data.frame(
+                  river=c("Vichy_Langeac","Vichy_Langeac","Alagnon","Alagnon","Langeac_Poutès","Amont Poutès","Amont Poutès"),
+                  start_yr=c(1977,2004,2001,2004,1977,1986,1998),
+                  end_yr=c(2003,1974+T,2003,1974+T,1974+T,1997,1974+T),
+                  max_km=c(169,192,10,44,29,33,73)
+)
+
+All<-area%>%filter(riviere=="ALLIER")%>%group_by(annee)%>%reframe(S1=lineaire_prospecte_s4+lineaire_prospecte_s5,S3=lineaire_prospecte_s3,S4=lineaire_prospecte_s1+lineaire_prospecte_s2)
+
+#On ajoute la Dore pour le secteur S1
+Dor<-area%>%filter(riviere=="DORE")%>%group_by(annee)%>%summarise(S1_d=total_lineaire_prospecte)
+
+sect<-merge(All,Dor,all=TRUE)
+sect<-sect%>%group_by(annee)%>%mutate(S1_all=sum(S1,S1_d,na.rm=TRUE))
+sect<-sect[,c("annee","S1_all","S3","S4")]
+colnames(sect)[colnames(sect)=="S1_all"]<-"S1"
+
+#On récupère l'Alagnon qui correspond au secteur S2 du modèle
+Ala<-area%>%filter(riviere=="ALAGNON")%>%group_by(annee)%>%summarise(S2=lineaire_prospecte_s1+lineaire_prospecte_s2+lineaire_prospecte_s3)
+
+sect<-merge(sect,Ala,all=TRUE)
+
+#On divise par les linéaires max de chacun des secteurs (on fait ça à la main car pas vu de système simple pour le faire automatiquement)
+for (i in 1:nrow(sect)){
+  sect$S1[i]<-ifelse(between(sect$annee[i],1977,2003),sect$S1[i]/169,sect$S1[i]/192)
+  sect$S2[i]<-ifelse(between(sect$annee[i],2001,2003),sect$S2[i]/10,sect$S2[i]/44)
+  sect$S3[i]<-sect$S3[i]/29
+  sect$S4[i]<-ifelse(between(sect$annee[i],1986,1997),sect$S4[i]/33,sect$S4[i]/73)
+}
+sect<-sect[,c("annee","S1","S2","S3","S4")]
+#On remplace les 1 par une valeur proche car logit(1)=NA
+sect[sect==1]<-0.9989932
+#on remplace les 0 ou les NA par 0.001006771
+sect[sect==0|is.na(sect)]<-0.001006771
+
+#pour valider si on prend en compte les nids (prospection complète en hélico) ou non (prospection partielle à pied)
+#on réutilise ça dans un chunk suivant donc à lancer
+sect_temp<-merge(All,Dor,all=TRUE)
+sect_temp<-merge(sect_temp,Ala,all=TRUE)
+sect_temp<-sect_temp[,c("annee","S1","S1_d","S2","S3","S4")]
+sect_temp$S4[sect_temp$S4==0]<-NA
+sect_temp<-pivot_longer(sect_temp,cols=starts_with("S"),names_to="sect",values_to="km")
+sect_temp$secteur<-substring(sect_temp$sect,2,2)
+sect_temp$ce<-ifelse(sect_temp$sect=="S1_d","Dore",
+                     ifelse(sect_temp$sect=="S2","Alagnon","Allier"))
+sect_temp$suiv_compl<-ifelse(!(is.na(sect_temp$km)),TRUE,FALSE)
+```
+
+Visualisation des prospections frayères par hélicoptère pour la dernière année:
+
+```{r L_p_area,echo=FALSE}
+max_yr<-max(area$annee)
+print(area[area$annee==max_yr,],row.names = FALSE)
+```
+
+
+On divise le linéaire prospecté de chaque secteur par le linéaire maximum de chacun des secteurs et on prend le logit de cette valeur :
+
+```{r,echo=FALSE}
+max_yr<-max(area$annee)
+print(sect %>% mutate(across(2:5, logit))%>%filter(annee==max_yr),row.names=FALSE)
+```
+
+Pour récupérer le nombre de nids comptés par secteur du modèle, on réalise une requête dans la base de données bd_habitats afin de faire une jointure géographique entre la table des nids et la couche des secteurs du modèle. On ne conserve que les suivis qu'on considère être complet (donc pas les comptages à pied si pas de survol - dans ce cas, on met NA dans les CODAs).
+
+```{r data_R}
+#Nouvelle méthode pour la nouvelle bd_habitats --> on s'appuie sur la requête qui alimente Nid_SAT_PowerQuery.xlsx"
+R<-dbGetQuery(con_bd_habitats,
+              "WITH nid as (
+                  select \"Année\" as annee, 
+                        \"Rivière\" as ce,
+                        CASE when \"Rivière\" like 'Alagnon' THEN 2
+                             when \"Rivière\" like 'Dore' THEN 1
+                             when \"Rivière\" like 'Allier' and \"Secteur\" like 'S3' THEN 3
+                             when \"Rivière\" like 'Allier' and \"Secteur\" in('S2','S1') THEN 4
+                             when \"Rivière\" like 'Allier' and \"Secteur\" in('S4','S5') THEN 1 END as secteur,
+                             \"Nb nid\" as nids_comptes
+                  from new_bd.pq_nid_sat_secteur_annee
+                  where \"Rivière\" in ('Allier','Alagnon','Dore') and \"Secteur\" not in ('S3b')
+              )
+              select annee, ce, secteur, sum(nids_comptes) as nids_comptes
+              from nid
+              group by 1,2,3
+              order by 2,1,3"
+              )
+
+#On ne garde que les données pour les années où on a un vrai linéaire prospecté
+R<-merge(R,sect_temp,by.x=c("annee","ce","secteur"),by.y=c("annee","ce","secteur"),all.x=TRUE)
+R$suiv_compl[is.na(R$suiv_compl)]<-FALSE
+
+R<-R%>%filter(suiv_compl!="FALSE")%>%group_by(annee,secteur)%>%reframe(nids_comptés=sum(nids_comptes))
+
+```
+
+Voici un extrait du comptage de nids par secteur du modèle pour la dernière année de prospection hélicoptère réalisée :
+
+```{r R,echo=FALSE}
+## Attention bien vérifier les sommes de nids comptés avec le fichier "nid.sat.xlsx" (PowerQuerry)
+## Car du fait de la jointure géographique on compte parfois plusieurs fois
+## le même nid (--> voir pour complexifier la requête pour prendre la distance
+## au secteur le plus proche ?)
+max_yr<-max(area$annee)
+print(as.data.frame(R[R$annee==max_yr,]),row.names = FALSE)
+```
+
+
+**N** : Effectifs comptés aux stations de Vichy, Langeac et Poutès. Langeac étant considéré dans le modèle comme une station partielle pour les comptages de saumons, les effectifs observés à cette station sont rentrés dans la variable 'min_L' tandis que dans 'N' on indique NA. Etant donné qu'il n'y a pas de station d'entrée d'axe pour le secteur 2=Alagnon, on indique également NA. Depuis 2019 à Poutès, le barrage est en travaux ou dans la nouvelle configuration avec une transparence migratoire pendant 91 jours. Il n'y a ainsi plus de comptage à l'ouvrage si ce n'est à l'ascenseur hors période de transparence (permet de vérifier que les saumons ont bien migré durant les périodes de transparence). En 2021, EDF R&D avait mis en place un compteur sonar mais à ce jour nous n'avons pas eu d'information sur ces comptages. Si des saumons sont comptés grâce à ce système ou observés par l'ascenseur (ce qui n'a pas été le cas en 2021 et 2022), il faudra envisager de créer une variable min_P pour renseigner ces comptages partiels. La donnée peut être retrouvée sur le site internet de LOGRAMI, rubrique 'Stations de comptage'.
+
+**N_langeac_obs** : indication des passages à Langeac observés à la station de comptage
+
+```{r N_langeac_obs, echo=FALSE}
+
+#on va chercher les adultes passant à Vichy et Poutès
+N<-dbGetQuery(con_bd_stacomi, 
+                    "select station, année_migration,eff_station from logrami.pq_passage_tot_ann where espèce='Saumon atlantique' and station in ('Vichy','Langeac','Poutès') and stade='Adulte'")
+
+
+print(N[N$année_migration>(1974+T-5) & N$station!="Langeac",])
+
+N_langeac_obs <- N[N$année_migration>(1974+T-5) & N$station=="Langeac",]
+print(N_langeac_obs)
+```
+
+
+**min_N_V** : Cette variable indique si le comptage à Vichy représente un minimum ou un chiffre considéré comme exhaustif. On met 2 pour un comptage exhaustif, et le chiffre compté à Vichy pour un minimum. Cette donnée est issue de l'avis de LOGRAMI sur l'exhaustivité ou non du comptage annuel.
+
+**C_dwn** : Capture par pêche à l'aval de Vichy. Données antérieures aux comptages à Vichy. Cette donnée a été retrouvée dans les archives CSP/ONEMA.Pour les années récentes, il suffit de rajouter un 0.
+
+**C_up** : Capture par pêche à l'amont de Vichy. Données antérieures aux comptages à Vichy. Cette donnée a été retrouvée dans les archives CSP/ONEMA.Pour les années récentes, il suffit de rajouter un 0.
+
+### Données concernant les échantillonnages à l'électricité sur les juvéniles
+
+**calib** : Nombre de stations d'échantillonnage de calibration pour la relation indice d'abondance-densité. La donnée n'a pas vocation à évoluer et peut être récupérée à LOGRAMI.
+
+**EF_IA** : Résultats des pêches indice abondance en 5 minutes réalisées pour la calibration de la relation IA-densité et réalisées avant les échantillonnages à plusieurs passages. La donnée n'a pas vocation à évoluer et peut être récupérée à LOGRAMI.
+
+**S** : Surface des stations échantillonnées pour la relation de calibration IA-densité. La donnée n'a pas vocation à évoluer et peut être récupérée à LOGRAMI.
+
+**C_1** : Effectif de tacons 0+ lors du 1er passage dans les échantillonnages pour calibrer la relation IA-densité. La donnée n'a pas vocation à évoluer et peut être récupérée à LOGRAMI.
+
+**C_2** :  Effectif de tacons 0+ lors du 2eme passage dans les échantillonnages pour calibrer la relation IA-densité. La donnée n'a pas vocation à évoluer et peut être récupérée à LOGRAMI.
+
+**J** : Nombre de site d'échantillonnage de type "pêche complète". Données antérieures à la mise en place du protocole des pêches indice d'abondance. Pour les années récentes, il suffit d'ajouter des 0 pour les 4 secteurs du modèle.
+
+**S_depl_V**, **S_depl_L**, **S_depl_P** : Surface des sites d'échantillonnage de type "pêche complète" pour le secteur respectivement : Vichy-Langeac, Langeac-Poutès et amont Poutès. Ce paramètre n'est plus à mettre à jour.
+
+**C_1_V**, **C_1_L**, **C_1_P** : Effectif de tacons 0+ échantillonnés au premier passage pour les pêches de type "pêche complète" sur le secteur respectivement : Vichy-Langeac, Langeac-Poutès et amont Poutès. Ce paramètre n'est plus à mettre à jour.
+
+**pass_2_V**, **pass_2_L**, **pass_2_P** : vecteur 2eme passage pour le secteur respectivement : Vichy-Langeac, Langeac-Poutès et amont Poutès. Il s'agit d'un booléen : 1=oui / 2=non. Ce paramètre n'est plus à mettre à jour.
+
+**C_2_V**, **C_2_L**, **C_2_P** : Effectif de tacons 0+ échantillonnés au deuxième passage pour les pêches de type "pêche complète" sur le secteur respectivement : Vichy-Langeac, Langeac-Poutès et amont Poutès. Ce paramètre n'est plus à mettre à jour.
+
+**pass_3_L** : vecteur 3eme passage pour le secteur respectivement : Langeac-Poutès. Il s'agit d'un booléen : 1=oui / 2=non. Ce paramètre n'est plus à mettre à jour.
+
+**C_3_L** : Effectif de tacons 0+ échantillonnés au troisième passage pour les pêches de type "pêche complète" sur le secteur Langeac-Poutès. Ce paramètre n'est plus à mettre à jour.
+
+**K** : Nombre de sites d'échantillonnage par pêche indice d'abondance 5 minutes. Pour récupérer cette information, il faut lancer la requête suivante sur la base bd_saumon de LOGRAMI :
+
+```{r data_ia_sat}
+nb_pec<-dbGetQuery(con_bd_saumon,
+    "with nb_pec_sect as (
+        	select extract(year from p.pec_date) AS annee,
+            		count(*)AS secteur_1,
+            		0 AS secteur_2,  
+            		0 AS secteur_3,
+            		0 AS secteur_4
+            from t_station_sta s
+            join t_peche_pec p on s.sta_id=p.pec_sta_id
+            left join t_conditionpeche_cond c on (c.cond_pec_id=p.pec_id)
+            left join carto_model.secteur se on ('S'||se.secteur=sta_secteur) 
+            where extract(month from p.pec_date)>7 
+            		and p.pec_methodepeche like 'protocole Prévost et Baglinière' 
+            		and (s.sta_ce like 'Allier' or s.sta_ce like 'Dore') 
+            		and (se.secteur_mo=1 or se.secteur_mo is null) 
+            		and left(p.pec_lieudit,4) not like 'Béal'
+            group by 1
+            UNION ALL
+            select extract(year from p.pec_date) AS annee,
+            		0 AS secteur_1,
+            		count(*) AS secteur_2,
+            		0 AS secteur_3,
+            		0 AS secteur_4
+            from t_station_sta s
+            join t_peche_pec p on s.sta_id=p.pec_sta_id
+            left join t_conditionpeche_cond c on (c.cond_pec_id=p.pec_id)
+            left join carto_model.secteur se on ('S'||se.secteur=sta_secteur) 
+            where extract(month from p.pec_date)>7 
+            		and p.pec_methodepeche like 'protocole Prévost et Baglinière' 
+            		and s.sta_ce like 'Alagnon' 
+            		and left(p.pec_lieudit,4) not like 'Béal'
+            group by 1
+            UNION ALL
+            select extract(year from p.pec_date) AS annee,
+            		0 AS secteur_1,
+            		0 AS secteur_2,
+            		count(*) AS secteur_3,
+            		0 AS secteur_4
+            from t_station_sta s
+            join t_peche_pec p on s.sta_id=p.pec_sta_id
+            left join t_conditionpeche_cond c on (c.cond_pec_id=p.pec_id)
+            left join carto_model.secteur se on ('S'||se.secteur=sta_secteur) 
+            where extract(month from p.pec_date)>7 
+            	and p.pec_methodepeche like 'protocole Prévost et Baglinière' 
+            	and se.secteur_mo=3 
+            	and left(p.pec_lieudit,4) not like 'Béal'
+            group by 1
+            UNION ALL
+            select extract(year from p.pec_date) AS annee,
+            		0 AS secteur_1,
+            		0 AS secteur_2,
+            		0 AS secteur_3,
+            		count(*) AS secteur_4
+            from t_station_sta s
+            join t_peche_pec p on s.sta_id=p.pec_sta_id
+            left join t_conditionpeche_cond c on (c.cond_pec_id=p.pec_id)
+            left join carto_model.secteur se on ('S'||se.secteur=sta_secteur) 
+            where extract(month from p.pec_date)>7 
+            	and p.pec_methodepeche like 'protocole Prévost et Baglinière' 
+            	and se.secteur_mo=4 
+            	and left(p.pec_lieudit,4) not like 'Béal'
+            group by 1	
+        )
+   select annee,
+          sum(secteur_1) AS secteur_1,
+          sum(secteur_2) AS secteur_2,
+          sum(secteur_3) AS secteur_3,
+          sum(secteur_4) AS secteur_4
+  From nb_pec_sect
+  group by 1
+  order by 1;"
+)
+
+```
+
+Le Tableau ci-dessous affiche les nombres de stations par secteur sur les deux dernières années :
+
+```{r K,echo=FALSE}
+annee_k=c(2024:annee)
+k=nb_pec[nb_pec$annee %in% annee_k,]
+print(k,row.names=FALSE)
+```
+
+
+**EF_IA_V**, **EF_IA_A**, **EF_IA_L**, **EF_IA_P** : Résultats des échantillonnages en pêche indice d'abondance pour les 0+ sur les secteurs, respectivement : Vichy-Langeac, Alagnon, Langeac-Poutès et amont Poutès.
+Pour récupérer cette information, il faut lancer la requête suivante sur la base bd_saumon de LOGRAMI :
+
+```{r data_pec}
+req<-dbGetQuery(con_bd_saumon,
+            "with nb_tac0_sta as (
+            		select s.sta_ce AS CE,
+            				case when s.sta_ce='Dore' then 1 when s.sta_ce='Alagnon' then 2 else se.secteur_mo END as secteur,
+            				p.pec_lieudit AS Station,
+            				s.sta_id,p.pec_id,
+            				p.pec_date AS DATE,
+            				count(t.tac_id) AS NB_0,
+            				0 AS NB_1
+            		from t_station_sta s
+            		join t_peche_pec p on s.sta_id=p.pec_sta_id
+            		left join t_tacon_tac t on t.tac_pec_id=p.pec_id
+            		left join carto_model.secteur se on ('S'||se.secteur=s.sta_secteur)
+            		where (s.sta_ce like 'Allier' or s.sta_ce like 'Alagnon' or s.sta_ce like 'Dore') and extract(month from p.pec_date)>7 AND (t.tac_taille<p.pec_limite_classe_age or t.tac_taille is null) and p.pec_methodepeche like 'protocole Prévost et Baglinière' and left(p.pec_lieudit,4) not like 'Béal'
+            		group by 1,2,3,4,5,6,se.secteur_mo,8
+            		UNION ALL
+            		select s.sta_ce AS CE,
+            				case when s.sta_ce='Dore' then 1 when s.sta_ce='Alagnon' then 2 else se.secteur_mo END as secteur,
+            				p.pec_lieudit AS Station,
+            				s.sta_id,
+            				p.pec_id,
+            				p.pec_date AS DATE,
+            				0 AS NB_0,
+            				count(t.tac_id) AS NB_1
+            		from t_station_sta s
+            		join t_peche_pec p on s.sta_id=p.pec_sta_id
+            		left join t_tacon_tac t on t.tac_pec_id=p.pec_id
+            		left join t_conditionpeche_cond c on (c.cond_pec_id=p.pec_id)
+            		left join carto_model.secteur se on ('S'||se.secteur=s.sta_secteur)
+            		where (s.sta_ce like 'Allier' or s.sta_ce like 'Alagnon' or s.sta_ce like 'Dore') and extract(month from p.pec_date)>7 AND (t.tac_taille>p.pec_limite_classe_age or t.tac_taille is null) and p.pec_methodepeche like 'protocole Prévost et Baglinière' and left(p.pec_lieudit,4) not like 'Béal'
+            		group by 1,2,3,4,5,6,se.secteur_mo
+            )
+            select CE,
+            		Station,
+            		pec_id,
+            		sta_id,
+            		secteur,
+            		DATE,
+            		sum(NB_0) AS NB_0
+            from nb_tac0_sta
+            group by 1,2,3,4,5,6
+            order by 5,extract(year from DATE),CE,NB_0 desc"
+)
+
+req <- req[year(req$date) <= (1974+T),] #on ne garde que les données jusqu'à T (exemple on met à jour 2024 mais on a déjà les données de 2025. On ne conserve les données que jusqu'à 2024)
+```
+
+Exemple du tableau de sortie pour les 2 dernières années sur le secteur Vichy-Langeac :
+
+```{r pec_VL, echo=FALSE}
+
+req1<-req[req$secteur==1,]
+data1<-array(NA,c(T,30))
+
+
+for (i in 1:length(unique(year(req1$date)))){ #boucle année
+	for (j in 1:30){ #boucle station pêche
+		data1[(i+T-length(unique(year(req1$date)))),j]<-req1[year(req1$date)==unique(year(req1$date))[i],7][j]
+	}
+}
+data1<-as.data.frame(data1)
+rownames(data1) <- seq(1975,1974+T,1)
+colnames(data1) <-seq(1:30)
+print(data1[(T-5):T,])
+#Pour Openbugs
+paste(data1[T,],collapse = ",")
+
+```
+
+Exemple du tableau de sortie pour les 2 dernières années sur le secteur Alagnon :
+
+```{r pec_A, echo=FALSE}
+req2<-req[req$secteur==2,]
+data2<-array(NA,c(T,16))
+
+for (i in 1:length(unique(year(req2$date)))){
+	for (j in 1:16){
+		data2[(i+T-length(unique(year(req2$date)))),j]<-req2[year(req2$date)==unique(year(req2$date))[i],7][j]
+	}
+}
+data2<-as.data.frame(data2)
+rownames(data2) <- seq(1975,1974+T,1)
+colnames(data2) <-seq(1:14)
+print(data2[(T-5):T,])
+paste(data2[T,],collapse = ",")
+
+```
+
+Exemple du tableau de sortie pour les 2 dernières années sur le secteur Langeac-Poutès :
+
+```{r pec_LP, echo=FALSE}
+req3<-req[req$secteur==3,]
+data3<-array(NA,c(T,14))
+
+for (i in 1:length(unique(year(req3$date)))){
+	for (j in 1:14){
+		data3[(i+T-length(unique(year(req3$date)))),j]<-req3[year(req3$date)==unique(year(req3$date))[i],7][j]
+	}
+}
+
+data3<-as.data.frame(data3)
+rownames(data3) <- seq(1975,1974+T,1)
+colnames(data3) <-seq(1:14)
+#print(knitr::kable(data3[(T-1):T,],"simple"))
+print(data3[(T-5):T,])
+paste(data3[T,],collapse = ",")
+
+```
+
+Exemple du tableau de sortie pour les 2 dernières années sur le secteur amont Poutès :
+
+```{r pec_P, echo=FALSE}
+req4<-req[req$secteur==4,]
+data4<-array(NA,c(T,20))
+
+for (i in 1:length(unique(year(req4$date)))){
+	for (j in 1:20){
+		data4[(i+T-length(unique(year(req4$date)))),j]<-req4[year(req4$date)==unique(year(req4$date))[i],7][j]
+	}
+}
+
+data4<-as.data.frame(data4)
+rownames(data4) <- seq(1975,1974+T,1)
+colnames(data4) <-seq(1:20)
+#print(knitr::kable(data4[(T-1):T,],"simple"))
+print(data4[(T-5):T,])
+paste(data4[T,],collapse = ",")
+```
+
+
+
+### Données concernant les habitats
+
+**S_juv_JP** : Surface productive pour les juvéniles en m². Initiallement, les cartographies habitats du bassin de l'Allier ont été réalisées en 1998 par J-R Malavoi par prises de vues aériennes. A partir de 2017, LOGRAMI a démarré une mise à jour de ces cartographies :
+
+* Carto 2017 : ALLIER secteur La Bageasse_Langeac
+* Carto 2018 : ALLIER secteur Cournon-La Bageasse
+* Carto 2020 : ALLIER secteur Poutès-Langogne
+* Carto 2021 : ALLIER secteur Amont Langogne
+* Carto 2024-2025 : ALAGNON (carto réalisée entièrement en 2024 sauf les 500m les plus amont réalisés en 2025. Attente d'avoir toutes les données pour bancarisation dans la base. Donc récupérer ces nouvelles surfaces lors de la MAJ en 2026 sur les données 2025)
+* Carto 2025 : ALLIER secteur Langeac-Poutès + aval secteur S2 (ancienne retenue de Poutès)
+
+En 2025, le secteur S3 + l'ancienne retenue de Poutès (aval du secteur S2) ont été refaite. De plus les 500 m amont sur l'alagnon ont pu être terminés. Lors de la MAJ 2025, on modifie donc les surfaces pour S2, S3 et Alagnon. Concernant la Dore, la mise à jour de la cartographie n'est pour le moment pas planifiée. En attendant, ce sont donc les anciennes cartographies qui sont utilisées pour ces secteurs.
+
+Lorsqu'une mise à jour était disponible pour un secteur, nous avons fait le choix de remplacer les anciennes valeurs par les nouvelles en considérant que la plus grande part des évolutions entre les deux cartographies était liée à la méthode de description de l'habitat (vues aériennes *versus* prospection à pied) plutôt qu'à une modification substentielle des habitats.
+
+
+**S_juv_JP_dev** : Surface des zones sous influence des déversements. Pour réaliser la mise à jour de ce paramètre, un travail sous QGIS est nécessaire. Il faut charger :
+* la couche compilant les descriptions de surface les plus à jour possible (dans base de données bd_habitats/schema new_bd/vue qgis_operation_synthese). Il faut filtrer sur "espece"='Saumon atlantique' and "keep_carto"=true
+* les points de déversement de saumons qui sont dans la base bd_saumon/table t_deversement_dev : bouton droit sur la couche / filter et sélectionner l'année qu'on souhaite étudier en tapant : extract(year from "dev_date")=2024 (modifier l'année pour correspondre à ce qu'on veut faire).
+
+On repère ensuite les secteurs sans discontinuité sur lesquels des déversements ont été réalisés et on selectionne les tronçons de surface correspondant en laissant un buffer de 2,5 km en amont/aval du 1er/dernier point. ATTENTION : si un obstacle important (par exemple Langeac) se situe en amont du point amont, il constitue la limite.
+
+Les tronçons ainsi sélectionnés doivent être enregistrés dans une couche shapefile nommée année_cours d'eau (ex : 2024_Allier) à enregistrer dans "D:\Documents\SVg_retire_DRIVE logrami\CARTOGRAPHIE\Travail\ModèleDynamiquePop\Surf_infl_dev". Puis, il est nécessaire de sauvegarder les tronçons de cours d'eau sous influence des déversements et ayant des faciès de type 'RAD', 'RAP' ou 'PC' dans la base bd_saumon/schema carto_model (servira notamment plus tard pour l'implémentation des indicatrices déversement : 'I_site_juv'). Pour se faire, il est nécessaire :
+
+* charger la couche carto_model.surf_inf_dev de la base bd_saumon dans QGIS
+* charger la couche année_cours d'eau (ex : 2024_Allier)
+* Couche/Créer une couche/Nouvelle couche virtuelle
+* copier/coller la requête si dessous, en veillant à changer l'année et le nom de la couche :
+
+```{sql connection=con_bd_saumon, eval=FALSE}
+SELECT geometry,
+       fac_ce as cours_eau,
+       fac_facies as facies,
+       case when fac_facies in ('RAD','RAP') THEN surf ELSE surf/5 end as surface,
+       '2024' as annee,
+       'MAJ carto jusqu''en 2021' as ref_couche_carto,
+       fac_secteu as secteur
+FROM '2024_Allier'
+WHERE fac_facies in ('RAD','RAP','PC')
+
+```
+
+* ouvrir la table attributaire de la couche virtuelle ainsi créée et copier tous les enregistrements
+* mettre la couche surf_inf_dev en mode modification et copier les enregistrements
+* enregistrer la couche surf_inf_dev
+
+Pour mettre à jour **S_juv_JP_dev**, il est ensuite nécessaire de lancer cette requête :
+
+```{r surf_infl}
+surf_infl<-dbGetQuery(con_bd_saumon,
+                "select cours_eau,
+                	   annee,
+                	   case when (cours_eau='Allier' and secteur in (21,22)) or cours_eau='Dore' then 1
+                	   		when cours_eau='Alagnon' then 2
+                	   		when cours_eau='Allier' and secteur=20 then 3
+                	   		when cours_eau='Allier' and secteur in (8, 19) then 4 end as secteur,
+                	   round(sum(surface)) as surface
+                from carto_model.surf_inf_dev
+                group by 1,2,3
+                order by 2,3"
+)
+```
+
+
+Pour mémo, les secteurs de la couche compilant les surfaces ne correspondent pas aux secteurs définis dans le modèle. De plus, c'est un code secteur qui figure dans la table des surfaces et non un libellé; voici un tableau de correspondance :
+
+code_secteur | libellé_secteur | secteur_modèle
+ ---: | :---: | :--- 
+8 | Amont Langogne-Restitution Naussac (S1) | 4 : Amont Poutès
+19 | Poutès-Naussac (S2) | 4 : Amont Poutès
+20 | Langeac-Poutès (S3) | 3 : Langeac-Poutès
+21 | La Bageasse-Langeac (S4) | 1 : Vichy-Langeac
+22 | Cournon-La Bageasse (S5) | 1 : Vichy-Langeac
+
+
+Le tableau ci-dessous, présente les surfaces à copier dans OpenBugs pour le paramètre **S_juv_JP_dev**. En 2021 et 2022, aucun déversement n'a eu lieu sur le secteur 2 (Alagnon) et 3 (Langeac-Poutès).
+
+```{r S_juv_JP_dev, echo=FALSE}
+print(surf_infl[surf_infl$annee>2020,],row.names=FALSE)
+```
+
+
+### Données concernant les déversements
+
+<!-- Il faut commencer par construire la couche SIG des tronçons sous influence des déversements. Pour cela : -->
+<!-- 	1. Dans QGIS charger la couche "temp.surf_sat" de la bd_habitats qui compile les informations suivantes : -->
+<!-- 		○ Carto 1999 sur DORE + ALAGNON + ALLIER secteur S3 -->
+<!-- 		○ Carto 2017 : ALLIER secteur S4 (bd_habitats : ope_id=42) -->
+<!-- 		○ Carto 2018 : ALLIER secteur S5 (bd_habitats : ope_id=43) -->
+<!-- 		○ Carto 2020 : ALLIER secteur S2 (bd_habitats : ope_id=167) -->
+<!-- 		○ Carto 2021 : ALLIER secteur S1 (bd_habitats : ope_id=310) -->
+<!-- 	2. Dans QGIS ajouter la couche "t_deversement_dev" de la bd_saumon. bouton droit/filtrer et taper extract(year from "dev_date")=2025
+<!-- 	3. Sélectionner le linéaire sous influence des déversements = 2,5 km en amont et en aval des points de déversement SAUF si barrière type barrage délimitant un secteur (à ce moment-là on prend jusqu'au barrage mais pas au-delà) -->
+<!--   4. Sélectionner ce linéaire sous influence par secteur et faire la somme UNIQUEMENT sur les faciès RAD/RAP/PC (un copier/coller des données sélectionnées dans Excel fonctionne très bien) -->
+
+**smolts_tot** : smolts déversés dans les rivières. Les effectifs représentent la somme entre le mode haut de l'année n et le mode bas de l'année n-1. Depuis 2017, plus de déversements de smolts. On indique systématiquement 0. Le fichier excel qui a permis de sortir ces calculs d'effectifs se trouve ici :  
+"D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/MAJ/2021/smots survie_maj2016_11_03.xlsx"
+
+**s_smolt** : taux de retour des smolts à Vichy. Il s'agit d'une donnée calculée à partir du taux de retour des poissons sans adipeuse à Vichy. Depuis 2017, suite à l'arrêt des déversements cette valeur n'a plus vocation à changer.
+
+**S_stocking** : Nombre de saumons capturés à La Bageasse ou à Vichy pour la pisciculture. La donnée peut être récupérée dans les rapports de LOGRAMI concernant le recueil des données biologiques de chaque année.
+
+**I_site_juv_V**, **I_site_juv_A**, **I_site_juv_L**, **I_site_juv_P** : Indicatrice des sites de pêche sous influence (=1) ou non (=0) des déversements pour les secteurs respectivement : Vichy-Langeac, Alagnon, Langeac-Poutès et amont Poutès.
+
+```{r juv_tot}
+juv_tot<- dbGetQuery(con_bd_saumon,
+            "select distinct pec_sta_id,
+            				pec_id,
+            				pec_date,
+            				s.annee
+            from t_peche_pec p
+            join carto_model.surf_inf_dev s on (ST_Intersects(st_buffer(s.geom,100),p.geom) and s.annee=extract(year from p.pec_date))
+            where extract (month from pec_date)>7 and p.pec_methodepeche='protocole Prévost et Baglinière'
+            order by 4,1"
+				)
+
+```
+
+On obtient le tableau suivant pour l'année T :
+
+```{r I_site_juv_calc, echo=FALSE}
+juv_tot$pec_id=as.character(juv_tot$pec_id)
+
+pec_dev_tot<-merge(req,juv_tot,"pec_id","pec_id")
+
+#On trie par nb_0 desc
+pec_dev_tot<-pec_dev_tot[with(pec_dev_tot,order(year(pec_dev_tot$date),-pec_dev_tot$nb_0)),]
+
+pec_dev_tot$dev<-1
+
+req_1<-req1
+req_1$dev<-0
+
+for (i in 1:length(unique(year(req1$date)))){ #boucle année
+	for (j in 1:nrow(req1[year(req1$date)==unique(year(req1$date))[i],])) #boucle peche
+		#req_1[year(req_1$date)==unique(year(req1$date))[i],7][j]<- if(req_1[year(req_1$date)==unique(year(req1$date))[i],3][j]%in%pec_dev_tot$pec_id){pec_dev_tot$dev[which(pec_dev_tot$pec_id==req_1[year(req_1$date)==unique(year(req1$date))[i],3][j])]} else {0}
+	  req_1[year(req_1$date)==unique(year(req1$date))[i],"dev"][j]<- if(req_1[year(req_1$date)==unique(year(req1$date))[i],3][j]%in%pec_dev_tot$pec_id){1} else {0}
+	
+}
+
+##------------------------
+## Choix de l'année
+##------------------------
+
+#on réduit pec_dev_tot sur l'année
+pec_dev<-pec_dev_tot[pec_dev_tot$annee==annee,]
+
+req1$dev<-0
+reqannee_1<-req1[year(req1$date)==annee,]
+
+for (i in 1:nrow(reqannee_1)){
+  reqannee_1$dev[i]<- if(reqannee_1[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_1[,3][i])]} else {0}
+}
+
+req2$dev<-0
+reqannee_2<-req2[year(req2$date)==annee,]
+
+for (i in 1:nrow(reqannee_2)){
+  reqannee_2$dev[i]<- if(reqannee_2[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_2[,3][i])]} else {0}
+}
+
+req3$dev<-0
+reqannee_3<-req3[year(req3$date)==annee,]
+
+for (i in 1:nrow(reqannee_3)){
+  reqannee_3$dev[i]<- if(reqannee_3[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_3[,3][i])]} else {0}
+}
+
+
+req4$dev<-0
+reqannee_4<-req4[year(req4$date)==annee,]
+
+for (i in 1:nrow(reqannee_4)){
+  reqannee_4$dev[i]<- if(reqannee_4[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_4[,3][i])]} else {0}
+}
+
+#Pour alimenter openbugs
+I_site_juv_V_calc<-c(reqannee_1$dev[year(reqannee_1$date)==annee],rep(NA,(30-nrow(reqannee_1[year(reqannee_1$date)==annee,]))))
+I_site_juv_A_calc<-c(reqannee_2$dev[year(reqannee_2$date)==annee],rep(NA,(16-nrow(reqannee_2[year(reqannee_2$date)==annee,]))))
+I_site_juv_L_calc<-c(reqannee_3$dev[year(reqannee_3$date)==annee],rep(NA,(14-nrow(reqannee_3[year(reqannee_3$date)==annee,])))) # attention un req2016_3$dev==1 mais erreur du tracé de zone sous influence dev
+I_site_juv_P_calc<-c(reqannee_4$dev[year(reqannee_4$date)==annee],rep(NA,(20-nrow(reqannee_4[year(reqannee_4$date)==annee,])))) # attention un req2016_3$dev==1 mais erreur du tracé de zone sous influence dev
+
+#on compile les 4 I_site_juv pour afficher le résultat :
+rbind(I_site_juv_V=I_site_juv_V_calc,
+      I_site_juv_A=I_site_juv_A_calc[seq(I_site_juv_V_calc)],
+      I_site_juv_L=I_site_juv_L_calc[seq(I_site_juv_V_calc)],
+      I_site_juv_P=I_site_juv_P_calc[seq(I_site_juv_V_calc)])
+
+
+```
+
+Pour avoir le bon format pour copier/coller dans OpenBugs :
+
+**I_site_juv_V** :
+
+```{r I_site_juv_V,echo=FALSE}
+paste0(I_site_juv_V_calc,collapse=",")
+
+```
+
+**I_site_juv_A** :
+
+```{r I_site_juv_A,echo=FALSE}
+
+paste0(I_site_juv_A_calc,collapse=",")
+
+```
+
+**I_site_juv_L** :
+
+```{r I_site_juv_L,echo=FALSE}
+paste0(I_site_juv_L_calc,collapse=",")
+
+```
+
+**I_site_juv_P** :
+
+```{r I_site_juv_P,echo=FALSE}
+paste0(I_site_juv_P_calc,collapse=",")
+```
+
+
+**I_site_egg_V**, **I_site_egg_L**,  : Indique si certains sites d'échantillonnages tacons sont dans la zone d'influence des incubateurs de terrain (si des oeufs ont été placés dans 1 des 6 incubateurs de terrain présents). L'information est donnée pour le secteur de Vichy-Langeac et Langeac-Poutès qui sont les 2 secteurs dans lesquels des incubateurs sont ou ont été en fonctionnement.
+
+On commence par sortir par année les incubateurs qui ont été utilisés
+
+```{r data_inc}
+inc<-dbGetQuery(con_bd_saumon,
+        "select dev_sta_id, 
+                extract(year from dev_date)
+        from t_deversement_dev
+        where dev_stade='oe'
+        order by 2"
+)
+
+```
+
+Puis, à l'aide d'une requête géographique, on fait une zone tampon de 2,5 km autour des incubateurs et on identifie les sites d'échantillonnage tacons qui se situent dans ce rayon
+
+```{r data_pec_infl_inc}
+pec_inc<-dbGetQuery(con_bd_saumon,
+            "WITH pec_inc AS (
+                  select dev_sta_id, 
+                         pec_sta_id, 
+                         pec_id, 
+                         extract(year from dev_date) as annee,
+                         St_distance(d.geom,p.geom) as dist,
+                         d.geom as geom_dev,
+                         p.geom as geom_pec
+                  from t_deversement_dev d
+                  join t_peche_pec p on (ST_contains(ST_buffer(d.geom,2500),p.geom) and extract(year from pec_date)=extract(year from dev_date))
+                	where dev_stade='oe' and substring(dev_sta_id,1,3)='ALL'
+                	order by 4
+                   ),
+                  pec_inc_dist_min AS (
+                  SELECT dev_sta_id,annee,
+                         min(dist) as min_dist
+                  from pec_inc
+                  group by 1,2
+                  )
+        SELECT p1.dev_sta_id,
+               p2.pec_sta_id,
+               p2.pec_id,
+               p1.annee,
+               p1.min_dist,
+               p2.geom_dev,
+               p2.geom_pec
+        FROM pec_inc_dist_min p1
+        JOIN pec_inc p2 ON p2.dev_sta_id=p1.dev_sta_id AND p2.dist=p1.min_dist
+        ORDER BY 4,1"
+)
+```
+
+```{r carto_pec_infl_inc, echo=FALSE}
+
+carto<- sf::st_read(con_bd_saumon,query=
+        paste(
+            "select dev_sta_id, 
+                    pec_sta_id, 
+                    pec_id, 
+                    pec_lieudit,
+                    extract(year from dev_date) as annee,
+                    st_transform(p.geom,4326) as pec_geom,
+                    st_transform(d.geom,4326) as dev_geom
+            from t_deversement_dev d
+            join t_peche_pec p on (ST_contains(ST_buffer(d.geom,2500),p.geom) and extract(year from pec_date)=extract(year from dev_date))
+            where dev_stade='oe' and substring(dev_sta_id,1,3)='ALL' and extract(year from dev_date)=2024
+            order by 5")
+)
+
+carto<-carto %>%
+  dplyr::mutate(pec_lon = sf::st_coordinates(pec_geom)[,1],
+                pec_lat = sf::st_coordinates(pec_geom)[,2])%>%
+    dplyr::mutate(dev_lon = sf::st_coordinates(dev_geom)[,1],
+                dev_lat = sf::st_coordinates(dev_geom)[,2])
+
+
+
+bbox <- c(left = 3.4, bottom = 45.13, right = 3.45, top = 45.16)
+
+pec_sf <- carto[, c("pec_geom")]
+st_geometry(pec_sf) <- pec_sf$pec_geom
+
+dev_sf <- carto[, c("dev_geom")]
+st_geometry(dev_sf) <- dev_sf$dev_geom
+
+
+map <- leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = pec_sf, color = "red", radius = 5) %>%
+  addCircleMarkers(data = dev_sf, color = "black", radius = 5) %>%
+  addLegend(
+    position = "topright",            
+    colors = c("red", "black"),       
+    labels = c("IA Sat", "Incubateur")      
+  ) %>%
+  fitBounds(
+    lng1 = as.numeric(bbox["left"]),
+    lat1 = as.numeric(bbox["bottom"]),
+    lng2 = as.numeric(bbox["right"]),
+    lat2 = as.numeric(bbox["top"])
+  )
+
+
+```
+
+Pour rappel, dans le modèle, on ne considère les pêches tacons que sur les axes Allier/Alagnon et Dore (pas ceux sur la Cronce par exemple). En 2022, on considère donc qu'aucune de nos stations de pêche n'a été influencée par les incubateurs de terrain (puisque la seule sous influence est située sur la Cronce).
+Si une station avait été concernée, il aurait fallu utiliser le jeu de données 'req' qu'on a utilisé pour sortir les **EF_IA_V** et **EF_IA_L**, il faut aller retrouver ces stations sous influence des déversements pour identifier leur place dans le vecteur.
+
+
+```{r I_site_egg_V,eval=FALSE,echo=TRUE}
+pec_VL<-req1[year(req1$date)==annee,]
+which(pec_VL$sta_id=="CRO_CRONCEUR1")
+
+```
+
+```{r I_site_egg_L,eval=TRUE,echo=TRUE}
+#pour avoir I_site_egg_V et I_site_egg_L dispo plus tard on les écrit en dur ici
+I_site_egg_V_2021=c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)	#2021
+I_site_egg_V_2022=c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)  #2022
+I_site_egg_V_2023=c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)  #2023
+I_site_egg_V_2024=c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)  #2024
+I_site_egg_V_2025=c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)  #2025
+
+I_site_egg_V<-rbind(I_site_egg_V_2021,I_site_egg_V_2022,I_site_egg_V_2023,I_site_egg_V_2024,I_site_egg_V_2025)
+
+I_site_egg_L_2021=c(0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA)	#2021
+I_site_egg_L_2022=c(0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA)  #2022
+I_site_egg_L_2023=c(0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA)  #2023 
+I_site_egg_L_2024=c(0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA)  #2024 
+I_site_egg_L_2025=c(0,0,0,0,0,0,0,0,NA,NA,NA,NA,NA,NA)  #2025 
+
+I_site_egg_L=rbind(I_site_egg_L_2021,I_site_egg_L_2022,I_site_egg_L_2023,I_site_egg_L_2024,I_site_egg_L_2025)
+```
+
+**I_juv_moy** : Indique si il y a eu oui ou non des déversements d'alevins à l'échelle de chacun des secteurs (une colonne par secteur). Pour remplir ce jeu de données, on récupère ce qu'on avait fait pour remplir les **I_site_juv_V**, **I_site_juv_A**, **I_site_juv_L** et **I_site_juv_P**.
+
+```{r I_juv_moy, echo=TRUE}
+#si un site d'un secteur déversé alors I_juv_moy=1
+  I_juv_moy<-c(if(sum(I_site_juv_V_calc,na.rm=TRUE)>0){1}
+               else{0},if(sum(I_site_juv_A_calc,na.rm=TRUE)>0){1}
+               else{0},if(sum(I_site_juv_L_calc,na.rm=TRUE)>0){1}
+               else{0},if(sum(I_site_juv_P_calc,na.rm=TRUE)>0){1} else{0})
+print(paste0(I_juv_moy,collapse = ","))
+```
+
+
+**I_egg_moy** : Indique si il y a eu oui ou non des incubateurs de terrain à l'échelle de chacun des secteurs. on remplit la variable avec 1 si il y a eu des incubateurs mis en charge sur le secteur, 0 sinon.
+
+
+**stock_juv** : Effectif d'alevins déversés total
+
+```{r stock_juv, echo=TRUE}
+stock_juv<-dbGetQuery(con_bd_saumon,
+      "WITH join_dev_carto AS(
+          	SELECT extract(year from dev_date) as annee,
+          	       s.sta_ce,
+          		   dev_id,
+          		   dev_nb,
+          		   dev_stade,
+          		   c.secteur_mo,
+          		   ST_Distance(d.geom, c.geom) AS distance,
+          	       ROW_NUMBER() OVER(PARTITION BY dev_id ORDER BY ST_Distance(d.geom, c.geom)) AS rn
+          	from t_deversement_dev d
+          	left join t_station_sta s on sta_id=dev_sta_id
+          	LEFT JOIN carto_model.secteur c ON ST_DWithin(d.geom, c.geom,500)
+    	),
+	    tab_temp as(
+          	SELECT annee,
+          	       sta_ce,
+          	       dev_id,
+          	       dev_nb,
+          	       dev_stade,
+          	       secteur_mo
+          	FROM join_dev_carto
+          	WHERE rn = 1
+     	)
+	SELECT annee, sta_ce, dev_stade, secteur_mo,sum(dev_nb)
+	FROM tab_temp
+	GROUP BY 1,2,3,4;"
+)
+
+yr=(1974+T)
+
+print(stock_juv[stock_juv$annee==yr & stock_juv$dev_stade=='aln',])
+
+```
+
+**stock_egg** : Effectif d'oeufs mis en incubateur. Dans le tableau les incubateurs sont donnés dans l'ordre suivant : 1. Arçon / 2. Blassac / 3. La Prade / 4. Peyrusse
+
+```{r stock_egg}
+stock_egg<-dbGetQuery(con_bd_saumon,
+            "select extract(year from dev_date) as annee,dev_sta_id,dev_nb
+            from t_deversement_dev
+            where dev_stade='oe' and left(dev_sta_id,3) not like'LOI'
+            order by 1,2")
+
+yr=(1974+T)
+#paste0(stock_egg[stock_egg$annee==annee,3],collapse = ",")
+stock_egg[stock_egg$annee==yr,]
+```
+
+**S_inc_JP** : Surface d'influence des incubateurs de terrain. Sur les années récentes, correspond à 37807m²
+
+
+### Données concernant les données environnementales
+#### Influence des débits sur la répartition des adultes
+
+**Q_VB_mont_P** : Débits à la station de Vieille-Brioude (Allier) lors de la montaison au printemps sur les mois de mars à juin. La moyenne sur les 4 mois est effectuée pour chaque année.
+
+```{r data_VB_mont_P}
+q_vb_mont_P<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Vieille-Brioude'
+          ")
+
+#On filtre sur les mois de mars à mai et on calcule la moyenne pour chaque année
+q_vb_mont_P<-q_vb_mont_P%>%filter(between(month(date),3,6),year(date)<=1974+T)%>%group_by(year(date))%>%summarise(meanMAM=mean(round,na.rm=TRUE))
+
+```
+
+```{r Q_VB_mont_P,echo=FALSE}
+print(tail(as.data.frame(q_vb_mont_P)))
+```
+
+**Q_VB_mont_A** : Débits à la station de Vieille-Brioude (Allier) à l'automne sur les mois de septembre à novembre. La moyenne sur les 3 mois est effectuée pour chaque année.
+
+```{r data_VB_mont_A}
+q_vb_mont_A<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Vieille-Brioude'
+          ")
+
+#On filtre sur les mois de mars à mai et on calcule la moyenne pour chaque année
+q_vb_mont_A<-q_vb_mont_A %>% filter(between(month(date),9,11),year(date)<=1974+T) %>% 
+                             group_by(year(date)) %>%
+                             summarise(meanMAM=mean(round,na.rm=TRUE))
+
+```
+
+```{r Q_VB_mont_A,echo=FALSE}
+print(tail(as.data.frame(q_vb_mont_A)))
+```
+
+**Q_L_mont_P** : Moyenne des débits à Lempdes (Alagnon) entre mars et juin. Ces données sont utilisées pour la partie influence des débits sur la répartition des adultes. Les débits pour les années 1979 à 1981 sont estimés à partir de ceux observés à Joursac (données manquantes pour Lempdes). Le r² de la relation log(Q_lempdes)~log(Q_joursac) est de 0.8913.
+La station 'Lempdes sur Alagnon' a été arrêtée en 2023. Mais la station 'Lempdes sur Alagnon - Alagnon et Bief' existe depuis 1993 et est toujours en service. On modifie toute la chronique. 
+- de 1979 à 1981 : on utilise le r² de la relation log(Q_lempdes_bief)~log(Q_joursac) --> calé sur les années communes de fonctionnement (r²=0.9232)
+- de 1975 à 1979 puis de 1982 à 1993 : on utilise le r² de la relation log(Q_lempdes_bief)~log(Q_lempdes) --> calé sur les années communes de fonctionnement (r²=0.9987)
+- à partir de 1994 on utilise les données mesurées à 'Lempdes sur Alagnon - Alagnon et Bief'
+
+```{r Q_L_mont_P,echo=FALSE}
+q_L_mont_P<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Lempdes sur Alagnon - Alagnon et Bief'
+          ORDER BY 2
+          ")
+
+q_L_mont_P<-q_L_mont_P%>%filter(year(date)<=1974+T,between(month(date),3,6))%>%group_by(year(date))%>%summarise(mean=mean(round,na.rm=TRUE))
+
+print(tail(as.data.frame(q_L_mont_P)))
+
+```
+
+```{r calib Q_lempdes_joursac, echo=FALSE, eval=TRUE}
+q_joursac<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Joursac'
+          ORDER BY 2
+          ")
+
+q_L_mont_P<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Lempdes sur Alagnon - Alagnon et Bief'
+          ORDER BY 2
+          ")
+
+q_L_mont<-rbind(q_L_mont_P,q_joursac)
+q_L_mont<-reshape(q_L_mont, #the data set to reshape
+		idvar = "date", #variable(s) used as the unique identifier for unstacking
+		timevar = "sta_nom", #variable(s) to unstack by where each category becomes a column per variable in v.names
+		v.names = c("round"), #variables to be unstacked into columns
+		direction = "wide") #whether to make the data long (stacked) or wide (unstacked)
+colnames(q_L_mont)<-c("date","Q_Lempdes_bief","Q_Joursac")
+q_L_mont <- q_L_mont %>% arrange(date)
+
+##Estimation de la relation entre les 2 stations
+mod1<-lm(log(Q_Lempdes_bief)~log(Q_Joursac),data=q_L_mont%>%
+                                            filter(Q_Lempdes_bief > 0 & !(is.na(Q_Lempdes_bief)),
+                                                   Q_Joursac > 0 & !(is.na(Q_Joursac))))
+summary(mod1) #0.9232
+
+start = as.Date("1979-01-01")
+end = as.Date("1981-12-31")
+#au printemps
+newdata<-data.frame(date=seq(from = start, to = end, by = 1))
+#newdata<-newdata[between(month(newdata$date),4,6), ]
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,q_L_mont[,c("date","Q_Joursac")],by.x="date",by.y="date",all.x=TRUE)
+newdata$pred<-predict(mod1, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+#on ajoute ces données estimées au jeu de données
+add_data<-data.frame(sta_nom=rep("Prédit d'après Joursac",nrow(newdata)), date=newdata$date,
+                     round=newdata$pred_nat)
+
+Q_Lempdes<-rbind(q_L_mont_P,add_data) %>% arrange(date)
+
+
+```
+
+```{r calib Q_lempdes_lempdes}
+
+q_Lempdes_bd<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Lempdes sur Alagnon' and extract(year from mes_date_debut)>= 1975
+          ORDER BY 2
+          ")
+
+q_L_L<-rbind(q_L_mont_P,q_Lempdes_bd)
+q_L_L<-reshape(q_L_L, #the data set to reshape
+		idvar = "date", #variable(s) used as the unique identifier for unstacking
+		timevar = "sta_nom", #variable(s) to unstack by where each category becomes a column per variable in v.names
+		v.names = c("round"), #variables to be unstacked into columns
+		direction = "wide") #whether to make the data long (stacked) or wide (unstacked)
+colnames(q_L_L)<-c("date","Q_Lempdes_bief","Q_Lempdes")
+q_L_L <- q_L_L %>% arrange(date)
+
+##Estimation de la relation entre les 2 stations
+mod1<-lm(log(Q_Lempdes_bief)~log(Q_Lempdes),data=q_L_L%>%
+                                            filter(Q_Lempdes_bief > 0 & !(is.na(Q_Lempdes_bief)),
+                                                   Q_Lempdes > 0 & !(is.na(Q_Lempdes))))
+summary(mod1) #0.9987
+
+start = as.Date("1975-01-01") 
+end = as.Date("1993-12-31")
+#au printemps
+newdata<-data.frame(date=seq(from = start, to = end, by = 1)) %>%
+                    filter(!(between(year(date),1979,1981)))  #attention il faut enlever ensuite 1979 à 1981
+
+#newdata<-newdata[between(month(newdata$date),4,6), ]
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,q_L_L[,c("date","Q_Lempdes")],by.x="date",by.y="date",all.x=TRUE)
+newdata$pred<-predict(mod1, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+#on ajoute ces données estimées au jeu de données
+add_data<-data.frame(sta_nom=rep("Prédit d'après Lempdes",nrow(newdata)), date=newdata$date,
+                     round=newdata$pred_nat) #5844
+
+Q_Lempdes<-rbind(Q_Lempdes,add_data) %>% arrange(date)
+
+
+q_l_mont_printemps<-Q_Lempdes%>%filter(between(month(date),3,6),
+                                       between(year(date),1975,(1974+T)))%>%
+                                group_by(year(date))%>%
+                                summarise(meanL=mean(round,na.rm=TRUE),
+                                          n = n())
+
+#on cherche si on a des années incomplètes
+q_l_mont_printemps %>% filter(n<122) #tout est complet
+
+paste0(q_l_mont_printemps$meanL,collapse=",")
+```
+
+
+**Q_L_mont_A** : Moyenne des débits à Lempdes (Alagnon) entre septembre et novembre. Ces données sont utilisées pour la partie influence des débits sur la répartition des adultes. Les débits pour les années 1979 à 1981 sont estimés à partir de ceux observés à Joursac (données manquantes pour Lempdes). Le r² de la relation log(Q_lempdes)~log(Q_joursac) est de 0.8913.
+La station 'Lempdes sur Alagnon' a été arrêtée en 2023. Mais la station 'Lempdes sur Alagnon - Alagnon et Bief' existe depuis 1993 et est toujours en service. On modifie toute la chronique. 
+- de 1979 à 1981 : on utilise le r² de la relation log(Q_lempdes_bief)~log(Q_joursac) --> calé sur les années communes de fonctionnement (r²=0.9232)
+- de 1975 à 1979 puis de 1982 à 1993 : on utilise le r² de la relation log(Q_lempdes_bief)~log(Q_lempdes) --> calé sur les années communes de fonctionnement (r²=0.9987)
+- à partir de 1994 on utilise les données mesurées à 'Lempdes sur Alagnon - Alagnon et Bief'
+
+```{r recup_chunk_precedent_pour_retrospectif}
+q_l_mont_automne<-Q_Lempdes%>%filter(between(month(date),9,11),
+                                       between(year(date),1975,(1974+T)))%>%
+                                group_by(year(date))%>%
+                                summarise(meanL=mean(round,na.rm=TRUE),
+                                          n = n())
+
+#on cherche si on a des années incomplètes
+q_l_mont_automne %>% filter(n<91) #1994 et 1995 respectivement 88 et 90 données au lieu de 91. On vit avec
+
+paste0(q_l_mont_automne$meanL,collapse=",")
+```
+
+
+```{r Q_L_mont_A,echo=FALSE}
+q_L_mont<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Lempdes sur Alagnon'
+          ")
+
+q_L_mont_A<-q_L_mont%>%filter(year(date)<=1974+T,between(month(date),9,11))%>%group_by(year(date))%>%summarise(mean=mean(round,na.rm=TRUE))
+
+print(tail(q_L_mont_A))
+
+```
+
+```{r estimation_joursac,echo=FALSE}
+q_J_mont<-dbGetQuery(con_bd_envir,
+		"select sta_nom,date(mes_date_debut) as date_debut, extract(year from mes_date_debut) as year,round(mes_valeur::numeric,1)
+				from public.t_station_sta
+				left join public.t_stationmatos_stm on sta_id =stm_sta_id
+				left join public.t_mesure_mes on mes_stm_id=stm_id
+				where stm_mat_code=2 and sta_nom='Joursac'
+				")
+q_Lempdes_mont<-dbGetQuery(con_bd_envir,
+		"select sta_nom,date(mes_date_debut) as date_debut, extract(year from mes_date_debut) as year,round(mes_valeur::numeric,1)
+				from public.t_station_sta
+				left join public.t_stationmatos_stm on sta_id =stm_sta_id
+				left join public.t_mesure_mes on mes_stm_id=stm_id
+				where stm_mat_code=2 and sta_nom='Lempdes sur Alagnon'
+				")
+
+q_L_mont<-rbind(q_Lempdes_mont,q_J_mont)
+q_L_mont<-reshape(q_L_mont, #the data set to reshape
+		idvar = "date_debut", #variable(s) used as the unique identifier for unstacking
+		timevar = "sta_nom", #variable(s) to unstack by where each category becomes a column per variable in v.names
+		v.names = c("round"), #variables to be unstacked into columns
+		direction = "wide") #whether to make the data long (stacked) or wide (unstacked)
+colnames(q_L_mont)<-c("date_debut","year","Q_Lempdes","Q_Joursac")
+
+##Estimation de la relation entre les 2 station
+mod1<-lm(log(Q_Lempdes)~log(Q_Joursac),data=q_L_mont)
+summary(mod1)
+#plot(mod1)
+#plot(log(Q_pont_seuges)~log(Q_amont_pont),data=q_P_mont)
+
+#estimation entre 1979 et 1981
+
+start = as.Date("1979-01-01")
+end = as.Date("1981-12-31")
+#au printemps
+newdata<-data.frame(date=seq(from = start, to = end, by = 1))
+#newdata<-newdata[between(month(newdata$date),4,6), ]
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,q_L_mont[,c("date_debut","Q_Joursac")],by.x="date",by.y="date_debut",all.x=TRUE)
+newdata$pred<-predict(mod1, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+
+#estimation à partir 2023
+
+start = as.Date("2023-09-01")
+end = as.Date("2023-12-31")
+#au printemps
+newdata<-data.frame(date=seq(from = start, to = end, by = 1))
+#newdata<-newdata[between(month(newdata$date),4,6), ]
+newdata<-as.data.frame(newdata)
+newdata<-merge(newdata,q_L_mont[,c("date_debut","Q_Joursac")],by.x="date",by.y="date_debut",all.x=TRUE)
+newdata$pred<-predict(mod1, newdata = newdata)
+#le modèle était log-transformé, on retransforme pour avoir les Q en échelle naturelle
+newdata$pred_nat<-exp(newdata$pred)
+
+q_L_mont_A<-newdata%>%filter(between(month(date),9,11))%>%group_by(year(date))%>%summarise(mean=mean(pred_nat,na.rm=TRUE))
+print(q_L_mont_A)
+```
+
+**Q_P_mont_P** : Moyenne des débits à Prades (Allier) entre mars et juin. Ces données sont utilisées pour la partie influence des débits sur la répartition des adultes. Les débits pour les années 2001 à 2002 sont estimés à partir de ceux observés à Saint-Haon (données manquantes pour Prades). Le r² de la relation log(Q_prades)~log(Q_st_haon) est de 0.82.
+
+```{r Q_P_mont_P,echo=FALSE}
+q_P_mont<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Prades - pont amont Seuges'
+          ")
+
+q_p_mont_P<-q_P_mont%>%filter(year(date)<=1974+T,between(month(date),3,6))%>%group_by(year(date))%>%summarise(mean=mean(round,na.rm=TRUE))
+
+print(tail(as.data.frame(q_p_mont_P)))
+
+```
+
+**Q_P_mont_A** : Moyenne des débits à Prades (Allier) entre septembre et novembre. Ces données sont utilisées pour la partie influence des débits sur la répartition des adultes. Les débits pour les années 2001 à 2002 sont estimés à partir de ceux observés à Saint-Haon (données manquantes pour Prades). Le r² de la relation log(Q_prades)~log(Q_st_haon) est de 0.82.
+
+```{r Q_P_mont_A,echo=FALSE}
+q_P_mont<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Prades - pont amont Seuges'
+          ")
+
+q_p_mont_A<-q_P_mont%>%filter(year(date)<=1974+T,between(month(date),9,11))%>%group_by(year(date))%>%summarise(mean=mean(round,na.rm=TRUE))
+
+print(tail(as.data.frame(q_p_mont_A)))
+
+```
+
+#### Influence des débits sur la survie
+
+**Q_VB_deval** : Débits à Vieille-Brioude entre mars-avril pour la dévalaison calculés en fonction de la contribution des cohortes de juvéniles aux retours d'adultes (1/3*Q[t-2]+1/3*Q[t-3]+1/3*Q[t-4]). La moyenne sur la période est effectuée pour chaque année. Ces données sont utilisées pour la partie influence des débits sur la survie entre le juvénile 0+ et l'adulte de retour à Vichy.
+
+```{r Q_VB_deval}
+#Attention on travaille sur les smolts mais s_juv2ad indicé t sur les retours d'adultes.
+#Les adultes sont issus du retour des juvéniles produits en t-3,t-4 et t-5 pour 1/3 chaque.
+#Les smolts ont une année de plus par rapport à l'année de production, d'où pour une année t de retour il faut considérer les Q des année t-2, t-3 et t-4 à 1/3 chaque.
+
+
+q_vb_deval<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Vieille-Brioude'
+          ")
+#On filtre sur les mois de mars à avril et on calcule la moyenne pour chaque année
+q_vb_deval<-q_vb_deval%>%filter(between(month(date),3,4),year(date)<=1974+T)%>%group_by(year(date))%>%summarise(meanMAM=mean(round,na.rm=TRUE))
+
+running.mean<- function(x, n = 3){stats::filter(x, rep(1 / n, n), sides = 1)}
+#calculer la moyenne pondérée avec poids identique (1/3) revient à calculer une moyenne glissante sur fenêtre 3 ans
+#plus facile de faire comme ça sinon il faut trouver comment se décaler sur les plages d'années avec moyenne pondérée
+mean_indic_adult<-running.mean(q_vb_deval,3)
+#Il faut changer les années en face de chaque moyenne pondérée car la première valeur correspond aux juvéniles à l'origine des adultes de retour en 1979
+year<-seq(1975,(1974+T),1)
+mean_indic_adult<-cbind(year,as.vector(mean_indic_adult[55:(55+(1974+T-3)-1972),2])) #commence à 55 car 1ere année retour adulte=1975 qui sont issus des juv 1971 à 1973 centrés sur 1972 (t=55). Pour calculer l'indice de fin : on compte le nbr d'années entre l'année de fin (1974+T-3) et l'année de début (1972) et on ajoute ce nombre d'année à 55. On fait bien (1974+T-3) car dernière année pour les retours adultes (=T) correspond aux smolts sur période (T-4)-(T-2), qui est centrée sur (T-3).
+
+print(tail(as.data.frame(mean_indic_adult)))
+```
+
+**Q_MSL_mont** : Débits à la station de Montjean-sur-Loire (Loire) entre le 15 décembre et le 15 mars. La moyenne sur la période est effectuée pour chaque année.
+
+```{r Q_MSL_mont,echo=FALSE}
+q_msl_mont<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),mes_valeur
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Montjean sur Loire' and extract(year from mes_date_debut)>=1975
+          ")
+#!!! Le code a été corrigé le 2025-02-19. Attention, il faudra changer les CODA du modèle !!!
+q_msl_mont <- q_msl_mont %>% 
+                filter((month(date) == 12 & day(date) >= 15) | 
+                       (month(date) %in% c(1, 2)) | 
+                       (month(date) == 3 & day(date) <= 15)) %>%
+                mutate(annee_hydro = ifelse(month(date) == 12, year(date) + 1, year(date))) %>%
+                filter(annee_hydro <= 1974 + T) %>%
+                group_by (annee_hydro) %>%
+			          summarise(mean=mean(mes_valeur,na.rm=TRUE))
+
+#ANCIEN CODE : C'était faux car on faisait une moyenne avec les débits de décembre de l'année n
+#et non avec ceux de l'année n-1. !!! Le code a été corrigé le 2025-02-19. Attention, il faudra changer les CODA du modèle !!!
+#On filtre entre le 15 décembre et le 15 mars et on calcule la moyenne pour chaque année
+#data_Q2_mont<-q_msl_mont[between(month(q_msl_mont$date),1 ,2),] #on récupère les mois complets
+#on ajoute les mois tronquÃ©s
+#data_Q2_dec<-q_msl_mont[month(q_msl_mont$date)==12 & day(q_msl_mont$date)>=15,]
+#data_Q2_mars<-q_msl_mont[month(q_msl_mont$date)==3 & day(q_msl_mont$date)<=15,]
+#On assemble les 3 jeux de donnÃ©es
+#q_msl_mont<-rbind(data_Q2_dec,data_Q2_mont,data_Q2_mars)
+
+#q_msl_mont<-q_msl_mont%>%filter(year(date)<=1974+T)%>%group_by(year(date))%>%summarise(mean=mean(round,na.rm=TRUE))
+
+print(tail(as.data.frame(q_msl_mont)))
+
+```
+
+**Q_MSL_deval** : Débits à Montjean sur loire (Loire) pour la dévalaison entre le 15 mars et le 15 mai et calculés en fonction de la contribution des cohortes de juvéniles aux retours d'adultes (1/3*Q[t-2]+1/3*Q[t-3]+1/3*Q[t-4]). La moyenne sur la période est effectuée pour chaque année. Ces données sont utilisées pour la partie influence des débits sur la survie entre le juvénile 0+ et l'adulte de retour à Vichy.
+
+```{r Q_MSL_deval, echo=FALSE}
+#Attention on travaille sur les smolts mais s_juv2ad indicé t sur les retours d'adultes.
+#Les adultes sont issus du retour des juvéniles produits en t-3,t-4 et t-5 pour 1/3 chaque.
+#Les smolts ont une année de plus par rapport à l'année de production, d'où pour une année t de retour il faut considérer les Q des année t-2, t-3 et t-4 à 1/3 chaque.
+
+
+q_msl_deval<-dbGetQuery(con_bd_envir,
+          "select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+          from public.t_station_sta
+          left join public.t_stationmatos_stm on sta_id =stm_sta_id
+          left join public.t_mesure_mes on mes_stm_id=stm_id
+          where stm_mat_code=2 and sta_nom='Montjean sur Loire'
+          ")
+
+data_Q2_deval<-q_msl_deval[month(q_msl_deval$date)==4,] #on sélectionne sur le mois complet
+#on ajoute les mois tronqués
+data_Q2_mars<-q_msl_deval[month(q_msl_deval$date)==3 & day(q_msl_deval$date)>=15,]
+data_Q2_mai<-q_msl_deval[month(q_msl_deval$date)==5 & day(q_msl_deval$date)<=15,]
+#On assemble les 3 jeux de données
+data_Q2_deval<-rbind(data_Q2_mars,data_Q2_deval,data_Q2_mai)
+data_Q2_deval_yr<-data_Q2_deval%>%group_by(year(date))%>%summarise(mean=mean(round))
+
+running.mean<- function(x, n = 3){stats::filter(x, rep(1 / n, n), sides = 1)}
+#calculer la moyenne pondérée avec poids identique (1/3) revient à calculer une moyenne glissante sur fenêtre 3 ans
+#plus facile de faire comme ça sinon il faut trouver comment se décaler sur les plages d'années avec moyenne pondérée
+mean_indic_adult<-running.mean(data_Q2_deval_yr,3)
+#Il faut changer les années en face de chaque moyenne pondérée car la première valeur correspond aux juvéniles à l'origine des adultes de retour en 1979
+year<-seq(1975,(1974+T),1)
+mean_indic_adult<-cbind(year,as.vector(mean_indic_adult[74:(74+(1974+T-3)-1972),2])) #commence à 74 car 1ere année retour adulte=1975 qui sont issus des juv 1971 à 1973 centrés sur 1972 (t=74). Pour calculer l'indice de fin : on compte le nbr d'années entre l'année de fin (1974+T-3) et l'année de début (1972) et on ajoute ce nombre d'année à 74. On fait bien (1974+T-3) car dernière année pour les retours adultes (=T) correspond aux smolts sur période (T-4)-(T-2), qui est centrée sur (T-3).
+
+print(tail(as.data.frame(mean_indic_adult)))
+```
+
+
+## Mise à jour des inits
+
+**R** : Nombre de nids lorsque les opérations de comptage n'ont pas pu avoir lieu. Pour ces années, il faut mettre des effectif comparable à ce qu'on observe sur chaque secteur quand il y a des suivis. Quand il s'agit d'une année où les nids ont pu être comptés, on indique simplement NA.
+
+```{r init_R_count_yr}
+print(tail(R))
+```
+
+En 2021, les nids ont été comptés sur tous les secteurs (= on indique NA). En 2022, les nids n'ont pas été comptés (absent du tableau). On indique la moyenne observée par secteur (sur les années où les nids ont pu être comptés)
+
+```{r init_R_without_count,echo=FALSE}
+estim_nid<-R%>%group_by(secteur)%>%summarise(mean=mean(nids_comptés))
+print(estim_nid)
+```
+
+
+**N** : Nombre d'adulte sur les différents secteurs du modèle. On connait Vichy depuis 97 et Poutès depuis 86 (on leur met donc NA). La station de Langeac est considérée comme partielle. Pour le secteur 3 (Langeac-Poutès), on prend les comptages à Vichy - ceux à Poutès et on divise le résultat par 2,16.
+Note : ne sait pas vraiment pourquoi cette division par 2,16. C'est ce que Guillaume Dauphin faisait. Dans la mesure où on a des comptages depuis 2016 à Langeac (même si considérés partiels) pourquoi ne pas utiliser directement cette valeur comptée (qui est à priori proche de la réalité) ? 
+Depuis 2021, plus de comptage à Poutès (Nouvelle configuration de Poutès avec 91 jours de transparence). On récupère donc directement les comptages à Langeac qui me semblent le mieux refléter les effectifs présents à cette station. A voir s'il faut utiliser Langeac dès que la station fonctionne ou laisser la méthode proposée par Guillaume.
+Pour l'Alagnon : on fait 0.59 de ce qui passe à Langeac à partir de 2004 car on n'en sait rien donc on fait au prorata des surf. Avant 2004 on prend 0.22
+
+```{r N_alagnon,echo=FALSE}
+#depuis 2021 on récupère ce qui est compté à Langeac
+year=(1974+T)
+langeac<-N[N$station=="Langeac" & N$année_migration %in% year,]
+print(langeac)
+
+N_alagnon <- round(0.59*langeac$eff_station,0)
+print(N_alagnon)
+
+```
+
+**N_langeac_obs** :Nombre de saumon comptés par la vidéo (différent de N[t,3] qui représente le nombre de saumons ayant migré en amont de Langeac) pour les années où la station n'était pas en service. Pour les inits il faut faire attention à ce que les inits de N_langeac_obs soit < à ceux de N[t,3]. Pour cela on récupère les inits de N[t,3] et on les multiplie par 0.9 puis on les arrondis. Quand c'est une année où la vidéo a fonctionné, on met simplement NA
+
+```{r N_langeac_obs,echo=FALSE}
+init_N_3=c(229,215,270,158,110,206,165,233,18,128,333,116,115,218,199,
+	180,150,223,177,161,192,218,193,117,190,150,155,240,500,299,
+	250,350,250,115,220,93,401,401,401,249,506,206,336,171,178,143,
+	57,22,21,12,23)
+round(init_N_3*0.9,0)
+``` 
+Pour les estimation sur l'Alagnon, on utilise le prorata des surfaces entre Langeac et l'Alagnon. On multiplie donc les estimations à Langeac par 0.59
+
+```{r,echo=FALSE}
+alagnon<-langeac%>%mutate(alagnon=round(eff_station*0.59))
+colnames(alagnon)[3]<-"langeac"
+print(alagnon[,2:4])
+
+```
+
+**p_comptage_L** : probabilité qu'à un poisson franchissant l'ouvrage de Langeac d'être compté. Par expertise, on fixe cette valeur à 95%. On indique donc chaque année 0.95
+
+**R_rep** : Si on a une valeur pour R on la remet ici, sinon on met une valeur dans la gamme de ce qu'on observe habituellement.
+En 2021, on a fait un comptage de nids, on remet les nids comptés :
+
+```{r R_rep, echo=FALSE}
+year=(1974+T)
+print(R[R$annee==year,])
+
+
+```
+
+En 2022, pas de comptage de nids, on met la moyenne observée sur chacun des secteurs :
+
+```{r R_rep_without_count, echo=FALSE}
+
+print(R%>%group_by(secteur)%>%summarise(mean=mean(nids_comptés)))
+
+```
+
+
+**L_d_egg_L**, **L_d_egg_V** : Quand résultats IA on met -6.9 sinon on comble avec NA pour avoir un tableau de même dimension que EF_IA_L.
+
+```{r L_d_egg_V&L}
+#On réutilise le jeu de données nb_pec, data1 (qui correspond à EF_IA_V), data2 (qui correspond à EF_IA_L), I_site_egg_V et I_site_egg_L
+
+
+#Comme on a fait la MAJ sur 2 années en même temps, on a fait un tableau avec les 2 années. Ici on a besoin de prendre un vecteur et de traiter les années l'une après l'autre.
+#On enregistre donc le jeu de données complets dans un nouvel objet et on met dans I_site_egg_V ou L le vecteur correspondant à l'année
+I_site_egg_V_def=I_site_egg_V 
+I_site_egg_L_def=I_site_egg_L
+
+L_d_egg_V<-NA
+L_d_egg_L<-NA
+year=(1974+T)
+
+if(year==2023){I_site_egg_V<-I_site_egg_V_def[1,]}else{I_site_egg_V<-I_site_egg_V_def[2,]}
+if(year==2023){I_site_egg_L<-I_site_egg_L_def[1,]}else{I_site_egg_L<-I_site_egg_L_def[2,]}
+
+for (i in 1:nb_pec$secteur_1[nb_pec$annee==annee]){
+		nb0<-if(data1[(annee-1974),i]==0){-6.90}else{log10(data1[(annee-1974),i]/222)/1.1} #data1=EF_IA_V
+		L_d_egg_V[i]<-if(I_site_egg_V[i]==0){-6.90}else{I_site_egg_V[i]*log10(0.03*exp(nb0))}
+			
+}
+		
+L_d_egg_V<-c(round(L_d_egg_V,2),rep(NA,(max(nb_pec$secteur_1)-1-nb_pec$secteur_1[nb_pec$annee==annee])))
+#Pour openbugs
+print(paste0(L_d_egg_V,collapse=","))
+
+
+#I_site_egg_L
+for (i in 1:nb_pec$secteur_3[nb_pec$annee==annee]){
+	nb0<-if(data3[annee-1974,i]==0){-6.90}else{log10(data3[annee-1974,i]/222)/1.1}
+	L_d_egg_L[i]<-if(I_site_egg_L[i]==0){-6.90}else{I_site_egg_L[i]*log10(0.03*exp(nb0))}
+	
+}
+
+L_d_egg_L<-c(L_d_egg_L,rep(NA,(max(nb_pec$secteur_3)-nb_pec$secteur_3[nb_pec$annee==annee])))
+#Pour openbugs
+print(paste0(L_d_egg_L,collapse=","))
+
+
+```
+
+
+**L_d_juv_V**, **L_d_juv_A**, **L_d_juv_L**, **L_d_juv_P** : Suite à l'ajout d'une matrice de variance covariance entre les juvéniles sauvages et les juvéniles d'élevage on modifie le calcul de L_d_juv_V,A,L,P.
+On ne calcule une valeur QUE lorsqu'il n'y a pas eu de déversement (I_site_juv=0). Lorsqu'il y a eu déversement, on passe par la Matrice VC pour calculer L_d_juv_moy.
+
+```{r L_d_juv_detail_year}
+#on utilise les jeux de données déja calculés : reqannee_1$dev (I_site_juv_V), reqannee_2$dev (I_site_juv_A), reqannee_3$dev (I_site_juv_L), reqannee_4$dev (I_site_juv_P)
+annee_detail=2021
+
+## Ici on recalcule car MAJ faite sur 2 années et on n'a dans reqannee_1 que l'année 2022
+pec_dev<-pec_dev_tot[pec_dev_tot$annee==annee_detail,]
+
+req1$dev<-0
+reqannee_1<-req1[year(req1$date)==annee_detail,]
+
+for (i in 1:nrow(reqannee_1)){
+  reqannee_1$dev[i]<- if(reqannee_1[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_1[,3][i])]} else {0}
+}
+
+req2$dev<-0
+reqannee_2<-req2[year(req2$date)==annee_detail,]
+
+for (i in 1:nrow(reqannee_2)){
+  reqannee_2$dev[i]<- if(reqannee_2[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_2[,3][i])]} else {0}
+}
+
+req3$dev<-0
+reqannee_3<-req3[year(req3$date)==annee_detail,]
+
+for (i in 1:nrow(reqannee_3)){
+  reqannee_3$dev[i]<- if(reqannee_3[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_3[,3][i])]} else {0}
+}
+
+
+req4$dev<-0
+reqannee_4<-req4[year(req4$date)==annee_detail,]
+
+for (i in 1:nrow(reqannee_4)){
+  reqannee_4$dev[i]<- if(reqannee_4[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_4[,3][i])]} else {0}
+}
+
+I_site_juv_V_calc_21<-c(reqannee_1$dev[year(reqannee_1$date)==annee_detail],rep(NA,(30-nrow(reqannee_1[year(reqannee_1$date)==annee_detail,]))))
+I_site_juv_A_calc_21<-c(reqannee_2$dev[year(reqannee_2$date)==annee_detail],rep(NA,(16-nrow(reqannee_2[year(reqannee_2$date)==annee_detail,]))))
+I_site_juv_L_calc_21<-c(reqannee_3$dev[year(reqannee_3$date)==annee_detail],rep(NA,(14-nrow(reqannee_3[year(reqannee_3$date)==annee_detail,])))) 
+I_site_juv_P_calc_21<-c(reqannee_4$dev[year(reqannee_4$date)==annee_detail],rep(NA,(20-nrow(reqannee_4[year(reqannee_4$date)==annee_detail,])))) 
+
+L_d_juv_A_21<-NA
+for (i in 1:nb_pec$secteur_2[nb_pec$annee==annee_detail]){
+nb0<-if(data2[(annee_detail-1974),i]==0){-6.90}else{log10(data2[(annee_detail-1974),i]/222)/1.1}
+L_d_juv_A_21[i]<-if(I_site_juv_A_calc_21[i]==0){log10(0.22*exp(nb0))}else{NA}
+
+}
+
+L_d_juv_A_21<-c(L_d_juv_A_21,rep(NA,(max(nb_pec$secteur_2[nb_pec$annee <=annee_detail])-nb_pec$secteur_2[nb_pec$annee==annee_detail])))
+
+
+L_d_juv_L_21<-NA
+for (i in 1:nb_pec$secteur_3[nb_pec$annee==annee_detail]){
+nb0<-if(data3[(annee_detail-1974),i]==0){-6.90}else{log10(data3[(annee_detail-1974),i]/222)/1.1}
+L_d_juv_L_21[i]<-if(I_site_juv_L_calc_21[i]==0){log10(0.22*exp(nb0))}else{NA}
+
+}
+
+L_d_juv_L_21<-c(L_d_juv_L_21,rep(NA,(max(nb_pec$secteur_3[nb_pec$annee <=annee_detail])-nb_pec$secteur_3[nb_pec$annee==annee_detail])))
+
+
+
+L_d_juv_P_21<-NA
+#for (i in 1:nb_pec$secteur_4[nb_pec$annee==A]){
+for (i in 1:length(I_site_juv_P_calc[!is.na(I_site_juv_P_calc_21)])){
+nb0<-if(data4[(annee_detail-1974),i]==0){-6.90}else{log10(data4[(annee_detail-1974),i]/222)/1.1}
+L_d_juv_P_21[i]<-if(I_site_juv_P_calc_21[i]==0){log10(0.22*exp(nb0))}else{NA}
+
+}
+
+L_d_juv_P_21<-c(L_d_juv_P_21,rep(NA,(max(nb_pec$secteur_4[nb_pec$annee <=annee_detail])+1-nb_pec$secteur_4[nb_pec$annee==annee_detail])))
+
+
+L_d_juv_V_21<-NA
+for (i in 1:nb_pec$secteur_1[nb_pec$annee==annee_detail]){
+nb0<-if(data1[(annee_detail-1974),i]==0){-6.90}else{log10(data1[(annee_detail-1974),i]/222)/1.1}
+L_d_juv_V_21[i]<-if(I_site_juv_V_calc_21[i]==0){log10(0.22*exp(nb0))}else{NA}
+
+}
+
+L_d_juv_V_21<-c(L_d_juv_V_21,rep(NA,(max(nb_pec$secteur_1[nb_pec$annee <=annee_detail])-1-nb_pec$secteur_1[nb_pec$annee==annee_detail])))
+
+```
+
+```{r calc_L_d_juv,echo=FALSE}
+#on utilise les jeux de données déja calculés : reqannee_1$dev (I_site_juv_V), reqannee_2$dev (I_site_juv_A), reqannee_3$dev (I_site_juv_L), reqannee_4$dev (I_site_juv_P)
+
+## Ici on recalcule car MAJ faite sur 2 années et on n'a dans reqannee_1 que l'année 2022
+pec_dev<-pec_dev_tot[pec_dev_tot$annee==annee,]
+
+req1$dev<-0
+reqannee_1<-req1[year(req1$date)==annee,]
+
+for (i in 1:nrow(reqannee_1)){
+  reqannee_1$dev[i]<- if(reqannee_1[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_1[,3][i])]} else {0}
+}
+
+req2$dev<-0
+reqannee_2<-req2[year(req2$date)==annee,]
+
+for (i in 1:nrow(reqannee_2)){
+  reqannee_2$dev[i]<- if(reqannee_2[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_2[,3][i])]} else {0}
+}
+
+req3$dev<-0
+reqannee_3<-req3[year(req3$date)==annee,]
+
+for (i in 1:nrow(reqannee_3)){
+  reqannee_3$dev[i]<- if(reqannee_3[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_3[,3][i])]} else {0}
+}
+
+
+req4$dev<-0
+reqannee_4<-req4[year(req4$date)==annee,]
+
+for (i in 1:nrow(reqannee_4)){
+  reqannee_4$dev[i]<- if(reqannee_4[,3][i]%in%pec_dev$pec_id){pec_dev$dev[which(pec_dev$pec_id==reqannee_4[,3][i])]} else {0}
+}
+
+I_site_juv_V_calc<-c(reqannee_1$dev[year(reqannee_1$date)==annee],rep(NA,(30-nrow(reqannee_1[year(reqannee_1$date)==annee,]))))
+I_site_juv_A_calc<-c(reqannee_2$dev[year(reqannee_2$date)==annee],rep(NA,(16-nrow(reqannee_2[year(reqannee_2$date)==annee,]))))
+I_site_juv_L_calc<-c(reqannee_3$dev[year(reqannee_3$date)==annee],rep(NA,(14-nrow(reqannee_3[year(reqannee_3$date)==annee,])))) 
+I_site_juv_P_calc<-c(reqannee_4$dev[year(reqannee_4$date)==annee],rep(NA,(20-nrow(reqannee_4[year(reqannee_4$date)==annee,])))) 
+
+L_d_juv_A<-NA
+for (i in 1:nb_pec$secteur_2[nb_pec$annee==annee]){
+nb0<-if(data2[(annee-1974),i]==0){-6.90}else{log10(data2[(annee-1974),i]/222)/1.1}
+L_d_juv_A[i]<-if(I_site_juv_A_calc[i]==0){log10(0.22*exp(nb0))}else{NA}
+
+}
+
+L_d_juv_A<-c(L_d_juv_A,rep(NA,(max(nb_pec$secteur_2[nb_pec$annee <=annee])-nb_pec$secteur_2[nb_pec$annee==annee])))
+
+
+L_d_juv_L<-NA
+for (i in 1:nb_pec$secteur_3[nb_pec$annee==annee]){
+nb0<-if(data3[(annee-1974),i]==0){-6.90}else{log10(data3[(annee-1974),i]/222)/1.1}
+L_d_juv_L[i]<-if(I_site_juv_L_calc[i]==0){log10(0.22*exp(nb0))}else{NA}
+
+}
+
+L_d_juv_L<-c(L_d_juv_L,rep(NA,(max(nb_pec$secteur_3[nb_pec$annee <=annee])-nb_pec$secteur_3[nb_pec$annee==annee])))
+
+
+L_d_juv_P<-NA
+#for (i in 1:nb_pec$secteur_4[nb_pec$annee==A]){
+for (i in 1:length(I_site_juv_P_calc[!is.na(I_site_juv_P_calc)])){
+nb0<-if(data4[(annee-1974),i]==0){-6.90}else{log10(data4[(annee-1974),i]/222)/1.1}
+L_d_juv_P[i]<-if(I_site_juv_P_calc[i]==0){log10(0.22*exp(nb0))}else{NA}
+
+}
+
+L_d_juv_P<-c(L_d_juv_P,rep(NA,(max(nb_pec$secteur_4[nb_pec$annee <=annee])+1-nb_pec$secteur_4[nb_pec$annee==annee])))
+
+
+L_d_juv_V<-NA
+for (i in 1:nb_pec$secteur_1[nb_pec$annee==annee]){
+nb0<-if(data1[(annee-1974),i]==0){-6.90}else{log10(data1[(annee-1974),i]/222)/1.1}
+L_d_juv_V[i]<-if(I_site_juv_V_calc[i]==0){log10(0.22*exp(nb0))}else{NA}
+
+}
+
+L_d_juv_V<-c(L_d_juv_V,rep(NA,(max(nb_pec$secteur_1[nb_pec$annee <=annee])-1-nb_pec$secteur_1[nb_pec$annee==annee])))
+
+```
+
+Pour L_d_juv_V :
+```{r L_d_juv_V,echo=FALSE}
+print(paste0(round(L_d_juv_V,3),collapse=","))
+```
+
+Pour L_d_juv_A :
+```{r L_d_juv_A,echo=FALSE}
+print(paste0(round(L_d_juv_A,3),collapse=","))
+
+```
+
+Pour L_d_juv_L :
+```{r L_d_juv_L,echo=FALSE}
+print(paste0(round(L_d_juv_L,3),collapse=","))
+```
+
+Pour L_d_juv_P :
+```{r L_d_juv_P,echo=FALSE}
+print(paste0(round(L_d_juv_P,3),collapse=","))
+```
+
+**L_d_wild_A** : 
+
+```{r L_d_wild_calc,echo=FALSE}
+
+L_d_wild_A<-NA
+for (i in 1:nb_pec$secteur_2[nb_pec$annee==annee]){
+nb0<-if(data2[(annee-1974),i]==0){-6.90}else{log10(data2[(annee-1974),i]/222)/1.1}
+L_d_wild_A[i]<-log10(0.85*exp(nb0))
+
+}
+
+L_d_wild_A<-c(L_d_wild_A,rep(NA,(max(nb_pec$secteur_2[nb_pec$annee <=annee])-nb_pec$secteur_2[nb_pec$annee==annee])))
+
+
+L_d_wild_L<-NA
+for (i in 1:nb_pec$secteur_3[nb_pec$annee==annee]){
+nb0<-if(data3[(annee-1974),i]==0){-6.90}else{log10(data3[(annee-1974),i]/222)/1.1}
+L_d_wild_L[i]<-log10(0.85*exp(nb0))
+
+}
+L_d_wild_L<-c(L_d_wild_L,rep(NA,(max(nb_pec$secteur_3[nb_pec$annee <=annee])-nb_pec$secteur_3[nb_pec$annee==annee])))
+
+
+L_d_wild_P<-NA
+for (i in 1:nb_pec$secteur_4[nb_pec$annee==annee]){
+nb0<-if(data4[(annee-1974),i]==0){-6.90}else{log10(data4[(annee-1974),i]/222)/1.1}
+L_d_wild_P[i]<-log10(0.85*exp(nb0))
+
+}
+L_d_wild_P<-c(L_d_wild_P,rep(NA,(max(nb_pec$secteur_4[nb_pec$annee <=annee])+1-nb_pec$secteur_4[nb_pec$annee==annee])))
+
+
+L_d_wild_V<-NA
+for (i in 1:nb_pec$secteur_1[nb_pec$annee==annee]){
+nb0<-if(data1[(annee-1974),i]==0){-6.90}else{log10(data1[(annee-1974),i]/222)/1.1}
+L_d_wild_V[i]<-log10(0.85*exp(nb0))
+
+}
+L_d_wild_V<-c(L_d_wild_V,rep(NA,(max(nb_pec$secteur_1[nb_pec$annee <=annee])-1-nb_pec$secteur_1[nb_pec$annee==annee])))
+```
+
+L_d_wild_V :
+```{r L_d_wild_V,echo=FALSE}
+print(paste0(round(L_d_wild_V,3),collapse=","))
+```
+
+L_d_wild_A :
+```{r L_d_wild_A,echo=FALSE}
+print(paste0(round(L_d_wild_A,3),collapse=","))
+```
+
+L_d_wild_L :
+```{r L_d_wild_L,echo=FALSE}
+print(paste0(round(L_d_wild_L,3),collapse=","))
+```
+
+L_d_wild_P :
+```{r L_d_wild_P,echo=FALSE}
+print(paste0(round(L_d_wild_P,3),collapse=","))
+```
+
+
+**L_d_wild_moy** :  Moyenne pour chaque année de L_d_wild pour chaque secteur. Pour alagnon quand année où pas de données on met la moyenne des années où données.
+
+
+```{r L_d_wild_moy_calc,echo=FALSE}
+L_d_wild_moy<-c(if(I_juv_moy[1]==1){NA}else{if(mean(L_d_wild_V,na.rm=TRUE)>-6.9){mean(L_d_wild_V,na.rm=TRUE)}else{0}},
+               if(I_juv_moy[2]==1){NA}else{if(mean(L_d_wild_A,na.rm=TRUE)>-6.9){mean(L_d_wild_A,na.rm=TRUE)}else{0}},
+               if(I_juv_moy[3]==1){NA}else{if(mean(L_d_wild_L,na.rm=TRUE)>-6.9){mean(L_d_wild_L,na.rm=TRUE)}else{0}},
+               if(I_juv_moy[4]==1){NA}else{if(mean(L_d_wild_P,na.rm=TRUE)>-6.9){mean(L_d_wild_P,na.rm=TRUE)}else{0}})
+
+
+```
+
+```{r L_d_wild_moy,echo=FALSE}
+#Pour Openbugs
+print(paste0(round(L_d_wild_moy,3),collapse=","))
+```
+
+**L_d_juv_moy** : Si le secteur est déversé on met NA car sera traité avec la matrice de VC, sinon on calcule la moyenne des L_d_juv sur l'année pour chacun des secteurs.
+
+```{r L_d_juv_moy_calc}
+I_juv_moy<-c(if(sum(I_site_juv_V_calc,na.rm=TRUE)>0){1} else{0},if(sum(I_site_juv_A_calc,na.rm=TRUE)>0){1} else{0},if(sum(I_site_juv_L_calc,na.rm=TRUE)>0){1} else{0},if(sum(I_site_juv_P_calc,na.rm=TRUE)>0){1} else{0})
+
+
+L_d_juv_moy<-c(if(I_juv_moy[1]==1){NA}else{if(mean(L_d_juv_V,na.rm=TRUE)>-6.9){mean(L_d_juv_V,na.rm=TRUE)}else{0}},
+               if(I_juv_moy[2]==1){NA}else{if(mean(L_d_juv_A,na.rm=TRUE)>-6.9){mean(L_d_juv_A,na.rm=TRUE)}else{0}},
+               if(I_juv_moy[3]==1){NA}else{if(mean(L_d_juv_L,na.rm=TRUE)>-6.9){mean(L_d_juv_L,na.rm=TRUE)}else{0}},
+               if(I_juv_moy[4]==1){NA}else{if(mean(L_d_juv_P,na.rm=TRUE)>-6.9){mean(L_d_juv_P,na.rm=TRUE)}else{0}})
+
+
+
+```
+
+L_d_juv_moy :
+```{r L_d_juv_moy,echo=FALSE}
+print(paste0(round(L_d_juv_moy,3),collapse=","))
+```
+
+**L_d_egg_moy** : Pas compris comment ça marchait. 12 premières années en NA car dans temp_model, L_d_egg_moy n'apparait qu'à partir de T=12. J'ai mis au pif proche des valeurs des années antérieures.
+A partir de 2021 je me suis contentée de répéter les mêmes valeurs...
+
+
+**L_d_moy_mn_V**, **L_d_moy_mn_A**, **L_d_moy_mn_L**,**L_d_moy_mn_P**: Matrice de variance/covariance.
+TO DO : voir si possibilité de simplifier le script...
+
+```{r L_d_moy_mn_calc}
+##On a besoin de récupérer K et les I_site_juv mais sur 
+K=nb_pec%>%relocate(secteur_1,secteur_2,secteur_3,secteur_4,annee)
+l=1 # sert si on met à jour plusieurs années. Quand 1 année toujours mettre 1. pour 2021 (mettre 2 pour 2022 correspond 1ere ou 2eme ligne des I_site_juv_V,A,L,P)
+
+
+L_d_wild_V_comp<-array(NA,c(T,ncol(data1)))
+
+	if (K[(annee-1993),1]>0){ 
+		for (i in 1:(K[(annee-1993),1])){ #ATTENTION K commence à 1994 car on a récupéré nb_pec
+			nb0<-if(is.na(data1[(annee-1974),i])){NA} else if(data1[(annee-1974),i]==0){-6.90}else{log10(data1[(annee-1974),i]/222)/1.1} #data1 commence à 1975
+			L_d_wild_V_comp[(annee-1974),i]<-if(is.na(nb0)){NA}else{log10(0.85*exp(nb0))}
+		}
+	}else {L_d_wild_V_comp[(annee-1974),]<-rep(NA,ncol(data1))}	
+
+L_d_wild_A_comp<-array(NA,c(T,ncol(data2)))
+
+	if (K[(annee-1993),2]>0){
+		for (i in 1:K[(annee-1993),2]){
+			nb0<-if(is.na(data2[(annee-1974),i])){NA} else if (data2[(annee-1974),i]==0){-6.90}else{log10(data2[(annee-1974),i]/222)/1.1}
+			L_d_wild_A_comp[(annee-1974),i]<-if(is.na(nb0)){NA}else{log10(0.85*exp(nb0))}
+		}
+	}else {L_d_wild_A_comp[(annee-1974),]<-rep(NA,ncol(data2))}	
+
+
+L_d_wild_L_comp<-array(NA,c(T,ncol(data3)))
+
+	if (K[(annee-1993),3]>0){
+		for (i in 1:K[(annee-1993),3]){
+			nb0<-if(is.na(data3[(annee-1974),i])){NA} else if (data3[(annee-1974),i]==0){-6.90}else{log10(data3[(annee-1974),i]/222)/1.1}
+			L_d_wild_L_comp[(annee-1974),i]<-if(is.na(nb0)){NA}else{log10(0.85*exp(nb0))}
+		}
+	}else {L_d_wild_L_comp[(annee-1974),]<-rep(NA,ncol(data3))}	
+
+
+L_d_wild_P_comp<-array(NA,c(T,ncol(data4)))
+
+	if (K[(annee-1993),4]>0){
+		for (i in 1:K[(annee-1993),4]){
+			nb0<-if(is.na(data4[(annee-1974),i])){NA} else if (data4[(annee-1974),i]==0){-6.90}else{log10(data4[(annee-1974),i]/222)/1.1}
+			L_d_wild_P_comp[(annee-1974),i]<-if(is.na(nb0)){NA}else{log10(0.85*exp(nb0))}
+		}
+	}else {L_d_wild_P_comp[(annee-1974),]<-rep(NA,ncol(data4))}	
+
+
+L_d_wild_moy_comp<-array(NA,c(T,4))
+for(t in 2:T){ #commence à 2 car 1ere année =NA partout
+	L_d_wild_moy_comp[t,1]<-ifelse(is.na(mean(L_d_wild_V_comp[t,],na.rm=TRUE)),-6.9,ifelse(mean(L_d_wild_V_comp[t,],na.rm=TRUE)>-6.9,mean(L_d_wild_V_comp[t,],na.rm=TRUE),-6.9))
+	L_d_wild_moy_comp[t,2]<-ifelse(is.na(mean(L_d_wild_A_comp[t,],na.rm=TRUE)),-6.9,ifelse(mean(L_d_wild_A_comp[t,],na.rm=TRUE)>-6.9,mean(L_d_wild_A_comp[t,],na.rm=TRUE),-6.9))
+	L_d_wild_moy_comp[t,3]<-ifelse(is.na(mean(L_d_wild_L_comp[t,],na.rm=TRUE)),-6.9,ifelse(mean(L_d_wild_L_comp[t,],na.rm=TRUE)>-6.9,mean(L_d_wild_L_comp[t,],na.rm=TRUE),-6.9))
+	L_d_wild_moy_comp[t,4]<-ifelse(is.na(mean(L_d_wild_P_comp[t,],na.rm=TRUE)),-6.9,ifelse(mean(L_d_wild_P_comp[t,],na.rm=TRUE)>-6.9,mean(L_d_wild_P_comp[t,],na.rm=TRUE),-6.9))
+}
+
+###on calcule les L_d_juv
+#on rassemblre les I_site_juv_calc
+I_site_juv_V<-I_site_juv_V_calc
+I_site_juv_A<-I_site_juv_A_calc
+I_site_juv_L<-I_site_juv_L_calc
+I_site_juv_P<-I_site_juv_P_calc
+
+L_d_juv_V_comp<-array(NA,c(T,ncol(data1)))
+
+	if (K[(annee-1993),1]>0){
+		for (i in 1:K[(annee-1993),1]){
+			nb0<-if(is.na(data1[(annee-1974),i])){NA} else if (data1[(annee-1974),i]==0){-6.90}else{log10(data1[(annee-1974),i]/222)/1.1}
+			L_d_juv_V_comp[(annee-1974),i]<-if(I_site_juv_V[i]==0){-6.90}else{I_site_juv_V[i]*log10(0.22*exp(nb0))}
+		}
+	}else {L_d_juv_V_comp[(annee-1974),]<-rep(NA,ncol(data1))}	
+
+L_d_juv_A_comp<-array(NA,c(T,ncol(data2)))
+
+	if (K[(annee-1993),2]>0){
+		for (i in 1:K[(annee-1993),2]){
+			nb0<-if(is.na(data2[(annee-1974),i])){NA} else if (data2[(annee-1974),i]==0){-6.90}else{log10(data2[(annee-1974),i]/222)/1.1}
+			L_d_juv_A_comp[(annee-1974),i]<-if(I_site_juv_A[i]==0){-6.90}else{I_site_juv_A[i]*log10(0.22*exp(nb0))}
+		}
+	}else {L_d_juv_A_comp[(annee-1974),]<-rep(NA,ncol(data2))}	
+
+
+L_d_juv_L_comp<-array(NA,c(T,ncol(data3)))
+
+	if (K[(annee-1993),3]>0){
+		for (i in 1:K[(annee-1993),3]){
+			nb0<-if(is.na(data3[(annee-1974),i])){NA} else if (data3[(annee-1974),i]==0){-6.90}else{log10(data3[(annee-1974),i]/222)/1.1}
+			L_d_juv_L_comp[(annee-1974),i]<-if(I_site_juv_L[i]==0){-6.90}else{I_site_juv_L[i]*log10(0.22*exp(nb0))}
+		}
+	}else {L_d_juv_L_comp[(annee-1974),]<-rep(NA,ncol(data3))}	
+
+L_d_juv_P_comp<-array(NA,c(T,ncol(data4)))
+
+	if (K[(annee-1993),4]>0){
+		for (i in 1:K[(annee-1993),4]){
+			nb0<-if(is.na(data4[(annee-1974),i])){NA} else if (data4[(annee-1974),i]==0){-6.90}else{log10(data4[(annee-1974),i]/222)/1.1}
+			L_d_juv_P_comp[(annee-1974),i]<-if(I_site_juv_P[i]==0){-6.90}else{I_site_juv_P[i]*log10(0.22*exp(nb0))}
+		}
+	}else {L_d_juv_P_comp[(annee-1974),]<-rep(NA,ncol(data4))}	
+
+
+L_d_juv_moy_comp<-array(NA,c(T,4))
+
+for(t in 2:T){ #commence à 2 car 1ere année =NA partout
+	L_d_juv_moy_comp[t,1]<-ifelse(is.na(mean(L_d_juv_V_comp[t,],na.rm=TRUE)),-6.9,ifelse(mean(L_d_juv_V_comp[t,],na.rm=TRUE)>-6.9,mean(L_d_juv_V_comp[t,],na.rm=TRUE),-6.9))
+	L_d_juv_moy_comp[t,2]<-ifelse(is.na(mean(L_d_juv_A_comp[t,],na.rm=TRUE)),-6.9,ifelse(mean(L_d_juv_A_comp[t,],na.rm=TRUE)>-6.9,mean(L_d_juv_A_comp[t,],na.rm=TRUE),-6.9))
+	L_d_juv_moy_comp[t,3]<-ifelse(is.na(mean(L_d_juv_L_comp[t,],na.rm=TRUE)),-6.9,ifelse(mean(L_d_juv_L_comp[t,],na.rm=TRUE)>-6.9,mean(L_d_juv_L_comp[t,],na.rm=TRUE),-6.9))
+	L_d_juv_moy_comp[t,4]<-ifelse(is.na(mean(L_d_juv_P_comp[t,],na.rm=TRUE)),-6.9,ifelse(mean(L_d_juv_P_comp[t,],na.rm=TRUE)>-6.9,mean(L_d_juv_P_comp[t,],na.rm=TRUE),-6.9))
+}
+
+L_d_moy_nm_V<-data.frame(rep(NA,T),rep(NA,T))
+L_d_moy_nm_A<-data.frame(rep(NA,T),rep(NA,T))
+L_d_moy_nm_L<-data.frame(rep(NA,T),rep(NA,T))
+L_d_moy_nm_P<-data.frame(rep(NA,T),rep(NA,T))
+
+#on rassemble I_juv_moy (pour 2021 et 2022)
+#I_juv_moy<-rbind(I_juv_moy_21,I_juv_moy)
+
+for (t in 2:T){
+	L_d_moy_nm_V[t,]<-data.frame(L_d_wild_moy=ifelse(I_juv_moy[1]==0,NA,L_d_wild_moy_comp[t,1]),L_d_juv_moy=ifelse(I_juv_moy[1]==0,NA,L_d_juv_moy_comp[t,1]))
+	L_d_moy_nm_A[t,]<-data.frame(L_d_wild_moy=ifelse(I_juv_moy[2]==0,NA,L_d_wild_moy_comp[t,2]),L_d_juv_moy=ifelse(I_juv_moy[2]==0,NA,L_d_juv_moy_comp[t,2]))
+	L_d_moy_nm_L[t,]<-data.frame(L_d_wild_moy=ifelse(I_juv_moy[3]==0,NA,L_d_wild_moy_comp[t,3]),L_d_juv_moy=ifelse(I_juv_moy[3]==0,NA,L_d_juv_moy_comp[t,3]))
+	L_d_moy_nm_P[t,]<-data.frame(L_d_wild_moy=ifelse(I_juv_moy[4]==0,NA,L_d_wild_moy_comp[t,4]),L_d_juv_moy=ifelse(I_juv_moy[4]==0,NA,L_d_juv_moy_comp[t,4]))
+	
+}
+
+```
+
+L_d_moy_nm_V :
+```{r L_d_moy_nm_V,echo=FALSE}
+print(paste0(L_d_moy_nm_V[T,],collapse=","))
+```
+
+L_d_moy_nm_L (si aucun déversement sur le secteur et que c'est la dernière année on ne met rien dans les init):
+```{r L_d_moy_nm_L,echo=FALSE}
+print(paste0(L_d_moy_nm_L[T,],collapse=","))
+```
+
+L_d_moy_nm_P :
+```{r L_d_moy_nm_P,echo=FALSE}
+print(paste0(L_d_moy_nm_P[T,],collapse=","))
+```
+
+
+**I_mm** : Indicatrice modèle de mélange pour les bonnes (=0) et les mauvaises (=1). Ces inits ont été définis en reprenant le graphique des res_vichy standardisés. Quand on est en dessous de 0 (=mauvaise année) on met 1, quand au dessus de 0 (=bonne année) on met 0.
+Quand on veut mettre à jour le modèle, on n'a pas encore accès à ce graphique des résidus à Vichy. En première approche, on met 1 (mauvaise année) quand l'effectif à Vichy est inférieur à la moyenne de la série et on met 0 (bonne année) quand il est supérieur ou égal.
+
+```{r I_mm}
+
+N_yr<-N$eff_station[N$station=="Vichy" & N$année_migration==annee]
+if(N_yr<mean(N$eff_station[N$station=="Vichy" & N$année_migration<annee])){I_mm=1}else{I_mm=0}
+print(I_mm)
+```
+En 2021 et 2022, les comptages sont inférieurs à la moyenne de la série. On met "1" pour ces 2 années.
+

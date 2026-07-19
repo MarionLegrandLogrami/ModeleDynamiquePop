@@ -1,0 +1,2451 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage[utf8]{inputenc} %encodage du fichier source
+\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf) 
+\usepackage[french]{babel}
+\usepackage{float}
+\usepackage[document]{ragged2e} % pour que le texte soit aligné à gauche
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage{amsmath} % equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption} % pour les subfigures
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\pagestyle{empty}
+
+
+\title{Projection_Q_netcdf.Rnw}
+\author{Marion LEGRAND}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\maketitle
+
+<< init, echo=FALSE, eval=TRUE,results=hide >>=
+library(stringr)
+library(dplyr)
+library(ncdf4)
+library(ggplot2)
+library(lubridate)
+library(DBI) #pour connexion base de données
+library(RPostgres) #pour connexion base de données
+library(coda)
+library(stringr)
+library(ggpubr)
+library(tidyr)
+library(purrr)
+library(forcats)
+library(scales)
+
+datawd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/co-variables_env/projection_climatique/"
+imgwd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2024_06/Explore2/"
+tabwd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2024_06/Explore2/"
+
+T=49
+#plusieurs modèles narratifs :
+# + modèle 1 = CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63 / ADAMONT / C-TRIP
+# + modèle 5 = ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05 / ADAMONT / C-TRIP
+# + modèle 6 = MOHC-HadGEM2-ES / CNRM-ALADIN63 / ADAMONT / C-TRIP
+# + modèle 7 = MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17 / ADAMONT / C-TRIP
+
+
+options(
+		host= decrypt_string(hostserver, mainpass2),
+		password= decrypt_string(passwordserver, mainpass2),
+		user= decrypt_string(userserver, mainpass2),
+		port= 5432 )
+
+con_bd_envir <- dbConnect(Postgres(), 
+		dbname="bd_envir", 
+		host=getOption("host"),
+		port=getOption("port"), 
+		user= getOption("user"), 
+		password= getOption("password"))
+
+#on charge le txt des données du modèle
+path_model<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+source(str_c(path_model,"data_model.R"))
+
+@
+
+<< fonction_netcdf, echo=FALSE, eval=TRUE,results=hide >>=
+#station : 
+# Vieille-Vrioude = K233081001
+# Prades = K224082001
+#Lempdes sur alagnon = K259301001
+#Montjean-sur-Loire = M530001010
+
+#station <- c('K224082001','K233081001','K259301001','M530001010')
+
+#fnct_netcdf <- function(station){
+#	# Lister les dossiers (CTRIP, EROS, ORCHIDEE, SMASH)
+#	dossiers <- list.files(datawd, full.names = FALSE)
+#	# Initialiser une liste pour stocker les chemins
+#	path <- c()
+#	# Boucler sur chaque dossier et récupérer les chemins des fichiers
+#		for (dossier in dossiers) {
+#			# Construire le chemin complet vers le dossier
+#			chemin_dossier <- file.path(gsub("/+$", "", datawd), dossier)
+#			
+#			# Récupérer les fichiers dans ce dossier
+#			fichiers <- list.files(chemin_dossier, full.names = TRUE)
+#			fichiers <- sub(paste0(gsub("/+$", "", datawd), "/"), "", fichiers)
+#			# Ajouter les chemins complets des fichiers à la variable `path`
+#			path <- c(path, fichiers)
+#		}
+#	for (i in 1: length(path)){
+#		data <- nc_open(str_c(datawd,path[i]))
+#		# Extraire des variables
+#		sta <- ncvar_get(data, "code")
+#		debit <- ncvar_get(data,"debit")
+#		indices_specifiques <- which(sta %in% station)
+#		temps_vals <- ncvar_get(data, "time")
+#		time_units <- ncatt_get(data, "time", "units")$value
+#		date_reference <- as.Date(sub("days since ", "", time_units))
+#		dates <- date_reference + temps_vals
+#		debit_station <- as.data.frame(debit[indices_specifiques,])
+#		# Créer un tableau avec les dates et les débits
+#		tab_data <- data.frame(date = rep(dates, each = length(indices_specifiques)),
+#				station = rep(sta[indices_specifiques], each = ncol(debit_station)),
+#				debit = as.vector(t(debit_station)),
+#				mod_hydro = rep(dirname(path[i]), times = ncol(debit_station)),
+#				mod_narratif = rep(str_c(strsplit(path[i], "_")[[1]][3]," / ",strsplit(path[i], "_")[[1]][6]), times = ncol(debit_station)))
+#		 
+#		if(i==1){tab_def <- tab_data}else{tab_def <- rbind(tab_def,tab_data)}
+#	}
+#	tab_def <- tab_def %>%
+#			mutate(nom_station = case_when(
+#							station == "K224082001" ~ "Prades",
+#							station == "K233081001" ~ "Vieille-Brioude",
+#							station == "K259301001" ~ "Lempdes",  # Remplacez par le nom approprié
+#							station == "M530001010" ~ "Montjean",   # Remplacez par le nom approprié
+#							TRUE ~ "Autre"  # Valeur par défaut si aucune correspondance n'est trouvée
+#					),
+#					num_narratif = case_when (
+#							mod_narratif == "CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" ~ 1,
+#							mod_narratif == "ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" ~ 5,
+#							mod_narratif == "MOHC-HadGEM2-ES / CNRM-ALADIN63" ~ 6,
+#							mod_narratif == "MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" ~ 7,
+#							TRUE ~ NA_real_))
+#	return(tab_def)
+#}
+
+###
+
+fnct_netcdf <- function(station){
+	# Lister les dossiers (CTRIP, EROS, ORCHIDEE, SMASH)
+	dossiers <- list.files(datawd, full.names = FALSE)
+	# Initialiser une liste pour stocker les chemins
+	path <- c()
+	# Boucler sur chaque dossier et récupérer les chemins des fichiers
+	for (dossier in dossiers) {
+		# Construire le chemin complet vers le dossier
+		chemin_dossier <- file.path(gsub("/+$", "", datawd), dossier)
+		
+		# Récupérer les fichiers dans ce dossier
+		fichiers <- list.files(chemin_dossier, full.names = TRUE)
+		fichiers <- sub(paste0(gsub("/+$", "", datawd), "/"), "", fichiers)
+		# Ajouter les chemins complets des fichiers à la variable `path`
+		path <- c(path, fichiers)
+	}
+	for (i in 1: length(path)){
+		for (j in 1:length(station)){
+			data <- nc_open(str_c(datawd,path[i]))
+			# Extraire des variables
+			sta <- ncvar_get(data, "code")
+			debit <- ncvar_get(data,"debit")
+			indices_specifiques <- which(sta %in% station[j])
+			temps_vals <- ncvar_get(data, "time")
+			time_units <- ncatt_get(data, "time", "units")$value
+			date_reference <- as.Date(sub("days since ", "", time_units))
+			dates <- date_reference + temps_vals
+			debit_station <- as.data.frame(debit[indices_specifiques,])
+			# Créer un tableau avec les dates et les débits
+			tab_data <- data.frame(date = dates,
+					station = rep(sta[indices_specifiques], each = ncol(debit_station)),
+					debit = as.vector(t(debit_station)),
+					mod_hydro = rep(dirname(path[i]), times = ncol(debit_station)),
+					mod_narratif = rep(str_c(strsplit(path[i], "_")[[1]][3]," / ",strsplit(path[i], "_")[[1]][6]), times = ncol(debit_station)))
+			if(j==1){tab_temp <- tab_data}else{tab_temp <- rbind(tab_temp,tab_data)}
+		}
+		if(i==1){tab_def <- tab_temp}else{tab_def <- rbind(tab_def,tab_temp)}
+	}
+	tab_def <- tab_def %>%
+			mutate(nom_station = case_when(
+							station == "K224082001" ~ "Prades",
+							station == "K233081001" ~ "Vieille-Brioude",
+							station == "K259301001" ~ "Lempdes",  # Remplacez par le nom approprié
+							station == "M530001010" ~ "Montjean",   # Remplacez par le nom approprié
+							TRUE ~ "Autre"  # Valeur par défaut si aucune correspondance n'est trouvée
+					),
+					num_narratif = case_when (
+							mod_narratif == "CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" ~ 1,
+							mod_narratif == "ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" ~ 5,
+							mod_narratif == "MOHC-HadGEM2-ES / CNRM-ALADIN63" ~ 6,
+							mod_narratif == "MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" ~ 7,
+							TRUE ~ NA_real_))
+	return(tab_def)
+}
+
+@
+
+<< data_netcdf, echo=FALSE, eval=FALSE,results=hide >>=	
+#on applique la fonction pour récupérer toutes les données sur les stations d'intérêt sur la période historique et future
+
+data_netcdf <- fnct_netcdf(station=c('K224082001','K233081001','K259301001','M530001010')) #3 477 152
+#on vérifie qu'on a bien 4 modèle hydrologique et 4 modèle narratif pour chaque station
+tata <- data_netcdf %>%
+		group_by(station, nom_station) %>%
+		summarise(
+				nb_mod_hydro = n_distinct(mod_hydro),   # Nombre de modèles hydrologiques distincts
+				nb_num_narratif = n_distinct(num_narratif), # Nombre de numéros narratifs distincts
+				date_min = min(date),                   # Date minimale
+				date_max = max(date) ,                   # Date maximale
+				max_debit=max(debit)
+		)
+View(tata)
+#on sauve data pour ne pas perdre de temps à relancer à chaque fois
+save(data_netcdf, file=str_c(datawd,"data_netcdf.RData"))
+@
+
+<< test_analyse_netcdf, echo=FALSE, eval=TRUE,results=hide >>=	
+load(file=str_c(datawd,"data_netcdf.RData"))
+
+ggplot(data_netcdf, aes(x = date, y = debit, color = mod_narratif, linetype = mod_hydro)) +
+		geom_line() + 
+		facet_wrap(~ station,ncol = 1,scale="free") + 
+		labs(
+				title = "Débits par station avec mod_hydro et mod_narratif",
+				x = "Date",
+				y = "Débit (m3/s)",
+				color = "Modèle Narratif",
+				linetype = "Modèle Hydrologique"
+		) +
+		theme_minimal() +
+		theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "bottom")
+#=====================================================================================================
+#on travaille station par station
+#on sort un tableau avec pour chaque station, mod_hydro, mod_narratif, le débit moyen au printemps
+#=====================================================================================================
+T=49
+#Vieille-Brioude
+netcdf_q_vb_P<-data_netcdf%>%filter(station=='K233081001',between(month(date),3,6),year(date)<=1974+T)%>%
+		group_by(year(date),mod_hydro,mod_narratif)%>%summarise(qmean=mean(debit,na.rm=TRUE))%>%
+		rename(year=`year(date)`)
+
+#on cherche les données observées
+obs_q_vb_P<-dbGetQuery(con_bd_envir,
+		"select sta_nom,date(mes_date_debut),round(mes_valeur::numeric,1)
+				from public.t_station_sta
+				left join public.t_stationmatos_stm on sta_id =stm_sta_id
+				left join public.t_mesure_mes on mes_stm_id=stm_id
+				where stm_mat_code=2 and sta_nom='Vieille-Brioude'
+				")
+
+#On filtre sur les mois de mars à mai et on calcule la moyenne pour chaque année
+obs_vb<-obs_q_vb_P%>%filter(between(month(date),3,6),year(date)<=1974+T)%>%
+		mutate(mod_hydro='CTRIP',mod_narratif=NA)%>%
+		group_by(year(date),mod_hydro,mod_narratif)%>%summarise(qmean=mean(round,na.rm=TRUE))%>%
+		rename(year=`year(date)`) %>%
+		filter(year>=1950)
+#Pour afficher sur le ggplot on doit dupliquer les données observées autant de fois qu'il y a de mod_hydro
+#il faut juste sur ces données dupliquer mettre à chaque fois un nouveau mod_hydro pour que ggplot puisse afficher
+#les données observées dans le bon facet_wrap
+# Définir les valeurs de mod_hydro (hors CTRIP qu'on a déjà fixé)
+mod_hydro_values <- c("EROS", "ORCHIDEE", "SMASH")
+
+# Répliquer le jeu de données et changer mod_hydro
+obs_vb_replicated <- obs_vb %>%
+		# Créer une liste de data frames en fonction de mod_hydro_values
+		bind_rows(lapply(mod_hydro_values, function(mod) {
+							obs_vb %>%
+									mutate(mod_hydro = mod)  # Modifier mod_hydro
+						}))
+
+
+g <- ggplot(netcdf_q_vb_P, aes(x = year, y = qmean, color = mod_hydro, linetype = mod_narratif)) +
+		geom_line() + 
+		# Ajouter les données observées
+		geom_line(data = obs_vb_replicated, aes(x = year, y = qmean), color = "black", linetype = "solid", size = 0.7) +
+		facet_wrap(~ mod_hydro,ncol = 1) + 
+		labs(
+				title = "Débits à la station de Vieille-Brioude de mars à juin",
+				x = "Annees",
+				y = "Débit (m3/s)",
+				color = "Modèle Hydrologique",
+				linetype = "Modèle Narratif"
+		) +
+		theme_minimal() +
+		theme(axis.text.x = element_text(angle = 45, hjust = 1),
+				legend.position = "bottom",
+				legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+				legend.title = element_text(hjust = 0.5),
+				legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+				plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+		guides(
+				color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+				linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+		)
+
+ggsave(str_c(imgwd,"Explore2_Vieille_brioude_historique.png"), plot = g, width = 10, height = 8, dpi = 300, bg = "white")
+
+@
+
+<< analyse_netcdf_fig, echo=FALSE, eval=TRUE,results=hide >>=	
+
+load(file=str_c(datawd,"data_netcdf.RData")) #le jeu de donnée s'appelle data_netcdf 
+
+#========================================================================================================
+#on fait une boucle qui fait tous les graphs sur les différentes stations hors Montjean traité à part
+#========================================================================================================
+# Liste des noms de stations à interroger
+noms_stations <- c("Vieille-Brioude", "Prades", "Lempdes")  # Ajoutez d'autres noms de station ici
+# Définir les valeurs de mod_hydro (hors CTRIP qu'on a fixé à la main)
+mod_hydro_values <- c("EROS", "ORCHIDEE", "SMASH")
+
+#on récupère les coda du modèle pour avoir les données utilisées dans le modèle
+obs_lempdes_A <- data.frame(sta_nom=rep('Lempdes',length(Q_L_mont_A)),
+						  year=1975:(1974+T),
+						  qmean=Q_L_mont_A,
+						  mod_hydro=rep('CTRIP',length(Q_L_mont_A)),
+						  mod_narratif=rep(NA,length(Q_L_mont_A)))
+obs_lempdes_P <- data.frame(sta_nom=rep('Lempdes',length(Q_L_mont_P)),
+						  year=1975:(1974+T),
+						  qmean=Q_L_mont_P,
+						  mod_hydro=rep('CTRIP',length(Q_L_mont_P)),
+						  mod_narratif=rep(NA,length(Q_L_mont_P)))		
+obs_prades_A <- data.frame(sta_nom=rep('Prades',length(Q_P_mont_A)),
+						  year=1975:(1974+T),
+						  qmean=Q_P_mont_A,
+						  mod_hydro=rep('CTRIP',length(Q_P_mont_A)),
+						  mod_narratif=rep(NA,length(Q_P_mont_A)))
+obs_prades_P <- data.frame(sta_nom=rep('Prades',length(Q_P_mont_P)),
+						  year=1975:(1974+T),
+						  qmean=Q_P_mont_P,
+						  mod_hydro=rep('CTRIP',length(Q_P_mont_P)),
+						  mod_narratif=rep(NA,length(Q_P_mont_P)))	
+obs_vb_A <- data.frame(sta_nom=rep('Vieille-Brioude',length(Q_VB_mont_A)),
+						  year=1975:(1974+T),
+						  qmean=Q_VB_mont_A,
+						  mod_hydro=rep('CTRIP',length(Q_VB_mont_A)),
+						  mod_narratif=rep(NA,length(Q_VB_mont_A)))
+obs_vb_P <- data.frame(sta_nom=rep('Vieille-Brioude',length(Q_VB_mont_P)),
+						  year=1975:(1974+T),
+						  qmean=Q_VB_mont_P,
+						  mod_hydro=rep('CTRIP',length(Q_VB_mont_P)),
+						  mod_narratif=rep(NA,length(Q_VB_mont_P)))	
+				  
+obs_a <- rbind(obs_lempdes_A,obs_prades_A,obs_vb_A)		
+obs_a <- obs_a %>% group_by(sta_nom, mod_hydro, mod_narratif) %>%  # Regrouper uniquement par station, mod_hydro et mod_narratif pour calculer lqmean_cr
+		mutate(	mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+				sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+				lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+		)
+obs_p <- rbind(obs_lempdes_P,obs_prades_P,obs_vb_P)	
+obs_p <- obs_p %>% group_by(sta_nom, mod_hydro, mod_narratif) %>%  # Regrouper uniquement par station, mod_hydro et mod_narratif pour calculer lqmean_cr
+		mutate(	mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+				sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+				lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+		)
+
+# Définir les valeurs de mod_hydro (hors CTRIP qu'on a déjà fixé)
+mod_hydro_values <- c("EROS", "ORCHIDEE", "SMASH")
+mod_narratif_values <- c("MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17", "MOHC-HadGEM2-ES / CNRM-ALADIN63", "CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63","ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05")
+obs_a_replicated <- obs_a %>%
+		# Créer une liste de data frames en fonction de mod_hydro_values
+		bind_rows(lapply(mod_hydro_values, function(mod) {
+							obs_a %>%
+									mutate(mod_hydro = mod)
+						}))
+obs_a_replicated2 <- obs_a %>%
+		# Créer une liste de data frames en fonction de mod_hydro_values
+		bind_rows(lapply(mod_narratif_values, function(mod) {
+							obs_a %>%
+									mutate(mod_narratif = mod)
+						})) %>%
+		filter(!(is.na(mod_narratif)))
+
+obs_p_replicated <- obs_p %>%
+		# Créer une liste de data frames en fonction de mod_hydro_values
+		bind_rows(lapply(mod_hydro_values, function(mod) {
+							obs_p %>%
+									mutate(mod_hydro = mod) 
+						}))
+
+obs_p_replicated2 <- obs_p %>%
+		# Créer une liste de data frames en fonction de mod_hydro_values
+		bind_rows(lapply(mod_narratif_values, function(mod) {
+							obs_p %>%
+									mutate(mod_narratif = mod)
+						})) %>%
+		filter(!(is.na(mod_narratif)))
+
+
+#on agrège le jeu de données netcdf par moyenne sur les mois de mars à juin (on ne prend pas Montjean qui n'est pas sur ces périodes dans le modèle)
+data_p <- data_netcdf %>% filter(between(month(date),3,6),year(date)<=1974+T,nom_station!='Montjean') %>% 
+			group_by (nom_station,year(date),mod_hydro,mod_narratif) %>%
+			summarise(qmean=mean(debit,na.rm=TRUE),.groups = "drop")%>%
+			rename(year=`year(date)`) %>%
+			filter(year>=1950)%>%
+			group_by(nom_station, mod_hydro, mod_narratif) %>%  # Regrouper uniquement par station, mod_hydro et mod_narratif pour calculer lqmean_cr
+			mutate(
+					mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+					sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+					lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+			) 
+#on agrège le jeu de données netcdf par moyenne sur les mois de septembre à novembre (on ne prend pas Montjean qui n'est pas sur ces périodes dans le modèle)
+data_a <- data_netcdf %>% filter(between(month(date),9,11),year(date)<=1974+T,nom_station!='Montjean') %>% 
+			group_by (nom_station,year(date),mod_hydro,mod_narratif) %>%
+			summarise(qmean=mean(debit,na.rm=TRUE),.groups = "drop")%>%
+			rename(year=`year(date)`) %>%
+			filter(year>=1950) %>%
+			group_by(nom_station, mod_hydro, mod_narratif) %>%  # Regrouper uniquement par station, mod_hydro et mod_narratif pour calculer lqmean_cr
+			mutate(
+					mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+					sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+					lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+			)
+#save(data_a,file=str_c(datawd,"data_a.Rdata"))	
+#save(data_p,file=str_c(datawd,"data_p.Rdata"))	
+#save(obs_a_replicated,file=str_c(datawd,"obs_a_replicated.Rdata"))	
+#save(obs_p_replicated,file=str_c(datawd,"obs_p_replicated.Rdata"))	
+#save(obs_a_replicated2,file=str_c(datawd,"obs_a_replicated2.Rdata"))	
+#save(obs_p_replicated2,file=str_c(datawd,"obs_p_replicated2.Rdata"))	
+
+#Pour les graphs avec les projections
+data_proj_p <- data_netcdf %>% filter(between(month(date),3,6),year(date)>=1975,nom_station!='Montjean') %>% 
+		group_by (nom_station,year(date),mod_hydro,mod_narratif) %>%
+		summarise(qmean=mean(debit,na.rm=TRUE),.groups = "drop")%>%
+		rename(year=`year(date)`) %>%
+		filter(year<= (1974+T+20))%>%
+		group_by(nom_station, mod_hydro, mod_narratif) %>%  # Regrouper uniquement par station, mod_hydro et mod_narratif pour calculer lqmean_cr
+		mutate(
+				mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+				sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+				lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+		)
+#on agrège le jeu de données netcdf par moyenne sur les mois de septembre à novembre (on ne prend pas Montjean qui n'est pas sur ces périodes dans le modèle)
+data_proj_a <- data_netcdf %>% filter(between(month(date),9,11),year(date)>=1975,nom_station!='Montjean') %>% 
+		group_by (nom_station,year(date),mod_hydro,mod_narratif) %>%
+		summarise(qmean=mean(debit,na.rm=TRUE),.groups = "drop")%>%
+		rename(year=`year(date)`) %>%
+		filter(year<= (1974+T+20))%>%
+		group_by(nom_station, mod_hydro, mod_narratif) %>%  # Regrouper uniquement par station, mod_hydro et mod_narratif pour calculer lqmean_cr
+		mutate(
+				mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+				sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+				lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+		)
+#save(data_proj_a,file=str_c(datawd,"data_proj_a.Rdata"))	
+#save(data_proj_p,file=str_c(datawd,"data_proj_p.Rdata"))
+#--------------------------------------------------
+# Graph par mod_hydro
+#--------------------------------------------------
+for (i in 1:length(noms_stations)){
+	
+	g_p <- ggplot(data_p %>% filter(nom_station==noms_stations[i]), aes(x = year, y = lqmean_cr, color = mod_hydro, linetype = mod_narratif)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_p_replicated %>% filter(sta_nom==noms_stations[i]), aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.7) +
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de mars à juin"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_printemps_historique.png")), plot = g_p, width = 10, height = 8, dpi = 300, bg = "white")
+	#Automne
+	g_a <- ggplot(data_a %>% filter(nom_station==noms_stations[i]), aes(x = year, y = lqmean_cr, color = mod_hydro, linetype = mod_narratif)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_a_replicated %>% filter(sta_nom==noms_stations[i]), aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.7) +
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de septembre à novembre"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_automne_historique.png")), plot = g_a, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	
+}
+#........................
+#projection sur 20 ans
+#........................
+
+for (i in 1:length(noms_stations)){
+	
+	g_p <- ggplot(data_proj_p %>% filter(nom_station==noms_stations[i]), aes(x = year, y = lqmean_cr, color = mod_hydro, linetype = mod_narratif)) +
+			geom_line() + 
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de mars à juin"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			geom_vline(xintercept = 2024, linetype = "dashed", color = "black", linewidth = 0.5) +  # Ligne verticale à x = 2024
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_printemps_histo_proj20yr.png")), plot = g_p, width = 10, height = 8, dpi = 300, bg = "white")
+	#Automne
+	g_a <- ggplot(data_proj_a %>% filter(nom_station==noms_stations[i]), aes(x = year, y = lqmean_cr, color = mod_hydro, linetype = mod_narratif)) +
+			geom_line() + 
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de septembre à novembre"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			geom_vline(xintercept = 2024, linetype = "dashed", color = "black", linewidth = 0.5) +  # Ligne verticale à x = 2024
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_automne_histo_proj20yr.png")), plot = g_a, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	
+}
+
+#--------------------------------------------------
+# Graph par mod_narratif
+#--------------------------------------------------
+
+for (i in 1:length(noms_stations)){
+	
+	g_p <- ggplot(data_p %>% filter(nom_station==noms_stations[i]), aes(x = year, y = lqmean_cr, color = mod_narratif, linetype = mod_hydro)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_p_replicated2 %>% filter(sta_nom==noms_stations[i]), aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.7) +
+			facet_wrap(~ mod_narratif,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de mars à juin"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					#color = "Modèle Narratif",
+					linetype = "Modèle Hydrologique"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_color_manual(values = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "#F8766D", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "#7CAE00",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "#00BFC4",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "#C77CFF"),
+					labels = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "changements futurs peu marqués", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					color = guide_legend(nrow = 4, order = 2),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 1, order = 1)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_printemps_historique_par narratif.png")), plot = g_p, width = 10, height = 8, dpi = 300, bg = "white")
+	#Automne
+	g_a <- ggplot(data_a %>% filter(nom_station==noms_stations[i]), aes(x = year, y = lqmean_cr, color = mod_narratif, linetype = mod_hydro)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_a_replicated2 %>% filter(sta_nom==noms_stations[i]), aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.7) +
+			facet_wrap(~ mod_narratif,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de septembre à novembre"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Narratif",
+					linetype = "Modèle Hydrologique"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_color_manual(values = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "#F8766D", 
+										  "ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "#7CAE00",
+									      "MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "#00BFC4",
+										  "MOHC-HadGEM2-ES / CNRM-ALADIN63" = "#C77CFF"),
+							   labels = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "changements futurs peu marqués", 
+										  "ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "fort réchauffement et fort assèchement en été (et en annuel)",
+								  		  "MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+										  "MOHC-HadGEM2-ES / CNRM-ALADIN63" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					color = guide_legend(nrow = 4, order = 2),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 1, order = 1)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_automne_historique_par narratif.png")), plot = g_a, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	
+}
+
+#.....................
+#Projection
+#.....................
+for (i in 1:length(noms_stations)){
+	
+	g_p <- ggplot(data_proj_p %>% filter(nom_station==noms_stations[i]), aes(x = year, y = lqmean_cr, color = mod_narratif, linetype = mod_hydro)) +
+			geom_line() + 
+			facet_wrap(~ mod_narratif,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de mars à juin"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Narratif",
+					linetype = "Modèle Hydrologique"
+			) +
+			geom_vline(xintercept = 2024, linetype = "dashed", color = "black", linewidth = 0.5) +  # Ligne verticale à x = 2024
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_color_manual(values = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "#F8766D", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "#7CAE00",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "#00BFC4",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "#C77CFF"),
+					labels = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "changements futurs peu marqués", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					color = guide_legend(nrow = 4, order = 2),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 1, order = 1)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_printemps_histo_proj20y_par_narratif.png")), plot = g_p, width = 10, height = 8, dpi = 300, bg = "white")
+	#Automne
+	g_a <- ggplot(data_proj_a %>% filter(nom_station==noms_stations[i]), aes(x = year, y = lqmean_cr, color = mod_narratif, linetype = mod_hydro)) +
+			geom_line() + 
+			facet_wrap(~ mod_narratif,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de septembre à novembre"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			geom_vline(xintercept = 2024, linetype = "dashed", color = "black", linewidth = 0.5) +  # Ligne verticale à x = 2024
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_color_manual(values = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "#F8766D", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "#7CAE00",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "#00BFC4",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "#C77CFF"),
+					labels = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "changements futurs peu marqués", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					color = guide_legend(nrow = 4, order = 2),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 1, order = 1)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_automne_histo_proj20yr_par_narratif.png")), plot = g_a, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	
+}
+
+@
+
+<< analyse_netcdf_Montjean-sur-Loire, echo=FALSE, eval=TRUE,results=hide >>=	
+
+load(file=str_c(datawd,"data_netcdf.RData")) #le jeu de donnée s'appelle data_netcdf 
+
+#=================================================================================
+#on fait une boucle qui fait tous les graphs sur les différentes stations
+#=================================================================================
+# Liste des noms de stations à interroger
+noms_stations <- c("Montjean")  # Ajoutez d'autres noms de station ici
+# Définir les valeurs de mod_hydro (hors CTRIP qu'on a fixé à la main)
+mod_hydro_values <- c("EROS", "ORCHIDEE", "SMASH")
+
+#on récupère les coda du modèle pour avoir les données utilisées dans le modèle
+obs_montjean_mont <- data.frame(sta_nom=rep('Montjean',length(Q_MSL_mont)),
+						  year=1975:(1974+T),
+						  qmean=Q_MSL_mont,
+						  mod_hydro=rep('CTRIP',length(Q_MSL_mont)),
+						  mod_narratif=rep(NA,length(Q_MSL_mont)))
+obs_montjean_deval <- data.frame(sta_nom=rep('Montjean',length(Q_MSL_deval)),
+						  year=1975:(1974+T),
+						  qmean=Q_MSL_deval,
+						  mod_hydro=rep('CTRIP',length(Q_MSL_deval)),
+						  mod_narratif=rep(NA,length(Q_MSL_deval)))		
+	
+obs_montjean_mont <- obs_montjean_mont %>% group_by(sta_nom, mod_hydro, mod_narratif) %>%  # Regrouper uniquement par station, mod_hydro et mod_narratif pour calculer lqmean_cr
+		mutate(	mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+				sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+				lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+		)
+
+obs_montjean_deval <- obs_montjean_deval %>% group_by(sta_nom, mod_hydro, mod_narratif) %>%  # Regrouper uniquement par station, mod_hydro et mod_narratif pour calculer lqmean_cr
+		mutate(	mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+				sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+				lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+		)
+
+mod_hydro_values <- c("EROS", "ORCHIDEE", "SMASH")
+mod_narratif_values <- c("MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17", "MOHC-HadGEM2-ES / CNRM-ALADIN63", "CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63","ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05")
+obs_montjean_mont_replicated <- obs_montjean_mont %>%
+		# Créer une liste de data frames en fonction de mod_hydro_values
+		bind_rows(lapply(mod_hydro_values, function(mod) {
+							obs_montjean_mont %>%
+									mutate(mod_hydro = mod)  # Modifier mod_hydro
+						}))
+obs_montjean_mont_replicated2 <- obs_montjean_mont %>%
+		# Créer une liste de data frames en fonction de mod_narratif_values
+		bind_rows(lapply(mod_narratif_values, function(mod) {
+							obs_montjean_mont %>%
+									mutate(mod_narratif = mod)  # Modifier mod_hydro
+						})) %>%
+		filter(!(is.na(mod_narratif)))
+
+obs_montjean_deval_replicated <- obs_montjean_deval %>%
+		# Créer une liste de data frames en fonction de mod_hydro_values
+		bind_rows(lapply(mod_hydro_values, function(mod) {
+							obs_montjean_deval %>%
+									mutate(mod_hydro = mod)  # Modifier mod_hydro
+						}))
+obs_montjean_deval_replicated2 <- obs_montjean_deval %>%
+		# Créer une liste de data frames en fonction de mod_narratif_values
+		bind_rows(lapply(mod_narratif_values, function(mod) {
+							obs_montjean_deval %>%
+									mutate(mod_narratif = mod)  # Modifier mod_hydro
+						})) %>%
+		filter(!(is.na(mod_narratif)))
+
+#on aggrège le jeu de données netcdf
+  # pour la montaison du 15 décembre au 15 mars
+  # pour la dévalaison du 15 mars au 15 mai
+
+data_mont <- data_netcdf %>%
+              filter(nom_station == "Montjean",
+                     (month(date) == 12 & day(date) >= 15) | 
+                     (month(date) %in% c(1, 2)) | 
+                     (month(date) == 3 & day(date) <= 15)) %>% 
+      mutate(annee_hydro = ifelse(month(date) == 12, year(date) + 1, year(date))) %>%
+      filter(annee_hydro <= 1974 + T) %>%
+			group_by (nom_station,annee_hydro,mod_hydro,mod_narratif) %>%
+			summarise(qmean=mean(debit,na.rm=TRUE),.groups = "drop")%>%
+			filter(annee_hydro>=1950) %>%
+			group_by(nom_station, mod_hydro, mod_narratif) %>%  
+      mutate(
+					mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+					sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+					lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+			)
+
+data_deval <- data_netcdf %>%
+              filter(nom_station == "Montjean",
+                     year(date) <= 1974 + T,
+                     (month(date) == 3 & day(date) >= 15) | 
+                     (month(date) == 4) | 
+                     (month(date) == 5 & day(date) <= 15)) %>% 
+      mutate(annee_hydro = year(date)) %>%
+			group_by (nom_station,annee_hydro,mod_hydro,mod_narratif) %>%
+			summarise(qmean=mean(debit,na.rm=TRUE),.groups = "drop")%>%
+			filter(annee_hydro>=1950) %>%
+			group_by(nom_station, mod_hydro, mod_narratif) %>%  
+      mutate(
+					mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+					sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+					lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+			)
+
+#save(data_mont,file=str_c(datawd,"data_mont.Rdata"))	
+#save(data_deval,file=str_c(datawd,"data_deval.Rdata"))	
+#save(obs_montjean_mont_replicated,file=str_c(datawd,"obs_montjean_mont_replicated.Rdata"))	
+#save(obs_montjean_deval_replicated,file=str_c(datawd,"obs_montjean_deval_replicated.Rdata"))	
+#save(obs_montjean_mont_replicated2,file=str_c(datawd,"obs_montjean_mont_replicated2.Rdata"))	
+#save(obs_montjean_deval_replicated2,file=str_c(datawd,"obs_montjean_deval_replicated2.Rdata"))	
+
+#Pour les graphs avec les projections
+data_proj_mont <- data_netcdf %>% 
+                  filter(nom_station == "Montjean",
+                     (month(date) == 12 & day(date) >= 15) | 
+                     (month(date) %in% c(1, 2)) | 
+                     (month(date) == 3 & day(date) <= 15)) %>%
+                  mutate(annee_hydro = ifelse(month(date) == 12, year(date) + 1, year(date))) %>%
+                  filter(annee_hydro >=1975) %>%
+              		group_by (nom_station,annee_hydro,mod_hydro,mod_narratif) %>%
+              		summarise(qmean=mean(debit,na.rm=TRUE),.groups = "drop")%>%
+              		filter(annee_hydro<= (1974+T+20))%>%
+              		group_by(nom_station, mod_hydro, mod_narratif) %>%
+              		mutate(
+              				mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+              				sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+              				lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+              		)
+
+data_proj_deval <- data_netcdf %>% 
+                  filter(nom_station == "Montjean",
+                     year(date) >= 1975,
+                     (month(date) == 3 & day(date) >= 15) | 
+                     (month(date) == 4) | 
+                     (month(date) == 5 & day(date) <= 15)) %>%
+                  mutate(annee_hydro = year(date)) %>%
+              		group_by (nom_station,annee_hydro,mod_hydro,mod_narratif) %>%
+              		summarise(qmean=mean(debit,na.rm=TRUE),.groups = "drop")%>%
+              		filter(annee_hydro<= (1974+T+20))%>%
+              		group_by(nom_station, mod_hydro, mod_narratif) %>%
+              		mutate(
+              				mean_log_qmean = mean(log(qmean), na.rm = TRUE),  # Moyenne log(qmean) sans tenir compte de l'année
+              				sd_log_qmean = sd(log(qmean), na.rm = TRUE),      # Écart-type log(qmean) sans tenir compte de l'année
+              				lqmean_cr = (log(qmean) - mean_log_qmean) / sd_log_qmean # Standardisation
+              		)
+#save(data_proj_mont,file=str_c(datawd,"data_proj_mont.Rdata"))	
+#save(data_proj_deval,file=str_c(datawd,"data_proj_deval.Rdata"))	
+#--------------------------------------------------
+# Graph par mod_hydro
+#--------------------------------------------------
+g_mont <- ggplot(data_mont, aes(x = annee_hydro, y = lqmean_cr, color = mod_hydro, linetype = mod_narratif)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_montjean_mont_replicated, aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.7) +
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = "Débits à la station de Montjean-sur-Loire du 15 décembre au 15 mars",
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_Montjean_log_cr_montaison_historique.png"), plot = g_mont, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	#Dévalaison
+g_deval <- ggplot(data_deval, aes(x = annee_hydro, y = lqmean_cr, color = mod_hydro, linetype = mod_narratif)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_montjean_deval_replicated, aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.7) +
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = "Débits à la station de Montjean-sur-Loire du 15 mars au 15 mai",
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_Montjean_log_cr_deval_historique.png"), plot = g_deval, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	
+#........................
+#projection sur 20 ans
+#........................
+
+	
+g_mont <- ggplot(data_proj_mont, aes(x = annee_hydro, y = lqmean_cr, color = mod_hydro, linetype = mod_narratif)) +
+			geom_line() + 
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = "Débits à la station de Montjean-sur-Loire de 15 décembre au 15 mars",
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			geom_vline(xintercept = 2024, linetype = "dashed", color = "black", linewidth = 0.5) +  # Ligne verticale à x = 2024
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_Montjean_log_cr_montaison_histo_proj20yr.png"), plot = g_mont, width = 10, height = 8, dpi = 300, bg = "white")
+	#dévalaison
+	g_deval <- ggplot(data_proj_deval, aes(x = annee_hydro, y = lqmean_cr, color = mod_hydro, linetype = mod_narratif)) +
+			geom_line() + 
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = "Débits à la station de Montjean-sur-Loire du 15 mars au 15 mai",
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			geom_vline(xintercept = 2024, linetype = "dashed", color = "black", linewidth = 0.5) +  # Ligne verticale à x = 2024
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 2, order = 2)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_Montjean_log_cr_deval_histo_proj20yr.png"), plot = g_deval, width = 10, height = 8, dpi = 300, bg = "white")
+	
+
+
+#--------------------------------------------------
+# Graph par mod_narratif
+#--------------------------------------------------
+
+
+	g_mont <- ggplot(data_mont, aes(x = annee_hydro, y = lqmean_cr, color = mod_narratif, linetype = mod_hydro)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_montjean_mont_replicated2, aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.7) +
+			facet_wrap(~ mod_narratif,ncol = 1) + 
+			labs(
+					title = "Débits à la station de Montjean-sur-Loire du 15 décembre au 15 mars",
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					#color = "Modèle Narratif",
+					linetype = "Modèle Hydrologique"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_color_manual(values = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "#F8766D", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "#7CAE00",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "#00BFC4",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "#C77CFF"),
+					labels = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "changements futurs peu marqués", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					color = guide_legend(nrow = 4, order = 2),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 1, order = 1)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_Montjean_log_cr_montaison_historique_par narratif.png"), plot = g_mont, width = 10, height = 8, dpi = 300, bg = "white")
+	#Devalaison
+	g_deval <- ggplot(data_deval, aes(x = annee_hydro, y = lqmean_cr, color = mod_narratif, linetype = mod_hydro)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_montjean_deval_replicated2, aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.7) +
+			facet_wrap(~ mod_narratif,ncol = 1) + 
+			labs(
+					title = "Débits à la station de Montjean-sur-Loire du 15 mars au 15 mai",
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Narratif",
+					linetype = "Modèle Hydrologique"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_color_manual(values = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "#F8766D", 
+										  "ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "#7CAE00",
+									      "MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "#00BFC4",
+										  "MOHC-HadGEM2-ES / CNRM-ALADIN63" = "#C77CFF"),
+							   labels = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "changements futurs peu marqués", 
+										  "ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "fort réchauffement et fort assèchement en été (et en annuel)",
+								  		  "MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+										  "MOHC-HadGEM2-ES / CNRM-ALADIN63" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					color = guide_legend(nrow = 4, order = 2),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 1, order = 1)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_Montjean_log_cr_deval_historique_par narratif.png"), plot = g_deval, width = 10, height = 8, dpi = 300, bg = "white")
+
+
+#.....................
+#Projection
+#.....................
+
+	g_mont <- ggplot(data_proj_mont, aes(x = annee_hydro, y = lqmean_cr, color = mod_narratif, linetype = mod_hydro)) +
+			geom_line() + 
+			facet_wrap(~ mod_narratif,ncol = 1) + 
+			labs(
+					title = "Débits à la station de Montjean-sur-Loire du 15 décembre au 15 mars",
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Narratif",
+					linetype = "Modèle Hydrologique"
+			) +
+			geom_vline(xintercept = 2024, linetype = "dashed", color = "black", linewidth = 0.5) +  # Ligne verticale à x = 2024
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_color_manual(values = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "#F8766D", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "#7CAE00",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "#00BFC4",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "#C77CFF"),
+					labels = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "changements futurs peu marqués", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					color = guide_legend(nrow = 4, order = 2),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 1, order = 1)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_Montjean_log_cr_montaison_histo_proj20y_par_narratif.png"), plot = g_mont, width = 10, height = 8, dpi = 300, bg = "white")
+	#Devalaison
+	g_deval <- ggplot(data_proj_deval, aes(x = annee_hydro, y = lqmean_cr, color = mod_narratif, linetype = mod_hydro)) +
+			geom_line() + 
+			facet_wrap(~ mod_narratif,ncol = 1) + 
+			labs(
+					title = "Débits à la station de Montjean-sur-Loire du 15 mars au 15 mai",
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique",
+					linetype = "Modèle Narratif"
+			) +
+			geom_vline(xintercept = 2024, linetype = "dashed", color = "black", linewidth = 0.5) +  # Ligne verticale à x = 2024
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_color_manual(values = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "#F8766D", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "#7CAE00",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "#00BFC4",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "#C77CFF"),
+					labels = c("CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" = "changements futurs peu marqués", 
+							"ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"MOHC-HadGEM2-ES / CNRM-ALADIN63" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					color = guide_legend(nrow = 4, order = 2),  # Légende des couleurs sur 2 lignes
+					linetype = guide_legend(nrow = 1, order = 1)  # Légende des types de ligne sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_Montjean_log_cr_deval_histo_proj20yr_par_narratif.png"), plot = g_deval, width = 10, height = 8, dpi = 300, bg = "white")
+
+
+@
+
+<< analyse_netcdf_etienne, echo=FALSE, eval=TRUE,results=hide >>=	
+# regarder les quantiles des valeurs observés vs prédites (avec des boxplot ou des qqplot) 
+# et calculer les coefficients d’autocorrélation d’ordre 1. Cela devrait nous permettre de compléter notre jugement 
+# sur la forme des distributions et les patrons temporels associés.	
+
+load(file=str_c(datawd,"data_a.Rdata"))	
+load(file=str_c(datawd,"data_p.Rdata"))
+load(file=str_c(datawd,"data_mont.Rdata"))	
+load(file=str_c(datawd,"data_deval.Rdata"))	
+load(file=str_c(datawd,"obs_a_replicated.Rdata"))	
+load(file=str_c(datawd,"obs_p_replicated.Rdata"))	
+load(file=str_c(datawd,"obs_montjean_mont_replicated.Rdata"))	
+load(file=str_c(datawd,"obs_montjean_deval_replicated.Rdata"))	
+load(file=str_c(datawd,"obs_a_replicated2.Rdata"))	
+load(file=str_c(datawd,"obs_p_replicated2.Rdata"))
+load(file=str_c(datawd,"obs_montjean_mont_replicated2.Rdata"))
+load(file=str_c(datawd,"obs_montjean_deval_replicated2.Rdata"))
+
+# Liste des noms de stations à interroger
+noms_stations <- c("Vieille-Brioude", "Prades", "Lempdes")  # Ajoutez d'autres noms de station ici
+
+
+#Pour les figures on a besoin de jeu de données rassemblant données observées et prédites
+data_p_all <- data_p %>% select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>% 
+		mutate(type="pred",
+				num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+						mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+						mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+						mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7)) %>%
+		rbind(obs_p_replicated %>% rename(nom_station=sta_nom) %>% select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>% mutate(type="obs",num_narratif=NA)) %>%
+		mutate(
+				type_all = case_when(
+						is.na(num_narratif) ~ type,  # Pas de num_narratif si NA
+						TRUE ~ str_c(type, "_", num_narratif)  # Concaténation complète
+				)
+		)
+
+data_a_all <- data_a %>% select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>% 
+		mutate(type="pred",
+				num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+						mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+						mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+						mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7)) %>%
+		rbind(obs_a_replicated %>% rename(nom_station=sta_nom) %>% select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>% mutate(type="obs",num_narratif=NA)) %>%
+		mutate(
+				type_all = case_when(
+						is.na(num_narratif) ~ type,  # Pas de num_narratif si NA
+						TRUE ~ str_c(type, "_", num_narratif)  # Concaténation complète
+				)
+		)
+
+data_mont_all <- data_mont %>% select (nom_station, annee_hydro, mod_hydro, mod_narratif,lqmean_cr) %>% 
+    rename(year=annee_hydro) %>%
+		mutate(type="pred",
+				num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+						mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+						mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+						mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7)) %>%
+		rbind(obs_montjean_mont_replicated %>% rename(nom_station=sta_nom) %>% select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>% mutate(type="obs",num_narratif=NA)) %>%
+		mutate(
+				type_all = case_when(
+						is.na(num_narratif) ~ type,  # Pas de num_narratif si NA
+						TRUE ~ str_c(type, "_", num_narratif)  # Concaténation complète
+				)
+		)
+
+data_deval_all <- data_deval %>% select (nom_station, annee_hydro, mod_hydro, mod_narratif,lqmean_cr) %>% 
+    rename(year=annee_hydro) %>%
+		mutate(type="pred",
+				num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+						mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+						mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+						mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7)) %>%
+		rbind(obs_montjean_deval_replicated %>% rename(nom_station=sta_nom) %>% select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>% mutate(type="obs",num_narratif=NA)) %>%
+		mutate(
+				type_all = case_when(
+						is.na(num_narratif) ~ type,  # Pas de num_narratif si NA
+						TRUE ~ str_c(type, "_", num_narratif)  # Concaténation complète
+				)
+		)
+
+#hue_pal()(n = 5) #pour connaitre par défaut les couleurs utilisées dans les graphs
+
+for (i in 1:length(noms_stations)){
+	g_p <-ggplot(data_p_all%>% filter(nom_station==noms_stations[i]), aes(x = type_all, y = lqmean_cr, fill = type_all)) +
+			geom_boxplot() +
+			facet_wrap(~mod_hydro)+
+			labs(title = str_c("Débits au printemps à ",noms_stations[i]),
+					y = "Values", x = "") +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_fill_manual(values = c("obs" = "#F8766D", 
+							"pred_1" = "#A3A500", 
+							"pred_5" = "#00BF7D",
+							"pred_7" = "#E76BF3",
+							"pred_6" = "#00B0F6"),
+					labels = c("obs" = "valeurs observées",
+							"pred_1" = "changements futurs peu marqués", 
+							"pred_5" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"pred_7" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"pred_6" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					fill = guide_legend(nrow = 5)  # Légende des couleurs sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_boxplot_",noms_stations[i],"_printemps.png")), plot = g_p, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	g_a <- ggplot(data_a_all%>% filter(nom_station==noms_stations[i]), aes(x = type_all, y = lqmean_cr, fill = type_all)) +
+			geom_boxplot() +
+			facet_wrap(~mod_hydro)+
+			labs(title = str_c("Débits à l'automne à ",noms_stations[i]),
+					y = "Values", x = "") +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_fill_manual(values = c("obs" = "#F8766D", 
+							"pred_1" = "#A3A500", 
+							"pred_5" = "#00BF7D",
+							"pred_7" = "#E76BF3",
+							"pred_6" = "#00B0F6"),
+					labels = c("obs" = "valeurs observées",
+							"pred_1" = "changements futurs peu marqués", 
+							"pred_5" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"pred_7" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"pred_6" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					fill = guide_legend(nrow = 5)  # Légende des couleurs sur 2 lignes
+			)  
+	
+	ggsave(str_c(imgwd,str_c("Explore2_boxplot_",noms_stations[i],"_automne.png")), plot = g_a, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	
+}
+
+###Pour Montjean sur Loire
+	g_mont <-ggplot(data_mont_all, aes(x = type_all, y = lqmean_cr, fill = type_all)) +
+			geom_boxplot() +
+			facet_wrap(~mod_hydro)+
+			labs(title = "Débits du 15 décembre au 15 mars à Montjean-sur-Loire",
+					y = "Values", x = "") +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_fill_manual(values = c("obs" = "#F8766D", 
+							"pred_1" = "#A3A500", 
+							"pred_5" = "#00BF7D",
+							"pred_7" = "#E76BF3",
+							"pred_6" = "#00B0F6"),
+					labels = c("obs" = "valeurs observées",
+							"pred_1" = "changements futurs peu marqués", 
+							"pred_5" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"pred_7" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"pred_6" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					fill = guide_legend(nrow = 5)  # Légende des couleurs sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_boxplot_Montjean_montaison.png"), plot = g_mont, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	g_deval <- ggplot(data_deval_all, aes(x = type_all, y = lqmean_cr, fill = type_all)) +
+			geom_boxplot() +
+			facet_wrap(~mod_hydro)+
+			labs(title = "Débits du 15 mars au 15 mai à Montjean-sur-Loire",
+					y = "Values", x = "") +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			scale_fill_manual(values = c("obs" = "#F8766D", 
+							"pred_1" = "#A3A500", 
+							"pred_5" = "#00BF7D",
+							"pred_7" = "#E76BF3",
+							"pred_6" = "#00B0F6"),
+					labels = c("obs" = "valeurs observées",
+							"pred_1" = "changements futurs peu marqués", 
+							"pred_5" = "fort réchauffement et fort assèchement en été (et en annuel)",
+							"pred_7" = "fort réchauffement et forts contrastes saisonniers en précipitations",
+							"pred_6" = "réchauffement marqué et augmentation des précipitations")) +
+			guides(
+					fill = guide_legend(nrow = 5)  # Légende des couleurs sur 2 lignes
+			)  
+	
+	ggsave(str_c(imgwd,"Explore2_boxplot_Montjean_deval.png"), plot = g_deval, width = 10, height = 8, dpi = 300, bg = "white")
+
+
+
+
+#========================================
+# par narratif
+#========================================
+
+data_p_all2 <- data_p %>% select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>% 
+		mutate(type="pred",
+				num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+						mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+						mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+						mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7)) %>%
+		rbind(obs_p_replicated2 %>% mutate(mod_hydro = "obs") %>% rename(nom_station=sta_nom) %>%
+								 select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>%
+								 mutate(type="pred",
+										 num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+												 mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+												 mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+												 mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7))) %>%
+		mutate(
+				type_all = case_when(
+						is.na(num_narratif) ~ type,  # Pas de num_narratif si NA
+						TRUE ~ str_c(type, "_", num_narratif)  # Concaténation complète
+				)
+		) %>%
+		mutate(mod_hydro = factor(mod_hydro, levels = c("obs", "CTRIP", "EROS", "ORCHIDEE", "SMASH"))) %>%
+		mutate( mod_hydro = fct_relevel(mod_hydro, "obs", "CTRIP", "EROS", "ORCHIDEE", "SMASH"))
+
+data_a_all2 <- data_a %>% select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>% 
+		mutate(type="pred",
+				num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+						mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+						mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+						mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7)) %>%
+		rbind(obs_a_replicated2 %>% mutate(mod_hydro = "obs") %>% rename(nom_station=sta_nom) %>%
+						select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>%
+						mutate(type="pred",
+								num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+										mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+										mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+										mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7))) %>%
+		mutate(
+				type_all = case_when(
+						is.na(num_narratif) ~ type,  # Pas de num_narratif si NA
+						TRUE ~ str_c(type, "_", num_narratif)  # Concaténation complète
+				)
+		) %>%
+		mutate(mod_hydro = factor(mod_hydro, levels = c("obs", "CTRIP", "EROS", "ORCHIDEE", "SMASH"))) %>%
+		mutate( mod_hydro = fct_relevel(mod_hydro, "obs", "CTRIP", "EROS", "ORCHIDEE", "SMASH"))
+
+data_mont_all2 <- data_mont %>% select (nom_station, annee_hydro, mod_hydro, mod_narratif,lqmean_cr) %>% 
+    rename(year=annee_hydro) %>%
+		mutate(type="pred",
+				num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+						mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+						mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+						mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7)) %>%
+		rbind(obs_montjean_mont_replicated2 %>% mutate(mod_hydro = "obs") %>% rename(nom_station=sta_nom) %>%
+						select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>%
+						mutate(type="pred",
+								num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+										mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+										mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+										mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7))) %>%
+		mutate(
+				type_all = case_when(
+						is.na(num_narratif) ~ type,  # Pas de num_narratif si NA
+						TRUE ~ str_c(type, "_", num_narratif)  # Concaténation complète
+				)
+		) %>%
+		mutate(mod_hydro = factor(mod_hydro, levels = c("obs", "CTRIP", "EROS", "ORCHIDEE", "SMASH"))) %>%
+		mutate( mod_hydro = fct_relevel(mod_hydro, "obs", "CTRIP", "EROS", "ORCHIDEE", "SMASH"))
+
+data_deval_all2 <- data_deval %>% select (nom_station, annee_hydro, mod_hydro, mod_narratif,lqmean_cr) %>% 
+    rename(year=annee_hydro) %>%
+		mutate(type="pred",
+				num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+						mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+						mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+						mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7)) %>%
+		rbind(obs_montjean_deval_replicated2 %>% mutate(mod_hydro = "obs") %>% rename(nom_station=sta_nom) %>%
+						select (nom_station, year, mod_hydro, mod_narratif,lqmean_cr) %>%
+						mutate(type="pred",
+								num_narratif = case_when(mod_narratif=='CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63' ~ 1,
+										mod_narratif=='ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05' ~ 5,
+										mod_narratif=='MOHC-HadGEM2-ES / CNRM-ALADIN63' ~ 6,
+										mod_narratif=='MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17' ~ 7))) %>%
+		mutate(
+				type_all = case_when(
+						is.na(num_narratif) ~ type,  # Pas de num_narratif si NA
+						TRUE ~ str_c(type, "_", num_narratif)  # Concaténation complète
+				)
+		) %>%
+		mutate(mod_hydro = factor(mod_hydro, levels = c("obs", "CTRIP", "EROS", "ORCHIDEE", "SMASH"))) %>%
+		mutate( mod_hydro = fct_relevel(mod_hydro, "obs", "CTRIP", "EROS", "ORCHIDEE", "SMASH"))
+
+
+labels_facets <- c(
+		"pred_1" = "Changement peu marqué",
+		"pred_5" = "Fort réchauffement et assèchement",
+		"pred_6" = "Réchauffement marqué & augmentation précip.",
+		"pred_7" = "Forts réchauffement & contrastes saisonniers"
+)
+
+for (i in 1:length(noms_stations)){
+	g_p <-ggplot(data_p_all2%>% filter(nom_station==noms_stations[i]), aes(x = mod_hydro, y = lqmean_cr, fill = mod_hydro)) +
+			geom_boxplot() +
+			facet_wrap(~type_all, labeller = as_labeller(labels_facets)) +
+			labs(title = str_c("Débits au printemps à ",noms_stations[i]),
+					y = "Values", x = "") +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			
+			guides(
+					fill = "none"  # Légende des couleurs sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_boxplot_",noms_stations[i],"_printemps_par_narratif.png")), plot = g_p, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	g_a <- ggplot(data_a_all2%>% filter(nom_station==noms_stations[i]), aes(x = mod_hydro, y = lqmean_cr, fill = mod_hydro)) +
+			geom_boxplot() +
+			facet_wrap(~type_all, labeller = as_labeller(labels_facets)) +
+			labs(title = str_c("Débits à l'automne à ",noms_stations[i]),
+					y = "Values", x = "") +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			
+			guides(
+					fill = "none"  # Légende des couleurs sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_boxplot_",noms_stations[i],"_automne_par_narratif.png")), plot = g_a, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	
+}
+
+####Pour Montjean-sur-Loire
+	g_mont <-ggplot(data_mont_all2, aes(x = mod_hydro, y = lqmean_cr, fill = mod_hydro)) +
+			geom_boxplot() +
+			facet_wrap(~type_all, labeller = as_labeller(labels_facets)) +
+			labs(title = "Débits du 15 décembre au 15 mars à Montjean-sur-Loire",
+					y = "Values", x = "") +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			
+			guides(
+					fill = "none"  # Légende des couleurs sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_boxplot_Montjean_montaison_par_narratif.png"), plot = g_mont, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	g_deval <- ggplot(data_deval_all2, aes(x = mod_hydro, y = lqmean_cr, fill = mod_hydro)) +
+			geom_boxplot() +
+			facet_wrap(~type_all, labeller = as_labeller(labels_facets)) +
+			labs(title = "Débits du 15 mars au 15 mai à Montjean-sur-Loire",
+					y = "Values", x = "") +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			
+			guides(
+					fill = "none"  # Légende des couleurs sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,"Explore2_boxplot_Montjean_deval_par_narratif.png"), plot = g_deval, width = 10, height = 8, dpi = 300, bg = "white")
+	
+
+#=====================================================
+# qqplot
+#=====================================================
+
+data_p <- data_p %>% mutate(subtitle = case_when(mod_narratif=="CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" ~ "Changements futurs relativement peu marqués",
+												 mod_narratif=="ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" ~ "Fort réchauffement et fort assèchement en été (et en annuel)",
+												 mod_narratif=="MOHC-HadGEM2-ES / CNRM-ALADIN63" ~ "Réchauffement marqué et augmentation des précipitations",
+												 mod_narratif=="MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" ~ "Fort réchauffement et forts contrastes saisonniers en précipitations"))
+data_a <- data_a %>% mutate(subtitle = case_when(mod_narratif=="CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" ~ "Changements futurs relativement peu marqués",
+												 mod_narratif=="ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" ~ "Fort réchauffement et fort assèchement en été (et en annuel)",
+												 mod_narratif=="MOHC-HadGEM2-ES / CNRM-ALADIN63" ~ "Réchauffement marqué et augmentation des précipitations",
+												 mod_narratif=="MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" ~ "Fort réchauffement et forts contrastes saisonniers en précipitations"))
+
+data_mont <- data_mont %>% mutate(subtitle = case_when(mod_narratif=="CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" ~ "Changements futurs relativement peu marqués",
+												 mod_narratif=="ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" ~ "Fort réchauffement et fort assèchement en été (et en annuel)",
+												 mod_narratif=="MOHC-HadGEM2-ES / CNRM-ALADIN63" ~ "Réchauffement marqué et augmentation des précipitations",
+												 mod_narratif=="MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" ~ "Fort réchauffement et forts contrastes saisonniers en précipitations"))
+data_deval <- data_deval %>% mutate(subtitle = case_when(mod_narratif=="CNRM-CERFACS-CNRM-CM5 / CNRM-ALADIN63" ~ "Changements futurs relativement peu marqués",
+												 mod_narratif=="ICHEC-EC-EARTH / MOHC-HadREM3-GA7-05" ~ "Fort réchauffement et fort assèchement en été (et en annuel)",
+												 mod_narratif=="MOHC-HadGEM2-ES / CNRM-ALADIN63" ~ "Réchauffement marqué et augmentation des précipitations",
+												 mod_narratif=="MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17" ~ "Fort réchauffement et forts contrastes saisonniers en précipitations"))
+
+
+								 
+col_sub <- c("#00BFC4","#C77CFF","#F8766D","#7CAE00")
+
+
+for (i in 1: length(noms_stations)){
+	for (j in 1 : length(unique(data_p$mod_hydro))){
+		for (k in 1 : length(unique(data_p$mod_narratif))){
+			png(filename=str_c(imgwd,str_c("Explore2_",noms_stations[i],"_printemps_mod_",unique(data_p$mod_hydro)[j],"_narratif_",k,".png")),width = 800, height = 800)		
+			qqplot(obs_p_replicated %>% filter(sta_nom==noms_stations[i],
+									mod_hydro==unique(obs_a_replicated$mod_hydro)[j]) %>%
+							select(lqmean_cr) %>%
+							pull(), 
+					data_p %>% filter(nom_station==noms_stations[i],
+									mod_hydro==unique(data_p$mod_hydro)[j],
+									mod_narratif==unique(data_p$mod_narratif)[k],
+									year %in% seq(1975,2023,1)) %>%
+							select(lqmean_cr) %>%
+							pull(),
+					#data_p$lqmean_cr[data_p$nom_station==noms_stations[i] & 
+										#data_p$mod_hydro==unique(data_p$mod_hydro)[j] & 
+										#data_p$mod_narratif==unique(data_p$mod_narratif)[k]], 
+					main=str_c("Log des débits centrés-réduits à ",noms_stations[i]," au printemps"),
+					xlab="Quantiles des valeurs observées", 
+					ylab="Quantiles des valeurs prédites",
+					pch = 16,
+					col =  col_sub[k])
+			mtext( str_c("modèle ",unique(data_p$mod_hydro)[j]," : ",data_p$subtitle[data_p$nom_station==noms_stations[i] & data_p$mod_narratif==unique(data_p$mod_narratif)[k]]), side = 3, line = 0.5, col = col_sub[k])
+			abline(0, 1, col= col_sub[k], lwd=2) 
+			dev.off()
+		}
+	}
+}
+@
+
+<< choix_mod_narratif_etienne, echo=FALSE, eval=TRUE,results=hide >>=	
+#==============================================================================================================================
+#------------ On calcule somme des carrés des écarts entre quantiles des valeurs observées et quantiles des valeurs prédites
+#==============================================================================================================================
+
+# Création d'un dataframe pour stocker les R²
+res_autumn_mod <- data.frame(
+		station = character(),
+		mod_hydro = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+##-------- On compare les modèle_hydro ---------------------
+# Boucle pour calculer MSE et R² basé sur la diagonale
+for (i in 1:length(noms_stations)) {
+	for (j in unique(data_a$mod_hydro)) {
+				
+			obs <- obs_a_replicated %>% filter(sta_nom==noms_stations[i],
+							mod_hydro==j) %>%
+					select(lqmean_cr)  %>% 
+					pull()
+			
+			# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+			pred <- data_a %>% filter(nom_station==noms_stations[i],
+							mod_hydro==j,
+							year %in% seq(1975,2023,1)) %>%
+					group_by(nom_station,mod_hydro,year) %>%
+					summarize(lqmean_cr_med=median(lqmean_cr)) %>%
+					select(lqmean_cr_med) %>%
+					pull()
+			
+				# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+				common_probs <- seq(0, 1, length.out = 101)
+				obs_quantiles <- quantile(obs, probs = common_probs)
+				pred_quantiles <- quantile(pred, probs = common_probs)
+				
+				# Calcul de l'erreur quadratique moyenne
+				mse <- mean((pred_quantiles - obs_quantiles)^2)
+				
+				# Calcul du R² basé sur la bissectrice
+				r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+				
+				# Stocker les résultats
+		res_autumn_mod <- rbind(res_autumn_mod, data.frame(
+								station = noms_stations[i], 
+								mod_hydro = as.character(j),
+								saison="autumn",
+								mse = mse,
+								r_squared_diag = r_squared_diag
+						))
+
+	}
+}
+
+# Trier les résultats par station et par MSE (plus petit = meilleur)
+res_autumn_mod_sort <- res_autumn_mod[order(res_autumn_mod$station, res_autumn_mod$mse), ]
+
+#----- Tri sur les narratif ------------
+# Création d'un dataframe pour stocker les R²
+res_autumn_nar <- data.frame(
+		station = character(),
+		mod_narratif = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+##-------- On compare les narratifs ---------------------
+# Boucle pour calculer MSE et R² basé sur la diagonale
+for (i in 1:length(noms_stations)) {
+		for (k in unique(data_a$mod_narratif)) {
+		
+		obs <- obs_a_replicated %>% filter(sta_nom==noms_stations[i],
+						mod_hydro=="CTRIP") %>% #les données sont dupliquées 4 fois pour les 4 modèle. On en prend un au hasard just epour ne pas avoir de doublon
+				select(lqmean_cr)  %>% 
+				pull()
+		
+		# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+		pred <- data_a %>% filter(nom_station==noms_stations[i],
+						mod_narratif==k,
+						year %in% seq(1975,2023,1)) %>%
+				group_by(nom_station,mod_narratif,year) %>%
+				summarize(lqmean_cr_med=median(lqmean_cr)) %>%
+				select(lqmean_cr_med) %>%
+				pull()
+		
+		# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+		common_probs <- seq(0, 1, length.out = 101)
+		obs_quantiles <- quantile(obs, probs = common_probs)
+		pred_quantiles <- quantile(pred, probs = common_probs)
+		
+		# Calcul de l'erreur quadratique moyenne
+		mse <- mean((pred_quantiles - obs_quantiles)^2)
+		
+		# Calcul du R² basé sur la bissectrice
+		r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+		
+		# Stocker les résultats
+		res_autumn_nar <- rbind(res_autumn_nar, data.frame(
+						station = noms_stations[i], 
+						mod_narratif = as.character(k),
+						saison = "autumn",
+						mse = mse,
+						r_squared_diag = r_squared_diag
+				))
+		
+	}
+}
+
+# Trier les résultats par station et par MSE (plus petit = meilleur)
+res_autumn_nar_sort <- res_autumn_nar[order(res_autumn_nar$station, res_autumn_nar$mse), ]
+
+##------ On fait de même pour le printemps ----------
+
+# Création d'un dataframe pour stocker les R²
+res_spring_mod <- data.frame(
+		station = character(),
+		mod_hydro = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+##-------- On compare les modèle_hydro ---------------------
+# Boucle pour calculer MSE et R² basé sur la diagonale
+for (i in 1:length(noms_stations)) {
+	for (j in unique(data_p$mod_hydro)) {
+		
+		obs <- obs_p_replicated %>% filter(sta_nom==noms_stations[i],
+						mod_hydro==j) %>%
+				select(lqmean_cr)  %>% 
+				pull()
+		
+		# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+		pred <- data_p %>% filter(nom_station==noms_stations[i],
+						mod_hydro==j,
+						year %in% seq(1975,2023,1)) %>%
+				group_by(nom_station,mod_hydro,year) %>%
+				summarize(lqmean_cr_med=median(lqmean_cr)) %>%
+				select(lqmean_cr_med) %>%
+				pull()
+		
+		# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+		common_probs <- seq(0, 1, length.out = 101)
+		obs_quantiles <- quantile(obs, probs = common_probs)
+		pred_quantiles <- quantile(pred, probs = common_probs)
+		
+		# Calcul de l'erreur quadratique moyenne
+		mse <- mean((pred_quantiles - obs_quantiles)^2)
+		
+		# Calcul du R² basé sur la bissectrice
+		r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+		
+		# Stocker les résultats
+		res_spring_mod <- rbind(res_spring_mod, data.frame(
+						station = noms_stations[i], 
+						mod_hydro = as.character(j),
+						saison= "spring",
+						mse = mse,
+						r_squared_diag = r_squared_diag
+				))
+		
+	}
+}
+
+# Trier les résultats par station et par MSE (plus petit = meilleur)
+res_spring_mod_sort <- res_spring_mod[order(res_spring_mod$station, res_spring_mod$mse), ]
+
+#----- Tri sur les narratif ------------
+# Création d'un dataframe pour stocker les R²
+res_spring_nar <- data.frame(
+		station = character(),
+		mod_narratif = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+##-------- On compare les narratifs ---------------------
+# Boucle pour calculer MSE et R² basé sur la diagonale
+for (i in 1:length(noms_stations)) {
+	for (k in unique(data_p$mod_narratif)) {
+		
+		obs <- obs_p_replicated %>% filter(sta_nom==noms_stations[i],
+						mod_hydro=="CTRIP") %>% #les données sont dupliquées 4 fois pour les 4 modèle. On en prend un au hasard just epour ne pas avoir de doublon
+				select(lqmean_cr)  %>% 
+				pull()
+		
+		# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+		pred <- data_p %>% filter(nom_station==noms_stations[i],
+						mod_narratif==k,
+						year %in% seq(1975,2023,1)) %>%
+				group_by(nom_station,mod_narratif,year) %>%
+				summarize(lqmean_cr_med=median(lqmean_cr)) %>%
+				select(lqmean_cr_med) %>%
+				pull()
+		
+		# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+		common_probs <- seq(0, 1, length.out = 101)
+		obs_quantiles <- quantile(obs, probs = common_probs)
+		pred_quantiles <- quantile(pred, probs = common_probs)
+		
+		# Calcul de l'erreur quadratique moyenne
+		mse <- mean((pred_quantiles - obs_quantiles)^2)
+		
+		# Calcul du R² basé sur la bissectrice
+		r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+		
+		# Stocker les résultats
+		res_spring_nar <- rbind(res_spring_nar, data.frame(
+						station = noms_stations[i], 
+						mod_narratif = as.character(k),
+						saison= "spring",
+						mse = mse,
+						r_squared_diag = r_squared_diag
+				))
+		
+	}
+}
+
+# Trier les résultats par station et par MSE (plus petit = meilleur)
+res_spring_nar_sort <- res_spring_nar[order(res_spring_nar$station, res_spring_nar$mse), ]
+
+
+####---- Pour Montjean-sur-Loire----------
+##--- Montaison
+
+# Création d'un dataframe pour stocker les R²
+res_mont_mod <- data.frame(
+		station = character(),
+		mod_hydro = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+
+for (j in unique(data_mont$mod_hydro)) {
+		
+		obs <- obs_montjean_mont_replicated %>% filter(mod_hydro==j) %>%
+				select(lqmean_cr)  %>% 
+				pull()
+		
+		# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+		pred <- data_mont %>% filter(mod_hydro==j,
+						annee_hydro %in% seq(1975,2023,1)) %>%
+				group_by(nom_station,mod_hydro,annee_hydro) %>%
+				summarize(lqmean_cr_med=median(lqmean_cr)) %>%
+				select(lqmean_cr_med) %>%
+				pull()
+		# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+		common_probs <- seq(0, 1, length.out = 101)
+		obs_quantiles <- quantile(obs, probs = common_probs)
+		pred_quantiles <- quantile(pred, probs = common_probs)
+		
+		# Calcul de l'erreur quadratique moyenne
+		mse <- mean((pred_quantiles - obs_quantiles)^2)
+		
+		# Calcul du R² basé sur la bissectrice
+		r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+		
+		# Stocker les résultats
+		res_mont_mod <- rbind(res_mont_mod, data.frame(
+						station = "Montjean-sur-Loire", 
+						mod_hydro = as.character(j),
+						saison= "montaison",
+						mse = mse,
+						r_squared_diag = r_squared_diag
+				))
+}
+
+# Trier les résultats par station et par MSE (plus petit = meilleur)
+res_mont_mod_sort <- res_mont_mod[order(res_mont_mod$mse), ]
+
+# Création d'un dataframe pour stocker les R²
+res_mont_nar <- data.frame(
+		station = character(),
+		mod_narratif = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+
+for (k in unique(data_mont$mod_narratif)) {
+		
+		obs <- obs_montjean_mont_replicated %>% filter(mod_hydro=="CTRIP") %>% #les données sont dupliquées 4 fois pour les 4 modèle. On en prend un au hasard just epour ne pas avoir de doublon
+				select(lqmean_cr)  %>% 
+				pull()
+		
+		# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+		pred <- data_mont %>% filter(mod_narratif==k,
+						annee_hydro %in% seq(1975,2023,1)) %>%
+				group_by(mod_narratif,annee_hydro) %>%
+				summarize(lqmean_cr_med=median(lqmean_cr)) %>%
+				select(lqmean_cr_med) %>%
+				pull()
+		
+		# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+		common_probs <- seq(0, 1, length.out = 101)
+		obs_quantiles <- quantile(obs, probs = common_probs)
+		pred_quantiles <- quantile(pred, probs = common_probs)
+		
+		# Calcul de l'erreur quadratique moyenne
+		mse <- mean((pred_quantiles - obs_quantiles)^2)
+		
+		# Calcul du R² basé sur la bissectrice
+		r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+		
+		# Stocker les résultats
+	res_mont_nar <- rbind(res_mont_nar, data.frame(
+						station = "Montjean-sur-Loire", 
+						mod_narratif = as.character(k),
+						saison = "montaison",
+						mse = mse,
+						r_squared_diag = r_squared_diag
+				))
+}
+
+# Trier les résultats par station et par MSE (plus petit = meilleur)
+res_mont_nar_sort <- res_mont_nar[order(res_mont_nar$mse), ]
+
+
+##--- Dévalaison------
+# Création d'un dataframe pour stocker les R²
+res_deval_mod <- data.frame(
+		station = character(),
+		mod_hydro = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+
+for (j in unique(data_mont$mod_hydro)) {
+	
+	obs <- obs_montjean_deval_replicated %>% filter(mod_hydro==j) %>%
+			select(lqmean_cr)  %>% 
+			pull()
+	
+	# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+	pred <- data_deval %>% filter(mod_hydro==j,
+					annee_hydro %in% seq(1975,2023,1)) %>%
+			group_by(nom_station,mod_hydro,annee_hydro) %>%
+			summarize(lqmean_cr_med=median(lqmean_cr)) %>%
+			select(lqmean_cr_med) %>%
+			pull()
+	# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+	common_probs <- seq(0, 1, length.out = 101)
+	obs_quantiles <- quantile(obs, probs = common_probs)
+	pred_quantiles <- quantile(pred, probs = common_probs)
+	
+	# Calcul de l'erreur quadratique moyenne
+	mse <- mean((pred_quantiles - obs_quantiles)^2)
+	
+	# Calcul du R² basé sur la bissectrice
+	r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+	
+	# Stocker les résultats
+	res_deval_mod <- rbind(res_deval_mod, data.frame(
+					station = "Montjean-sur-Loire", 
+					mod_hydro = as.character(j),
+					saison= "devalaison",
+					mse = mse,
+					r_squared_diag = r_squared_diag
+			))
+}
+
+# Trier les résultats par station et par MSE (plus petit = meilleur)
+res_deval_mod_sort <- res_deval_mod[order(res_deval_mod$mse), ]
+
+# Création d'un dataframe pour stocker les R²
+res_deval_nar <- data.frame(
+		station = character(),
+		mod_narratif = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+
+for (k in unique(data_deval$mod_narratif)) {
+	
+	obs <- obs_montjean_deval_replicated %>% filter(mod_hydro=="CTRIP") %>% #les données sont dupliquées 4 fois pour les 4 modèle. On en prend un au hasard just epour ne pas avoir de doublon
+			select(lqmean_cr)  %>% 
+			pull()
+	
+	# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+	pred <- data_deval %>% filter(mod_narratif==k,
+					annee_hydro %in% seq(1975,2023,1)) %>%
+			group_by(mod_narratif,annee_hydro) %>%
+			summarize(lqmean_cr_med=median(lqmean_cr)) %>%
+			select(lqmean_cr_med) %>%
+			pull()
+	
+	# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+	common_probs <- seq(0, 1, length.out = 101)
+	obs_quantiles <- quantile(obs, probs = common_probs)
+	pred_quantiles <- quantile(pred, probs = common_probs)
+	
+	# Calcul de l'erreur quadratique moyenne
+	mse <- mean((pred_quantiles - obs_quantiles)^2)
+	
+	# Calcul du R² basé sur la bissectrice
+	r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+	
+	# Stocker les résultats
+	res_deval_nar <- rbind(res_deval_nar, data.frame(
+					station = "Montjean-sur-Loire", 
+					mod_narratif = as.character(k),
+					saison = "devalaison",
+					mse = mse,
+					r_squared_diag = r_squared_diag
+			))
+}
+
+# Trier les résultats par station et par MSE (plus petit = meilleur)
+res_deval_nar_sort <- res_deval_nar[order(res_deval_nar$mse), ]
+
+# Sauvegarde des résultats triés dans un fichier CSV
+##On compile res_autumn_mod, res_spring_mod, res_deval_mod et res_mont_mod
+res_mod_def <- rbind(res_autumn_mod,res_spring_mod,res_deval_mod,res_mont_mod)
+res_mod_def <- res_mod_def %>% arrange(station,saison,mse)
+##On compile res_autumn_nar, res_spring_nar, res_deval_nar et res_mont_nar
+res_nar_def <- rbind(res_autumn_nar,res_spring_nar,res_deval_nar,res_mont_nar)
+res_nar_def <- res_nar_def %>% arrange(station,saison,mse)
+
+write.csv(res_mod_def, file = str_c(tabwd, "QQplot_R2_compar_res_mod.csv"), row.names = FALSE)
+write.csv(res_nar_def, file = str_c(tabwd, "QQplot_R2_compar_res_narratif.csv"), row.names = FALSE)
+
+
+
+
+##--------------La même chose mais sur les valeurs observées au lieu des quantiles des valeurs observées
+
+# Création d'un dataframe pour stocker les R²
+#results <- data.frame(
+#		station = character(),
+#		mod_hydro = character(),
+#		mod_narratif = character(),
+#		mse = numeric(),
+#		r_squared_diag = numeric(),
+#		stringsAsFactors = FALSE
+#)
+#
+## Boucle pour générer les QQ-plots et calculer R²
+#for (i in 1: length(noms_stations)) {
+#	for (j in 1 : length(unique(data_a$mod_hydro))) {
+#		for (k in 1 : length(unique(data_a$mod_narratif))) {
+#			
+#			# Valeurs observées = coda du modèle
+#			obs <- obs_a_replicated %>% filter(sta_nom==noms_stations[i],
+#							mod_hydro==unique(obs_a_replicated$mod_hydro)[j]) %>%
+#					select(lqmean_cr) %>%
+#					pull()
+#			
+#			# Valeurs prédites = données issues d'Explore 2
+#			pred <- data_a %>% filter(nom_station==noms_stations[i],
+#							mod_hydro==unique(data_a$mod_hydro)[j],
+#							mod_narratif==unique(data_a$mod_narratif)[k],
+#							year %in% seq(1975,2023,1)) %>%
+#					select(lqmean_cr) %>%
+#					pull()
+#			
+#			mse <- mean((pred - obs)^2)
+#			
+#			# Calcul du R² basé sur la bissectrice y = x
+#			r_squared_diag <- 1 - sum((pred - obs)^2) / sum((obs - mean(obs))^2)
+#			
+#			# Stocker les résultats
+#			results <- rbind(results, data.frame(
+#							station = noms_stations[i], 
+#							mod_hydro = as.character(j),
+#							mod_narratif = as.character(k),
+#							mse = mse,
+#							r_squared_diag = r_squared_diag
+#					))
+#		}
+#	}
+#}
+#
+## Trier les résultats par station et MSE (plus petit = meilleur)
+#results_sorted <- results[order(results$station, results$mse), ]
+#
+## Afficher les résultats triés
+#print(results_sorted)
+## Sauvegarde des résultats triés dans un fichier CSV
+#write.csv(results_sorted, file = str_c(imgwd, "QQplot_R2_results.csv"), row.names = FALSE)
+
+
+
+
+#--------------------------
+
+for (i in 1: length(noms_stations)){
+	for (j in 1 : length(unique(data_a$mod_hydro))){
+		for (k in 1 : length(unique(data_a$mod_narratif))){
+			png(filename=str_c(imgwd,str_c("Explore2_",noms_stations[i],"_automne_mod_",unique(data_a$mod_hydro)[j],"_narratif_",k,".png")),width = 800, height = 800)		
+			qqplot(obs_a_replicated %>% filter(sta_nom==noms_stations[i],
+											   mod_hydro==unique(obs_a_replicated$mod_hydro)[j]) %>%
+									    select(lqmean_cr) %>%
+										pull(), 
+				   data_a %>% filter(nom_station==noms_stations[i],
+									  mod_hydro==unique(data_a$mod_hydro)[j],
+									  mod_narratif==unique(data_a$mod_narratif)[k],
+									  year %in% seq(1975,2023,1)) %>%
+							   select(lqmean_cr) %>%
+							   pull(),
+					main=str_c("Log des débits centrés-réduits à ",noms_stations[i]," à l'automne"),
+					xlab="Quantiles des valeurs observées", 
+					ylab="Quantiles des valeurs prédites",
+					pch = 16,
+					col =  col_sub[k])
+			mtext( str_c("modèle ",unique(data_a$mod_hydro)[j]," : ",data_a$subtitle[data_a$nom_station==noms_stations[i] & data_a$mod_narratif==unique(data_a$mod_narratif)[k]]), side = 3, line = 0.5, col = col_sub[k])
+			abline(0, 1, col= col_sub[k], lwd=2) 
+			dev.off()
+		}
+	}
+}
+
+####Pour Montjean-sur-Loire
+
+for (j in 1 : length(unique(data_mont$mod_hydro))){
+	for (k in 1 : length(unique(data_mont$mod_narratif))){
+			png(filename=str_c(imgwd,"Explore2_Montjean_montaison_mod_",unique(data_mont$mod_hydro)[j],"_narratif_",k,".png"),width = 800, height = 800)		
+			qqplot(obs_montjean_mont_replicated$lqmean_cr, 
+					data_mont$lqmean_cr[data_mont$mod_hydro==unique(data_mont$mod_hydro)[j] & data_mont$mod_narratif==unique(data_mont$mod_narratif)[k]], 
+					main="Log des débits centrés-réduits à Montjean-sur-Loire du 15 décembre au 15 mars",
+					xlab="Quantiles des valeurs observées", 
+					ylab="Quantiles des valeurs prédites",
+					pch = 16,
+					col =  col_sub[k])
+			mtext( str_c("modèle ",unique(data_mont$mod_hydro)[j]," : ",data_mont$subtitle[data_mont$mod_narratif==unique(data_mont$mod_narratif)[k]]), side = 3, line = 0.5, col = col_sub[k])
+			abline(0, 1, col= col_sub[k], lwd=2) 
+			dev.off()
+	}
+}
+
+
+for (j in 1 : length(unique(data_deval$mod_hydro))){
+	for (k in 1 : length(unique(data_deval$mod_narratif))){
+			png(filename=str_c(imgwd,"Explore2_Montjean_deval_mod_",unique(data_deval$mod_hydro)[j],"_narratif_",k,".png"),width = 800, height = 800)		
+			qqplot(obs_montjean_deval_replicated$lqmean_cr, 
+					data_deval$lqmean_cr[data_deval$mod_hydro==unique(data_deval$mod_hydro)[j] & data_deval$mod_narratif==unique(data_deval$mod_narratif)[k]], 
+					main="Log des débits centrés-réduits à Montjean-sur-Loire du 15 mars au 15 mai",
+					xlab="Quantiles des valeurs observées", 
+					ylab="Quantiles des valeurs prédites",
+					pch = 16,
+					col =  col_sub[k])
+			mtext( str_c("modèle ",unique(data_deval$mod_hydro)[j]," : ",data_deval$subtitle[data_deval$mod_narratif==unique(data_deval$mod_narratif)[k]]), side = 3, line = 0.5, col = col_sub[k])
+			abline(0, 1, col= col_sub[k], lwd=2) 
+			dev.off()
+	}
+}
+@
+
+<< choix_narratif_fix_mod_etienne, echo=FALSE, eval=TRUE,results=hide >>=	
+
+mod <- "EROS" #"SMASH"
+
+#----- Tri sur les narratif ------------
+# Création d'un dataframe pour stocker les R²
+res_spring_nar_fm <- data.frame(
+		station = character(),
+		mod_hydro = character(),
+		mod_narratif = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+
+res_autumn_nar_fm <- data.frame(
+		station = character(),
+		mod_hydro = character(),
+		mod_narratif = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+
+##-------- On compare les narratifs ---------------------
+# Boucle pour calculer MSE et R² basé sur la diagonale
+for (i in 1:length(noms_stations)) {
+	for (k in unique(data_p$mod_narratif)) {
+		
+		obs <- obs_p_replicated %>% filter(sta_nom==noms_stations[i],
+						mod_hydro==mod) %>% 
+				select(lqmean_cr)  %>% 
+				pull()
+		
+		# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+		pred <- data_p %>% filter(nom_station==noms_stations[i],
+						mod_hydro==mod,
+						mod_narratif==k,
+						year %in% seq(1975,2023,1)) %>%
+				select(lqmean_cr) %>%
+				pull()
+		
+		# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+		common_probs <- seq(0, 1, length.out = 101)
+		obs_quantiles <- quantile(obs, probs = common_probs)
+		pred_quantiles <- quantile(pred, probs = common_probs)
+		
+		# Calcul de l'erreur quadratique moyenne
+		mse <- mean((pred_quantiles - obs_quantiles)^2)
+		
+		# Calcul du R² basé sur la bissectrice
+		r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+		
+		# Stocker les résultats
+		res_spring_nar_fm <- rbind(res_spring_nar_fm, data.frame(
+						station = noms_stations[i], 
+						mod_hydro = mod,
+						mod_narratif = as.character(k),
+						saison= "spring",
+						mse = mse,
+						r_squared_diag = r_squared_diag
+				))
+		
+	}
+}
+
+for (i in 1:length(noms_stations)) {
+	for (k in unique(data_a$mod_narratif)) {
+		
+		obs <- obs_a_replicated %>% filter(sta_nom==noms_stations[i],
+						mod_hydro==mod) %>% 
+				select(lqmean_cr)  %>% 
+				pull()
+		
+		# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+		pred <- data_a %>% filter(nom_station==noms_stations[i],
+						mod_hydro==mod,
+						mod_narratif==k,
+						year %in% seq(1975,2023,1)) %>%
+				select(lqmean_cr) %>%
+				pull()
+		
+		# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+		common_probs <- seq(0, 1, length.out = 101)
+		obs_quantiles <- quantile(obs, probs = common_probs)
+		pred_quantiles <- quantile(pred, probs = common_probs)
+		
+		# Calcul de l'erreur quadratique moyenne
+		mse <- mean((pred_quantiles - obs_quantiles)^2)
+		
+		# Calcul du R² basé sur la bissectrice
+		r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+		
+		# Stocker les résultats
+		res_autumn_nar_fm <- rbind(res_autumn_nar_fm, data.frame(
+						station = noms_stations[i], 
+						mod_hydro = mod,
+						mod_narratif = as.character(k),
+						saison= "autumn",
+						mse = mse,
+						r_squared_diag = r_squared_diag
+				))
+		
+	}
+}
+
+
+####---- Pour Montjean-sur-Loire----------
+##--- Montaison
+
+# Création d'un dataframe pour stocker les R²
+res_mont_nar_fm <- data.frame(
+		station = character(),
+		mod_hydro = character(),
+		mod_narratif = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+
+for (k in unique(data_mont$mod_narratif)) {
+	
+	obs <- obs_montjean_mont_replicated %>% filter(mod_hydro==mod) %>% 
+			select(lqmean_cr)  %>% 
+			pull()
+	
+	# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+	pred <- data_mont %>% filter(mod_narratif==k,
+					mod_hydro==mod,
+					annee_hydro %in% seq(1975,2023,1)) %>%
+			select(lqmean_cr) %>%
+			pull()
+	
+	# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+	common_probs <- seq(0, 1, length.out = 101)
+	obs_quantiles <- quantile(obs, probs = common_probs)
+	pred_quantiles <- quantile(pred, probs = common_probs)
+	
+	# Calcul de l'erreur quadratique moyenne
+	mse <- mean((pred_quantiles - obs_quantiles)^2)
+	
+	# Calcul du R² basé sur la bissectrice
+	r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+	
+	# Stocker les résultats
+	res_mont_nar_fm <- rbind(res_mont_nar_fm, data.frame(
+					station = "Montjean-sur-Loire", 
+					mod_hydro = mod,
+					mod_narratif = as.character(k),
+					saison = "montaison",
+					mse = mse,
+					r_squared_diag = r_squared_diag
+			))
+}
+
+
+##--- Dévalaison------
+# Création d'un dataframe pour stocker les R²
+
+res_deval_nar_fm <- data.frame(
+		station = character(),
+		mod_hydro = character(),
+		mod_narratif = character(),
+		saison= character(),
+		mse = numeric(),
+		r_squared_diag = numeric(),
+		stringsAsFactors = FALSE
+)
+
+for (k in unique(data_deval$mod_narratif)) {
+	
+	obs <- obs_montjean_deval_replicated %>% filter(mod_hydro==mod) %>% 
+			select(lqmean_cr)  %>% 
+			pull()
+	
+	# Valeurs prédites issues d'Explore2 : on fait la médiane par an, par station et par modèle_hydro
+	pred <- data_deval %>% filter(mod_narratif==k,
+					mod_hydro==mod,
+					annee_hydro %in% seq(1975,2023,1)) %>%
+			select(lqmean_cr) %>%
+			pull()
+	
+	# Assurer que obs et pred ont la même taille avec interpolation des quantiles
+	common_probs <- seq(0, 1, length.out = 101)
+	obs_quantiles <- quantile(obs, probs = common_probs)
+	pred_quantiles <- quantile(pred, probs = common_probs)
+	
+	# Calcul de l'erreur quadratique moyenne
+	mse <- mean((pred_quantiles - obs_quantiles)^2)
+	
+	# Calcul du R² basé sur la bissectrice
+	r_squared_diag <- 1 - sum((pred_quantiles - obs_quantiles)^2) / sum((obs_quantiles - mean(obs_quantiles))^2)
+	
+	# Stocker les résultats
+	res_deval_nar_fm <- rbind(res_deval_nar_fm, data.frame(
+					station = "Montjean-sur-Loire", 
+					mod_hydro = mod,
+					mod_narratif = as.character(k),
+					saison = "devalaison",
+					mse = mse,
+					r_squared_diag = r_squared_diag
+			))
+}
+
+
+# Sauvegarde des résultats triés dans un fichier CSV
+##On compile res_autumn_nar_fm, res_spring_nar_fm, res_deval_nar_fm et res_mont_nar_fm
+res_nar_def_fm <- rbind(res_autumn_nar_fm,res_spring_nar_fm,res_deval_nar_fm,res_mont_nar_fm)
+res_nar_def_fm <- res_nar_def_fm %>% arrange(station,saison,mse)
+
+write.csv(res_nar_def_fm, file = str_c(tabwd, "QQplot_R2_compar_res_narratif_mod_",mod,".csv"), row.names = FALSE)
+
+
+@
+
+
+
+<< autocor_netcdf_etienne, echo=FALSE, eval=TRUE,results=hide >>=	
+# regarder les quantiles des valeurs observés vs prédites (avec des boxplot ou des qqplot) 
+# et calculer les coefficients d’autocorrélation d’ordre 1. Cela devrait nous permettre de compléter notre jugement 
+# sur la forme des distributions et les patrons temporels associés.	
+
+load(file=str_c(datawd,"data_a.Rdata"))	
+load(file=str_c(datawd,"data_p.Rdata"))	
+load(file=str_c(datawd,"obs_a_replicated.Rdata"))	
+load(file=str_c(datawd,"obs_p_replicated.Rdata"))	
+load(file=str_c(datawd,"obs_a_replicated2.Rdata"))	
+load(file=str_c(datawd,"obs_p_replicated2.Rdata"))
+load(file=str_c(datawd,"data_proj_a.Rdata"))	
+load(file=str_c(datawd,"data_proj_p.Rdata"))
+
+#########################################
+# Autoccorélation
+#########################################
+
+# Calculer l'autocorrélation d'ordre 1 pour les observations et les prédictions (au printemps et à l'automne)
+acf(obs_p_replicated$lqmean_cr, lag.max = 10, plot = FALSE) #0.016
+acf(obs_a_replicated$lqmean_cr, lag.max = 10, plot = FALSE) #0.033
+acf(data_p$lqmean_cr, lag.max = 1, plot = FALSE) #0.097
+# Calculer l'ACF pour chaque mod_narratif et extraire les valeurs
+data_p %>%
+		group_by(mod_hydro,mod_narratif) %>%
+		summarise(acf_values = list(acf(lqmean_cr, lag.max = 1, plot = FALSE)$acf), 
+				.groups = "drop") %>%
+		mutate(acf_values = map(acf_values, ~ .x[2])) %>%  
+		unnest(cols=acf_values)
+
+acf(data_a$lqmean_cr, lag.max = 1, plot = FALSE) #0.1
+data_a %>%
+		group_by(mod_hydro,mod_narratif) %>%
+		summarise(acf_values = list(acf(lqmean_cr, lag.max = 1, plot = FALSE)$acf), 
+				.groups = "drop") %>%
+		mutate(acf_values = map(acf_values, ~ .x[2])) %>%  
+		unnest(cols=acf_values)
+#tab_all <- pivot_wider(data_a_all %>% ungroup() %>% select(nom_station,year,lqmean_cr,mod_hydro,type_all), names_from = type_all, values_from = lqmean_cr)
+#
+#data_clean <- tab_all %>%
+#		drop_na()
+#
+#cor(data_clean[,4:8], use = "complete.obs")
+
+#================================================================================================================
+# Le narratif MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17 est celui qui a la plus forte autocorrélation pour un lag 1.
+# On réalise des ggplot avec ce narratif et les valeurs observées
+#=================================================================================================================
+
+for (i in 1:length(noms_stations)){
+	
+	g_p <- ggplot(data_p %>% filter(nom_station==noms_stations[i],mod_narratif == "MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17"), aes(x = year, y = lqmean_cr, color = mod_hydro)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_p_replicated %>% filter(sta_nom==noms_stations[i]), aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.5) +
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de mars à juin"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1)  # Légende des couleurs sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_printemps_histo_narratif_7.png")), plot = g_p, width = 10, height = 8, dpi = 300, bg = "white")
+	#Automne
+	g_a <- ggplot(data_a %>% filter(nom_station==noms_stations[i],mod_narratif == "MOHC-HadGEM2-ES / CLMcom-CCLM4-8-17"), aes(x = year, y = lqmean_cr, color = mod_hydro)) +
+			geom_line() + 
+			# Ajouter les données observées
+			geom_line(data = obs_a_replicated %>% filter(sta_nom==noms_stations[i]), aes(x = year, y = lqmean_cr), color = "black", linetype = "solid", linewidth = 0.5) +
+			facet_wrap(~ mod_hydro,ncol = 1) + 
+			labs(
+					title = str_c("Débits à la station de ",noms_stations[i]," de septembre à novembre"),
+					x = "Annees",
+					y = "log(Débit) centré-réduit",
+					color = "Modèle Hydrologique"
+			) +
+			theme_minimal() +
+			theme(axis.text.x = element_text(angle = 45, hjust = 1),
+					legend.position = "bottom",
+					legend.box = "vertical",  # Force la légende à être verticale (titre au-dessus)
+					legend.title = element_text(hjust = 0.5),
+					legend.text = element_text(size = 8),  # Réduction de la taille du texte de la légende
+					plot.margin = unit(c(1, 1, 1, 1), "cm")) +  # Augmenter la marge si nécessaire)+
+			guides(
+					color = guide_legend(nrow = 1, order = 1)  # Légende des couleurs sur 2 lignes
+			)
+	
+	ggsave(str_c(imgwd,str_c("Explore2_",noms_stations[i],"_log_cr_automne_histo_narratif_7.png")), plot = g_a, width = 10, height = 8, dpi = 300, bg = "white")
+	
+	
+}
+
+@
+
+
+\end{document}

@@ -1,0 +1,163 @@
+---
+title: "Indicateurs Plagepomi"
+author: "Marion Legrand"
+date: "2023-09-15"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+
+```
+
+```{r init, echo=FALSE, eval=TRUE}
+#Modèle 2023-05 3_Model_sans_distribution_melange
+datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/"
+imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/"
+
+library(coda)
+library(boot)
+library(stringr)
+library(ggplot2)
+T=48
+
+source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+
+# surf=c(rep(c(845482,68637,232048,0),11),rep(c(845482,68637,232048,168584),12),rep(c(845482,68637,232048,260326),6),rep(c(845482,349127,232048,260326),(T-8)))
+# S_juv_JP<-matrix(surf,nrow=4)
+# S_juv_JP<-rbind(S_juv_JP,colSums(S_juv_JP)) #Créé une 5eme ligne qui correspond à la somme par année des surfaces sur l'ensemble des secteurs
+S_juv_JP<-keep_good_surf(surf_2021=TRUE)
+S_juv_JP_tot<-S_juv_JP[,T]
+
+```
+
+```{r niveau_pop_graph4,eval=TRUE}
+bugs_res_vichy=read.coda(str_c(datawd,"simulation/res_vichyCODAchain1.txt"),str_c(datawd,"simulation/res_vichyCODAindex.txt"))
+bugs_s_juv2ad=read.coda(str_c(datawd,"simulation/s_juv2adCODAchain1.txt"),str_c(datawd,"simulation/s_juv2adCODAindex.txt"))
+bugs_sigma_vichy=read.coda(str_c(datawd,"sigma_vichyCODAchain1.txt"),str_c(datawd,"sigma_vichyCODAindex.txt"))
+Rmax=read.coda(str_c(datawd,"RmaxCODAchain1.txt"),str_c(datawd,"RmaxCODAindex.txt"))
+bugs_nu_d=read.coda(str_c(datawd,"nu_dCODAchain1.txt"),str_c(datawd,"nu_dCODAindex.txt"))
+
+#######################
+# CIBLE INTERMEDIAIRE
+#######################
+##Exemple on choisit en cible intermédiaire d'assurer prod de juvénile correspondant à 50% de Rmax dans les conditions de survie juv/adulte actuelle
+##On regarde comment on se situe aujourd'hui par rapport à cette cible en terme d'adulte de retour à Vichy (par rapport au nbr d'adulte qui seraient produits par les juv correspondant à 50% de Rmax)
+#-------------------------------------------------
+# Niveau pop avec 50% Rmax et survie actuelle
+#-------------------------------------------------
+Juv_Rmax_50_V=array(0,dim=c(10000,T))
+Juv_Rmax_50_A=array(0,dim=c(10000,T))
+Juv_Rmax_50_L=array(0,dim=c(10000,T))
+Juv_Rmax_50_P=array(0,dim=c(10000,T))
+Juv_Rmax_50=array(0,dim=c(10000,T))
+
+for (t in 1:T){
+	for (i in 1:10000){
+		Juv_Rmax_50_V[i,t]<-0.50*Rmax[i]*exp(bugs_nu_d[i,1])*S_juv_JP[1,t] #multiplie par nu_d pour tenir compte de la différence de production de juvéniles des différentes zones
+		Juv_Rmax_50_A[i,t]<-0.50*Rmax[i]*exp(bugs_nu_d[i,2])*S_juv_JP[2,t] #multiplie par nu_d pour tenir compte de la différence de production de juvéniles des différentes zones
+		Juv_Rmax_50_L[i,t]<-0.50*Rmax[i]*exp(bugs_nu_d[i,3])*S_juv_JP[3,t] #multiplie par nu_d pour tenir compte de la différence de production de juvéniles des différentes zones
+		Juv_Rmax_50_P[i,t]<-0.50*Rmax[i]*exp(bugs_nu_d[i,4])*S_juv_JP[4,t] #multiplie par nu_d pour tenir compte de la différence de production de juvéniles des différentes zones
+		Juv_Rmax_50[i,t]<-Juv_Rmax_50_V[i,t]+Juv_Rmax_50_A[i,t]+Juv_Rmax_50_L[i,t]+Juv_Rmax_50_P[i,t] #mean=213031.8
+	}
+}
+
+niveau_pop_50_actu<-array(0,dim=c(10000,T))
+N_vichy_50_actu<-array(0,dim=c(10000,T))
+
+#Attention avec la version du modèle incluant les Q on estime un nbr d'adulte cible pour 50% Rmax bcp plus élevé qu'auparavent...
+
+for (t in 1:T){
+	for (i in 1:10000){
+		##Scénario 50% Rmax et survie actuelle
+		niveau_pop_50_actu[i,t]<- log(bugs_s_juv2ad[i]*Juv_Rmax_50[i,t])
+		N_vichy_50_actu[i,t]<-rlnorm(1,niveau_pop_50_actu[i,t],bugs_sigma_vichy[i]) #juv 50% Rmax dans condition actuelle de survie produiraient 752 SAT de retour en moyenne à Vichy
+	}
+}
+
+
+mean_N_vichy_50_actu<-0
+
+for (t in 1:T){
+	mean_N_vichy_50_actu[t]<-mean(N_vichy_50_actu[,t]) # 752
+}
+
+#On récupère les estimations du nbr d'adulte à Vichy
+bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
+#On récupère les données de passage
+#bugs2jags(str_c(datawd,"data.txt"),"data_4zones_Interaction_2017.12.12.R")
+#source("data_4zones_Interaction_2017.12.12.R")
+bugs2jags(str_c(datawd,"data.txt"),"data_model_2023_05_3_ModelSansDistriMelange.R")
+source("data_model_2023_05_3_ModelSansDistriMelange.R")
+data_vichy<-N[,1]
+#on reconstitue un seul jeu de donnée en prenant valeur de data_vichy quand comptage à Vichy et en prenant moyenne de bugs_N_vichy_real à chaque fois qu'on n'a pas de comptage à Vichy
+mean_bugs_N_vichy_real<-round(apply(bugs_N_vichy_real,MARGIN=2,FUN=mean),0)
+data_vichy_all<-c(as.vector(mean_bugs_N_vichy_real[1:22]),data_vichy[23:29],as.vector(mean_bugs_N_vichy_real[23]),data_vichy[31:T])
+
+#===========================
+# En moyenne mobile
+#==========================
+#On cherche à tracer la ref en moyenne mobile
+#library(igraph) #fonction running.mean() qui calcule moyenne mobile (glissante) sur un pas de temps donné
+#On remplace la fonction running.mean du package igraph par une fonction maison qu'on appelle running.mean pour ne pas à avoir à changer le code
+#Par rapport à la version de la fonction du package igraph, cette fonction permet de faire la moyenne mobile centrée sur une valeur (en prenant 2 valeurs avant et 2 valeurs après)
+running.mean<- function(x, n = 5){stats::filter(x, rep(1 / n, n), sides = 2)}
+x_mob=seq(2,(T-3),1)
+
+#On créé les polygones pour avoir les couleurs vertes et rouge en fonction de l'évolution du niveau de ref (un peu compliqué à faire mais ça marche). Pour mémo polygone attend x1=x_droit / x2=x_gauche / y1=y_gauche / y2=y_droit
+# poly_2_col <- data.frame(ystart = c(rep(0,length(x_mob)),running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))]), yend = c(running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))],rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),length(x_mob))),col = c(rep("red",length(x_mob)),rep("green",length(x_mob))))
+# ids<-factor(c(str_c("1.",seq(1,(T-5),1)),str_c("2.",seq(1,(T-5),1))))
+# values<-data.frame(id=ids,values=c(rep("red",(T-5)),rep("green",(T-5))))
+# positions<-data.frame(id=rep(ids,each=4),
+# 						x=rep(c(rbind(seq(4,(T-2),1),seq(3,(T-3),1),seq(3,(T-3),1),seq(4,(T-2),1))),2),
+# 						y=c(
+# 								c(rbind(0,0,running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:(length(x_mob)-1)],running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][2:(length(x_mob))])),
+# 								c(rbind(running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][2:(length(x_mob))],running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:(length(x_mob)-1)],rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),(length(x_mob)-1)),rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),(length(x_mob)-1)))))
+# 						#y=c(c(rbind(0,running.mean(mean_N_vichy_50_actu,5))),c(rbind(running.mean(mean_N_vichy_50_actu,5),rep(max(running.mean(data_vichy_all,5)),38))))
+# 				)
+
+poly_2_col <- data.frame(ystart = c(rep(0,length(x_mob)),running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))]), yend = c(running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))],rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),length(x_mob))),col = c(rep("red",length(x_mob)),rep("green",length(x_mob))))
+ids<-factor(c(str_c("1.",seq(1,(T-5),1)),str_c("2.",seq(1,(T-5),1))))
+values<-data.frame(id=ids,values=c(rep("red",(T-5)),rep("green",(T-5))))
+positions<-data.frame(id=rep(ids,each=4),
+						x=rep(c(rbind(seq(3,(T-3),1),seq(2,(T-4),1),seq(2,(T-4),1),seq(3,(T-3),1))),2),
+						y=c(
+								c(rbind(0,0,running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:(length(x_mob)-1)],running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][2:(length(x_mob))])),
+								c(rbind(running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][2:(length(x_mob))],running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:(length(x_mob)-1)],rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),(length(x_mob)-1)),rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),(length(x_mob)-1)))))
+)
+
+#detach("package:dplyr", unload=TRUE)
+library(plyr)
+datapoly <- plyr::join(values, positions) #on utilise join et non merge car sinon tri sur les id et on a 1.1 puis 1.10 au lieu d'avoir 1.1 puis 1.2
+
+graph_niveau_pop<-ggplot()+
+		geom_polygon(data=datapoly, aes(x=x, y=y, group=id),fill=datapoly$values, alpha =0.5) +
+		#geom_line(aes(x_mob,running.mean(mean_N_vichy_50_actu,5)),size=0.5)+
+		geom_line(aes(x_mob[1:23],running.mean(data_vichy_all,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:23]),size=1,linetype = "dashed")+ #poissons estimés
+		geom_line(aes(x_mob[23:(length(x_mob))],running.mean(data_vichy_all,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][23:(length(x_mob))]),size=1)+ #poissons observés
+		xlab("Année") + 
+		ylab("Adultes observés ou estimés à Vichy")+
+		ggtitle("Adultes observés ou estimés à Vichy par rapport au nombre de géniteurs \nque produiraient la quantité de juvéniles correspondant à 50% de Rmax \n(moyenne mobile 5 ans)")+
+		scale_x_continuous(breaks=c(3,13,23,33,(T-3)), labels=c(1980,1990,2000,2010,(1974+T)))+
+		theme(legend.position="none")+
+    theme_bw()+
+		#theme_bw(base_size = 22)+ #pour sortie png
+		theme(plot.title = element_text(hjust = 0.5)) 
+
+png(filename=str_c(imgwd,"NiveauPop_moyMobil_2022_04_04.png",width=1000,height=800))
+print(graph_niveau_pop)
+dev.off()
+
+###------------------------
+### On sort des stats
+###------------------------
+niv<-running.mean(data_vichy_all,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))]
+niv[length(niv)] # comme c'est une moyenne mobile 5 ans, la dernière valeur est déjà la moyenne des 5 denrières années
+ref<-round(max(datapoly$y[datapoly$values=="red"]),0)
+
+
+```
+

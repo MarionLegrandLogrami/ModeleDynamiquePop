@@ -1,0 +1,146 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage[utf8]{inputenc} %encodage du fichier source
+\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf) 
+\usepackage[french]{babel}
+\usepackage{float}
+\usepackage[document]{ragged2e} % pour que le texte soit aligné à gauche
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage{amsmath} % equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption} % pour les subfigures
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\pagestyle{empty}
+
+
+\title{Sortie des principaux résultats du modèle 2025\_07 (avec mise à jour des
+données jusqu'en 2024)}
+\author{Marion LEGRAND - LOGRAMI}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Production en juvéniles}
+
+\begin{figure}[ht]
+     \includegraphics[width=0.9\textwidth]{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/production_juveniles.png}
+     \caption{Production totale en juvéniles 0+ (sauvages + déversés) sur l'ensemble des secteurs du modèle}
+     \label{prod_juv_tot} 
+\end{figure}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/prod_juv.tex}
+
+\clearpage
+
+\subsection{Production en juvéniles sur le secteur Vichy-Langeac}
+
+
+\begin{figure}[ht]
+     \includegraphics[width=\textwidth]{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/production_juveniles_Vichy_Langeac.png}
+     \caption{Production totale en juvéniles 0+ (sauvages + déversés) sur le
+     secteur Vichy-Langeac}
+     \label{prod_juv_V_tot} 
+\end{figure}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/prod_juv_V.tex}
+
+\clearpage
+
+\subsection{Production en juvéniles sur la rivière Alagnon}
+
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/production_juveniles_Alagnon.png}
+\caption{Production totale en juvéniles 0+ (sauvages + déversés) sur la rivière
+Alagnon}
+\label{prod_juv_A_tot} 
+\end{figure}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/prod_juv_A.tex}
+
+\clearpage
+
+\subsection{Production en juvéniles sur le secteur Langeac-Poutès}
+
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/production_juveniles_Langeac_Poutes.png}
+\caption{Production totale en juvéniles 0+ (sauvages + déversés) sur le secteur
+Langeac-Poutès}
+\label{prod_juv_L_tot} 
+\end{figure}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/prod_juv_L.tex}
+
+\clearpage
+
+\subsection{Production en juvéniles par secteur - Amont Poutès}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/production_juveniles_Amont_Poutes.png}
+\caption{Production totale en juvéniles 0+ (sauvages + déversés) sur le secteur
+amont Poutès}
+\label{prod_juv_P_tot} 
+\end{figure}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/prod_juv_P.tex}
+
+\subsection{Production en juvéniles - statistiques}
+
+\clearpage
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/prod_juv_stat.tex}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/prod_juv_stat2.tex}
+
+\clearpage
+
+\section{Répartition des adultes dans les différents secteurs}
+
+\subsection{Adultes migrant dans l'Alagnon}
+%====================================
+
+\begin{figure}[ht]
+     \includegraphics{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/N_alagnon.png}%{a_juv.png}
+     \caption{Effectifs d'adultes migrant sur l'Alagnon}
+     \label{N_alagnon} 
+\end{figure}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/N_alagnon.tex}
+
+\clearpage
+
+\subsection{Adultes ayant franchi Langeac}
+%====================================
+
+\begin{figure}[ht]
+     \includegraphics{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/N_langeac.png}%{a_juv.png}
+     \caption{Estimation du nombre d'adultes ayant franchi Langeac}
+     \label{N_langeac} 
+\end{figure}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/N_langeac.tex}
+
+\clearpage
+
+\subsection{Adultes ayant franchi Poutès}
+%====================================
+
+\begin{figure}[ht]
+     \includegraphics{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/N_poutes.png}%{a_juv.png}
+     \caption{Estimation du nombre d'adultes ayant franchi Poutès}
+     \label{N_poutes} 
+\end{figure}
+
+\input{D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/N_poutes.tex}
+
+\clearpage
+
+\end{document}

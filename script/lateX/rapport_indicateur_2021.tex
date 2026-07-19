@@ -1,0 +1,227 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[nogin]{Sweave}
+\usepackage[latin1]{inputenc}%encodage du fichier source
+\usepackage[T1]{fontenc}%gestion des accents (pour les pdf) 
+\usepackage[francais]{babel}
+\usepackage{lmodern}%fonte latin modern
+\usepackage{float}
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+
+\makeatletter %%Si on ne fait pas ces lignes de commandes, le FloatBarrier ne marche pas ? l'int?rieur des subsection (uniquement section)
+\AtBeginDocument{%
+  \expandafter\renewcommand\expandafter\subsection\expandafter{%
+    \expandafter\@fb@secFB\subsection
+  }%
+}%
+\makeatother
+
+\usepackage{amsmath}% equation numbering
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black,bookmarksnumbered]{hyperref}
+\usepackage{wrapfig}
+\usepackage{subcaption}% pour les subfigures
+%\usepackage{vmargin}
+\usepackage[final]{pdfpages} 
+\usepackage[left=2cm, right=2cm, top=1.5cm, bottom=1.5cm]{geometry}
+\geometry{dvips,a4paper,hmargin=1.5cm,vmargin=1.5cm}
+\usepackage{pdflscape}
+\usepackage[font={it}]{caption}% pour des l?gendes en italique
+\usepackage{graphicx}
+\graphicspath{{illustrations/2016/}{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_19_Alagnon/}}
+%donne les chemins d'acc?s pour l'emplacement des images, on peut en donner plusieurs 
+
+\usepackage{tikz}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage[abs]{overpic}
+\usepackage[section]{placeins}%The placeins package provides the command % \FloatBarrier \let\emptyset\varnothing
+
+
+\usepackage{chngcntr} % pour ne pas que les note de bas de page se remettent ? 1 ? chaque changement de chapitre
+\counterwithout{footnote}{chapter} % pour ne pas que les note de bas de page se
+% remettent ? 1 ? chaque changement de chapitre
+%
+%\usepackage{tablefootnote} %pour g?rer les note de bas de page dans les tableaux
+
+
+%\setpapersize{A4}
+%\setmarginsrb{15mm}{15mm}{15mm}{15mm}{12pt}{0mm}{0pt}{11mm}
+\setcounter{secnumdepth}{10}
+%\usepackage[xindy,acronym]{glossaries}% pour faire un glossaire [xindy] option
+\usepackage{enumitem}% pour diminuer les espaces apr?s itemize
+% [noitemsep,nolistsep] \usepackage{blindtext} %dummty text
+\usepackage[round]{natbib}
+\definecolor{bois}{RGB}{139,69,19}
+\definecolor{brique}{RGB}{238,64,0}
+\definecolor{bleu}{RGB}{16,18,138}
+%\definecolor{violet}{RGB}{160,32,240}
+\definecolor{jauneorange}{RGB}{205,133,0}
+\definecolor{deeppink}{RGB}{255,20,147}
+\definecolor{lightgoldenrod1}{RGB}{255,236,139}
+\definecolor{royalblue4}{RGB}{39,64,139}
+\definecolor{grisbleu}{RGB}{62,59,132}
+\definecolor{vertfond}{RGB}{34,49,23}
+\definecolor{vertfond2}{RGB}{57,102,45}
+\definecolor{vertsurf}{RGB}{212,242,132}
+\renewcommand*{\glstextformat}[1]{\textcolor{grisbleu}{#1}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}% cette commande est pour cr?er un ligne il faut la pr?c?der de noident
+% recommended,[toc]=> glossary in the table of contents
+\hypersetup{pdfstartview=FitH} %zoom pleine page
+\hypersetup{
+     backref=true,%permet d'ajouter des liens dans...
+     pagebackref=true,%...les bibliographies
+     hyperindex=true,%ajoute des liens dans les index.
+     colorlinks=true,%colorise les liens
+     breaklinks=true,%permet le retour ?? la ligne dans les liens trop longs
+     urlcolor= cyan,%couleur des hyperliens
+     linkcolor= royalblue4,%couleur des liens internes(change box color with linkbordercolor)
+     filecolor=magenta,% color of file links 
+     citecolor=grisbleu,
+     bookmarks=true,%cr?? des signets pour Acrobat
+     bookmarksopen=true,%si les signets Acrobat sont cr??s, %les afficher compl?tement.
+     %dans les informations du document
+     %pdfsubject={Mortalit? d?valaison},          %sous Acrobat
+     %pdfkeywords={saumon}{Salmo salar}{Mod?le dynamique de population}
+     }
+\usepackage{etoolbox}
+\interfootnotelinepenalty=10000 %% Completely prevent breaking of footnotes
+
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+  \vspace*{50\p@}%
+  {\parindent \z@ \raggedright \normalfont
+  \hrule                                        % horizontal line
+  \vspace{10pt}%                                 % add vertical space
+  \interlinepenalty\@M
+  \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \thechapter\space \scshape #1\par
+        \par\nobreak
+        \vskip 20\p@        
+  \vspace{10pt}%                                 % add vertical space
+  \hrule                                        % horizontal rule
+  \nobreak
+  \vskip 40\p@
+  }%
+}
+\makeatother
+
+%\newcommand{\myparagraph}[1]{\paragraph*{#1}\mbox{}\\} %pour forcer ? aller ?
+% la ligne en d?but de paragraphe
+
+\addto{\captionsfrench}{\renewcommand{\bibname}{Références bibliographiques}}
+\addto{\captionsfrench}{\renewcommand{\abstractname}{Résumé}}
+\addto{\captionsfrench}{\renewcommand{\glossaryname}{Glossaire}}
+\addto{\captionsfrench}{\renewcommand{\tablename}{Tableau}}
+
+\begin{document}
+\input{rapport_indicateur_2021-concordance}
+
+
+
+
+\includepdf{C:/Users/marion.legrand/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/PageDeGarde_2016.pdf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TABLES DES MATIERES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+\sffamily
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PARTIES DU RAPPORT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introduction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Entre 2010 et 2012, Guillaume Dauphin et Etienne Prévost (INRA -- UMR ECOBIOP)
+ont développé un modèle de dynamique de population pour le saumon de l'Allier
+(\citet{dauphin_viability_2013} : \href{http://www.plan-loire.fr/fileadmin/pce/PF_RDI/ProjetsRecherche/Docs/INRA_viabilite_saumon/33698_Rapport_final_viabilite_Saumon_Allier.pdf}{voir
+le rapport en ligne}). Le développement de cet outil avait été
+demandé de longue date par les acteurs de l'eau du bassin de la Loire 
+et était inscrit dans le plan de gestion des poissons migrateurs (PLAGEPOMI) du bassin de la Loire, des côtiers vendéens et de la Sèvre niortaise 2009-2013 à la mesure 62, intitulée \og Comprendre les modalités de renouvellement de la population : création d'un modèle de dynamique de populations \fg{}.\\
+L'objectif de ce projet de modélisation est :
+\begin{itemize}
+  \item améliorer  la  compréhension  et  quantifier  les  mécanismes  de 
+  renouvellement  de  la population de saumon de l'Allier ;
+  \item fournir une analyse rétrospective de la dynamique de population du
+  saumon de l'allier des années 70 à nos jours ;
+  \item  évaluer la capacité de la population de l'Allier à se maintenir de
+  façon autonome (sans repeuplement) ;
+  \item  identifier  les  conditions  requises  (d'ordre  naturel  ou 
+  anthropique)  pour  assurer  la viabilité de la population \og sauvage \fg{} de
+  saumon atlantique dans le bassin de l'Allier.
+\end{itemize}
+La zone d'étude est située sur l'Allier, des sources à la station de Vichy
+(figure \ref{fig_secteur}). Ce secteur est lui-même divisé en 4 zones. Seuls les
+affluents principaux (Dore et Alagnon) sont pris en compte car nous ne disposons pas de
+données suffisantes sur les cours d'eau de moindre importance.
+
+\begin{figure}[!h]
+  \begin{center}
+    \includegraphics[scale=0.5]{illustrations/LocalisationSecteursModeleDynamiquePop.pdf}
+  \end{center}
+  \caption{Localisation des différents secteurs du modèle}
+  \label{fig_secteur}
+\end{figure}
+
+Depuis 2014, le travail de mise à jour et de développement de ce modèle se poursuit grâce à un partenariat entre l'INRAe et Logrami(\citet{legrand_transfert_2014} :
+\href{http://www.migrateurs-loire.fr/telechargement/documentation/rapports/Legrand-et-Prevost-2015.pdf}{voir
+le rapport en ligne}; \citet{legrand_prevost_2015}
+:
+\href{http://www.migrateurs-loire.fr/telechargement/documentation/rapports/Legrand-et-Prevost-2016.pdf}{voir
+le rapport en ligne}).
+
+Afin que les développements du modèle restent en adéquation avec les
+besoins en connaissance des acteurs de l'eau du bassin de la Loire concernés par la gestion du saumon de l'Allier, un groupe de travail se réunit annuellement depuis 2014. Ce groupe\footnote{29 personnes de 21 structures différentes
+sont systématiquement invitées à participer à ces réunions. Les structures
+invitées sont : l'Agence de l'eau Loire-Bretagne, le Cnss, la Dreal de bassin
+Loire-Bretagne, Edf, l'Eptb Loire, la Fdaappma 03, la Fdaappma 15, la Fdaappma
+42, la Fdaappma 43, la Fdaappma 48, la Fdaappma 63, l'Inra, Logrami, l'Onema, la
+Region Centre Val-de-Loire, le Sage Alagnon, le Sage Allier aval, le Sage Dore,
+le Sage Haut-Allier, le Sage Sioule et le Sigal} suit les avancés du projet et donne les orientations pour le
+travail à venir (choix des thématiques).
+
+
+\Floatbarrier
+
+
+\clearpage 
+\chapter{chapitre 1}
+\label{maj_mod}
+
+\section{section 1}
+
+
+\begin{landscape}
+\input{C:/Users/marion.legrand/workspace/ModeleDynamiquePop/script/lateX/tab/2016/tavanc_annee.tex}
+\end{landscape}
+
+\chapter{Densités prédites pour un
+nombre de tacons 0+ capturés en 5 minutes}
+\label{Annexe4}
+\includepdf[pages=-,nup=2x2,scale=1]{C:/Users/marion.legrand/workspace/ModeleDynamiquePop/script/lateX/tab/2016/predictions_densites_MAJ2016.pdf}
+
+
+\chapter{Présentation des paramètres estimés par le modèle}
+\label{Annexe5}
+\begin{landscape}
+\includepdf[pages=-,nup=1x2,landscape=TRUE]{SortieOpenbugs_parameters_rapport2016.pdf}
+\end{landscape}
+\clearpage
+
+\chapter{Code du modèle 2016.12.19}
+\label{Annexe6}
+\begin{landscape}
+\includepdf[pages=-,nup=1x2,landscape=true]{Model_script.pdf}
+\end{landscape}
+
+\includepdf{RapportTdB_4emeCouverture.pdf}
+
+
+\end{document}
