@@ -432,8 +432,6 @@ report_param(p_surv, imgwd, tabwd, "p_surv")
 << sigma_vichy, echo=FALSE, eval=TRUE,results=hide >>=
 sigma_vichy <- read_param_coda("sigma_vichy", datawd)
 report_param(sigma_vichy, imgwd, tabwd, "sigma_vichy")
-
-cumuplot(sigma_vichy[412:10000],probs=c(0.05,0.5,0.95))
 @
 
 \begin{figure}[ht]

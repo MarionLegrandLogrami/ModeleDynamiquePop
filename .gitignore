@@ -18,6 +18,9 @@ Rdata_av2021.zip
 # Fichiers générés par bugs2jags() à chaque exécution (dump JAGS de data.txt)
 script/lateX/data_model.R
 
+# Device R par défaut quand un plot() tourne sans device explicitement ouvert
+Rplots.pdf
+
 # Artefacts de compilation LaTeX / Sweave (regénérés à partir des .Rnw)
 *.aux
 *.log
