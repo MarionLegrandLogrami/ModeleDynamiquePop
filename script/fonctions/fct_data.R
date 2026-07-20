@@ -54,6 +54,21 @@ align_sparse_year_param <- function(param, T, probs = seq(0, 1, 0.1)) {
 }
 
 #===================================================================================
+# Masque de NA les années "tirage à blanc" (pas de déversement) sur un paramètre
+# coda aligné positionnellement sur une plage d'années contiguë (ex. d_juv_moy_V,
+# lignes = années 2:T dans l'ordre). indicator est le vecteur I_juv_moy[<plage>,col]
+# (1 = déversement réel cette année-là, 0 = tirage à blanc à ignorer).
+#===================================================================================
+mask_no_deversement <- function(param, indicator) {
+  sum <- summary(param, probs = seq(0, 1, 0.1))
+  mean_col <- if (is.matrix(sum$statistics)) sum$statistics[, "Mean"] else sum$statistics["Mean"]
+  quantiles <- sum$quantiles
+  quantiles[indicator == 0, ] <- NA
+  mean_col[indicator == 0] <- NA
+  list(quantiles = quantiles, mean = mean_col)
+}
+
+#===================================================================================
 # Standardise des résidus par un écart-type tiré (1 valeur par itération MCMC) :
 # std[i,t] = res[i,t] / sigma[i]. Motif récurrent pour les résidus standardisés
 # (res_vichy_std, res_p_*_std, res_wild_moy_*_std, res_juv_moy_*_std, ...)

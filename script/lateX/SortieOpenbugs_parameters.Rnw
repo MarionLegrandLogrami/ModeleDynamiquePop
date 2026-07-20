@@ -1836,36 +1836,8 @@ sigma\_egg\_moy représente l'écart-type des densités de juvéniles issus des 
 \subsection{sigma\_wild\_site}
 %=================================================================================
 << sigma_wild_site, echo=FALSE,  eval=TRUE,results=hide >>=
-sigma_wild_s=read.coda(str_c(datawd,"/parameters/sigma_wild_siteCODAchain1.txt"),str_c(datawd,"/parameters/sigma_wild_siteCODAindex.txt"))
-png(filename=str_c(imgwd,"sigma_wild_site.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(sigma_wild_s,density=FALSE,auto.layout=FALSE)
-plot(sigma_wild_s,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(sigma_wild_s, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="sigma_wild_site",caption="Statistiques de sigma\\_wild\\_site")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"sigma_wild_site.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+sigma_wild_s <- read_param_coda("sigma_wild_site", datawd, subdir = "parameters")
+report_param(sigma_wild_s, imgwd, tabwd, "sigma_wild_site")
 @
 
 \begin{figure}[ht]
@@ -1886,35 +1858,8 @@ sigma\_wild\_site représente l'écart-type des densité de juvéniles sauvages 
 \subsection{sigma\_juv\_site}
 %=================================================================================
 << sigma_juv_site, echo=FALSE,  eval=TRUE,results=hide >>=
-sigma_juv_s=read.coda(str_c(datawd,"/parameters/sigma_juv_siteCODAchain1.txt"),str_c(datawd,"/parameters/sigma_juv_siteCODAindex.txt"))
-png(filename=str_c(imgwd,"sigma_juv_site.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(sigma_juv_s,density=FALSE,auto.layout=FALSE)
-plot(sigma_juv_s,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(sigma_juv_s, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="sigma_juv_site",caption="Statistiques de sigma\\_juv\\_site")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"sigma_juv_site.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+sigma_juv_s <- read_param_coda("sigma_juv_site", datawd, subdir = "parameters")
+report_param(sigma_juv_s, imgwd, tabwd, "sigma_juv_site")
 @
 
 \begin{figure}[ht]
@@ -1933,36 +1878,8 @@ sigma\_juv\_site représente l'écart-type des densité de juvéniles déversés
 \subsection{sigma\_egg\_site}
 %=================================================================================
 << sigma_egg_site, echo=FALSE,  eval=TRUE,results=hide >>=
-sigma_egg_s=read.coda(str_c(datawd,"/parameters/sigma_egg_siteCODAchain1.txt"),str_c(datawd,"/parameters/sigma_egg_siteCODAindex.txt"))
-png(filename=str_c(imgwd,"sigma_egg_site.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(sigma_egg_s,density=FALSE,auto.layout=FALSE)
-plot(sigma_egg_s,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(sigma_egg_s, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="sigma_egg_site",caption="Statistiques de sigma\\_egg\\_site")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"sigma_egg_site.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+sigma_egg_s <- read_param_coda("sigma_egg_site", datawd, subdir = "parameters")
+report_param(sigma_egg_s, imgwd, tabwd, "sigma_egg_site")
 @
 
 \begin{figure}[ht]
@@ -1988,42 +1905,14 @@ d\_wild\_moy représente la densité de juvénile sauvage à l'échelle des sect
 \subsubsection{d\_wild\_moy\_Vichy}
 %------------------------------------
 << d_wild_moy_V, echo=FALSE, eval=TRUE,results=hide >>=
-d_wild_moy_V=read.coda(str_c(datawd,"dmoywild_VCODAchain1.txt"),str_c(datawd,"dmoywild_VCODAindex.txt"))
+d_wild_moy_V <- read_param_coda("dmoywild_V", datawd)
+q <- param_quantiles(d_wild_moy_V)
 
-sum=summary(d_wild_moy_V, probs=seq(0,1,0.1))
-d_wild_moy_V_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"d_wild_moy_V.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,0.4),ylab="d_wild_moy_V")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,0.4,by=0.1),labels=c(0,0.1,0.2,0.3,0.4),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1976,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,5,15,25,35,(T-1)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-1)){
-	#whiskers
-	#95%
-	segments(i-0.15,d_wild_moy_V_q[i,5],i+0.15,d_wild_moy_V_q[i,5])
-	segments(i,d_wild_moy_V_q[i,4],i,d_wild_moy_V_q[i,5])
-	#5%
-	segments(i-0.15,d_wild_moy_V_q[i,1],i+0.15,d_wild_moy_V_q[i,1])
-	segments(i,d_wild_moy_V_q[i,2],i,d_wild_moy_V_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(d_wild_moy_V_q[i,2],d_wild_moy_V_q[i,2],d_wild_moy_V_q[i,4],d_wild_moy_V_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "d_wild_moy_V",
+                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   ylab_txt = "d_wild_moy_V", ylim_range = c(0, 0.4), y_at = seq(0, 0.4, by = 0.1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T))
 @
 
 \begin{figure}[ht]
@@ -2039,42 +1928,14 @@ dev.off()
 \subsubsection{d\_wild\_moy\_Alagnon}
 %------------------------------------
 << d_wild_moy_A, echo=FALSE, eval=TRUE,results=hide >>=
-d_wild_moy_A=read.coda(str_c(datawd,"dmoywild_ACODAchain1.txt"),str_c(datawd,"dmoywild_ACODAindex.txt"))
+d_wild_moy_A <- read_param_coda("dmoywild_A", datawd)
+q <- param_quantiles(d_wild_moy_A)
 
-sum=summary(d_wild_moy_A, probs=seq(0,1,0.1))
-d_wild_moy_A_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"d_wild_moy_A.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="d_wild_moy_A")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,1,by=0.1),labels=c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1976,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,5,15,25,35,(T-1)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-1)){
-	#whiskers
-	#95%
-	segments(i-0.15,d_wild_moy_A_q[i,5],i+0.15,d_wild_moy_A_q[i,5])
-	segments(i,d_wild_moy_A_q[i,4],i,d_wild_moy_A_q[i,5])
-	#5%
-	segments(i-0.15,d_wild_moy_A_q[i,1],i+0.15,d_wild_moy_A_q[i,1])
-	segments(i,d_wild_moy_A_q[i,2],i,d_wild_moy_A_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(d_wild_moy_A_q[i,2],d_wild_moy_A_q[i,2],d_wild_moy_A_q[i,4],d_wild_moy_A_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "d_wild_moy_A",
+                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   ylab_txt = "d_wild_moy_A", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T))
 @
 
 \begin{figure}[ht]
@@ -2089,42 +1950,14 @@ dev.off()
 \subsubsection{d\_wild\_moy\_Langeac}
 %------------------------------------
 << d_wild_moy_L, echo=FALSE, eval=TRUE,results=hide >>=
-d_wild_moy_L=read.coda(str_c(datawd,"dmoywild_LCODAchain1.txt"),str_c(datawd,"dmoywild_LCODAindex.txt"))
+d_wild_moy_L <- read_param_coda("dmoywild_L", datawd)
+q <- param_quantiles(d_wild_moy_L)
 
-sum=summary(d_wild_moy_L, probs=seq(0,1,0.1))
-d_wild_moy_L_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"d_wild_moy_L.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="d_wild_moy_L")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,1,by=0.2),labels=c(0,0.2,0.4,0.6,0.8,1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1976,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,5,15,25,35,(T-1)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-1)){
-	#whiskers
-	#95%
-	segments(i-0.15,d_wild_moy_L_q[i,5],i+0.15,d_wild_moy_L_q[i,5])
-	segments(i,d_wild_moy_L_q[i,4],i,d_wild_moy_L_q[i,5])
-	#5%
-	segments(i-0.15,d_wild_moy_L_q[i,1],i+0.15,d_wild_moy_L_q[i,1])
-	segments(i,d_wild_moy_L_q[i,2],i,d_wild_moy_L_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(d_wild_moy_L_q[i,2],d_wild_moy_L_q[i,2],d_wild_moy_L_q[i,4],d_wild_moy_L_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "d_wild_moy_L",
+                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   ylab_txt = "d_wild_moy_L", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T))
 @
 
 \begin{figure}[ht]
@@ -2139,42 +1972,14 @@ dev.off()
 \subsubsection{d\_wild\_moy\_Poutes}
 %------------------------------------
 << d_wild_moy_P, echo=FALSE, eval=TRUE,results=hide >>=
-d_wild_moy_P=read.coda(str_c(datawd,"dmoywild_PCODAchain1.txt"),str_c(datawd,"dmoywild_PCODAindex.txt"))
+d_wild_moy_P <- read_param_coda("dmoywild_P", datawd)
+q <- param_quantiles(d_wild_moy_P)
 
-sum=summary(d_wild_moy_P, probs=seq(0,1,0.1))
-d_wild_moy_P_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"d_wild_moy_P.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,(T-12+1)),xlab="Years",ylim=c(0,0.4),ylab="d_wild_moy_P")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,0.4,by=0.1),labels=c(0,0.1,0.2,0.3,0.4),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1987,1990,2000,2010,1974+T)
-axis(1,at = c(1,4,14,24,(T-12)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-12)){
-	#whiskers
-	#95%
-	segments(i-0.15,d_wild_moy_P_q[i,5],i+0.15,d_wild_moy_P_q[i,5])
-	segments(i,d_wild_moy_P_q[i,4],i,d_wild_moy_P_q[i,5])
-	#5%
-	segments(i-0.15,d_wild_moy_P_q[i,1],i+0.15,d_wild_moy_P_q[i,1])
-	segments(i,d_wild_moy_P_q[i,2],i,d_wild_moy_P_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(d_wild_moy_P_q[i,2],d_wild_moy_P_q[i,2],d_wild_moy_P_q[i,4],d_wild_moy_P_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=(T-12),col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "d_wild_moy_P",
+                   data = q$quantiles, years = 1:(T-12), year_origin = 1986,
+                   ylab_txt = "d_wild_moy_P", ylim_range = c(0, 0.4), y_at = seq(0, 0.4, by = 0.1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T - 12))
 @
 
 \begin{figure}[ht]
@@ -2196,82 +2001,21 @@ d\_juv\_moy représente la densité de juvéniles déversés à l'échelle des s
 \subsubsection{d\_juv\_moy\_Vichy}
 %------------------------------------
 << d_juv_moy_V, echo=FALSE, eval=TRUE,results=hide >>=
-d_juv_moy_V=read.coda(str_c(datawd,"stocking_juv_VCODAchain1.txt"),str_c(datawd,"stocking_juv_VCODAindex.txt"))
+d_juv_moy_V <- read_param_coda("stocking_juv_V", datawd)
 
 #On a besoin de récupérer les données depuis Openbugs concernant les I_juv_moy
 #pour ne pas les réécrire à la main et risquer de faire des erreurs
-
-library(coda) 
 bugs2jags(str_c(datawd,"data.txt"),"data_covariable_2019_12_12.R")
 source("data_covariable_2019_12_12.R")
-head(I_juv_moy) #éa marche !! :D
 
-sum=summary(d_juv_moy_V, probs=seq(0,1,0.1))
-d_juv_moy_V_q<-sum$quantiles
-#Add column to sort
-d_juv_moy_V_q<-cbind(2:T,d_juv_moy_V_q)
-#On ne conserve que les lignes quand il y a déversement car sinon = à un tirage
-#à blanc
-d_juv_moy_V_q_dev<-d_juv_moy_V_q[I_juv_moy[2:T,1]==1,]
+# les années sans déversement (I_juv_moy==0) sont des tirages à blanc -> masquées en NA
+q <- mask_no_deversement(d_juv_moy_V, I_juv_moy[2:T, 1])
 
-#On récupére les lignes quand I_juv_moy=0 et on met des NA partout
-d_juv_moy_V_q_ss_dev<-d_juv_moy_V_q[I_juv_moy[2:T,1]==0,]
-len<-length(I_juv_moy[2:T,1][I_juv_moy[2:T,1]==0]) #pour calculer le nbr de 0 dans I_juv_moy pour vichy
-d_juv_moy_V_q_ss_dev_2<-matrix(rep(NA,len*5),nrow=len,ncol=5)
-d_juv_moy_V_q_ss_dev_2<-cbind(c(2:5,7:10,12:17,19:20,31),d_juv_moy_V_q_ss_dev_2)
-dimnames(d_juv_moy_V_q_ss_dev_2)<-dimnames(d_juv_moy_V_q_ss_dev)
-
-
-#On fusionne les 2 et on créé un vecteur d'ordre pour remettre les années de d_juv_moy_V_q_2 dans le bon ordre
-d_juv_moy_V_q_2<-rbind(d_juv_moy_V_q_dev,d_juv_moy_V_q_ss_dev_2)
-#ord<-c(seq(25,28,by=1),1,seq(29,32,by=1),2,seq(33,38,by=1),3,39,40,seq(4,13,by=1),41,seq(14,24,by=1))
-#ord<-c(seq((14+T-32+1),(14+T-32+1+3),by=1),1,seq(28,31,by=1),2,seq(32,37,by=1),3,38,39,seq(4,13,by=1),40,seq(14,(14+T-32),by=1))
-
-d_juv_moy_V_q<-d_juv_moy_V_q_2[order(d_juv_moy_V_q_2[,1]),2:6]
-
-#On calcule les moyennes pour les années sans dev et on met NA partout
-mean_res_na<-cbind(sum$statistics[I_juv_moy[2:T,1]==0,"Mean"])
-mean_res_na[,1]<-NA
-mean_res<-cbind(sum$statistics[I_juv_moy[2:T,1]==1,"Mean"])
-#On ajoute une colonne avec le numéro de ligne récupéré en expression réguliére
-mean_res_na<-cbind(as.numeric(gsub("[^0-9]","",gsub(",[0-9]","",row.names(mean_res_na)))),mean_res_na)
-mean_res<-cbind(as.numeric(gsub("[^0-9]","",gsub(",[0-9]","",row.names(mean_res)))),mean_res)
-#On fusionne les années avec et sans dev
-mean_res<-rbind(mean_res,mean_res_na)
-mean_res<-as.matrix(mean_res[order(mean_res[,1]),2])
-
-
-png(filename=str_c(imgwd,"d_juv_moy_V.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,0.3),ylab="d_juv_moy_V")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,0.3,by=0.05),labels=c(0,0.05,0.1,0.15,0.2,0.25,0.3),cex.axis =
-0.9,las = 1,col = "grey55") # trace l'axe des abscisses
-lab1=c(1976,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,5,15,25,35,(T-1)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-1)){
-	#whiskers
-	#95%
-	segments(i-0.15,d_juv_moy_V_q[i,5],i+0.15,d_juv_moy_V_q[i,5])
-	segments(i,d_juv_moy_V_q[i,4],i,d_juv_moy_V_q[i,5])
-	#5%
-	segments(i-0.15,d_juv_moy_V_q[i,1],i+0.15,d_juv_moy_V_q[i,1])
-	segments(i,d_juv_moy_V_q[i,2],i,d_juv_moy_V_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(d_juv_moy_V_q[i,2],d_juv_moy_V_q[i,2],d_juv_moy_V_q[i,4],d_juv_moy_V_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res,na.rm=TRUE),y1=mean(mean_res,na.rm=TRUE),x1=T,col="red")
-mtext(round(mean(mean_res,na.rm=TRUE),5),side=4,line=0,at=mean(mean_res,na.rm=TRUE),cex
-= 0.8,col="red",las=1) 
-
-dev.off()
+boxplot_years_png(imgwd, "d_juv_moy_V",
+                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   ylab_txt = "d_juv_moy_V", ylim_range = c(0, 0.3), y_at = seq(0, 0.3, by = 0.05),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean, na.rm = TRUE), mean_line_range = c(0, T))
 @
 
 \begin{figure}[ht]
@@ -2286,83 +2030,21 @@ dev.off()
 \subsubsection{d\_juv\_moy\_Alagnon}
 %------------------------------------
 << d_juv_moy_A, echo=FALSE, eval=TRUE,results=hide >>=
-d_juv_moy_A=read.coda(str_c(datawd,"stocking_juv_ACODAchain1.txt"),str_c(datawd,"stocking_juv_ACODAindex.txt"))
+d_juv_moy_A <- read_param_coda("stocking_juv_A", datawd)
 
 #On a besoin de récupérer les données depuis Openbugs concernant les I_juv_moy
 #pour ne pas les réécrire à la main et risquer de faire des erreurs
-
-library(coda) 
 bugs2jags(str_c(datawd,"data.txt"),"data_2021_09.r")
 source("data_2021_09.r")
-head(I_juv_moy) #ça marche !! :D
 
-sum=summary(d_juv_moy_A, probs=seq(0,1,0.1))
-d_juv_moy_A_q<-sum$quantiles
-#Add column to sort
-d_juv_moy_A_q<-cbind(2:T,d_juv_moy_A_q)
-#On ne conserve que les lignes quand il y a déversement car sinon = à un tirage
-#à blanc
-d_juv_moy_A_q_dev<-d_juv_moy_A_q[I_juv_moy[2:T,2]==1,]
+# les années sans déversement (I_juv_moy==0) sont des tirages à blanc -> masquées en NA
+q <- mask_no_deversement(d_juv_moy_A, I_juv_moy[2:T, 2])
 
-#On récupére les lignes quand I_juv_moy=0 et on met des NA partout
-d_juv_moy_A_q_ss_dev<-d_juv_moy_A_q[I_juv_moy[2:T,2]==0,]
-len<-length(I_juv_moy[2:T,2][I_juv_moy[2:T,2]==0]) #pour calculer le nbr de 0 dans I_juv_moy pour alagnon
-d_juv_moy_A_q_ss_dev_2<-matrix(rep(NA,len*5),nrow=len,ncol=5)
-d_juv_moy_A_q_ss_dev_2<-cbind(c(3,5:6,9,11:20,23:24,28,31,43:T),d_juv_moy_A_q_ss_dev_2)
-dimnames(d_juv_moy_A_q_ss_dev_2)<-dimnames(d_juv_moy_A_q_ss_dev)
-
-#On fusionne les 2
-d_juv_moy_A_q_2<-rbind(d_juv_moy_A_q_dev,d_juv_moy_A_q_ss_dev_2)
-#ord<-c(1,24,2,25,26,3,4,27,5,seq(28,37,by=1),6,7,38,39,seq(8,10,by=1),40,11,12,41,seq(13,23, by=1)) 
-#ord<-c(1,23,2,24,25,3,4,26,5,seq(27,36,by=1),6,7,37,38,seq(8,10,by=1),39,11,12,40,seq(13,23, by=1)) 
-
-#d_juv_moy_A_q<-d_juv_moy_A_q_2[ord,]
-d_juv_moy_A_q<-d_juv_moy_A_q_2[order(d_juv_moy_A_q_2[,1]),2:6]
-
-
-#On calcule les moyennes pour les années sans dev et on met NA partout
-mean_res_na<-cbind(sum$statistics[I_juv_moy[2:T,2]==0,"Mean"])
-mean_res_na[,1]<-NA
-mean_res<-cbind(sum$statistics[I_juv_moy[2:T,2]==1,"Mean"])
-#On ajoute une colonne avec le numéro de ligne récupéré en expression réguliére
-mean_res_na<-cbind(as.numeric(gsub("[^0-9]","",gsub(",[0-9]","",row.names(mean_res_na)))),mean_res_na)
-mean_res<-cbind(as.numeric(gsub("[^0-9]","",gsub(",[0-9]","",row.names(mean_res)))),mean_res)
-#On fusionne les années avec et sans dev
-mean_res<-rbind(mean_res,mean_res_na)
-mean_res<-as.matrix(mean_res[order(mean_res[,1]),2])
-
-
-png(filename=str_c(imgwd,"d_juv_moy_A.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,2),ylab="d_juv_moy_A")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,2,by=0.4),labels=c(0,0.4,0.8,1.2,1.6,2),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1976,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,5,15,25,35,(T-1)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-1)){
-	#whiskers
-	#95%
-	segments(i-0.15,d_juv_moy_A_q[i,5],i+0.15,d_juv_moy_A_q[i,5])
-	segments(i,d_juv_moy_A_q[i,4],i,d_juv_moy_A_q[i,5])
-	#5%
-	segments(i-0.15,d_juv_moy_A_q[i,1],i+0.15,d_juv_moy_A_q[i,1])
-	segments(i,d_juv_moy_A_q[i,2],i,d_juv_moy_A_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(d_juv_moy_A_q[i,2],d_juv_moy_A_q[i,2],d_juv_moy_A_q[i,4],d_juv_moy_A_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res,na.rm=TRUE),y1=mean(mean_res,na.rm=TRUE),x1=T,col="red")
-mtext(round(mean(mean_res,na.rm=TRUE),5),side=4,line=0,at=mean(mean_res,na.rm=TRUE),cex
-= 0.8,col="red",las=1) 
-
-dev.off()
+boxplot_years_png(imgwd, "d_juv_moy_A",
+                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   ylab_txt = "d_juv_moy_A", ylim_range = c(0, 2), y_at = seq(0, 2, by = 0.4),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean, na.rm = TRUE), mean_line_range = c(0, T))
 @
 
 \begin{figure}[ht]
@@ -2377,74 +2059,21 @@ dev.off()
 \subsubsection{d\_juv\_moy\_Langeac}
 %------------------------------------
 << d_juv_moy_L, echo=FALSE, eval=TRUE,results=hide >>=
-d_juv_moy_L=read.coda(str_c(datawd,"stocking_juv_LCODAchain1.txt"),str_c(datawd,"stocking_juv_LCODAindex.txt"))
+d_juv_moy_L <- read_param_coda("stocking_juv_L", datawd)
 
 #On a besoin de récupérer les données depuis Openbugs concernant les I_juv_moy
 #pour ne pas les réécrire à la main et risquer de faire des erreurs
-
-library(coda) 
 bugs2jags(str_c(datawd,"data.txt"),"data_covariable_2019_12_12.R")
 source("data_covariable_2019_12_12.R")
-head(I_juv_moy) #ça marche !! :D
 
-sum=summary(d_juv_moy_L, probs=seq(0,1,0.1))
-d_juv_moy_L_q<-sum$quantiles
-#Add column to sort
-d_juv_moy_L_q<-cbind(2:T,d_juv_moy_L_q)
-#On ne conserve que les lignes quand il y a déversement car sinon = à un tirage
-#à blanc
-d_juv_moy_L_q_dev<-d_juv_moy_L_q[I_juv_moy[2:T,3]==1,]
+# les années sans déversement (I_juv_moy==0) sont des tirages à blanc -> masquées en NA
+q <- mask_no_deversement(d_juv_moy_L, I_juv_moy[2:T, 3])
 
-#On récupére les lignes quand I_juv_moy=0 et on met des NA partout
-d_juv_moy_L_q_ss_dev<-d_juv_moy_L_q[I_juv_moy[2:T,3]==0,]
-d_juv_moy_L_q_ss_dev[,2:6]<-NA
-
-#On fusionne les 2
-d_juv_moy_L_q_2<-rbind(d_juv_moy_L_q_dev,d_juv_moy_L_q_ss_dev)
-d_juv_moy_L_q<-d_juv_moy_L_q_2[order(d_juv_moy_L_q_2[,1]),2:6]
-
-#On calcule les moyennes pour les années sans dev et on met NA partout
-mean_res_na<-cbind(sum$statistics[I_juv_moy[2:T,3]==0,"Mean"])
-mean_res_na[,1]<-NA
-mean_res<-cbind(sum$statistics[I_juv_moy[2:T,3]==1,"Mean"])
-#On ajoute une colonne avec le numéro de ligne récupéré en expression réguliére
-mean_res_na<-cbind(as.numeric(gsub("[^0-9]","",gsub(",[0-9]","",row.names(mean_res_na)))),mean_res_na)
-mean_res<-cbind(as.numeric(gsub("[^0-9]","",gsub(",[0-9]","",row.names(mean_res)))),mean_res)
-#On fusionne les années avec et sans dev
-mean_res<-rbind(mean_res,mean_res_na)
-mean_res<-as.matrix(mean_res[order(mean_res[,1]),2])
-
-png(filename=str_c(imgwd,"d_juv_moy_L.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,0.6),ylab="d_juv_moy_L")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,0.6,by=0.1),labels=c(0,0.1,0.2,0.3,0.4,0.5,0.6),cex.axis =
-0.9,las = 1,col = "grey55") # trace l'axe des abscisses
-lab1=c(1976,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,5,15,25,35,(T-1)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-1)){
-	#whiskers
-	#95%
-	segments(i-0.15,d_juv_moy_L_q[i,5],i+0.15,d_juv_moy_L_q[i,5])
-	segments(i,d_juv_moy_L_q[i,4],i,d_juv_moy_L_q[i,5])
-	#5%
-	segments(i-0.15,d_juv_moy_L_q[i,1],i+0.15,d_juv_moy_L_q[i,1])
-	segments(i,d_juv_moy_L_q[i,2],i,d_juv_moy_L_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(d_juv_moy_L_q[i,2],d_juv_moy_L_q[i,2],d_juv_moy_L_q[i,4],d_juv_moy_L_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res,na.rm=TRUE),y1=mean(mean_res,na.rm=TRUE),x1=T,col="red")
-mtext(round(mean(mean_res,na.rm=TRUE),5),side=4,line=0,at=mean(mean_res,na.rm=TRUE),cex
-= 0.8,col="red",las=1) 
-
-dev.off()
+boxplot_years_png(imgwd, "d_juv_moy_L",
+                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   ylab_txt = "d_juv_moy_L", ylim_range = c(0, 0.6), y_at = seq(0, 0.6, by = 0.1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean, na.rm = TRUE), mean_line_range = c(0, T))
 @
 
 \begin{figure}[ht]
@@ -2459,74 +2088,21 @@ dev.off()
 \subsubsection{d\_juv\_moy\_Poutes}
 %------------------------------------
 << d_juv_moy_P, echo=FALSE, eval=TRUE,results=hide >>=
-d_juv_moy_P=read.coda(str_c(datawd,"stocking_juv_PCODAchain1.txt"),str_c(datawd,"stocking_juv_PCODAindex.txt"))
-
+d_juv_moy_P <- read_param_coda("stocking_juv_P", datawd)
 
 #On a besoin de récupérer les données depuis Openbugs concernant les I_juv_moy
 #pour ne pas les réécrire à la main et risquer de faire des erreurs
-
-library(coda) 
 bugs2jags(str_c(datawd,"data.txt"),"data_covariable_2019_12_12.R")
 source("data_covariable_2019_12_12.R")
-head(I_juv_moy) #ça marche !! :D
 
-sum=summary(d_juv_moy_P, probs=seq(0,1,0.1))
-d_juv_moy_P_q<-sum$quantiles
-#Add column to sort
-d_juv_moy_P_q<-cbind(13:T,d_juv_moy_P_q)
-#On ne conserve que les lignes quand il y a déversement car sinon = à un tirage
-#à blanc
-d_juv_moy_P_q_dev<-d_juv_moy_P_q[I_juv_moy[13:T,4]==1,]
+# les années sans déversement (I_juv_moy==0) sont des tirages à blanc -> masquées en NA
+q <- mask_no_deversement(d_juv_moy_P, I_juv_moy[13:T, 4])
 
-#On récupére les lignes quand I_juv_moy=0 et on met des NA partout
-d_juv_moy_P_q_ss_dev<-d_juv_moy_P_q[I_juv_moy[13:T,4]==0,]
-d_juv_moy_P_q_ss_dev[,2:6]<-NA
-
-#On fusionne les 2
-d_juv_moy_P_q_2<-rbind(d_juv_moy_P_q_dev,d_juv_moy_P_q_ss_dev)
-d_juv_moy_P_q<-d_juv_moy_P_q_2[order(d_juv_moy_P_q_2[,1]),2:6]
-
-#On calcule les moyennes pour les années sans dev et on met NA partout
-mean_res_na<-cbind(sum$statistics[I_juv_moy[13:T,4]==0,"Mean"])
-mean_res_na[,1]<-NA
-mean_res<-cbind(sum$statistics[I_juv_moy[13:T,4]==1,"Mean"])
-#On ajoute une colonne avec le numéro de ligne récupéré en expression réguliére
-mean_res_na<-cbind(as.numeric(gsub("[^0-9]","",gsub(",[0-9]","",row.names(mean_res_na)))),mean_res_na)
-mean_res<-cbind(as.numeric(gsub("[^0-9]","",gsub(",[0-9]","",row.names(mean_res)))),mean_res)
-#On fusionne les années avec et sans dev
-mean_res<-rbind(mean_res,mean_res_na)
-mean_res<-as.matrix(mean_res[order(mean_res[,1]),2])
-
-png(filename=str_c(imgwd,"d_juv_moy_P.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,nrow(d_juv_moy_P_q)),xlab="Years",ylim=c(0,0.8),ylab="d_juv_moy_P")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,0.8,by=0.2),labels=c(0,0.2,0.4,0.6,0.8),cex.axis = 0.9,las =
-1,col = "grey55") # trace l'axe des abscisses
-lab1=c(1987,1990,2000,2010,(1974+T))
-axis(1,at = c(1,4,14,24,nrow(d_juv_moy_P_q)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:nrow(d_juv_moy_P_q)){
-	#whiskers
-	#95%
-	segments(i-0.15,d_juv_moy_P_q[i,5],i+0.15,d_juv_moy_P_q[i,5])
-	segments(i,d_juv_moy_P_q[i,4],i,d_juv_moy_P_q[i,5])
-	#5%
-	segments(i-0.15,d_juv_moy_P_q[i,1],i+0.15,d_juv_moy_P_q[i,1])
-	segments(i,d_juv_moy_P_q[i,2],i,d_juv_moy_P_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(d_juv_moy_P_q[i,2],d_juv_moy_P_q[i,2],d_juv_moy_P_q[i,4],d_juv_moy_P_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res,na.rm=TRUE),y1=mean(mean_res,na.rm=TRUE),x1=T,col="red")
-mtext(round(mean(mean_res,na.rm=TRUE),5),side=4,line=0,at=mean(mean_res,na.rm=TRUE),cex
-= 0.8,col="red",las=1) 
-dev.off()
+boxplot_years_png(imgwd, "d_juv_moy_P",
+                   data = q$quantiles, years = 1:(T-12), year_origin = 1986,
+                   ylab_txt = "d_juv_moy_P", ylim_range = c(0, 0.8), y_at = seq(0, 0.8, by = 0.2),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean, na.rm = TRUE), mean_line_range = c(0, T))
 @
 
 \begin{figure}[ht]
@@ -2547,42 +2123,17 @@ d\_egg\_moy représente la densité de juvéniles issus des incubateurs de terra
 \subsubsection{d\_egg\_moy\_Vichy}
 %------------------------------------
 << d_egg_moy_V, echo=FALSE, eval=TRUE,results=hide >>=
-d_egg_moy_V=read.coda(str_c(datawd,"stocking_egg_VCODAchain1.txt"),str_c(datawd,"stocking_egg_VCODAindex.txt"))
+d_egg_moy_V <- read_param_coda("stocking_egg_V", datawd)
+q <- param_quantiles(d_egg_moy_V)
 
-sum=summary(d_egg_moy_V, probs=seq(0,1,0.1))
-d_egg_moy_V_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"d_egg_moy_V.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,(T-22)),xlab="Years",ylim=c(0,0.02),ylab="d_egg_moy_V")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,0.02,by=0.01),labels=c(0,0.01,0.02),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1997,2000,2010,1974+T)
-axis(1,at = c(1,4,14,(T-22)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 10:(T-13)){
-	#whiskers
-	#95%
-	segments(i-9.15,d_egg_moy_V_q[i,5],i-9+0.15,d_egg_moy_V_q[i,5])
-	segments(i-9,d_egg_moy_V_q[i,4],i-9,d_egg_moy_V_q[i,5])
-	#5%
-	segments(i-9.15,d_egg_moy_V_q[i,1],i-9+0.15,d_egg_moy_V_q[i,1])
-	segments(i-9,d_egg_moy_V_q[i,2],i-9,d_egg_moy_V_q[i,1])
-	#boxplot
-	polygon(c(i-9.3,i-9+0.3,i-9+0.3,i-9.3),c(d_egg_moy_V_q[i,2],d_egg_moy_V_q[i,2],d_egg_moy_V_q[i,4],d_egg_moy_V_q[i,4]),col="green")
-	#mean
-	segments(i-9.3,mean_res[i,],i-9+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res[10:(T-22)]),y1=mean(mean_res[10:(T-22)]),x1=(T-21),col="red")
-mtext(round(mean(mean_res[10:(T-22)]),5),side=4,line=0,at=mean(mean_res[10:(T-22)]),cex = 0.8,col="red",las=1)
-dev.off()
+# NB : la ligne rouge de moyenne générale porte, dans le script d'origine, sur la
+# sous-plage 10:(T-22) alors que les boxplots couvrent 10:(T-13) - incohérence
+# préexistante conservée telle quelle pour ne pas changer la valeur affichée
+boxplot_years_png(imgwd, "d_egg_moy_V",
+                   data = q$quantiles[10:(T-13), ], years = 1:(T-22), year_origin = 1996,
+                   ylab_txt = "d_egg_moy_V", ylim_range = c(0, 0.02), y_at = seq(0, 0.02, by = 0.01),
+                   col_box = "green", center_line = q$mean[10:(T-13)],
+                   mean_line = mean(q$mean[10:(T-22)]), mean_line_range = c(0, T - 21))
 @
 
 \begin{figure}[ht]
@@ -2597,43 +2148,14 @@ dev.off()
 \subsubsection{d\_egg\_moy\_Langeac}
 %------------------------------------
 << d_egg_moy_L, echo=FALSE, eval=TRUE,results=hide >>=
-d_egg_moy_L=read.coda(str_c(datawd,"stocking_egg_LCODAchain1.txt"),str_c(datawd,"stocking_egg_LCODAindex.txt"))
+d_egg_moy_L <- read_param_coda("stocking_egg_L", datawd)
+q <- param_quantiles(d_egg_moy_L)
 
-sum=summary(d_egg_moy_L, probs=seq(0,1,0.1))
-d_egg_moy_L_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"d_egg_moy_L.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,12),xlab="Years",ylim=c(0,0.05),ylab="d_egg_moy_L")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,0.05,by=0.01),labels=c(0,0.01,0.02,0.03,0.04,0.05),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-axis(1,at = c(1,3,11),
-		labels=c(1997,2000,2008),
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-
-for(i in 12:22){
-	#whiskers
-	#95%
-	segments(i-11.15,d_egg_moy_L_q[i,5],i-11+0.15,d_egg_moy_L_q[i,5])
-	segments(i-11,d_egg_moy_L_q[i,4],i-11,d_egg_moy_L_q[i,5])
-	#5%
-	segments(i-11.15,d_egg_moy_L_q[i,1],i-11+0.15,d_egg_moy_L_q[i,1])
-	segments(i-11,d_egg_moy_L_q[i,2],i-11,d_egg_moy_L_q[i,1])
-	#boxplot
-	polygon(c(i-11.3,i-11+0.3,i-11+0.3,i-11.3),c(d_egg_moy_L_q[i,2],d_egg_moy_L_q[i,2],d_egg_moy_L_q[i,4],d_egg_moy_L_q[i,4]),col="green")
-	#mean
-	segments(i-11.3,mean_res[i,],i-11+0.3,mean_res[i,])
-}
-
-
-segments(x0=0,y0=mean(mean_res[12:22]),y1=mean(mean_res[12:22]),x1=12,col="red")
-mtext(round(mean(mean_res[12:22]),5),side=4,line=0,at=mean(mean_res[12:22]),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "d_egg_moy_L",
+                   data = q$quantiles[12:22, ], years = 1:11, year_origin = 1996,
+                   ylab_txt = "d_egg_moy_L", ylim_range = c(0, 0.05), y_at = seq(0, 0.05, by = 0.01),
+                   col_box = "green", center_line = q$mean[12:22],
+                   mean_line = mean(q$mean[12:22]), mean_line_range = c(0, 12))
 @
 
 \begin{figure}[ht]
