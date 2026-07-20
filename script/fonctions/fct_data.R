@@ -92,10 +92,12 @@ write_multiparam_table <- function(param, tabwd, filename, row_labels, label = f
   tabl <- cbind(sum$quantiles, Mean = sum$statistics[, "Mean"], SD = sum$statistics[, "SD"])
   rownames(tabl) <- row_labels
 
+  # label suffixé "_tab" pour ne pas entrer en collision avec le \label{} du
+  # \begin{figure} associé au même nom (cf. "Label multiply defined")
   tab <- if (is.null(digits)) {
-    xtable(x = tabl, label = label, caption = caption)
+    xtable(x = tabl, label = str_c(label, "_tab"), caption = caption)
   } else {
-    xtable(x = tabl, label = label, caption = caption, digits = digits)
+    xtable(x = tabl, label = str_c(label, "_tab"), caption = caption, digits = digits)
   }
 
   print(tab, file = str_c(tabwd, filename, ".tex"),
@@ -123,10 +125,12 @@ write_param_table <- function(param, tabwd, filename, label = filename,
   tabl["SD"] <- sum$statistics["SD"]
   tabl <- rbind(tabl) #pour en faire une table
 
+  # label suffixé "_tab" pour ne pas entrer en collision avec le \label{} du
+  # \begin{figure} associé au même nom (cf. "Label multiply defined")
   tab <- if (is.null(digits)) {
-    xtable(x = tabl, label = label, caption = caption)
+    xtable(x = tabl, label = str_c(label, "_tab"), caption = caption)
   } else {
-    xtable(x = tabl, label = label, caption = caption, digits = digits)
+    xtable(x = tabl, label = str_c(label, "_tab"), caption = caption, digits = digits)
   }
 
   print(tab, file = str_c(tabwd, filename, ".tex"),

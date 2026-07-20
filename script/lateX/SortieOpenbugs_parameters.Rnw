@@ -328,7 +328,7 @@ ggsave(str_c(imgwd,"plot_Q_surv.png"), plot_Q_surv, dpi = 300, width = 3, height
      \includegraphics{\Sexpr{imgwd}plot_Q_surv.png}
      %\caption{représentation des séries de débits utilisées dans le modèle pour
     % expliquer le taux de transition 0\ensuremath{+}/adulte}
-     \label{serie\_Q\_surv}
+     \label{serie_Q_surv}
 \end{figure}
 
 \clearpage
@@ -2556,7 +2556,7 @@ write_param_table(tau_Q, tabwd, "tau_Q")
 % \begin{figure}[ht]
 %      \includegraphics{\Sexpr{imgwd}tau_Q.png}
 %      \caption{tau\_Q :précision de la loi normale dans laquelle on tire L_s_juv2ad}
-%      \label{tau\_Q} 
+%      \label{tau_Q} 
 % \end{figure}
 % 
 % \input{\Sexpr{tabwd}tau_Q.tex}
