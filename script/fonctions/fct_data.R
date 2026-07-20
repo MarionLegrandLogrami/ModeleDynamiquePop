@@ -35,6 +35,25 @@ param_quantiles <- function(param, probs = seq(0, 1, 0.1)) {
 latex_escape <- function(x) gsub("_", "\\_", x, fixed = TRUE)
 
 #===================================================================================
+# Réaligne un paramètre CODA dont seules certaines années sont échantillonnées
+# (noms de type "p_Rmax[7,1]", "p_Rmax[15,1]", ...) sur une grille complète 1:T,
+# en remplissant de NA les années absentes. Motif récurrent pour les paramètres
+# du modèle d'interaction réciproque (p_Rmax_V/A/L/P).
+#===================================================================================
+align_sparse_year_param <- function(param, T, probs = seq(0, 1, 0.1)) {
+  sum <- summary(param, probs = probs)
+  years_present <- as.numeric(gsub("[^0-9]", "", gsub(",[0-9]", "", rownames(sum$quantiles))))
+
+  quantiles_full <- matrix(NA, nrow = T, ncol = 5)
+  quantiles_full[years_present, ] <- sum$quantiles
+
+  mean_full <- rep(NA, T)
+  mean_full[years_present] <- sum$statistics[, "Mean"]
+
+  list(quantiles = quantiles_full, mean = mean_full)
+}
+
+#===================================================================================
 # Standardise des résidus par un écart-type tiré (1 valeur par itération MCMC) :
 # std[i,t] = res[i,t] / sigma[i]. Motif récurrent pour les résidus standardisés
 # (res_vichy_std, res_p_*_std, res_wild_moy_*_std, res_juv_moy_*_std, ...)
@@ -43,6 +62,34 @@ standardize_residuals <- function(res, sigma) {
   std <- sweep(as.matrix(res), 1, as.vector(sigma), "/")
   colnames(std) <- colnames(res)
   as.mcmc(std)
+}
+
+#===================================================================================
+# Table récapitulative multi-lignes (une ligne par sous-paramètre d'un objet coda
+# multivarié, ex. nu_d_V/A/L/P), avec des noms de lignes personnalisés. Ecrit en
+# .tex via xtable. Variante "plusieurs lignes" de write_param_table ci-dessous.
+#===================================================================================
+write_multiparam_table <- function(param, tabwd, filename, row_labels, label = filename,
+                                    caption = NULL, digits = NULL) {
+  if (is.null(caption)) caption <- str_c("Statistiques de ", latex_escape(label))
+
+  sum <- summary(param, probs = seq(0, 1, 0.1))
+  tabl <- cbind(sum$quantiles, Mean = sum$statistics[, "Mean"], SD = sum$statistics[, "SD"])
+  rownames(tabl) <- row_labels
+
+  tab <- if (is.null(digits)) {
+    xtable(x = tabl, label = label, caption = caption)
+  } else {
+    xtable(x = tabl, label = label, caption = caption, digits = digits)
+  }
+
+  print(tab, file = str_c(tabwd, filename, ".tex"),
+        table.placement = "htbp",
+        caption.placement = "top",
+        NA.string = "",
+        include.rownames = TRUE)
+
+  invisible(sum)
 }
 
 #===================================================================================
