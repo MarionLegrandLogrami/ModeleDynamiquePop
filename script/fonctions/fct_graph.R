@@ -38,17 +38,17 @@ custom_plot <- function(data,
   
   # Textes localisés
   default_titles <- list(
-    fr = list(xlab = "Années", ylab = "Valeurs", main = "Titre principal"),
-    en = list(xlab = "Years", ylab = "Values", main = "Main title")
+    fr = list(xlab = "Années", ylab = "Valeurs"),
+    en = list(xlab = "Years", ylab = "Values")
   )
-  
+
   labels <- default_titles[[lang]]
   if (is.null(labels)) {
     warning("Langue non prise en charge, utilisation du français par défaut.")
     labels <- default_titles[["fr"]]
   }
-  
-  main_title <- ifelse(is.null(main_title), labels$main, main_title)
+
+  # Pas de titre par défaut : main_title reste NULL si non renseigné (plot() n'affiche alors rien)
   ylab_txt <- ifelse(is.null(ylab_txt), labels$ylab, ylab_txt)
   xlab_txt <- labels$xlab
   
