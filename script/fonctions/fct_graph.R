@@ -30,6 +30,7 @@ custom_plot <- function(data,
                         mean_line = NULL,
                         mean_line_range = NULL,
                         mean_label_digits = 5,
+                        mean_label_line = 0,
                         lang = "fr") {
   
   # Opérateur fallback
@@ -166,7 +167,7 @@ custom_plot <- function(data,
   if (!is.null(mean_line)) {
     rng <- mean_line_range %||% c(min(years), max(years))
     segments(x0 = rng[1], y0 = mean_line, y1 = mean_line, x1 = rng[2], col = "red")
-    mtext(round(mean_line, mean_label_digits), side = 4, line = 0, at = mean_line,
+    mtext(round(mean_line, mean_label_digits), side = 4, line = mean_label_line, at = mean_line,
           cex = 0.8, col = "red", las = 1)
   }
 }

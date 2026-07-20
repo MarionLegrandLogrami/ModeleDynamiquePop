@@ -527,43 +527,15 @@ res\_vichy\_std représente les résidus standardisés des retours d'adultes à 
 \subsection{N\_Alagnon}
 %====================================
 << N_alagnon, echo=FALSE, eval=TRUE,results=hide >>=
-N_alagnon=read.coda(str_c(datawd,"N_alagnonCODAchain1.txt"),str_c(datawd,"N_alagnonCODAindex.txt"))
+N_alagnon <- read_param_coda("N_alagnon", datawd)
+q <- param_quantiles(N_alagnon)
 
-sum=summary(N_alagnon, probs=seq(0,1,0.1))
-N_alagnon_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"N_alagnon.png"),width=800,height=800)
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1000),ylab="N_alagnon")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,1000,by=200),labels=c(0,200,400,600,800,1000),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,N_alagnon_q[i,5],i+0.15,N_alagnon_q[i,5])
-	segments(i,N_alagnon_q[i,4],i,N_alagnon_q[i,5])
-	#5%
-	segments(i-0.15,N_alagnon_q[i,1],i+0.15,N_alagnon_q[i,1])
-	segments(i,N_alagnon_q[i,2],i,N_alagnon_q[i,1])
-#	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_alagnon_q[i,2],N_alagnon_q[i,2],N_alagnon_q[i,4],N_alagnon_q[i,4]),col="green")
-#	#mean
-#	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-	segments(i-0.3,N_alagnon_q[i,3],i+0.3,N_alagnon_q[i,3])
-}
-
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+# médiane représentée (pas la moyenne, volontairement écartée à l'origine)
+boxplot_years_png(imgwd, "N_alagnon",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "N_alagnon", ylim_range = c(0, 1000), y_at = seq(0, 1000, by = 200),
+                   col_box = "green",
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1))
 @
 
 \begin{figure}[ht]
@@ -580,43 +552,15 @@ N\_Alagnon représente les adultes migrant sur le cours d'eau Alagnon.
 \subsection{N\_Langeac}
 %====================================
 << N_langeac, echo=FALSE, eval=TRUE,results=hide >>=
-N_langeac=read.coda(str_c(datawd,"N_langeacCODAchain1.txt"),str_c(datawd,"N_langeacCODAindex.txt"))
+N_langeac <- read_param_coda("N_langeac", datawd)
+q <- param_quantiles(N_langeac)
 
-sum=summary(N_langeac, probs=seq(0,1,0.1))
-N_langeac_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"N_langeac.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,5000),ylab="N_langeac")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,5000,by=1000),labels=c(0,1000,2000,3000,4000,5000),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,N_langeac_q[i,5],i+0.15,N_langeac_q[i,5])
-	segments(i,N_langeac_q[i,4],i,N_langeac_q[i,5])
-	#5%
-	segments(i-0.15,N_langeac_q[i,1],i+0.15,N_langeac_q[i,1])
-	segments(i,N_langeac_q[i,2],i,N_langeac_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_langeac_q[i,2],N_langeac_q[i,2],N_langeac_q[i,4],N_langeac_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-points(x=c(seq(30,34,1),seq(42,T,1)),N_langeac_obs[c(30:34,42:T)],pch=16)
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-
-dev.off()
+boxplot_years_png(imgwd, "N_langeac",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "N_langeac", ylim_range = c(0, 5000), y_at = seq(0, 5000, by = 1000),
+                   col_box = "green", center_line = q$mean,
+                   points_overlay = list(x = c(30:34, 42:T), y = N_langeac_obs[c(30:34, 42:T)]),
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1))
 @
 
 \begin{figure}[ht]
@@ -633,63 +577,23 @@ N\_Langeac représente les effectifs d'adultes ayant franchi Langeac. Ils sont c
 \subsection{N\_Poutès}
 %====================================
 << N_poutes, echo=FALSE, eval=TRUE,results=hide >>=
-N_poutes=read.coda(str_c(datawd,"N_poutesCODAchain1.txt"),str_c(datawd,"N_poutesCODAindex.txt"))
+N_poutes <- read_param_coda("N_poutes", datawd)
+q <- param_quantiles(N_poutes)
+N_poutes_tot <- c(N[12:44, 4], q$mean)
 
-sum=summary(N_poutes, probs=seq(0,1,0.1))
-N_poutes_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-N_poutes_tot<-c(N[12:44,4],as.vector(cbind(sum$statistics[,"Mean"])))
+# adulte_poutes : compilation des adultes ayant franchi Poutès sur toute la période
+# (station fermée avant 1986 -> 0, comptage exhaustif 1986-2018, estimé par le modèle depuis)
+adulte_poutes <- matrix(0, nrow = 10000, ncol = T)
+adulte_poutes[, 12:44] <- matrix(N[12:44, 4], nrow = 10000, ncol = 33, byrow = TRUE)
+adulte_poutes[, 45:T] <- N_poutes[, 1:(T-44)]
 
-adulte_poutes<-array(NA,dim=c(10000,T))
-
-for (t in 1:11){
-  for (i in 1:10000){
-    adulte_poutes[i,t]<-0
-  }
-}
-for (t in 12:44){
-  for (i in 1:10000){
-    adulte_poutes[i,t]<-N[t,4]
-  }
-}
-for (t in 45:T){
-  for (i in 1:10000){
-    adulte_poutes[i,t]<-N_poutes[i,(t-44)]
-  }
-}
-
-
-png(filename=str_c(imgwd,"N_poutes.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,200),ylab="N_poutes")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,200,by=50),labels=seq(0,200,by=50),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-points(x=seq(12,44,1),N[12:44,4],pch=16)
-
-for(i in 45:T){
-	#whiskers
-	#95%
-	segments(i-0.15,N_poutes_q[(i-44),5],i+0.15,N_poutes_q[(i-44),5])
-	segments(i,N_poutes_q[(i-44),4],i,N_poutes_q[(i-44),5])
-	#5%
-	segments(i-0.15,N_poutes_q[(i-44),1],i+0.15,N_poutes_q[(i-44),1])
-	segments(i,N_poutes_q[(i-44),2],i,N_poutes_q[(i-44),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_poutes_q[(i-44),2],N_poutes_q[(i-44),2],N_poutes_q[(i-44),4],N_poutes_q[(i-44),4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[(i-44),],i+0.3,mean_res[(i-44),])
-}
-
-segments(x0=0,y0=mean(N_poutes_tot),y1=mean(N_poutes_tot),x1=T+1,col="red")
-mtext(round(mean(N_poutes_tot),2),side=4,line=0,at=mean(N_poutes_tot),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "N_poutes",
+                   data = rbind(matrix(NA, nrow = 44, ncol = 5), q$quantiles), years = 1:T,
+                   ylab_txt = "N_poutes", ylim_range = c(0, 200), y_at = seq(0, 200, by = 50),
+                   col_box = "green", center_line = c(rep(NA, 44), q$mean),
+                   points_overlay = list(x = 12:44, y = N[12:44, 4]),
+                   mean_line = mean(N_poutes_tot), mean_line_range = c(0, T + 1),
+                   mean_label_digits = 2)
 @
 
 \begin{figure}[ht]
@@ -713,70 +617,24 @@ Les adultes restant sur l'Alagnon correspondent au paramètre N\_alagnon (voir p
 %=================================================================================
 
 <<adulte_Vichy_Langeac, echo=FALSE, eval=TRUE,results=hide>>=
-#on compile la moyenne des estimations pour les années où on n'a pas la station de Vichy et les données observées quand la station est en fonctionnement
-N_vichy_tot<-c(as.vector(mean_res_vichy[1:22]),N[23:29,1],as.vector(mean_res_vichy[23:23]),N[31:T,1])
+# adulte_vichy : adultes restant sur le secteur Vichy-Langeac = adultes arrivés à
+# Vichy (observés 1997-2003 & depuis 2005, estimés sinon) moins ceux partis sur
+# l'Alagnon et ceux ayant franchi Langeac
+adulte_vichy <- matrix(NA, nrow = 10000, ncol = T)
+adulte_vichy[, 1:22]  <- N_vichy[, 1:22] - N_alagnon[, 1:22] - N_langeac[, 1:22]
+adulte_vichy[, 23:29] <- matrix(N[23:29, 1], nrow = 10000, ncol = 7, byrow = TRUE) - N_alagnon[, 23:29] - N_langeac[, 23:29]
+adulte_vichy[, 30]    <- N_vichy[, 23] - N_alagnon[, 30] - N_langeac[, 30]
+adulte_vichy[, 31:T]  <- matrix(N[31:T, 1], nrow = 10000, ncol = T-30, byrow = TRUE) - N_alagnon[, 31:T] - N_langeac[, 31:T]
 
-adulte_vichy<-array(NA,dim=c(10000,T))
+q <- param_quantiles(as.mcmc(adulte_vichy))
 
-for (t in 1:22){
-  for (i in 1:10000){
-    adulte_vichy[i,t]<-N_vichy[i,t]-N_alagnon[i,t]-N_langeac[i,t]
-  }
-}
-for (t in 23:29){
-  for (i in 1:10000){
-    adulte_vichy[i,t]<-N[t,1]-N_alagnon[i,t]-N_langeac[i,t]
-  }
-}
-for (t in 30:30){
-  for (i in 1:10000){
-    adulte_vichy[i,t]<-N_vichy[i,(t-7)]-N_alagnon[i,t]-N_langeac[i,t]
-  }
-}
-for (t in 31:T){
-  for (i in 1:10000){
-    adulte_vichy[i,t]<-N[t,1]-N_alagnon[i,t]-N_langeac[i,t]
-  }
-}
-
-adulte_vichy2<-as.mcmc(adulte_vichy)
-
-sum=summary(adulte_vichy2, probs=seq(0,1,0.1))
-adulte_vichy_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-png(filename=str_c(imgwd,"adultes_vichy.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,6000),ylab="adultes restant sur le secteur Vichy-Langeac")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,6000,by=1000),labels=seq(0,6000,by=1000),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-
-#for(i in (1997-1974):T){ #on démarre à l'ouverture de la STACOMI
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,adulte_vichy_q[(i),5],i+0.15,adulte_vichy_q[(i),5])
-	segments(i,adulte_vichy_q[(i),4],i,adulte_vichy_q[(i),5])
-	#5%
-	segments(i-0.15,adulte_vichy_q[(i),1],i+0.15,adulte_vichy_q[(i),1])
-	segments(i,adulte_vichy_q[(i),2],i,adulte_vichy_q[(i),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(adulte_vichy_q[(i),2],adulte_vichy_q[(i),2],adulte_vichy_q[(i),4],adulte_vichy_q[(i),4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[(i),],i+0.3,mean_res[(i),])
-}
-
-segments(x0=23,y0=mean(adulte_vichy_q[23:T,]),y1=mean(adulte_vichy_q[23:T,]),x1=T+1,col="red")
-mtext(round(mean(adulte_vichy_q[23:T,]),2),side=4,line=0,at=mean(adulte_vichy_q[23:T,]),cex = 0.8,col="red",las=1)
-dev.off()
-
+boxplot_years_png(imgwd, "adultes_vichy",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "adultes restant sur le secteur Vichy-Langeac",
+                   ylim_range = c(0, 6000), y_at = seq(0, 6000, by = 1000),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$quantiles[23:T, ]), mean_line_range = c(23, T + 1),
+                   mean_label_digits = 2)
 @
 
 
@@ -793,61 +651,27 @@ dev.off()
 %=================================================================================
 
 <<adulte_Langeac_Poutes, echo=FALSE, eval=TRUE,results=hide>>=
+# adulte_langeac : adultes restant sur le secteur Langeac-Poutès. Avant 1986 (t=1:11)
+# Poutès est fermé donc tous les poissons restent sur le secteur ; ensuite on
+# soustrait ceux ayant franchi Poutès (adulte_poutes)
+adulte_langeac <- matrix(NA, nrow = 10000, ncol = T)
+adulte_langeac[, 1:11] <- N_langeac[, 1:11]
+adulte_langeac[, 12:T] <- N_langeac[, 12:T] - adulte_poutes[, 12:T]
 
-adulte_langeac<-array(NA,dim=c(10000,T))
-
-for(t in 1:11){
-   for(i in 1:10000){
-   adulte_langeac[i,t]<-N_langeac[i,t]#Poutès est fermé tous les poissons restent sur Langeac-Poutès
-   }
-}
-for(t in 12:T){
-  for(i in 1:10000){
-    adulte_langeac[i,t]<-N_langeac[i,t]-adulte_poutes[i,t]
-  }
-}
-adulte_langeac2<-as.mcmc(adulte_langeac[,1:T])
-
-sum=summary(adulte_langeac2, probs=seq(0,1,0.1))
-adulte_langeac_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
+q <- param_quantiles(as.mcmc(adulte_langeac))
 
 #on ajoute les données de comptage quand stations de Langeac et Poutès fonctionnent en même temps
 comptage<-N_langeac_obs[12:44]-N[12:44,4]
 comptage[comptage<0]<-NA
 
-png(filename=str_c(imgwd,"adultes_langeac.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,8000),ylab="adultes restant sur le secteur Langeac-Poutès")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,8000,by=500),labels=seq(0,8000,by=500),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,adulte_langeac_q[(i),5],i+0.15,adulte_langeac_q[(i),5])
-	segments(i,adulte_langeac_q[(i),4],i,adulte_langeac_q[(i),5])
-	#5%
-	segments(i-0.15,adulte_langeac_q[(i),1],i+0.15,adulte_langeac_q[(i),1])
-	segments(i,adulte_langeac_q[(i),2],i,adulte_langeac_q[(i),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(adulte_langeac_q[(i),2],adulte_langeac_q[(i),2],adulte_langeac_q[(i),4],adulte_langeac_q[(i),4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[(i),],i+0.3,mean_res[(i),])
-}
-
-points(x=seq(12,44,1),comptage,pch=16)
-
-segments(x0=12,y0=mean(adulte_langeac_q[12:T,3]),y1=mean(adulte_langeac_q[12:T,3]),x1=T+1,col="red")
-mtext(round(mean(adulte_langeac_q[12:T,3]),2),side=4,line=0,at=mean(adulte_langeac_q[12:T,3]),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "adultes_langeac",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "adultes restant sur le secteur Langeac-Poutès",
+                   ylim_range = c(0, 8000), y_at = seq(0, 8000, by = 500),
+                   col_box = "green", center_line = q$mean,
+                   points_overlay = list(x = 12:44, y = comptage),
+                   mean_line = mean(q$quantiles[12:T, 3]), mean_line_range = c(12, T + 1),
+                   mean_label_digits = 2)
 @
 
 \begin{figure}[ht]
@@ -868,254 +692,72 @@ Le nombre d'adultes restant sur le secteur Langeac-Poutès est estimé à partir
 
 #N_vichy = adultes total sur l'ensemble de la zone
 
-prop_VL<-array(0,dim=c(10000,T))
-prop_A<-array(0,dim=c(10000,T))
-prop_LP<-array(0,dim=c(10000,T))
-prop_P<-array(0,dim=c(10000,T))
-validation<-array(0,dim=c(10000,T))
+# Poutès : fermé avant 1986 (t=1:11 -> 0), comptage exhaustif 1986-2019 (t=12:46,
+# hormis 2004 où Vichy est estimé), modèle depuis 2020 (t=47:T)
+prop_P <- matrix(0, nrow = 10000, ncol = T)
+prop_P[, 12:22] <- adulte_poutes[, 12:22] / N_vichy[, 12:22]
+prop_P[, 23:29] <- sweep(adulte_poutes[, 23:29], 2, N[23:29, 1], "/")
+prop_P[, 30]    <- adulte_poutes[, 30] / N_vichy[, 23]
+prop_P[, 31:46] <- sweep(adulte_poutes[, 31:46], 2, N[31:46, 1], "/")
+prop_P[, 47:T]  <- sweep(N_poutes[, 1:(T-46)], 2, N[47:T, 1], "/")
 
-#On commence par gérer le cas de Poutès qui est le plus compliqué
-#Pour poutes on a les comptage entre 1986 et 2020 (avant=0) à partir 2020 il s'agit d'estimation
-#Pour Vichy : estimation avant 1997 + en 2004 sinon comptage réel
-for (t in 1:11){
-  for (i in 1:10000){
-    prop_P[i,t]<- 0
-  }
+# Autres secteurs : même dénominateur (Vichy estimé avant 1997 et en 2004, sinon
+# comptage réel N[,1])
+prop_share <- function(x) {
+  d <- matrix(NA, nrow = 10000, ncol = T)
+  d[, 1:22]  <- x[, 1:22] / N_vichy[, 1:22]
+  d[, 23:29] <- sweep(x[, 23:29], 2, N[23:29, 1], "/")
+  d[, 30]    <- x[, 30] / N_vichy[, 23]
+  d[, 31:T]  <- sweep(x[, 31:T], 2, N[31:T, 1], "/")
+  d
 }
-for (t in 12:22){
-  for (i in 1:10000){
-    prop_P[i,t]<-adulte_poutes[i,t] / N_vichy[i,t]
-  }
-}
-for (t in 23:29){
-  for (i in 1:10000){
-    prop_P[i,t]<-adulte_poutes[i,t] / N[t,1]
-  }
-}
+prop_VL <- prop_share(adulte_vichy)
+prop_A  <- prop_share(N_alagnon)
+prop_LP <- prop_share(adulte_langeac)
 
-for (t in 30:30){
-  for (i in 1:10000){
-    prop_P[i,t]<-adulte_poutes[i,t] / N_vichy[i,(t-7)]
-  }
-}
+prop_VL_q <- param_quantiles(as.mcmc(prop_VL))
+prop_A_q  <- param_quantiles(as.mcmc(prop_A))
+prop_LP_q <- param_quantiles(as.mcmc(prop_LP))
+prop_P_q  <- param_quantiles(as.mcmc(prop_P))
 
-for (t in 31:46){
-  for (i in 1:10000){
-    prop_P[i,t]<-adulte_poutes[i,t] / N[t,1]
-  }
-}
-for (t in 47:T){
-  for (i in 1:10000){
-    prop_P[i,t]<-N_poutes[i,(t-46)] / N[t,1]
-  }
-}
+# affichage secteur amont Poutès : boxplot modélisé seulement pour 12:22 et 47:T
+# (comptage exhaustif en points pour 23:46, secteur inaccessible donc masqué avant 1986)
+prop_P_display <- prop_P_q$quantiles
+prop_P_display[c(1:11, 23:46), ] <- NA
+prop_P_center_display <- prop_P_q$mean
+prop_P_center_display[c(1:11, 23:46)] <- NA
 
-#On gère les autres secteurs
+png(filename = str_c(imgwd, "proportion_adultes.png"), width = 800, height = 800)
+par(mfrow = c(4, 1))
 
-for (t in 1:22){
-  for (i in 1:10000){
-      prop_VL[i,t]<-adulte_vichy[i,t] / N_vichy[i,t]
-      prop_A[i,t] <- N_alagnon[i,t] / N_vichy[i,t]
-      prop_LP[i,t]<- adulte_langeac[i,t] / N_vichy[i,t]
-  }
-}
-for (t in 23:29){
-  for (i in 1:10000){
-     prop_VL[i,t]<-adulte_vichy[i,t] / N[t,1]
-     prop_A[i,t] <- N_alagnon[i,t] / N[t,1]
-     prop_LP[i,t]<- adulte_langeac[i,t] / N[t,1]
-  }
-}
+custom_plot(data = prop_VL_q$quantiles, years = 1:T,
+            main_title = "Proportion d'adultes sur le secteur Vichy-Langeac",
+            ylab_txt = "proportion adultes", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
+            col_box = "green", center_line = prop_VL_q$mean,
+            mean_line = mean(prop_VL_q$quantiles[, 3]), mean_line_range = c(0, T + 1),
+            mean_label_digits = 2)
 
-for (t in 30:30){
-  for (i in 1:10000){
-      prop_VL[i,t]<-adulte_vichy[i,t] / N_vichy[i,(t-7)]
-      prop_A[i,t] <- N_alagnon[i,t] / N_vichy[i,(t-7)]
-      prop_LP[i,t]<- adulte_langeac[i,t] / N_vichy[i,(t-7)]
-  }
-}
+custom_plot(data = prop_A_q$quantiles, years = 1:T,
+            main_title = "Proportion d'adultes sur le secteur Alagnon",
+            ylab_txt = "proportion adultes", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
+            col_box = "green", center_line = prop_A_q$mean,
+            mean_line = mean(prop_A_q$quantiles[, 3]), mean_line_range = c(1, T + 1),
+            mean_label_digits = 2)
 
-for (t in 31:T){
-  for (i in 1:10000){
-     prop_VL[i,t]<-adulte_vichy[i,t] / N[t,1]
-     prop_A[i,t] <- N_alagnon[i,t] / N[t,1]
-     prop_LP[i,t]<- adulte_langeac[i,t] / N[t,1]
-  }
-}
+custom_plot(data = prop_LP_q$quantiles, years = 1:T,
+            main_title = "Proportion d'adultes sur le secteur Langeac-Poutès",
+            ylab_txt = "proportion adultes", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
+            col_box = "green", center_line = prop_LP_q$mean,
+            mean_line = mean(prop_LP_q$quantiles[, 3]), mean_line_range = c(1, T + 1),
+            mean_label_digits = 2)
 
-#Validation
-for (t in 1:T){
-  for (i in 1:10000){
-    validation[i,t]<-prop_VL[i,t]+prop_A[i,t]+prop_LP[i,t]+prop_P[i,t]
-  }
-}
-
-prop_VL2<-as.mcmc(prop_VL)
-sum=summary(prop_VL2, probs=seq(0,1,0.1))
-prop_VL2_q<-sum$quantiles
-mean_prop_VL2<-cbind(sum$statistics[,"Mean"])
-
-prop_A2<-as.mcmc(prop_A)
-sum=summary(prop_A2, probs=seq(0,1,0.1))
-prop_A2_q<-sum$quantiles
-mean_prop_A2<-cbind(sum$statistics[,"Mean"])
-
-prop_LP2<-as.mcmc(prop_LP)
-sum=summary(prop_LP2, probs=seq(0,1,0.1))
-prop_LP2_q<-sum$quantiles
-mean_prop_LP2<-cbind(sum$statistics[,"Mean"])
-
-prop_P2<-as.mcmc(prop_P)
-sum=summary(prop_P2, probs=seq(0,1,0.1))
-prop_P2_q<-sum$quantiles
-mean_prop_P2<-cbind(sum$statistics[,"Mean"])
-
-png(filename=str_c(imgwd,"proportion_adultes.png"),width=800,height=800)
-
-par(mfrow=c(4,1))
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="proportion adultes",main="Proportion d'adultes sur le secteur Vichy-Langeac")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,1,by=0.2),labels=seq(0,1,by=0.2),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,prop_VL2_q[(i),5],i+0.15,prop_VL2_q[(i),5])
-	segments(i,prop_VL2_q[(i),4],i,prop_VL2_q[(i),5])
-	#5%
-	segments(i-0.15,prop_VL2_q[(i),1],i+0.15,prop_VL2_q[(i),1])
-	segments(i,prop_VL2_q[(i),2],i,prop_VL2_q[(i),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(prop_VL2_q[(i),2],prop_VL2_q[(i),2],prop_VL2_q[(i),4],prop_VL2_q[(i),4]),col="green")
-	#mean
-	segments(i-0.3,mean_prop_VL2[(i),],i+0.3,mean_prop_VL2[(i),])
-}
-
-
-segments(x0=0,y0=mean(prop_VL2_q[,3]),y1=mean(prop_VL2_q[,3]),x1=T+1,col="red")
-mtext(round(mean(prop_VL2_q[,3]),2),side=4,line=0,at=mean(prop_VL2_q[,3]),cex = 0.8,col="red",las=1)
-
-##==================
-##Alagnon
-##==================
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="proportion adultes",main="Proportion d'adultes sur le secteur Alagnon")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,1,by=0.2),labels=seq(0,1,by=0.2),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,prop_A2_q[(i),5],i+0.15,prop_A2_q[(i),5])
-	segments(i,prop_A2_q[(i),4],i,prop_A2_q[(i),5])
-	#5%
-	segments(i-0.15,prop_A2_q[(i),1],i+0.15,prop_A2_q[(i),1])
-	segments(i,prop_A2_q[(i),2],i,prop_A2_q[(i),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(prop_A2_q[(i),2],prop_A2_q[(i),2],prop_A2_q[(i),4],prop_A2_q[(i),4]),col="green")
-	#mean
-	segments(i-0.3,mean_prop_A2[(i),],i+0.3,mean_prop_A2[(i),])
-}
-
-
-segments(x0=1,y0=mean(prop_A2_q[,3]),y1=mean(prop_A2_q[,3]),x1=T+1,col="red")
-mtext(round(mean(prop_A2_q[,3]),2),side=4,line=0,at=mean(prop_A2_q[,3]),cex = 0.8,col="red",las=1)
-
-##==================
-##Langeac-Poutès
-##==================
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="proportion adultes",main="Proportion d'adultes sur le secteur Langeac-Poutès")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,1,by=0.2),labels=seq(0,1,by=0.2),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,prop_LP2_q[(i),5],i+0.15,prop_LP2_q[(i),5])
-	segments(i,prop_LP2_q[(i),4],i,prop_LP2_q[(i),5])
-	#5%
-	segments(i-0.15,prop_LP2_q[(i),1],i+0.15,prop_LP2_q[(i),1])
-	segments(i,prop_LP2_q[(i),2],i,prop_LP2_q[(i),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(prop_LP2_q[(i),2],prop_LP2_q[(i),2],prop_LP2_q[(i),4],prop_LP2_q[(i),4]),col="green")
-	#mean
-	segments(i-0.3,mean_prop_LP2[(i),],i+0.3,mean_prop_LP2[(i),])
-}
-
-
-segments(x0=1,y0=mean(prop_LP2_q[,3]),y1=mean(prop_LP2_q[,3]),x1=T+1,col="red")
-mtext(round(mean(prop_LP2_q[,3]),2),side=4,line=0,at=mean(prop_LP2_q[,3]),cex = 0.8,col="red",las=1)
-
-##==================
-##Amont Poutès
-##==================
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="proportion adultes",main="Proportion d'adultes sur le secteur amont Poutès")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,1,by=0.2),labels=seq(0,1,by=0.2),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-
-for(i in 12:22){
-	#whiskers
-	#95%
-	segments(i-0.15,prop_P2_q[(i),5],i+0.15,prop_P2_q[(i),5])
-	segments(i,prop_P2_q[(i),4],i,prop_P2_q[(i),5])
-	#5%
-	segments(i-0.15,prop_P2_q[(i),1],i+0.15,prop_P2_q[(i),1])
-	segments(i,prop_P2_q[(i),2],i,prop_P2_q[(i),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(prop_P2_q[(i),2],prop_P2_q[(i),2],prop_P2_q[(i),4],prop_P2_q[(i),4]),col="green")
-	#mean
-	segments(i-0.3,mean_prop_P2[(i),],i+0.3,mean_prop_P2[(i),])
-}
-
-for(i in 23:46){
-	points(x=i,y=N[i,4],pch=16)
-}
-
-for(i in 47:T){
-	#whiskers
-	#95%
-	segments(i-0.15,prop_P2_q[(i),5],i+0.15,prop_P2_q[(i),5])
-	segments(i,prop_P2_q[(i),4],i,prop_P2_q[(i),5])
-	#5%
-	segments(i-0.15,prop_P2_q[(i),1],i+0.15,prop_P2_q[(i),1])
-	segments(i,prop_P2_q[(i),2],i,prop_P2_q[(i),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(prop_P2_q[(i),2],prop_P2_q[(i),2],prop_P2_q[(i),4],prop_P2_q[(i),4]),col="green")
-	#mean
-	segments(i-0.3,mean_prop_P2[(i),],i+0.3,mean_prop_P2[(i),])
-}
-
-segments(x0=12,y0=mean(prop_P2_q[12:T,3]),y1=mean(prop_P2_q[12:T,3]),x1=T+1,col="red")
-mtext(round(mean(prop_P2_q[12:T,3]),2),side=4,line=0,at=mean(prop_P2_q[12:T,3]),cex = 0.8,col="red",las=1)
-
+custom_plot(data = prop_P_display, years = 1:T,
+            main_title = "Proportion d'adultes sur le secteur amont Poutès",
+            ylab_txt = "proportion adultes", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
+            col_box = "green", center_line = prop_P_center_display,
+            points_overlay = list(x = 23:46, y = N[23:46, 4]),
+            mean_line = mean(prop_P_q$quantiles[12:T, 3]), mean_line_range = c(12, T + 1),
+            mean_label_digits = 2)
 
 dev.off()
 
@@ -1135,83 +777,19 @@ Les proportions dans les différents secteurs, sont calculés à partir des saum
 \subsection{p\_comptage\_langeac}
 %=================================================================================
 << p_comptage_langeac, echo=FALSE, eval=TRUE,results=hide >>=
-p_comptage_L=read.coda(str_c(datawd,"p_comptage_LCODAchain1.txt"),str_c(datawd,"p_comptage_LCODAindex.txt"))
+p_comptage_L <- read_param_coda("p_comptage_L", datawd)
+q <- param_quantiles(p_comptage_L)
 
-sum=summary(p_comptage_L, probs=seq(0,1,0.1))
-p_comptage_L_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
+# station de Langeac en fonctionnement (vert) pour t=30:34 et t=42:T, à l'arrêt (gris) sinon
+active <- rep(0, T)
+active[c(30:34, 42:T)] <- 1
 
-
-png(filename=str_c(imgwd,"p_comptage_L.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0.70,1),ylab="p_comptage_L")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0.70,1,by=0.1),labels=seq(0.70,1,by=0.1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:29){
-	#whiskers
-	#95%
-	segments(i-0.15,p_comptage_L_q[i,5],i+0.15,p_comptage_L_q[i,5])
-	segments(i,p_comptage_L_q[i,4],i,p_comptage_L_q[i,5])
-	#5%
-	segments(i-0.15,p_comptage_L_q[i,1],i+0.15,p_comptage_L_q[i,1])
-	segments(i,p_comptage_L_q[i,2],i,p_comptage_L_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(p_comptage_L_q[i,2],p_comptage_L_q[i,2],p_comptage_L_q[i,4],p_comptage_L_q[i,4]),col="gray")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-for(i in 30:34){
-	#whiskers
-	#95%
-	segments(i-0.15,p_comptage_L_q[i,5],i+0.15,p_comptage_L_q[i,5])
-	segments(i,p_comptage_L_q[i,4],i,p_comptage_L_q[i,5])
-	#5%
-	segments(i-0.15,p_comptage_L_q[i,1],i+0.15,p_comptage_L_q[i,1])
-	segments(i,p_comptage_L_q[i,2],i,p_comptage_L_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(p_comptage_L_q[i,2],p_comptage_L_q[i,2],p_comptage_L_q[i,4],p_comptage_L_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-for(i in 35:41){
-	#whiskers
-	#95%
-	segments(i-0.15,p_comptage_L_q[i,5],i+0.15,p_comptage_L_q[i,5])
-	segments(i,p_comptage_L_q[i,4],i,p_comptage_L_q[i,5])
-	#5%
-	segments(i-0.15,p_comptage_L_q[i,1],i+0.15,p_comptage_L_q[i,1])
-	segments(i,p_comptage_L_q[i,2],i,p_comptage_L_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(p_comptage_L_q[i,2],p_comptage_L_q[i,2],p_comptage_L_q[i,4],p_comptage_L_q[i,4]),col="gray")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-for(i in 42:T){
-	#whiskers
-	#95%
-	segments(i-0.15,p_comptage_L_q[i,5],i+0.15,p_comptage_L_q[i,5])
-	segments(i,p_comptage_L_q[i,4],i,p_comptage_L_q[i,5])
-	#5%
-	segments(i-0.15,p_comptage_L_q[i,1],i+0.15,p_comptage_L_q[i,1])
-	segments(i,p_comptage_L_q[i,2],i,p_comptage_L_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(p_comptage_L_q[i,2],p_comptage_L_q[i,2],p_comptage_L_q[i,4],p_comptage_L_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-
-dev.off()
+boxplot_years_png(imgwd, "p_comptage_L",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "p_comptage_L", ylim_range = c(0.70, 1), y_at = seq(0.70, 1, by = 0.1),
+                   color_dev = active, col_active = "green", col_inactive = "gray",
+                   center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1))
 @
 
 \begin{figure}[ht]
@@ -1232,62 +810,24 @@ Langeac d'être compté
 \subsection{N\_langeac\_obs}
 %=================================================================================
 << N_langeac_obs, echo=FALSE, eval=TRUE,results=hide >>=
-N_langeac_obs_bugs=read.coda(str_c(datawd,"N_langeac_obsCODAchain1.txt"),str_c(datawd,"N_langeac_obsCODAindex.txt"))
+N_langeac_obs_bugs <- read_param_coda("N_langeac_obs", datawd)
+q <- param_quantiles(N_langeac_obs_bugs)
 
-# attention n'échantillonne que lorsqu'il n'y a pas de comptage à Langeac.
-# autrement dit pour t= 1:29 puis t=35:41
-sum=summary(N_langeac_obs_bugs, probs=seq(0,1,0.1))
-N_langeac_obs_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
+# le paramètre n'est échantillonné que lorsqu'il n'y a pas de comptage à Langeac
+# (t=1:29 puis t=35:41) ; les autres années sont observées (points)
+data_full <- matrix(NA, nrow = T, ncol = 5)
+data_full[1:29, ] <- q$quantiles[1:29, ]
+data_full[35:41, ] <- q$quantiles[30:36, ]
+mean_full <- rep(NA, T)
+mean_full[1:29] <- q$mean[1:29]
+mean_full[35:41] <- q$mean[30:36]
 
-
-png(filename=str_c(imgwd,"N_langeac_obs.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,7000),ylab="N_langeac_obs")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,7000,by=500),labels=seq(0,7000,by=500),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:29){
-	#whiskers
-	#95%
-	segments(i-0.15,N_langeac_obs_q[i,5],i+0.15,N_langeac_obs_q[i,5])
-	segments(i,N_langeac_obs_q[i,4],i,N_langeac_obs_q[i,5])
-	#5%
-	segments(i-0.15,N_langeac_obs_q[i,1],i+0.15,N_langeac_obs_q[i,1])
-	segments(i,N_langeac_obs_q[i,2],i,N_langeac_obs_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_langeac_obs_q[i,2],N_langeac_obs_q[i,2],N_langeac_obs_q[i,4],N_langeac_obs_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-points(x=c(seq(30,34,1),seq(42,T,1)),N_langeac_obs[c(30:34,42:T)],pch=16)
-
-
-for(i in 35:41){
-	#whiskers
-	#95%
-	segments(i-0.15,N_langeac_obs_q[(i-5),5],i+0.15,N_langeac_obs_q[(i-5),5])
-	segments(i,N_langeac_obs_q[(i-5),4],i,N_langeac_obs_q[(i-5),5])
-	#5%
-	segments(i-0.15,N_langeac_obs_q[(i-5),1],i+0.15,N_langeac_obs_q[(i-5),1])
-	segments(i,N_langeac_obs_q[(i-5),2],i,N_langeac_obs_q[(i-5),1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_langeac_obs_q[(i-5),2],N_langeac_obs_q[(i-5),2],N_langeac_obs_q[(i-5),4],N_langeac_obs_q[(i-5),4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[(i-5),],i+0.3,mean_res[(i-5),])
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-
-dev.off()
+boxplot_years_png(imgwd, "N_langeac_obs",
+                   data = data_full, years = 1:T,
+                   ylab_txt = "N_langeac_obs", ylim_range = c(0, 7000), y_at = seq(0, 7000, by = 500),
+                   col_box = "green", center_line = mean_full,
+                   points_overlay = list(x = c(30:34, 42:T), y = N_langeac_obs[c(30:34, 42:T)]),
+                   mean_line = mean(mean_full, na.rm = TRUE), mean_line_range = c(0, T + 1))
 @
 
 \begin{figure}[ht]
@@ -1308,36 +848,8 @@ comptés à Langeac si la station avait été en service
 \subsection{rho\_station}
 %=================================================================================
 << rho_station, echo=FALSE, eval=TRUE,results=hide >>=
-rho_station=read.coda(str_c(datawd,"rho_stationCODAchain1.txt"),str_c(datawd,"rho_stationCODAindex.txt"))
-png(filename=str_c(imgwd,"rho_station.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(rho_station,density=FALSE,auto.layout=FALSE)
-plot(rho_station,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(rho_station, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="rho_station",caption="Statistiques de rho\\_station")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"rho_station.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+rho_station <- read_param_coda("rho_station", datawd)
+report_param(rho_station, imgwd, tabwd, "rho_station")
 @
 
 \begin{figure}[ht]
@@ -1356,36 +868,8 @@ rho\_station représente le facteur de pondération entre la répartition libre 
 \subsection{adjust\_p\_A}
 %=================================================================================
 << adjust_p_A, echo=FALSE, eval=TRUE,results=hide >>=
-adjust_p_A=read.coda(str_c(datawd,"/simulation/adjust_p_ACODAchain1.txt"),str_c(datawd,"/simulation/adjust_p_ACODAindex.txt"))
-png(filename=str_c(imgwd,"adjust_p_A.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(adjust_p_A,density=FALSE,auto.layout=FALSE)
-plot(adjust_p_A,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(adjust_p_A, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="adjust_p_A",caption="Statistiques de adjust\\_p\\_A")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"adjust_p_A.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+adjust_p_A <- read_param_coda("adjust_p_A", datawd, subdir = "simulation")
+report_param(adjust_p_A, imgwd, tabwd, "adjust_p_A")
 @
 
 \begin{figure}[ht]
@@ -1404,36 +888,8 @@ adjust\_p\_A représente un paramètre de blocage venant contrarier la répartit
 \subsection{adjust\_p\_L}
 %=================================================================================
 << adjust_p_L, echo=FALSE, eval=TRUE,results=hide >>=
-adjust_p_L=read.coda(str_c(datawd,"/simulation/adjust_p_LCODAchain1.txt"),str_c(datawd,"/simulation/adjust_p_LCODAindex.txt"))
-png(filename=str_c(imgwd,"adjust_p_L.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(adjust_p_L,density=FALSE,auto.layout=FALSE)
-plot(adjust_p_L,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(adjust_p_L, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="adjust_p_L",caption="Statistiques de adjust\\_p\\_L")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"adjust_p_L.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+adjust_p_L <- read_param_coda("adjust_p_L", datawd, subdir = "simulation")
+report_param(adjust_p_L, imgwd, tabwd, "adjust_p_L")
 @
 
 \begin{figure}[ht]
@@ -1452,36 +908,8 @@ adjust\_p\_L représente un paramètre de blocage venant contrarier la répartit
 \subsection{adjust\_p\_P}
 %=================================================================================
 << adjust_p_P, echo=FALSE, eval=TRUE,results=hide >>=
-adjust_p_P=read.coda(str_c(datawd,"/simulation/adjust_p_PCODAchain1.txt"),str_c(datawd,"/simulation/adjust_p_PCODAindex.txt"))
-png(filename=str_c(imgwd,"adjust_p_P.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(adjust_p_P,density=FALSE,auto.layout=FALSE)
-plot(adjust_p_P,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(adjust_p_P, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="adjust_p_P",caption="Statistiques de adjust\\_p\\_P")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"adjust_p_P.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+adjust_p_P <- read_param_coda("adjust_p_P", datawd, subdir = "simulation")
+report_param(adjust_p_P, imgwd, tabwd, "adjust_p_P")
 @
 
 \begin{figure}[ht]
@@ -1500,60 +928,17 @@ adjust\_p\_P représente un paramètre de blocage venant contrarier la répartit
 \subsection{res\_p\_alagnon\_standardisé}
 %================================================================================
 << res_p_alagnon, echo=FALSE, eval=TRUE,results=hide >>=
-res_p_alagnon=read.coda(str_c(datawd,"simulation/res_p_alagnonCODAchain1.txt"),str_c(datawd,"simulation/res_p_alagnonCODAindex.txt"))
-sigma_p_alagnon=read.coda(str_c(datawd,"sigma_p_alagnonCODAchain1.txt"),str_c(datawd,"sigma_p_alagnonCODAindex.txt"))
+res_p_alagnon <- read_param_coda("res_p_alagnon", datawd, subdir = "simulation")
+sigma_p_alagnon <- read_param_coda("sigma_p_alagnon", datawd)
 
-res_p_alagnon_std<-array(NA,c(nrow(res_p_alagnon),T))
+res_p_alagnon_std <- standardize_residuals(res_p_alagnon[, 1:T], sigma_p_alagnon)
+q <- param_quantiles(res_p_alagnon_std)
 
-for (t in 1:T){
-  for (i in 1:nrow(res_p_alagnon)){
-  
-  res_p_alagnon_std[i,t]<-res_p_alagnon[i,t]/sigma_p_alagnon[i]
-  }
-}
-colnames(res_p_alagnon_std)<-colnames(res_p_alagnon)
-res_p_alagnon_std<-as.mcmc(res_p_alagnon_std)
-
-#Pour une raison mystérieuse la fonction quantiles utilisée par Guillaume D ne donne pas les mêmes
-#résultats que le summary$quantiles. Après vérif du boxplot sous openbugs, le bon graph est celui utilisant la méthode summary
-#Méthode quantiles : res_p_poutes_q=array(0,c(28,5))
-#for (t in 1:28){	
-#	res_p_langeac_q[t,]=quantile(res_p_langeac[t,],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
-#}
-
-sum=summary(res_p_alagnon_std, probs=seq(0,1,0.1))
-res_p_alagnon_std_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-png(filename=str_c(imgwd,"res_p_alagnon_std.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T+1),xlab="Years",ylim=c(-3,3),ylab="res_p_alagnon_std")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(-3,3,by=0.5),labels=seq(-3,3,by=0.5),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,1974+T)
-axis(1,at = c(1,6,16,26,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:T){
-	#whiskers
-	#97,5%
-	segments(i-0.15,res_p_alagnon_std_q[i,5],i+0.15,res_p_alagnon_std_q[i,5])
-	segments(i,res_p_alagnon_std_q[i,4],i,res_p_alagnon_std_q[i,5])
-	#2,5%
-	segments(i-0.15,res_p_alagnon_std_q[i,1],i+0.15,res_p_alagnon_std_q[i,1])
-	segments(i,res_p_alagnon_std_q[i,2],i,res_p_alagnon_std_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(res_p_alagnon_std_q[i,2],res_p_alagnon_std_q[i,2],res_p_alagnon_std_q[i,4],res_p_alagnon_std_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=-0.5,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "res_p_alagnon_std",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "res_p_alagnon_std", ylim_range = c(-3, 3), y_at = seq(-3, 3, by = 0.5),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1), mean_label_line = -0.5)
 @
 
 \begin{figure}[ht]
@@ -1572,59 +957,17 @@ res\_p\_alagnon\_standardisé représente les résidus standardisés du paramèt
 \subsection{res\_p\_langeac\_standardisé}
 %================================================================================
 << res_p_langeac, echo=FALSE, eval=TRUE,results=hide >>=
-res_p_langeac=read.coda(str_c(datawd,"simulation/res_p_langeacCODAchain1.txt"),str_c(datawd,"simulation/res_p_langeacCODAindex.txt"))
-sigma_p_langeac=read.coda(str_c(datawd,"sigma_p_langeacCODAchain1.txt"),str_c(datawd,"sigma_p_langeacCODAindex.txt"))
+res_p_langeac <- read_param_coda("res_p_langeac", datawd, subdir = "simulation")
+sigma_p_langeac <- read_param_coda("sigma_p_langeac", datawd)
 
-res_p_langeac_std<-array(NA,c(nrow(res_p_langeac),T))
+res_p_langeac_std <- standardize_residuals(res_p_langeac[, 1:T], sigma_p_langeac)
+q <- param_quantiles(res_p_langeac_std)
 
-for (t in 1:T){
-  for (i in 1:nrow(res_p_langeac)){
-  
-  res_p_langeac_std[i,t]<-res_p_langeac[i,t]/sigma_p_langeac[i]
-  }
-}
-colnames(res_p_langeac_std)<-colnames(res_p_langeac)
-res_p_langeac_std<-as.mcmc(res_p_langeac_std)
-#Pour une raison mystérieuse la fonction quantiles utilisée par Guillaume D ne donne pas les mêmes
-#résultats que le summary$quantiles. Après vérif du boxplot sous openbugs, le bon graph est celui utilisant la méthode summary
-#Méthode quantiles : res_p_poutes_q=array(0,c(28,5))
-#for (t in 1:28){	
-#	res_p_langeac_q[t,]=quantile(res_p_langeac[t,],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
-#}
-
-sum=summary(res_p_langeac_std, probs=seq(0,1,0.1))
-res_p_langeac_std_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-png(filename=str_c(imgwd,"res_p_langeac_std.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T+1),xlab="Years",ylim=c(-3,3),ylab="res_p_langeac_std")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(-3,3,by=0.5),labels=seq(-3,3,by=0.5),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,1974+T)
-axis(1,at = c(1,6,16,26,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:T){
-	#whiskers
-	#97,5%
-	segments(i-0.15,res_p_langeac_std_q[i,5],i+0.15,res_p_langeac_std_q[i,5])
-	segments(i,res_p_langeac_std_q[i,4],i,res_p_langeac_std_q[i,5])
-	#2,5%
-	segments(i-0.15,res_p_langeac_std_q[i,1],i+0.15,res_p_langeac_std_q[i,1])
-	segments(i,res_p_langeac_std_q[i,2],i,res_p_langeac_std_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(res_p_langeac_std_q[i,2],res_p_langeac_std_q[i,2],res_p_langeac_std_q[i,4],res_p_langeac_std_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=-0.5,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "res_p_langeac_std",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "res_p_langeac_std", ylim_range = c(-3, 3), y_at = seq(-3, 3, by = 0.5),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1), mean_label_line = -0.5)
 @
 
 \begin{figure}[ht]
@@ -1642,55 +985,17 @@ res\_p\_langeac\_standardisé représente les résidus standardisés du paramèt
 \subsection{res\_p\_poutes\_standardisé}
 %================================================================================
 << res_p_poutes, echo=FALSE, eval=TRUE,results=hide >>=
-res_p_poutes=read.coda(str_c(datawd,"simulation/res_p_poutesCODAchain1.txt"),str_c(datawd,"simulation/res_p_poutesCODAindex.txt"))
-sigma_p_poutes=read.coda(str_c(datawd,"sigma_p_poutesCODAchain1.txt"),str_c(datawd,"sigma_p_poutesCODAindex.txt"))
+res_p_poutes <- read_param_coda("res_p_poutes", datawd, subdir = "simulation")
+sigma_p_poutes <- read_param_coda("sigma_p_poutes", datawd)
 
-res_p_poutes_std<-array(NA,c(nrow(res_p_poutes),(T-11)))
+res_p_poutes_std <- standardize_residuals(res_p_poutes[, 1:(T-11)], sigma_p_poutes)
+q <- param_quantiles(res_p_poutes_std)
 
-for (t in 1:(T-11)){
-  for (i in 1:nrow(res_p_poutes)){
-  
-  res_p_poutes_std[i,t]<-res_p_poutes[i,t]/sigma_p_poutes[i]
-  }
-}
-colnames(res_p_poutes_std)<-colnames(res_p_poutes)
-res_p_poutes_std<-as.mcmc(res_p_poutes_std)
-
-sum=summary(res_p_poutes_std, probs=seq(0,1,0.1))
-res_p_poutes_std_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"res_p_poutes_std.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,(T-12+1)),xlab="Years",ylim=c(-3,3),ylab="res_p_poutes_std")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(-3,3,by=1),labels=seq(-3,3,by=1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1986,1990,2000,2010,1974+T)
-axis(1,at = c(1,5,15,25,(T-12)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-12)){
-	#whiskers
-	#95%
-	segments(i-0.15,res_p_poutes_std_q[i,5],i+0.15,res_p_poutes_std_q[i,5])
-	segments(i,res_p_poutes_std_q[i,4],i,res_p_poutes_std_q[i,5])
-	#5%
-	segments(i-0.15,res_p_poutes_std_q[i,1],i+0.15,res_p_poutes_std_q[i,1])
-	segments(i,res_p_poutes_std_q[i,2],i,res_p_poutes_std_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(res_p_poutes_std_q[i,2],res_p_poutes_std_q[i,2],res_p_poutes_std_q[i,4],res_p_poutes_std_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=(T-11),col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "res_p_poutes_std",
+                   data = q$quantiles, years = 1:(T-11), year_origin = 1985,
+                   ylab_txt = "res_p_poutes_std", ylim_range = c(-3, 3), y_at = seq(-3, 3, by = 1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T - 11))
 @
 
 \begin{figure}[ht]
@@ -1708,36 +1013,8 @@ res\_p\_poutes\_standardisé représente les résidus standardisés du paramètr
 \subsection{sigma\_p\_alagnon}
 %=================================================================================
 << sigma_p_alagnon, echo=FALSE, eval=TRUE,results=hide >>=
-sigma_p_alagnon=read.coda(str_c(datawd,"sigma_p_alagnonCODAchain1.txt"),str_c(datawd,"sigma_p_alagnonCODAindex.txt"))
-png(filename=str_c(imgwd,"sigma_p_alagnon.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(sigma_p_alagnon,density=FALSE,auto.layout=FALSE)
-plot(sigma_p_alagnon,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(sigma_p_alagnon, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="sigma_p_alagnon",caption="Statistiques de sigma\\_p\\_alagnon")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"sigma_p_alagnon.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+sigma_p_alagnon <- read_param_coda("sigma_p_alagnon", datawd)
+report_param(sigma_p_alagnon, imgwd, tabwd, "sigma_p_alagnon")
 @
 
 \begin{figure}[ht]
@@ -1756,36 +1033,8 @@ sigma\_p\_alagnon représente l'écart-type autour du paramètre de blocage de l
 \subsection{sigma\_p\_langeac}
 %=================================================================================
 << sigma_p_langeac, echo=FALSE, eval=TRUE,results=hide >>=
-sigma_p_langeac=read.coda(str_c(datawd,"sigma_p_langeacCODAchain1.txt"),str_c(datawd,"sigma_p_langeacCODAindex.txt"))
-png(filename=str_c(imgwd,"sigma_p_langeac.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(sigma_p_langeac,density=FALSE,auto.layout=FALSE)
-plot(sigma_p_langeac,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(sigma_p_langeac, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="sigma_p_langeac",caption="Statistiques de sigma\\_p\\_langeac")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"sigma_p_langeac.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+sigma_p_langeac <- read_param_coda("sigma_p_langeac", datawd)
+report_param(sigma_p_langeac, imgwd, tabwd, "sigma_p_langeac")
 @
 
 \begin{figure}[ht]
@@ -1804,36 +1053,8 @@ sigma\_p\_langeac représente l'écart-type autour du paramètre de blocage de l
 \subsection{sigma\_p\_poutes}
 %=================================================================================
 << sigma_p_poutes, echo=FALSE, eval=TRUE,results=hide >>=
-sigma_p_poutes=read.coda(str_c(datawd,"sigma_p_poutesCODAchain1.txt"),str_c(datawd,"sigma_p_poutesCODAindex.txt"))
-png(filename=str_c(imgwd,"sigma_p_poutes.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(sigma_p_poutes,density=FALSE,auto.layout=FALSE)
-plot(sigma_p_poutes,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(sigma_p_poutes, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="sigma_p_poutes",caption="Statistiques de sigma\\_p\\_poutes")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"sigma_p_poutes.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+sigma_p_poutes <- read_param_coda("sigma_p_poutes", datawd)
+report_param(sigma_p_poutes, imgwd, tabwd, "sigma_p_poutes")
 @
 
 \begin{figure}[ht]
@@ -1855,36 +1076,8 @@ sigma\_p\_poutes représente l'écart-type autour du paramètre de blocage de la
 \subsection{hel\_effect}
 %=================================================================================
 << hel_effect, echo=FALSE, eval=TRUE,results=hide >>=
-hel_effect=read.coda(str_c(datawd,"hel_effectCODAchain1.txt"),str_c(datawd,"hel_effectCODAindex.txt"))
-png(filename=str_c(imgwd,"hel_effect.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(hel_effect,density=FALSE,auto.layout=FALSE)
-plot(hel_effect,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(hel_effect, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="hel_effect",caption="Statistiques de hel\\_effect")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"hel_effect.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+hel_effect <- read_param_coda("hel_effect", datawd)
+report_param(hel_effect, imgwd, tabwd, "hel_effect")
 @
 
 \begin{figure}[ht]
@@ -1911,43 +1104,14 @@ Les secteurs Vichy-Langeac / Alagnon / Langeac-Poutès se distinguent du secteur
 \subsubsection{zone\_effect\_Vichy}
 %-------------------------------------------
 << zone_effect_V, echo=FALSE, eval=TRUE,results=hide >>=
-zone_effect_V=read.coda(str_c(datawd,"zone_effect_VCODAchain1.txt"),str_c(datawd,"zone_effect_VCODAindex.txt"))
+zone_effect_V <- read_param_coda("zone_effect_V", datawd)
+q <- param_quantiles(zone_effect_V)
 
-sum=summary(zone_effect_V, probs=seq(0,1,0.1))
-zone_effect_V_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"zone_effect_V.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,3),ylab="zone_effect_V")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,3,by=1),labels=seq(0,3,by=1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,1974+T)
-axis(1,at = c(1,6,16,26,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,zone_effect_V_q[i,5],i+0.15,zone_effect_V_q[i,5])
-	segments(i,zone_effect_V_q[i,4],i,zone_effect_V_q[i,5])
-	#5%
-	segments(i-0.15,zone_effect_V_q[i,1],i+0.15,zone_effect_V_q[i,1])
-	segments(i,zone_effect_V_q[i,2],i,zone_effect_V_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(zone_effect_V_q[i,2],zone_effect_V_q[i,2],zone_effect_V_q[i,4],zone_effect_V_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "zone_effect_V",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "zone_effect_V", ylim_range = c(0, 3), y_at = seq(0, 3, by = 1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1))
 @
 
 \begin{figure}[ht]
@@ -1958,43 +1122,14 @@ dev.off()
 \clearpage
 
 << zone_effect_A, echo=FALSE, eval=TRUE,results=hide >>=
-zone_effect_A=read.coda(str_c(datawd,"zone_effect_ACODAchain1.txt"),str_c(datawd,"zone_effect_ACODAindex.txt"))
+zone_effect_A <- read_param_coda("zone_effect_A", datawd)
+q <- param_quantiles(zone_effect_A)
 
-sum=summary(zone_effect_A, probs=seq(0,1,0.1))
-zone_effect_A_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"zone_effect_A.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,3),ylab="zone_effect_A")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,3,by=1),labels=seq(0,3,by=1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,1974+T)
-axis(1,at = c(1,6,16,26,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,zone_effect_A_q[i,5],i+0.15,zone_effect_A_q[i,5])
-	segments(i,zone_effect_A_q[i,4],i,zone_effect_A_q[i,5])
-	#5%
-	segments(i-0.15,zone_effect_A_q[i,1],i+0.15,zone_effect_A_q[i,1])
-	segments(i,zone_effect_A_q[i,2],i,zone_effect_A_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(zone_effect_A_q[i,2],zone_effect_A_q[i,2],zone_effect_A_q[i,4],zone_effect_A_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "zone_effect_A",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "zone_effect_A", ylim_range = c(0, 3), y_at = seq(0, 3, by = 1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1))
 @
 
 \begin{figure}[ht]
@@ -2009,43 +1144,14 @@ dev.off()
 \subsubsection{zone\_effect\_Langeac}
 %-------------------------------------------
 << zone_effect_L, echo=FALSE, eval=TRUE,results=hide >>=
-zone_effect_L=read.coda(str_c(datawd,"zone_effect_LCODAchain1.txt"),str_c(datawd,"zone_effect_LCODAindex.txt"))
+zone_effect_L <- read_param_coda("zone_effect_L", datawd)
+q <- param_quantiles(zone_effect_L)
 
-sum=summary(zone_effect_L, probs=seq(0,1,0.1))
-zone_effect_L_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"zone_effect_L.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,3),ylab="zone_effect_L")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,3,by=1),labels=seq(0,3,by=1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,1974+T)
-axis(1,at = c(1,6,16,26,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:T){
-	#whiskers
-	#95%
-	segments(i-0.15,zone_effect_L_q[i,5],i+0.15,zone_effect_L_q[i,5])
-	segments(i,zone_effect_L_q[i,4],i,zone_effect_L_q[i,5])
-	#5%
-	segments(i-0.15,zone_effect_L_q[i,1],i+0.15,zone_effect_L_q[i,1])
-	segments(i,zone_effect_L_q[i,2],i,zone_effect_L_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(zone_effect_L_q[i,2],zone_effect_L_q[i,2],zone_effect_L_q[i,4],zone_effect_L_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "zone_effect_L",
+                   data = q$quantiles, years = 1:T,
+                   ylab_txt = "zone_effect_L", ylim_range = c(0, 3), y_at = seq(0, 3, by = 1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1))
 @
 
 \begin{figure}[ht]
@@ -2058,43 +1164,14 @@ dev.off()
 \subsubsection{zone\_effect\_Poutes}
 %-------------------------------------------
 << zone_effect_P, echo=FALSE, eval=TRUE,results=hide >>=
-zone_effect_P=read.coda(str_c(datawd,"zone_effect_PCODAchain1.txt"),str_c(datawd,"zone_effect_PCODAindex.txt"))
+zone_effect_P <- read_param_coda("zone_effect_P", datawd)
+q <- param_quantiles(zone_effect_P)
 
-sum=summary(zone_effect_P, probs=seq(0,1,0.1))
-zone_effect_P_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"zone_effect_P.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,(T-11)),xlab="Years",ylim=c(0,3),ylab="zone_effect_P")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,3,by=1),labels=seq(0,3,by=1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1986,1990,2000,2010,1974+T)
-axis(1,at = c(1,5,15,25,(T-11)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-11)){
-	#whiskers
-	#95%
-	segments(i-0.15,zone_effect_P_q[i,5],i+0.15,zone_effect_P_q[i,5])
-	segments(i,zone_effect_P_q[i,4],i,zone_effect_P_q[i,5])
-	#5%
-	segments(i-0.15,zone_effect_P_q[i,1],i+0.15,zone_effect_P_q[i,1])
-	segments(i,zone_effect_P_q[i,2],i,zone_effect_P_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(zone_effect_P_q[i,2],zone_effect_P_q[i,2],zone_effect_P_q[i,4],zone_effect_P_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=(T-10),col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "zone_effect_P",
+                   data = q$quantiles, years = 1:(T-11), year_origin = 1985,
+                   ylab_txt = "zone_effect_P", ylim_range = c(0, 3), y_at = seq(0, 3, by = 1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T - 10))
 @
 
 \begin{figure}[ht]
@@ -2111,42 +1188,14 @@ dev.off()
 %\section{p\_comptage}
 %====================================
 << p_comptage, echo=FALSE, eval=FALSE,results=hide >>=
-p_comptage=read.coda(str_c(datawd,"p_comptageCODAchain1.txt"),str_c(datawd,"p_comptageCODAindex.txt"))
+p_comptage <- read_param_coda("p_comptage", datawd)
+q <- param_quantiles(p_comptage)
 
-sum=summary(p_comptage, probs=seq(0,1,0.1))
-p_comptage_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"p_comptage.png"),width=800,height=800)
-
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="p_comptage")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,1,by=0.1),labels=seq(0,1,by=0.1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1975,1980,1990,2000,2010,1974+T)
-axis(1,at = c(1,6,16,26,36,T),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 12:T){
-	#whiskers
-	#95%
-	segments(i-0.15,p_comptage_q[i-11,5],i+0.15,p_comptage_q[i-11,5])
-	segments(i,p_comptage_q[i-11,4],i,p_comptage_q[i-11,5])
-	#5%
-	segments(i-0.15,p_comptage_q[i-11,1],i+0.15,p_comptage_q[i-11,1])
-	segments(i,p_comptage_q[i-11,2],i,p_comptage_q[i-11,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(p_comptage_q[i-11,2],p_comptage_q[i-11,2],p_comptage_q[i-11,4],p_comptage_q[i-11,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i-11,],i+0.3,mean_res[i-11,])
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T+1,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "p_comptage",
+                   data = rbind(matrix(NA, nrow = 11, ncol = 5), q$quantiles), years = 1:T,
+                   ylab_txt = "p_comptage", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.1),
+                   col_box = "green", center_line = c(rep(NA, 11), q$mean),
+                   mean_line = mean(q$mean), mean_line_range = c(0, T + 1))
 @
 
 % \begin{figure}[ht]
@@ -2161,36 +1210,12 @@ dev.off()
 %\section{sigma\_p\_comptage}
 %====================================
 << sigma_p_comptage, echo=FALSE, eval=FALSE,results=hide >>=
-tau_p_comptage=read.coda(str_c(datawd,"tau_p_comptageCODAchain1.txt"),str_c(datawd,"tau_p_comptageCODAindex.txt"))
-sigma_p_comptage=sqrt(1/tau_p_comptage)
-dimnames(sigma_p_comptage)[[2]]<-"sigma_p_comptage" #comme je recalcule sigma_p_comptage à partir de tau_p_comptage il avait gard le nom tau_p_comptage et c'était ce nom qu'il affichait sur le graph. En changeant dimnames ça change le nom du graph
+tau_p_comptage <- read_param_coda("tau_p_comptage", datawd)
+sigma_p_comptage <- sqrt(1 / tau_p_comptage)
+dimnames(sigma_p_comptage)[[2]] <- "sigma_p_comptage" #comme on le recalcule à partir de tau_p_comptage il gardait ce nom sur le graph
 
-png(filename=str_c(imgwd,"sigma_p_comptage.png"),width=800,height=800)
-plot(sigma_p_comptage)
-dev.off()
-
-sum=summary(sigma_p_comptage, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="sigma_p_comptage",caption="Statistiques de sigma\\_p\\comptage")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"sigma_p_comptage.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-		
+report_param(sigma_p_comptage, imgwd, tabwd, "sigma_p_comptage",
+             caption = "Statistiques de sigma\\_p\\comptage")
 @
 
 % \begin{figure}[ht]
@@ -2206,62 +1231,23 @@ o<-print(tab, file = str_c(tabwd,"sigma_p_comptage.tex"),
 %\section{N\_Langeac_count}
 %====================================
 << N_langeac_count, echo=FALSE, eval=FALSE,results=hide >>=
-N_langeac_count=read.coda(str_c(datawd,"min_LCODAchain1.txt"),str_c(datawd,"min_LCODAindex.txt"))
+N_langeac_count <- read_param_coda("min_L", datawd)
+q <- param_quantiles(N_langeac_count)
 
-sum=summary(N_langeac_count, probs=seq(0,1,0.1))
-N_langeac_count_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
+# échantillonné pour t=12:28 puis t=35:41 (observé/points ailleurs entre les deux : 29:34 et 42:T)
+data_full <- matrix(NA, nrow = T, ncol = 5)
+data_full[12:28, ] <- q$quantiles[1:17, ]
+data_full[35:41, ] <- q$quantiles[18:24, ]
+mean_full <- rep(NA, T)
+mean_full[12:28] <- q$mean[1:17]
+mean_full[35:41] <- q$mean[18:24]
 
-png(filename=str_c(imgwd,"N_langeac_count.png"),width=800,height=800)
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,700),ylab="N_langeac_count")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,700,by=100),labels= seq(0,700,by=100),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-axis(1,at = c(1,6,16,26,36,T),
-		labels=c(1975,1980,1990,2000,2010,(1974+T)),
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 12:28){
-	#whiskers
-	#95%
-	segments(i-0.15,N_langeac_count_q[i-11,5],i+0.15,N_langeac_count_q[i-11,5])
-	segments(i,N_langeac_count_q[i-11,4],i,N_langeac_count_q[i-11,5])
-	#5%
-	segments(i-0.15,N_langeac_count_q[i-11,1],i+0.15,N_langeac_count_q[i-11,1])
-	segments(i,N_langeac_count_q[i-11,2],i,N_langeac_count_q[i-11,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_langeac_count_q[i-11,2],N_langeac_count_q[i-11,2],N_langeac_count_q[i-11,4],N_langeac_count_q[i-11,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i-11,],i+0.3,mean_res[i-11,])
-}
-
-
-for(i in 29:34){
-	points(x=i,y=min_L[i],pch=16)
-}
-
-for(i in 35:41){
-	#whiskers
-	#95%
-	segments(i-0.15,N_langeac_count_q[i-17,5],i+0.15,N_langeac_count_q[i-17,5])
-	segments(i,N_langeac_count_q[i-17,4],i,N_langeac_count_q[i-17,5])
-	#5%
-	segments(i-0.15,N_langeac_count_q[i-17,1],i+0.15,N_langeac_count_q[i-17,1])
-	segments(i,N_langeac_count_q[i-17,2],i,N_langeac_count_q[i-17,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_langeac_count_q[i-17,2],N_langeac_count_q[i-17,2],N_langeac_count_q[i-17,4],N_langeac_count_q[i-17,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i-17,],i+0.3,mean_res[i-17,])
-}
-
-for(i in 42:T){
-	points(x=i,y=min_L[i],pch=16)
-}
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=T,col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "N_langeac_count",
+                   data = data_full, years = 1:T,
+                   ylab_txt = "N_langeac_count", ylim_range = c(0, 700), y_at = seq(0, 700, by = 100),
+                   col_box = "green", center_line = mean_full,
+                   points_overlay = list(x = c(29:34, 42:T), y = min_L[c(29:34, 42:T)]),
+                   mean_line = mean(mean_full, na.rm = TRUE), mean_line_range = c(0, T))
 @
 
 
@@ -2281,33 +1267,9 @@ dev.off()
 \subsubsection{beta\_Q\_L\_mont\_P}
 %=================================================================================
 << beta_Q_L_mont, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_L_mont_P=read.coda(str_c(datawd,"beta_Q_L_mont_PCODAchain1.txt"),str_c(datawd,"beta_Q_L_mont_PCODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_L_mont_P.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_L_mont_P,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_L_mont_P,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_L_mont_P, probs=seq(0,1,0.1))
-
-beta_Q_L_mont_P_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_L_mont_P",caption="Statistiques de beta\\_Q\\_L\\_mont\\_P (Q à la station de Lempdes sur Alagnon au printemps)",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_L_mont_P.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_L_mont_P <- read_param_coda("beta_Q_L_mont_P", datawd)
+report_param(beta_Q_L_mont_P, imgwd, tabwd, "beta_Q_L_mont_P", digits = c(0,4,4,4,4,4,4,4),
+             caption = "Statistiques de beta\\_Q\\_L\\_mont\\_P (Q à la station de Lempdes sur Alagnon au printemps)")
 @
 
 \begin{figure}[ht]
@@ -2327,33 +1289,9 @@ beta\_Q\_L\_mont\_P représente le coefficient modélisant l'influence des débi
 %=================================================================================
 
 << beta_Q_L_mont_A, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_L_mont_A=read.coda(str_c(datawd,"beta_Q_L_mont_ACODAchain1.txt"),str_c(datawd,"beta_Q_L_mont_ACODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_L_mont_A.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_L_mont_A,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_L_mont_A,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_L_mont_A, probs=seq(0,1,0.1))
-
-beta_Q_L_mont_A_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_L_mont_A",caption="Statistiques de beta\\_Q\\_L\\_mont\\_A (Q à la station de Lempdes sur Alagnon à l'automne)",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_L_mont_A.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_L_mont_A <- read_param_coda("beta_Q_L_mont_A", datawd)
+report_param(beta_Q_L_mont_A, imgwd, tabwd, "beta_Q_L_mont_A", digits = c(0,4,4,4,4,4,4,4),
+             caption = "Statistiques de beta\\_Q\\_L\\_mont\\_A (Q à la station de Lempdes sur Alagnon à l'automne)")
 @
 
 \begin{figure}[ht]
@@ -2373,33 +1311,9 @@ beta\_Q\_L\_mont\_A représente le coefficient modélisant l'influence des débi
 \subsubsection{beta\_Q\_VB\_mont\_P}
 %=================================================================================
 << beta_Q_VB_mont_P, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_VB_mont_P=read.coda(str_c(datawd,"beta_Q_VB_mont_PCODAchain1.txt"),str_c(datawd,"beta_Q_VB_mont_PCODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_VB_mont_P.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_VB_mont_P,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_VB_mont_P,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_VB_mont_P, probs=seq(0,1,0.1))
-
-beta_Q_VB_mont_P_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_VB_mont_P",caption="Statistiques de beta\\_Q\\_VB\\_mont\\_P (Q à la station de Vieille Brioude au printemps)",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_VB_mont_P.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_VB_mont_P <- read_param_coda("beta_Q_VB_mont_P", datawd)
+report_param(beta_Q_VB_mont_P, imgwd, tabwd, "beta_Q_VB_mont_P", digits = c(0,4,4,4,4,4,4,4),
+             caption = "Statistiques de beta\\_Q\\_VB\\_mont\\_P (Q à la station de Vieille Brioude au printemps)")
 @
 
 \begin{figure}[ht]
@@ -2419,33 +1333,9 @@ beta\_Q\_VB\_mont\_P représente le coefficient modélisant l'influence des déb
 %=================================================================================			
 
 << beta_Q_VB_mont_A, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_VB_mont_A=read.coda(str_c(datawd,"beta_Q_VB_mont_ACODAchain1.txt"),str_c(datawd,"beta_Q_VB_mont_ACODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_VB_mont_A.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_VB_mont_A,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_VB_mont_A,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_VB_mont_A, probs=seq(0,1,0.1))
-
-beta_Q_VB_mont_P_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_VB_mont_A",caption="Statistiques de beta\\_Q\\_VB\\_mont\\_A (Q à la station de Vieille Brioude à l'automne)",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_VB_mont_A.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_VB_mont_A <- read_param_coda("beta_Q_VB_mont_A", datawd)
+report_param(beta_Q_VB_mont_A, imgwd, tabwd, "beta_Q_VB_mont_A", digits = c(0,4,4,4,4,4,4,4),
+             caption = "Statistiques de beta\\_Q\\_VB\\_mont\\_A (Q à la station de Vieille Brioude à l'automne)")
 @
 
 \begin{figure}[ht]
@@ -2465,33 +1355,9 @@ beta\_Q\_VB\_mont\_A représente le coefficient modélisant l'influence des déb
 \subsubsection{beta\_Q\_P\_mont\_P}
 %=================================================================================
 << beta_Q_P_mont_P, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_P_mont_P=read.coda(str_c(datawd,"beta_Q_P_mont_PCODAchain1.txt"),str_c(datawd,"beta_Q_P_mont_PCODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_P_mont_P.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_P_mont_P,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_P_mont_P,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_P_mont_P, probs=seq(0,1,0.1))
-
-beta_Q_P_mont_P_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_P_mont_P",caption="Statistiques de beta\\_Q\\_P\\_mont\\_P (Q à la station de Prades au printemps)",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_P_mont_P.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_P_mont_P <- read_param_coda("beta_Q_P_mont_P", datawd)
+report_param(beta_Q_P_mont_P, imgwd, tabwd, "beta_Q_P_mont_P", digits = c(0,4,4,4,4,4,4,4),
+             caption = "Statistiques de beta\\_Q\\_P\\_mont\\_P (Q à la station de Prades au printemps)")
 @
 
 \begin{figure}[ht]
@@ -2511,33 +1377,9 @@ beta\_Q\_P\_mont\_P représente le coefficient modélisant l'influence des débi
 %=================================================================================
 
 << beta_Q_P_mont_A, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_P_mont_A=read.coda(str_c(datawd,"beta_Q_P_mont_ACODAchain1.txt"),str_c(datawd,"beta_Q_P_mont_ACODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_P_mont_A.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_P_mont_A,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_P_mont_A,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_P_mont_A, probs=seq(0,1,0.1))
-
-beta_Q_P_mont_P_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_P_mont_A",caption="Statistiques de beta\\_Q\\_P\\_mont\\_A (Q à la station de Prades à l'automne)",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_P_mont_A.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_P_mont_A <- read_param_coda("beta_Q_P_mont_A", datawd)
+report_param(beta_Q_P_mont_A, imgwd, tabwd, "beta_Q_P_mont_A", digits = c(0,4,4,4,4,4,4,4),
+             caption = "Statistiques de beta\\_Q\\_P\\_mont\\_A (Q à la station de Prades à l'automne)")
 @
 
 \begin{figure}[ht]
@@ -2590,15 +1432,11 @@ ggsave(str_c(imgwd,"plot_Q.png"), plot_Q, dpi = 300, width = 4, height = 6)
 \subsubsection{Corrélogramme des séries de débits utilisées dans le modèle}
 <<corrplot_Q, echo=FALSE, eval=TRUE,results=hide>>=
 
-Q_repartition<-pivot_wider(Q_serie_bugs,names_from =c(sta,saison), values_from = Q) #ratio_surv=ratio_surv, p_surv=p_surv, 
+Q_repartition<-pivot_wider(Q_serie_bugs,names_from =c(sta,saison), values_from = Q)
 Q_repartition <- select(Q_repartition, -year)
 colnames(Q_repartition)<-c("Lempdes_Automne","Lempdes_Printemps","VB_Automne","VB_Printemps","Prades_Automne","Prades_Printemps")
 
-png(filename=str_c(imgwd,"corr_Q_rep.png"),width=800,height=800)
-corrplot(cor(Q_repartition,use = "complete.obs",method = "pearson"), method = "circle", addCoef.col="black",number.cex = 0.8, order="AOE",type="upper",tl.srt=45)
-# corrgram(Q_repartition,lower.panel=panel.shade, upper.panel=panel.pie,order=TRUE)
-dev.off()
-
+corrplot_png(Q_repartition, imgwd, "corr_Q_rep")
 @
 
 \begin{figure}[ht]

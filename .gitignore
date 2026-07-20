@@ -15,6 +15,9 @@ Rdata_av2021.zip
 .Rhistory
 .Rproj.user/
 
+# Fichiers générés par bugs2jags() à chaque exécution (dump JAGS de data.txt)
+script/lateX/data_model.R
+
 # Artefacts de compilation LaTeX / Sweave (regénérés à partir des .Rnw)
 *.aux
 *.log
