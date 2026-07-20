@@ -153,7 +153,10 @@ tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/"
   library(corrgram)
  # library(bayesplot) test pour les plots
 	T=50
-	
+
+source("../fonctions/fct_graph.R")
+source("../fonctions/fct_data.R")
+
 bugs2jags(str_c(datawd,"data.txt"),"data_model.R")
 source("data_model.R")
 
@@ -166,47 +169,19 @@ source("data_model.R")
 \subsection{s\_juv2ad}
 %=================================================================================
 << s_juv2ad, echo=FALSE, eval=TRUE,results=hide >>=
-s_juv2ad=read.coda(str_c(datawd,"s_juv2adCODAchain1.txt"),str_c(datawd,"s_juv2adCODAindex.txt"))
-sum=summary(s_juv2ad, probs=seq(0,1,0.1))
-s_juv2ad_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
+s_juv2ad <- read_param_coda("s_juv2ad", datawd)
+q <- param_quantiles(s_juv2ad)
 
-mean_res_periode2<-mean(s_juv2ad[,(T-6-30):(T-6)]) #période 2 commence après effondrement survie=1991
+mean_res_periode2 <- mean(s_juv2ad[, (T-6-30):(T-6)]) #période 2 commence après effondrement survie=1991
 
-
-png(filename=str_c(imgwd,"s_juv2ad.png"),width=800,height=800)
-plot(1,1,type="n",axes=FALSE,xlim=c(0,(T-6)),xlab="Years",ylim=c(0,0.03),ylab="s_juv2ad")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,0.03,by=0.005),labels=seq(0,0.03,by=0.005),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1981,1990,2000,2010,1974+T)
-axis(1,at = c(1,10,20,30,(T-6)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-6)){
-	#whiskers
-	#95%
-	segments(i-0.15,s_juv2ad_q[i,5],i+0.15,s_juv2ad_q[i,5])
-	segments(i,s_juv2ad_q[i,4],i,s_juv2ad_q[i,5])
-	#5%
-	segments(i-0.15,s_juv2ad_q[i,1],i+0.15,s_juv2ad_q[i,1])
-	segments(i,s_juv2ad_q[i,2],i,s_juv2ad_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(s_juv2ad_q[i,2],s_juv2ad_q[i,2],s_juv2ad_q[i,4],s_juv2ad_q[i,4]),col="green")
-	#mean
-	#segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-	#median car il y a des valeurs extrêmes qui tirent la moyenne
-	segments(i-0.3,s_juv2ad_q[i,3],i+0.3,s_juv2ad_q[i,3])
-}
-
-
-#segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=(T-6),col="red")
-segments(x0=12,y0=mean_res_periode2,y1=mean_res_periode2,x1=(T-6),col="red")
-mtext(round(mean_res_periode2,5),side=4,line=0,at=mean_res_periode2,cex = 0.8,col="red",las=1)
-dev.off()
-
+# NB : custom_plot() trace toujours la médiane dans la boîte (segment central),
+# ce qui correspond ici à l'intention d'origine (moyenne écartée car tirée par
+# quelques valeurs extrêmes)
+boxplot_years_png(imgwd, "s_juv2ad",
+                   data = q$quantiles, years = 1:(T-6), year_origin = 1980,
+                   ylab_txt = "s_juv2ad", ylim_range = c(0, 0.03), y_at = seq(0, 0.03, by = 0.005),
+                   col_box = "green",
+                   mean_line = mean_res_periode2, mean_line_range = c(12, T-6))
 @
 
 \begin{figure}[ht]
@@ -226,29 +201,8 @@ s\_juv2ad représente le taux de transition entre le juvénile 0+ et l'adulte.
 \subsubsection{m\_surv}
 %=================================================================================
 << m_surv, echo=FALSE, eval=TRUE,results=hide >>=
-m_surv=read.coda(str_c(datawd,"m_survCODAchain1.txt"),str_c(datawd,"m_survCODAindex.txt"))
-png(filename=str_c(imgwd,"m_surv.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(m_surv,density=FALSE,auto.layout=FALSE)
-plot(m_surv,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(m_surv, probs=seq(0,1,0.1))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="m_surv",caption="Statistiques de m\\_surv")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"m_surv.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+m_surv <- read_param_coda("m_surv", datawd)
+report_param(m_surv, imgwd, tabwd, "m_surv")
 @
 
 \begin{figure}[ht]
@@ -266,33 +220,8 @@ m\_surv représente la survie moyenne. Il est utiliser dans la relation qui lie 
 \subsubsection{beta\_Q\_VB\_deval}
 %=================================================================================
 << beta_Q_VB_deval, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_VB_deval=read.coda(str_c(datawd,"beta_Q_VB_devalCODAchain1.txt"),str_c(datawd,"beta_Q_VB_devalCODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_VB_deval.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_VB_deval,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_VB_deval,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_VB_deval, probs=seq(0,1,0.1))
-
-beta_Q_VB_deval_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_VB_deval",caption="Statistiques de beta\\_Q\\_VB\\_deval",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_VB_deval.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_VB_deval <- read_param_coda("beta_Q_VB_deval", datawd)
+report_param(beta_Q_VB_deval, imgwd, tabwd, "beta_Q_VB_deval", digits = c(0,4,4,4,4,4,4,4))
 @
 
 \begin{figure}[ht]
@@ -311,33 +240,8 @@ beta\_Q\_VB\_deval représente le coefficient directeur de la droite modélisant
 \subsubsection{beta\_Q\_MSL\_mont}
 %=================================================================================
 << beta_Q_MSL_mont, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_MSL_mont=read.coda(str_c(datawd,"beta_Q_MSL_montCODAchain1.txt"),str_c(datawd,"beta_Q_MSL_montCODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_MSL_mont.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_MSL_mont,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_MSL_mont,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_MSL_mont, probs=seq(0,1,0.1))
-
-beta_Q_MSL_mont_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_MSL_mont",caption="Statistiques de beta\\_Q\\_MSL\\_mont",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_MSL_mont.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_MSL_mont <- read_param_coda("beta_Q_MSL_mont", datawd)
+report_param(beta_Q_MSL_mont, imgwd, tabwd, "beta_Q_MSL_mont", digits = c(0,4,4,4,4,4,4,4))
 @
 
 \begin{figure}[ht]
@@ -356,33 +260,8 @@ beta\_Q\_MSL\_mont représente le coefficient directeur de la droite modélisant
 \subsubsection{beta\_Q\_MSL\_deval}
 %=================================================================================
 << beta_Q_MSL_deval, echo=FALSE, eval=TRUE,results=hide >>=
-beta_Q_MSL_deval=read.coda(str_c(datawd,"beta_Q_MSL_devalCODAchain1.txt"),str_c(datawd,"beta_Q_MSL_devalCODAindex.txt"))
-png(filename=str_c(imgwd,"beta_Q_MSL_deval.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(beta_Q_MSL_deval,density=FALSE,auto.layout=FALSE)
-plot(beta_Q_MSL_deval,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(beta_Q_MSL_deval, probs=seq(0,1,0.1))
-
-beta_Q_MSL_deval_q<-sum$quantiles
-#mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res<-sum$statistics["Mean"]
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="beta_Q_MSL_deval",caption="Statistiques de beta\\_Q\\_MSL\\_deval",digits=c(0,4,4,4,4,4,4,4))#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"beta_Q_MSL_deval.tex"),
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+beta_Q_MSL_deval <- read_param_coda("beta_Q_MSL_deval", datawd)
+report_param(beta_Q_MSL_deval, imgwd, tabwd, "beta_Q_MSL_deval", digits = c(0,4,4,4,4,4,4,4))
 @
 
 \begin{figure}[ht]
@@ -403,37 +282,13 @@ beta\_Q\_MSL\_deval représente le coefficient directeur de la droite modélisan
 %=================================================================================
 
 << corrplot_debit, echo=FALSE, eval=TRUE,results=hide >>=
+# beta_Q_MSL_mont / beta_Q_MSL_deval / beta_Q_VB_deval déjà chargés plus haut dans ce document
+sigma_vichy <- read_param_coda("sigma_vichy", datawd)
 
-#on récupère les données de débits (data déjà chargé précédemment)
+Q_surv <- data.frame(beta_Q_MSL_mont = beta_Q_MSL_mont, beta_Q_MSL_deval = beta_Q_MSL_deval,
+                      beta_Q_VB_deval = beta_Q_VB_deval, sigma_vichy = sigma_vichy)
 
-#on fusionne toutes les données Q sur influence survie dans un seul jeu de données
-# Q_surv<-data.frame(Q_VB_deval=Q_VB_deval,Q_MSL_mont=Q_MSL_mont,Q_MSL_deval=Q_MSL_deval)
-# 
-# png(filename=str_c(imgwd,"corr_Q_surv.png"),width=800,height=800)
-# corrplot(cor(Q_surv,use = "complete.obs",method = "pearson"), method = "circle", addCoef.col="black",number.cex = 0.8, order="AOE",type="upper",tl.srt=45)
-# dev.off()
-# 
-# #on fusionne toutes les données Q sur répartition des adultes dans un seul jeu de données
-# Q_repart<-data.frame(Q_VB_mont=Q_VB_mont,Q_L_mont=Q_L_mont,Q_P_mont=Q_P_mont)
-# 
-# png(filename=str_c(imgwd,"corr_Q_repart.png"),width=800,height=800)
-# corrplot(cor(Q_repart,use = "complete.obs",method = "pearson"), method = "circle", addCoef.col="black",number.cex = 0.8, order="AOE",type="upper",tl.srt=45)
-# dev.off()
-
-beta_Q_MSL_mont=read.coda(str_c(datawd,"beta_Q_MSL_montCODAchain1.txt"),str_c(datawd,"beta_Q_MSL_montCODAindex.txt"))
-beta_Q_MSL_deval=read.coda(str_c(datawd,"beta_Q_MSL_devalCODAchain1.txt"),str_c(datawd,"beta_Q_MSL_devalCODAindex.txt"))
-beta_Q_VB_deval=read.coda(str_c(datawd,"beta_Q_VB_devalCODAchain1.txt"),str_c(datawd,"beta_Q_VB_devalCODAindex.txt"))
-
-#ratio_surv=read.coda(str_c(datawd,"ratio_survCODAchain1.txt"),str_c(datawd,"ratio_survCODAindex.txt"))
-#p_surv=read.coda(str_c(datawd,"p_survCODAchain1.txt"),str_c(datawd,"p_survCODAindex.txt"))
-sigma_vichy=read.coda(str_c(datawd,"sigma_vichyCODAchain1.txt"),str_c(datawd,"sigma_vichyCODAindex.txt"))
-
-
-Q_surv<-data.frame(beta_Q_MSL_mont=beta_Q_MSL_mont, beta_Q_MSL_deval=beta_Q_MSL_deval, beta_Q_VB_deval=beta_Q_VB_deval, sigma_vichy=sigma_vichy) #ratio_surv=ratio_surv, p_surv=p_surv, 
-
-png(filename=str_c(imgwd,"corr_Q_surv.png"),width=800,height=800)
-corrplot(cor(Q_surv,use = "complete.obs",method = "pearson"), method = "circle", addCoef.col="black",number.cex = 0.8, order="AOE",type="upper",tl.srt=45)
-dev.off()
+corrplot_png(Q_surv, imgwd, "corr_Q_surv")
 @
 
 
@@ -485,11 +340,7 @@ Q_repartition_surv<-pivot_wider(Q_surv_serie_bugs,names_from =sta, values_from =
 Q_repartition_surv <- select(Q_repartition_surv, -year)
 colnames(Q_repartition_surv)<-c("MSL_deval","MSL_mont","VB_deval")
 
-png(filename=str_c(imgwd,"corr_Q_surv_data.png"),width=800,height=800)
-corrplot(cor(Q_repartition_surv,use = "complete.obs",method = "pearson"), method = "circle", addCoef.col="black",number.cex = 0.8, order="AOE",type="upper",tl.srt=45)
-# corrgram(Q_repartition_surv,lower.panel=panel.shade, upper.panel=panel.pie,order=TRUE)
-dev.off()
-
+corrplot_png(Q_repartition_surv, imgwd, "corr_Q_surv_data")
 @
 
 \begin{figure}[ht]
@@ -510,7 +361,7 @@ dev.off()
 %\subsubsection{I\_mm}
 %================================================================================
 << I_mm, echo=FALSE, eval=FALSE,results=hide >>=
-I_mm=read.coda(str_c(datawd,"I_mmCODAchain1.txt"),str_c(datawd,"I_mmCODAindex.txt"))
+I_mm <- read_param_coda("I_mm", datawd)
 
 I_mm_mean=colMeans(I_mm)
 
@@ -541,36 +392,8 @@ dev.off()
 %\subsubsection{ratio\_surv}
 %================================================================================
 << ratio_surv, echo=FALSE, eval=FALSE,results=hide >>=
-ratio_surv=read.coda(str_c(datawd,"ratio_survCODAchain1.txt"),str_c(datawd,"ratio_survCODAindex.txt"))
-
-png(filename=str_c(imgwd,"ratio_surv.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(ratio_surv,density=FALSE,auto.layout=FALSE)
-plot(ratio_surv,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(ratio_surv, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="ratio_surv",caption="Statistiques de ratio\\_surv")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"ratio_surv.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+ratio_surv <- read_param_coda("ratio_surv", datawd)
+report_param(ratio_surv, imgwd, tabwd, "ratio_surv")
 @
 
 % \begin{figure}[ht]
@@ -587,36 +410,8 @@ o<-print(tab, file = str_c(tabwd,"ratio_surv.tex"),
 %\subsubsection{p\_surv}
 %================================================================================
 << p_surv, echo=FALSE, eval=FALSE,results=hide >>=
-p_surv=read.coda(str_c(datawd,"p_survCODAchain1.txt"),str_c(datawd,"p_survCODAindex.txt"))
-
-png(filename=str_c(imgwd,"p_surv.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(p_surv,density=FALSE,auto.layout=FALSE)
-plot(p_surv,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-sum=summary(p_surv, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="p_surv",caption="Statistiques de p\\_surv")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"p_surv.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
-
+p_surv <- read_param_coda("p_surv", datawd)
+report_param(p_surv, imgwd, tabwd, "p_surv")
 @
 % 
 % \begin{figure}[ht]
@@ -635,35 +430,8 @@ o<-print(tab, file = str_c(tabwd,"p_surv.tex"),
 \subsection{sigma\_vichy}
 %=================================================================================
 << sigma_vichy, echo=FALSE, eval=TRUE,results=hide >>=
-sigma_vichy=read.coda(str_c(datawd,"sigma_vichyCODAchain1.txt"),str_c(datawd,"sigma_vichyCODAindex.txt"))
-png(filename=str_c(imgwd,"sigma_vichy.png"),width=800,height=800)
-par(mfrow = c(2, 1))
-plot(sigma_vichy,density=FALSE,auto.layout=FALSE)
-plot(sigma_vichy,trace=FALSE,auto.layout=FALSE)
-dev.off()
-
-
-sum=summary(sigma_vichy, probs=seq(0,1,0.1))
-
-# Pour voir le contenu de l'objet sum = str(sum)
-#permet de savoir le nom des colonnes et tous les attributs (longueur, class, etc.) = attributes(sum)
-
-#tabl=cbind(rbind(as.data.frame(sum[c(1)])[1,]),rbind(as.data.frame(sum[c(2)])[1:5,]))
-#tabl=cbind(rbind(sum$statistics["Mean"]),rbind(sum$quantiles))
-
-tabl<-sum$quantiles
-tabl["Mean"]<-sum$statistics["Mean"]
-tabl["SD"]<-sum$statistics["SD"]
-tabl=rbind(tabl) #pour en faire une table
-
-tab<-xtable(x=tabl,label="sigma_vichy",caption="Statistiques de sigma\\_vichy")#,align=c("L",rep("C",5)))
-
-o<-print(tab, file = str_c(tabwd,"sigma_vichy.tex"), 
-		table.placement = "htbp",
-		caption.placement = "top",
-		NA.string = "",
-		include.rownames=FALSE
-		)
+sigma_vichy <- read_param_coda("sigma_vichy", datawd)
+report_param(sigma_vichy, imgwd, tabwd, "sigma_vichy")
 
 cumuplot(sigma_vichy[412:10000],probs=c(0.05,0.5,0.95))
 @
@@ -684,59 +452,25 @@ sigma\_vichy représente l'écart-type des estimations d'adultes de retour à Vi
 \subsection{N\_Vichy}
 %====================================
 << N_vichy, echo=FALSE, eval=TRUE,results=hide >>=
-N_vichy=read.coda(str_c(datawd,"N_vichyCODAchain1.txt"),str_c(datawd,"N_vichyCODAindex.txt"))
+N_vichy <- read_param_coda("N_vichy", datawd)
+q <- param_quantiles(N_vichy)
+mean_res_vichy <- q$mean #pour pouvoir le récupérer quand on calcule les adultes restant sur la zone Vichy-Langeac
 
-sum=summary(N_vichy, probs=seq(0,1,0.1))
-N_vichy_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-mean_res_vichy<-mean_res #pour pouvoir le récupérer quand on calcule les adultes restant sur la zone Vichy-Langeac
+# La station de Vichy est comptée en direct de 1997 à 2003 (t=23:29, données observées
+# en points) et à partir de 2005 (t=31:T) ; les autres années (dont 2004, t=30) sont estimées
+N_vichy_q_full <- matrix(NA, nrow = T, ncol = 5)
+N_vichy_q_full[1:22, ] <- q$quantiles[1:22, ]
+N_vichy_q_full[30, ] <- q$quantiles[23, ]
+mean_full <- rep(NA, T)
+mean_full[1:22] <- mean_res_vichy[1:22]
+mean_full[30] <- mean_res_vichy[23]
 
-png(filename=str_c(imgwd,"N_vichy.png"),width=800,height=800)
-plot(1,1,type="n",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,15000),ylab="N_vichy")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(0,15000,by=5000),labels=c(0,5000,10000,15000),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-axis(1,at = c(1,6,16,26,36,T),
-		labels=c(1975,1980,1990,2000,2010,(1974+T)),
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:22){
-	#whiskers
-	#95%
-	segments(i-0.15,N_vichy_q[i,5],i+0.15,N_vichy_q[i,5])
-	segments(i,N_vichy_q[i,4],i,N_vichy_q[i,5])
-	#5%
-	segments(i-0.15,N_vichy_q[i,1],i+0.15,N_vichy_q[i,1])
-	segments(i,N_vichy_q[i,2],i,N_vichy_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_q[i,2],N_vichy_q[i,2],N_vichy_q[i,4],N_vichy_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-points(x=seq(23,29,1),N[23:29,1],pch=16)
-
-
-for(i in 30:30){
-	#whiskers
-	#95%
-	segments(i-0.15,N_vichy_q[i-7,5],i+0.15,N_vichy_q[i-7,5])
-	segments(i,N_vichy_q[i-7,4],i,N_vichy_q[i-7,5])
-	#5%
-	segments(i-0.15,N_vichy_q[i-7,1],i+0.15,N_vichy_q[i-7,1])
-	segments(i,N_vichy_q[i-7,2],i,N_vichy_q[i-7,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(N_vichy_q[i-7,2],N_vichy_q[i-7,2],N_vichy_q[i-7,4],N_vichy_q[i-7,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i-7,],i+0.3,mean_res[i-7,])
-}
-
-points(x=seq(31,T,1),N[31:T,1],pch=16)
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=(T+0.5),col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "N_vichy",
+                   data = N_vichy_q_full, years = 1:T,
+                   ylab_txt = "N_vichy", ylim_range = c(0, 15000), y_at = seq(0, 15000, by = 5000),
+                   col_box = "green", center_line = mean_full,
+                   points_overlay = list(x = c(23:29, 31:T), y = c(N[23:29, 1], N[31:T, 1])),
+                   mean_line = mean(mean_res_vichy), mean_line_range = c(0, T + 0.5))
 @
 
 
@@ -757,56 +491,17 @@ N\_Vichy représente les adultes de retour à Vichy. Lorsque la station de compt
 \subsection{res\_vichy\_standardise}
 %================================================================================
 << res_vichy_std, echo=FALSE, eval=TRUE,results=hide >>=
-res_vichy=read.coda(str_c(datawd,"simulation/res_vichyCODAchain1.txt"),str_c(datawd,"simulation/res_vichyCODAindex.txt"))
-sigma_vichy=read.coda(str_c(datawd,"sigma_vichyCODAchain1.txt"),str_c(datawd,"sigma_vichyCODAindex.txt"))
+res_vichy <- read_param_coda("res_vichy", datawd, subdir = "simulation")
+sigma_vichy <- read_param_coda("sigma_vichy", datawd)
 
-#res_vichy_std<-as.mcmc(scale(res_vichy,center=FALSE,scale=TRUE)) #--> à revoir résidus semble bizarre sur le plot
-res_vichy_std<-array(NA,c(nrow(res_vichy),(T-6)))
+res_vichy_std <- standardize_residuals(res_vichy[, 1:(T-6)], sigma_vichy)
+q <- param_quantiles(res_vichy_std)
 
-for (t in 1:(T-6)){
-  for (i in 1:nrow(res_vichy)){
-  
-    res_vichy_std[i,t]<-res_vichy[i,t]/sigma_vichy[i]
-  }
-}
-colnames(res_vichy_std)<-colnames(res_vichy)
-res_vichy_std<-as.mcmc(res_vichy_std)
-
-
-sum=summary(res_vichy_std, probs=seq(0,1,0.1))
-res_vichy_std_q<-sum$quantiles
-mean_res<-cbind(sum$statistics[,"Mean"])
-
-
-png(filename=str_c(imgwd,"res_vichy_std.png"),width=800,height=800)
-plot(1,1,type="n",axes=FALSE,xlim=c(0,(T-6)),xlab="Years",ylim=c(-3,3),ylab="res_vichy_std")
-
-# trace l'axe des ordonnées
-axis(2,at = seq(-3,3,by=1),labels=seq(-3,3,by=1),cex.axis = 0.9,las = 1,col = "grey55")
-# trace l'axe des abscisses
-lab1=c(1981,1990,2000,2010,1974+T)
-axis(1,at = c(1,10,20,30,(T-6)),
-		labels=lab1,
-		cex.axis = 0.9,las = 1,col = "grey55")
-
-for(i in 1:(T-6)){
-	#whiskers
-	#95%
-	segments(i-0.15,res_vichy_std_q[i,5],i+0.15,res_vichy_std_q[i,5])
-	segments(i,res_vichy_std_q[i,4],i,res_vichy_std_q[i,5])
-	#5%
-	segments(i-0.15,res_vichy_std_q[i,1],i+0.15,res_vichy_std_q[i,1])
-	segments(i,res_vichy_std_q[i,2],i,res_vichy_std_q[i,1])
-	#boxplot
-	polygon(c(i-0.3,i+0.3,i+0.3,i-0.3),c(res_vichy_std_q[i,2],res_vichy_std_q[i,2],res_vichy_std_q[i,4],res_vichy_std_q[i,4]),col="green")
-	#mean
-	segments(i-0.3,mean_res[i,],i+0.3,mean_res[i,])
-}
-
-
-segments(x0=0,y0=mean(mean_res),y1=mean(mean_res),x1=(T-6),col="red")
-mtext(round(mean(mean_res),5),side=4,line=0,at=mean(mean_res),cex = 0.8,col="red",las=1)
-dev.off()
+boxplot_years_png(imgwd, "res_vichy_std",
+                   data = q$quantiles, years = 1:(T-6), year_origin = 1980,
+                   ylab_txt = "res_vichy_std", ylim_range = c(-3, 3), y_at = seq(-3, 3, by = 1),
+                   col_box = "green", center_line = q$mean,
+                   mean_line = mean(q$mean), mean_line_range = c(0, T-6))
 @
 
 \begin{figure}[ht]

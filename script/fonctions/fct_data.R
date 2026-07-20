@@ -4,6 +4,78 @@
 # date : 2022_04_08                                                                ###
 ######################################################################################
 
+#===================================================================================
+# Lecture d'un paramètre CODA (chain1 + index) à partir du dossier de sorties Openbugs.
+# subdir permet de lire dans un sous-dossier (ex. "simulation") comme le fait le
+# modèle pour certains paramètres.
+#===================================================================================
+read_param_coda <- function(name, datawd, subdir = NULL, file_prefix = name) {
+  base <- if (is.null(subdir)) datawd else str_c(datawd, subdir, "/")
+  read.coda(str_c(base, file_prefix, "CODAchain1.txt"),
+            str_c(base, file_prefix, "CODAindex.txt"))
+}
+
+#===================================================================================
+# Quantiles (par défaut 5/15/25/.../95%) + moyenne d'un paramètre CODA, dans le
+# format attendu par les graphiques boxplot par année (custom_plot / boxplot_years_png)
+#===================================================================================
+param_quantiles <- function(param, probs = seq(0, 1, 0.1)) {
+  sum <- summary(param, probs = probs)
+  mean_col <- if (is.matrix(sum$statistics)) {
+    cbind(sum$statistics[, "Mean"])
+  } else {
+    cbind(sum$statistics["Mean"])
+  }
+  list(summary = sum, quantiles = sum$quantiles, mean = mean_col)
+}
+
+#===================================================================================
+# Echappe les underscores pour LaTeX (ex. "beta_Q_VB" -> "beta\_Q\_VB")
+#===================================================================================
+latex_escape <- function(x) gsub("_", "\\_", x, fixed = TRUE)
+
+#===================================================================================
+# Standardise des résidus par un écart-type tiré (1 valeur par itération MCMC) :
+# std[i,t] = res[i,t] / sigma[i]. Motif récurrent pour les résidus standardisés
+# (res_vichy_std, res_p_*_std, res_wild_moy_*_std, res_juv_moy_*_std, ...)
+#===================================================================================
+standardize_residuals <- function(res, sigma) {
+  std <- sweep(as.matrix(res), 1, as.vector(sigma), "/")
+  colnames(std) <- colnames(res)
+  as.mcmc(std)
+}
+
+#===================================================================================
+# Table récapitulative (quantiles + Mean + SD) d'un paramètre scalaire, écrite en
+# .tex via xtable. C'est la 2e moitié du motif le plus fréquent du rapport
+# SortieOpenbugs_parameters.Rnw (voir aussi report_param/png_trace_density dans
+# fct_graph.R qui l'associent au graphique trace/densité).
+#===================================================================================
+write_param_table <- function(param, tabwd, filename, label = filename,
+                               caption = NULL, digits = NULL) {
+  if (is.null(caption)) caption <- str_c("Statistiques de ", latex_escape(label))
+
+  sum <- summary(param, probs = seq(0, 1, 0.1))
+  tabl <- sum$quantiles
+  tabl["Mean"] <- sum$statistics["Mean"]
+  tabl["SD"] <- sum$statistics["SD"]
+  tabl <- rbind(tabl) #pour en faire une table
+
+  tab <- if (is.null(digits)) {
+    xtable(x = tabl, label = label, caption = caption)
+  } else {
+    xtable(x = tabl, label = label, caption = caption, digits = digits)
+  }
+
+  print(tab, file = str_c(tabwd, filename, ".tex"),
+        table.placement = "htbp",
+        caption.placement = "top",
+        NA.string = "",
+        include.rownames = FALSE)
+
+  invisible(sum)
+}
+
 
 keep_good_surf<-function(surf_2021=TRUE) {
   if(surf_2021==TRUE) {
