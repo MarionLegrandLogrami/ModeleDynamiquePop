@@ -533,14 +533,20 @@ Les tronçons ainsi sélectionnés doivent être enregistrés dans une couche sh
 
 ```{sql connection=con_bd_saumon, eval=FALSE}
 SELECT geometry,
-       fac_ce as cours_eau,
-       fac_facies as facies,
-       case when fac_facies in ('RAD','RAP') THEN surf ELSE surf/5 end as surface,
-       '2024' as annee,
-       'MAJ carto jusqu''en 2021' as ref_couche_carto,
-       fac_secteu as secteur
-FROM '2024_Allier'
-WHERE fac_facies in ('RAD','RAP','PC')
+  'Allier' as cours_eau,
+  case when fac_facies =9 then 'RAD'
+       when fac_facies=10 then 'RAP'
+       when fac_facies=8 then 'PC' end as facies,
+  fac_surf_1 as surface,
+  '2025' as annee,
+  'MAJ carto jusqu''en 2025' as ref_couche_carto,
+  case when fac_ope_id= 19 then 8
+       when fac_ope_id in (55,60) then 19
+       when fac_ope_id=59 then 20
+       when fac_ope_id=31 then 21
+       when fac_ope_id=32 then 22 end as secteur
+FROM '2025_Allier'
+WHERE fac_surf_1 is not null
 
 ```
 
@@ -577,10 +583,11 @@ code_secteur | libellé_secteur | secteur_modèle
 22 | Cournon-La Bageasse (S5) | 1 : Vichy-Langeac
 
 
-Le tableau ci-dessous, présente les surfaces à copier dans OpenBugs pour le paramètre **S_juv_JP_dev**. En 2021 et 2022, aucun déversement n'a eu lieu sur le secteur 2 (Alagnon) et 3 (Langeac-Poutès).
+Le tableau ci-dessous, présente les surfaces à copier dans OpenBugs pour le paramètre **S_juv_JP_dev**. En 2021 et 2022, aucun déversement n'a eu lieu sur le secteur 2 (Alagnon) et 3 (Langeac-Poutès). Attention, en 2025 on a bien tout le secteur s3 sous influence. J'ai recopié la surface de S_juv_JP pour ce secteur plutôt que celui donné par surf_infl qui était un peu inférieur (je ne sais pas pourquoi)
 
 ```{r S_juv_JP_dev, echo=FALSE}
 print(surf_infl[surf_infl$annee>2020,],row.names=FALSE)
+surf_infl$surface[surf_infl$annee==2025 & surf_infl$secteur==3] <- 158947
 ```
 
 
@@ -1460,7 +1467,7 @@ On ne calcule une valeur QUE lorsqu'il n'y a pas eu de déversement (I_site_juv=
 
 ```{r L_d_juv_detail_year}
 #on utilise les jeux de données déja calculés : reqannee_1$dev (I_site_juv_V), reqannee_2$dev (I_site_juv_A), reqannee_3$dev (I_site_juv_L), reqannee_4$dev (I_site_juv_P)
-annee_detail=2021
+annee_detail=2025
 
 ## Ici on recalcule car MAJ faite sur 2 années et on n'a dans reqannee_1 que l'année 2022
 pec_dev<-pec_dev_tot[pec_dev_tot$annee==annee_detail,]
