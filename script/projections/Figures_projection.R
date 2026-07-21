@@ -7,8 +7,8 @@
 # FIXME : library + Path #
 #!!!!!!!!!!!!!!!!!!!!!!!!#
 library(coda)
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/SimulationImprovementSurvival50%/2014_10_10_SurfErr+SurfDev")
-#setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/SimulationImprovementSurvival50%/2014_05_30")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/SimulationImprovementSurvival50%/2014_10_10_SurfErr+SurfDev")
+#setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/SimulationImprovementSurvival50%/2014_05_30")
 
 
 ##########################
@@ -57,7 +57,7 @@ setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/SimulationImprove
 		#--------------------------------------------------------------------------------------
 		#Figure : ANNUAL ADULT RETURN 20 years projection - improvement 50% old level survival
 		#--------------------------------------------------------------------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2014.05.30/_outputAllier_SimulationImprovement50_.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2014.05.30/_outputAllier_SimulationImprovement50_.png",width=800,height=800)
 		
 		par(mfrow=c(1,1),col.lab="grey25",col.axis="grey55",col.main="grey25")
 		
@@ -151,7 +151,7 @@ setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/SimulationImprove
 		#-----------------------------------------------------------------------------
 		# Figure : THRESHOLD 20 years projection - improvement 50% old level survival
 		#-----------------------------------------------------------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/simulation/Threshold_50_trois.png",width=800,height=800)		
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/simulation/Threshold_50_trois.png",width=800,height=800)		
 
 		par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		

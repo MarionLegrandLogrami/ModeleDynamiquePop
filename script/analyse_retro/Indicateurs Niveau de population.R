@@ -3,8 +3,8 @@
 # Author: marion.legrand
 ###############################################################################
 #Modèle 2017.08.29_Interraction_ss_rho_poutes_matriceVC
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 
 library(coda)
@@ -513,7 +513,7 @@ p<-ggplot()+
 	theme(legend.position ="top")+
 	theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_2019_07_04.png",width=800,height=800)
 	print(p)
 dev.off()
 
@@ -536,7 +536,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -560,7 +560,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 #=======================
@@ -592,7 +592,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_moy_mob5_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_moy_mob5_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -616,7 +616,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_moy_mob5_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_moy_mob5_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -640,7 +640,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_moy_mob5_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_moy_mob5_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -708,7 +708,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_5yr_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_5yr_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -731,7 +731,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_5yr_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_5yr_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -755,7 +755,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_5yr_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_5yr_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 

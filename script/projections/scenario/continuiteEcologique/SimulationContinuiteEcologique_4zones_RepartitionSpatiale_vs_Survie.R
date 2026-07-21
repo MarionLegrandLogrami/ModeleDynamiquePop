@@ -8,7 +8,7 @@
 #================
 
 #Modèle 2017.05.03_4zones_Interaction
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 
 
 library(coda)
@@ -539,9 +539,9 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que ça mar
 	}
 }
 
-save.image(file = "C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.RData")
+save.image(file = "C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.RData")
 
-load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.RData")
+load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.RData")
 
 
 #==========================================================
@@ -573,8 +573,8 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
-png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_RepartitionSpatiale_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_RepartitionSpatiale_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Change in spatial repartition of spawners",cex.lab=1.5)
 
@@ -674,8 +674,8 @@ for (t in 1:20){
 #------------------------
 # Graph
 #-----------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_Threshold_2017_04_28.png",width=800,height=800)
-png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_RepartitionSpatiale_Threshold_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_Threshold_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_RepartitionSpatiale_Threshold_2017_05_04.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -723,7 +723,7 @@ dev.off()
 # CHAP : Figure : Répartitions des Juvéniles dans les différents secteurs
 #=========================================================================
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 
 library(coda)
 library(boot)
@@ -818,7 +818,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Récupération des caluls réalisés dans le cadre de la modélisation Poutès 50%
-load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.RData")
+load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.RData")
 
 
 #les juv_vichy,alagnon,langeac,poutes du load ne commencent qu'à t=43 (T+2) on recréé le t=42 (T+1) qu'on a calculé au début
@@ -884,7 +884,7 @@ for (t in (T+1):(T+20)){
 #-------------------------------------------
 # FIGURE
 
-png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 #----------------------------
@@ -1133,7 +1133,7 @@ dev.off()
 # CHAP : Figure : Répartitions des Géniteurs dans les différents secteurs
 #=========================================================================
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 
 library(coda)
 library(boot)
@@ -1152,7 +1152,7 @@ S_langeac_real=read.coda("S_langeacCODAchain1.txt","S_langeacCODAindex.txt")
 #On récupère les données du modèle directement dans le fichier data
 library(coda) 
 require(stringr)
-bugs2jags(str_c("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/","data.txt"),"data_4zones_Interaction.R")
+bugs2jags(str_c("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/","data.txt"),"data_4zones_Interaction.R")
 source("data_4zones_Interaction.R")
 head(N) #ça marche !
 
@@ -1243,7 +1243,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Récupération des caluls réalisés dans le cadre de la modélisation ContinuiteEcologique
-load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.RData")
+load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.RData")
 
 N_vichy_q<-array(0,c(T+20,5))
 
@@ -1282,7 +1282,7 @@ for (t in (T+1):(T+20)){
 #---------------------------------------------------
 # FIGURE
 
-png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_ContinuiteEcologique_RepartitionSpatiale_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 #..........
 # Nb total
@@ -1555,7 +1555,7 @@ dev.off()
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #Modèle 2017.05.03_4zones_Interaction
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 
 
 library(coda)
@@ -2081,9 +2081,9 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que ça mar
   }
 }
 
-save.image(file = "C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_Survie_2017_05_04.RData")
+save.image(file = "C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_Survie_2017_05_04.RData")
 
-load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_Survie_2017_05_04.RData")
+load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_Survie_2017_05_04.RData")
 
 
 #==========================================================
@@ -2115,8 +2115,8 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
-png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_Survie_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_Survie_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Change in spatial repartition of spawners",cex.lab=1.5)
 
@@ -2216,8 +2216,8 @@ for (t in 1:20){
 #------------------------
 # Graph
 #-----------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_Threshold_2017_04_28.png",width=800,height=800)
-png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_Survie_Threshold_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_Threshold_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_Survie_Threshold_2017_05_04.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2265,7 +2265,7 @@ dev.off()
 # CHAP : Figure : Répartitions des Juvéniles dans les différents secteurs
 #=========================================================================
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 
 library(coda)
 library(boot)
@@ -2360,7 +2360,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Récupération des caluls réalisés dans le cadre de la modélisation Poutès 50%
-load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_Survie_2017_05_04.RData")
+load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_Survie_2017_05_04.RData")
 
 
 #les juv_vichy,alagnon,langeac,poutes du load ne commencent qu'à t=43 (T+2) on recréé le t=42 (T+1) qu'on a calculé au début
@@ -2426,7 +2426,7 @@ for (t in (T+1):(T+20)){
 #-------------------------------------------
 # FIGURE
 
-png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_ContinuiteEcologique_Survie_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_ContinuiteEcologique_Survie_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 #----------------------------
@@ -2675,7 +2675,7 @@ dev.off()
 # CHAP : Figure : Répartitions des Géniteurs dans les différents secteurs
 #=========================================================================
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 
 library(coda)
 library(boot)
@@ -2694,7 +2694,7 @@ S_langeac_real=read.coda("S_langeacCODAchain1.txt","S_langeacCODAindex.txt")
 #On récupère les données du modèle directement dans le fichier data
 library(coda) 
 require(stringr)
-bugs2jags(str_c("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/","data.txt"),"data_4zones_Interaction.R")
+bugs2jags(str_c("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/","data.txt"),"data_4zones_Interaction.R")
 source("data_4zones_Interaction.R")
 head(N) #ça marche !
 
@@ -2785,7 +2785,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Récupération des caluls réalisés dans le cadre de la modélisation ContinuiteEcologique
-load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_Survie_2017_05_04.RData")
+load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_Survie_2017_05_04.RData")
 
 N_vichy_q<-array(0,c(T+20,5))
 
@@ -2824,7 +2824,7 @@ for (t in (T+1):(T+20)){
 #---------------------------------------------------
 # FIGURE
 
-png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_ContinuiteEcologique_Survie_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_ContinuiteEcologique_Survie_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 #..........
 # Nb total

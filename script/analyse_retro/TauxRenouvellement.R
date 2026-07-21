@@ -4,16 +4,16 @@
 ###############################################################################
 
 #Mod�le 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 #Modèle 2019_12_12
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
 
 #Modèle 2021_09 (= structure du modèle 2019_12_12 avec MAJ données jusqu'à 2020)
-setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09")
-datawd<-("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09")
+setwd(here::here("data/CODA/2021_09"))
+datawd<-(here::here("data/CODA/2021_09"))
 
 
 library(coda)
@@ -207,7 +207,7 @@ mean(renew_rate_w_coef_q[32:36,3]) #moyenne des m�diane sur 5 derni�res ann�
 mean(renew_rate_w_coef_q[7:11,3]) #moyenne des m�diane sur 5 premi�res ann�es : -0.55
 
 
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage.png",width=1000,height=800)
 #
 #plot(1,1,type="n",axes=FALSE,xlim=c(10.5,T+0.5),xlab="Years",ylim=c(-5,5),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 #
@@ -240,9 +240,9 @@ mean(renew_rate_w_coef_q[7:11,3]) #moyenne des m�diane sur 5 premi�res ann�
 #===============================
 # figure en échelle naturelle
 #===============================
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/2022_07_01_TauxRenouvellementPopSauvage_EchelleNat_mod2021_09.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_EchelleNat.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/2022_07_01_TauxRenouvellementPopSauvage_EchelleNat_mod2021_09.png"),width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_EchelleNat.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(6.5,T-7+0.5),xlab="Years",ylim=c(0,2),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -278,10 +278,10 @@ dev.off()
 # figure en log
 #=================
 #on enlève la dénomination coef dans l'intitulé de la figure car c'est ce qu'on conserve tout le temps (le calcul 1/3,1/3,1/3 étant faux)
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/2022_07_01_TauxRenouvellementPopSauvage_EchelleLog_mod2021_09.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_log.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/2022_07_01_TauxRenouvellementPopSauvage_EchelleLog_mod2021_09.png"),width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_log.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(7.5,T-7+0.5),xlab="Années",ylim=c(-3,3),ylab="log(Taux de renouvellement)",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -323,8 +323,8 @@ exp(mean(renew_rate_w_coef_q[34:38,3])) #0.51
 mean(renew_rate_w_coef_q[14:32,3]) #-1.24
 exp(mean(renew_rate_w_coef_q[14:32,3])) #0.29
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_82_2011.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_82_2011.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(7.5,T-6+0.5),xlab="Years",ylim=c(-5,5),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -365,7 +365,7 @@ for (i in 1:length(seq(7,(T-6),5))){
 }
 rownames(renew_rate_w_coef_q_5yr)<-c("1981-1985","1986-1990","1991-1995","1996-2000","2001-2005","2006-2010")
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_5yrs.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_5yrs.png",width=1000,height=800)
 par("mar"=c(6.1,5.1,3.1,1.1))
 plot(renew_rate_w_coef_q_5yr,axes=FALSE,ylim=c(0,ifelse(max(renew_rate_w_coef_q_5yr)<1,1,max(renew_rate_w_coef_q_5yr)+0.1)),xlab="",ylab="Taux renouvellement",main=iconv("Taux de renouvellement de la population sauvage (moyenne des m�dianes sur 5 ans)","UTF8"),cex.lab=1.5)
 axis(1,at = seq(1,length(seq(7,(T-6),5)),1),
@@ -393,7 +393,7 @@ for (i in 1:length(seq(7,(T-6),5))){
 }
 rownames(L_renew_rate_w_coef_q_5yr)<-c("1981-1985","1986-1990","1991-1995","1996-2000","2001-2005","2006-2010")
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_5yrs_log.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_5yrs_log.png",width=1000,height=800)
 par("mar"=c(6.1,5.1,3.1,1.1))
 plot(L_renew_rate_w_coef_q_5yr,axes=FALSE,xlab="",ylim=c(floor_dec(min(L_renew_rate_w_coef_q_5yr),1),ifelse(max(L_renew_rate_w_coef_q_5yr)<0,0.1,max(L_renew_rate_w_coef_q_5yr))),ylab=iconv("Taux renouvellement (�chelle log)","UTF8"),main=iconv("Taux de renouvellement de la population sauvage (log de la moyenne des m�dianes sur 5 ans)","UTF8"),cex.lab=1.5)
 axis(1,at = seq(1,length(seq(7,(T-6),5)),1),
@@ -609,8 +609,8 @@ for (t in 7:T){
 
 ##ON SAUVE renew_rate_coef et renew_rate_coef_q car on en a besoin dans les indicateurs du PLAGEPOMI pour les projections (besoin d'une partie des données de
 ##la période rétrospective car moyenne mobile sur 5 ans
-#save(renew_rate_coef,renew_rate_coef_q,file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Tx_renouv_period_retro_2019_12_12")
-save(renew_rate_coef,renew_rate_coef_q,file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2022_07_01_Tx_renouv_period_retro_2021_09.RData")
+#save(renew_rate_coef,renew_rate_coef_q,file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Tx_renouv_period_retro_2019_12_12")
+save(renew_rate_coef,renew_rate_coef_q,file=here::here("2022_07_01_Tx_renouv_period_retro_2021_09.RData"))
 
 ####### Calcul sur le taux de renouvellement
 
@@ -634,10 +634,10 @@ mean(renew_rate_coef_q[7:11,3])
 # Echelle naturelle
 #=====================
 #on enlève la dénomination coef dans l'intitulé de la figure car c'est ce qu'on conserve tout le temps (le calcul 1/3,1/3,1/3 étant faux)
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/2022_07_01 Tx Renouv_PopTotale_boxplot_EchelleNat_model_2021_09.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPop_EchelleNat.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_EchelleNat.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/2022_07_01 Tx Renouv_PopTotale_boxplot_EchelleNat_model_2021_09.png"),width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPop_EchelleNat.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_EchelleNat.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(6.5,T-7+0.5),xlab="Années",ylim=c(0,9),ylab="Taux de renouvellement",main="Taux de renouvellement de la population totale",cex.lab=1.5)
 
@@ -672,9 +672,9 @@ dev.off()
 # figure log
 #====================
 #on enlève la dénomination coef dans l'intitulé de la figure car c'est ce qu'on conserve tout le temps (le calcul 1/3,1/3,1/3 étant faux)
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPop_log.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPop_log.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(6.5,T+0.5-6),xlab="Années",ylim=c(-3,3),ylab="log(Taux de renouvellement)",main="Taux de renouvellement de la population totale",cex.lab=1.5)
 
@@ -714,8 +714,8 @@ mean(renew_rate_coef_q[34:38,3]) #0.38
 exp(mean(renew_rate_coef_q[34:38,3])) #1,46
 
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_82_2011.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_82_2011.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(7.5,T+0.5-6),xlab="Years",ylim=c(-5,5),ylab="Taux renouvellement",main="Taux de renouvellement de la population",cex.lab=1.5)
 
@@ -755,7 +755,7 @@ for (i in 1:length(seq(7,(T-6),5))){
 }
 rownames(renew_rate_coef_q_5yr)<-c("1981-1985","1986-1990","1991-1995","1996-2000","2001-2005","2006-2010")
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_5yrs.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_5yrs.png",width=1000,height=800)
 par("mar"=c(6.1,5.1,3.1,1.1))
 plot(renew_rate_coef_q_5yr,axes=FALSE,xlab="",ylab="Taux renouvellement",main=iconv("Taux de renouvellement de la population (moyenne des m�dianes sur 5 ans)","UTF8"),cex.lab=1.5)
 axis(1,at = seq(1,length(seq(7,(T-6),5)),1),
@@ -779,7 +779,7 @@ for (i in 1:length(seq(7,(T-6),5))){
 }
 rownames(L_renew_rate_coef_q_5yr)<-c("1981-1985","1986-1990","1991-1995","1996-2000","2001-2005","2006-2010")
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_5yrs_log.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_5yrs_log.png",width=1000,height=800)
 par("mar"=c(6.1,5.1,3.1,1.1))
 plot(L_renew_rate_coef_q_5yr,axes=FALSE,xlab="",ylab=iconv("Taux renouvellement (�chelle log)","UTF8"),main=iconv("Taux de renouvellement de la population (log de la moyenne des m�dianes sur 5 ans)","UTF8"),cex.lab=1.5)
 axis(1,at = seq(1,length(seq(7,(T-6),5)),1),

@@ -4,11 +4,11 @@
 ####################################################################################################
 
 #Modèle 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 #Modèle 2019.12.12_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2018
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
 
 library(coda)
 library(boot)
@@ -16,10 +16,10 @@ library(boot)
 T=44
 
 ## On charge le RData qu'on a généré à la fin de la partie init du script CompareModel_interaction car dedans on a normalement tout pour faire tourner les figures du rapport
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_4zones_Interaction_matriceVC_maj2016_CopyOfCompare.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_4zones_Interaction_matriceVC_maj2016_CopyOfCompare.RData")
 ##dans ce Rdata on a des paramètres "_un" qui ne nous intéressent pas puisque le modèle qu'on considère est le modèle 2 (dans la CompareModel_interaction)
 ##on enlève tous les paramètres finissant par "_un"
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_4zones_Interaction_matriceVC_maj2018_CopyOfCompare.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_4zones_Interaction_matriceVC_maj2018_CopyOfCompare.RData")
 print(grep("*._un",ls()))	
 rm(list = grep("*._un",ls(),value = TRUE))
 
@@ -973,7 +973,7 @@ S_juv_JP_new[4,30]/(S_juv_JP_new[1,30]+S_juv_JP_new[2,30]+S_juv_JP_new[3,30]+S_j
 #================================
 ##On a besoin du jeu de données pour sortir la figure retour vers le futur. 
 ##On récupère le RData sauvé à la fin des calculs du script : SimulationWithoutStocking_RetrospectiveAnalysis_4zones
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_Maj2016_2017_12_12.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_Maj2016_2017_12_12.RData")
 
 #Calcul N_vichy
 N_vichy_real_q=array(NA,dim=c((T+20-15),5))
@@ -1150,7 +1150,7 @@ mean(pourcentage_N_vichy_q[(T-9):T,3])
 # Scenario Arrêt des déversements
 #=================================
 #On charge le jeu de données qu'on a créé à la fin du script ProjectionModelWithoutStocking_4zones_Interaction 
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2017_12_12.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2017_12_12.RData")
 
 bugs_N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vichy_realCODAindex.txt")
 N_vichy_real_q=array(NA,dim=c(44,5))#44 car il y a 16 ann�e de suivi station (soit T+20 - 15). Ne change rien car � part sur ces 23 ann�es sinon on a tjrs un eff exhaustifs indiqu� dans data_vichy
@@ -1280,7 +1280,7 @@ bugs_level_s=read.coda("simulation/level_sCODAchain1.txt","simulation/level_sCOD
 exp(mean(bugs_level_s)/2) #2,12 fois
 
 ## Récupérer RData dans scénario d'amélioration à hauteur de 50% de la survie
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2017_12_12.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2017_12_12.RData")
 
 bugs_N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vichy_realCODAindex.txt")
 N_vichy_real_q=array(NA,dim=c(44,5))#44 car il y a 16 ann�e de suivi station (soit T+20 - 15)
@@ -1411,7 +1411,7 @@ for (t in 1:20){
 }
 
 ##Récupérer RData dans scénario Continuité Ecologique
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
 
 bugs_N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vichy_realCODAindex.txt")
 N_vichy_real_q=array(NA,dim=c(44,5))#4 car il y a 17 ann�e de suivi station (soit T+20 - 15)
@@ -1544,7 +1544,7 @@ legend(15,1,legend=c(expression(p^treshold < 500),expression(p^treshold < 250),e
 
 
 ## Récupérer RData dans scénario d'amélioration à hauteur de 100% de la survie
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2017_12_12.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2017_12_12.RData")
 #On calcul proba d'être en dessous de 1000
 under_1000_vichy=array(0,dim=c(8000,20))
 for (t in (T+1):(T+20)){
@@ -1561,8 +1561,8 @@ for (t in 1:20){
 mean(p_under_1000_vichy)
 
 ##Effectif moyen dans ce scénario
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 bugs_N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vichy_realCODAindex.txt")
 N_vichy_real_q=array(NA,dim=c(44,5))#44 car il y a 16 ann�e de suivi station (soit T+20 - 15)

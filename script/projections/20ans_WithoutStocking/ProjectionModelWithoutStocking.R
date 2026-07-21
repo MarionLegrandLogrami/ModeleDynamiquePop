@@ -4,17 +4,17 @@
 ###############################################################################
 
 #Modèle 2014_12_05 A tourné avec MAJ données sur 2004 + correction sur indicatrice
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/")
 #Modèle 2014_12_20 A tourné avec MAJ données sur 2004 + correction sur indicatrice
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_20_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_20_thin200/")
 #Modèle 2015_01_24_thin200
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
 #Modèle 2015_12_02_PoutesCor
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/")
 #Modèle 2015_12_04_standard
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_standard/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_standard/")
 #Modèle 2016_01_20_standard
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200/")
 
 
 
@@ -355,14 +355,14 @@ for (t in (T+7):(T+20)){
 }
 
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_ProjectionSansRepeuplement_2016.03.11.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_ProjectionSansRepeuplement_2016.03.11.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
 #
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_12_02_PoutesCor_ProjectionSansRepeuplement_2015.12.04.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_12_02_PoutesCor_ProjectionSansRepeuplement_2015.12.04.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_12_02_PoutesCor_ProjectionSansRepeuplement_2015.12.04.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_12_02_PoutesCor_ProjectionSansRepeuplement_2015.12.04.RData")
 #
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_12_04_Standard_ProjectionSansRepeuplement_2015.12.08.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_12_04_Standard_ProjectionSansRepeuplement_2015.12.08.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_12_04_Standard_ProjectionSansRepeuplement_2015.12.08.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_12_04_Standard_ProjectionSansRepeuplement_2015.12.08.RData")
 
 
 #On agglomère les 2 matrix juv_tot_ et bugs_juv_tot_ pour avoir un tableau complet sur la période
@@ -408,9 +408,9 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Standard_thin200/TotalReturns_Devalaison_s_juv2ad_new_proj20years_2016_03_15.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Standard_thin200/TotalReturns_proj20years_2016_03_15.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Standard_thin200/TotalReturns_Devalaison_s_juv2ad_new_proj20years_2016_03_15.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Standard_thin200/TotalReturns_proj20years_2016_03_15.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab=iconv("Années","UTF-8","LATIN1"),ylim=c(0,9000),ylab=iconv("Retours à Vichy","UTF-8","LATIN1"),main=iconv("Projection à 20 ans sans repeuplement","UTF-8","LATIN1"),cex.lab=1.2)
@@ -511,9 +511,9 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Threshold_2015_02_02.png",width=800,height=800)
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Standard_thin200/Threshold_Devalaison_s_juv2ad_new_2016_03_15.png",width=800,height=800)
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Standard_thin200/Threshold_2016_03_15.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Threshold_2015_02_02.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Standard_thin200/Threshold_Devalaison_s_juv2ad_new_2016_03_15.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Standard_thin200/Threshold_2016_03_15.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -560,7 +560,7 @@ dev.off()
 # Test avec l'injection du gain obtenu dans la simulation à la dévalaison avec et sans amélioration à la dévalaison
 ####################################################################################################################
 
-load(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_s_juv2ad_new_2016_03_14.RData")
+load(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_s_juv2ad_new_2016_03_14.RData")
 
 ratio_juv_prod_V=array(0,dim=c(5000,T+20))
 ratio_juv_prod_L=array(0,dim=c(5000,T+20))
@@ -875,8 +875,8 @@ for (t in (T+7):(T+20)){
 #...................
 # Nbr de géniteurs
 #...................
-S_vichy_real=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/S_vichyCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/S_vichyCODAindex.txt")
-S_langeac_real=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/S_langeacCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/S_langeacCODAindex.txt")
+S_vichy_real=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/S_vichyCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/S_vichyCODAindex.txt")
+S_langeac_real=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/S_langeacCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/S_langeacCODAindex.txt")
 
 S_vichy_q=array(rep(0,T*5),dim=c(T,5))
 S_langeac_q=array(rep(0,T*5),dim=c(T,5))
@@ -980,7 +980,7 @@ S_juv_JP<-matrix(surf,nrow=3)
 #---------------------------------------------
 # Graph Géniteurs avec projection sur 20 ans
 #---------------------------------------------
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2014_12_20/SpawnersRedds_GeniteursPotentiels_proj.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2014_12_20/SpawnersRedds_GeniteursPotentiels_proj.png",width=800, height=800, units = "px",type="cairo")
 
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........
@@ -1291,7 +1291,7 @@ for (t in (T+1):(T+20)){
 
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_NbrJuveniles_RatioJuveniles.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_NbrJuveniles_RatioJuveniles.png",width=800, height=800, units = "px",type="cairo")
 
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........

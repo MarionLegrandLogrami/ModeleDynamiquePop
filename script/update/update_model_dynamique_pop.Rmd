@@ -24,6 +24,8 @@ library(sf) #pour charger des données géographique depuis la base de données
 library(ggmap) #pour ajouter des fonds de cartes google maps
 library(leaflet)
 
+source(here::here("chemin_local.R")) #définit dossier_externe (chemin non versionné, voir chemin_local_template.R)
+
 
 options(
 			host= decrypt_string(hostserver, mainpass2),
@@ -65,8 +67,8 @@ con_bd_stacomi <- dbConnect(Postgres(),
 
 <!-- |Date (nom dossier)|Mot clé|Année MAJ données|Lien vers le script du modèle|Description| -->
 <!-- |-----------|-----------|-----------|-----------|-----------| -->
-<!-- |2022_11|Q_survie_répartition_modelMélange|2020|D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Script/2022.11/InfluenceQ + répartition + modèle_mélange/temp.odc|Modèle incluant influence du débit sur la répartition des adultes et sur leur survie. De plus, on a réécrit les effectifs à Vichy. Au lieu de tirer dans une LogNorm, on fait un modèle de mélange qui dit que surmortalité lors des mauvaises années (avec indicatrice I qui indique si on se trouve dans bonne ou mauvais année). Qd dans bonnes années (I_mm=0) s_juv2ad inchangé, quand mauvaise année (I_mm=1) s_juv2ad multiplié par un coefficient de surmortalité (ratio_surv)| -->
-<!-- |2022_11|Q_survie_répartition|2018|<D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Script/2022.11/influence Q + répartition/temp.odc>|Travail à St Pée du 22 au 24 novembre 2022. Sur modèle avec influence Q sur survie (2021_06), ajout de l'influence des Q sur la répartition des adultes| -->
+<!-- |2022_11|Q_survie_répartition_modelMélange|2020|[dossier_externe]/Script/2022.11/InfluenceQ + répartition + modèle_mélange/temp.odc|Modèle incluant influence du débit sur la répartition des adultes et sur leur survie. De plus, on a réécrit les effectifs à Vichy. Au lieu de tirer dans une LogNorm, on fait un modèle de mélange qui dit que surmortalité lors des mauvaises années (avec indicatrice I qui indique si on se trouve dans bonne ou mauvais année). Qd dans bonnes années (I_mm=0) s_juv2ad inchangé, quand mauvaise année (I_mm=1) s_juv2ad multiplié par un coefficient de surmortalité (ratio_surv)| -->
+<!-- |2022_11|Q_survie_répartition|2018|<[dossier_externe]/Script/2022.11/influence Q + répartition/temp.odc>|Travail à St Pée du 22 au 24 novembre 2022. Sur modèle avec influence Q sur survie (2021_06), ajout de l'influence des Q sur la répartition des adultes| -->
 
 
 
@@ -87,7 +89,7 @@ annee=(1974+T)
 **L_p_area** : linéaire prospecté lors du comptage frayère (donnée transformée en logit). La donnée peut être retrouvée dans les bases de données de LOGRAMI concernant le survol des frayères en hélicoptère (indication du point amont/aval du survol).
 
 ```{r data_L_p_area,echo=FALSE}
-area<-read.xlsx("D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/MAJ/2021/surface prospectée par secteur_maj_LineaireTotal_2016_11_04.xlsx",1,endRow=60,colIndex=1:12)
+area<-read.xlsx(file.path(dossier_externe, "Data/MAJ/2021/surface prospectée par secteur_maj_LineaireTotal_2016_11_04.xlsx"),1,endRow=60,colIndex=1:12)
 area<-clean_names(area)
 
 #On peut regarder le power query "Nid_SAT_PowerQuery.xlsx" pour savoir si comptage frayère a été réalisé telle année
@@ -605,7 +607,7 @@ surf_infl$surface[surf_infl$annee==2025 & surf_infl$secteur==3] <- 158947
 <!--   4. Sélectionner ce linéaire sous influence par secteur et faire la somme UNIQUEMENT sur les faciès RAD/RAP/PC (un copier/coller des données sélectionnées dans Excel fonctionne très bien) -->
 
 **smolts_tot** : smolts déversés dans les rivières. Les effectifs représentent la somme entre le mode haut de l'année n et le mode bas de l'année n-1. Depuis 2017, plus de déversements de smolts. On indique systématiquement 0. Le fichier excel qui a permis de sortir ces calculs d'effectifs se trouve ici :  
-"D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/MAJ/2021/smots survie_maj2016_11_03.xlsx"
+[dossier_externe]/Data/MAJ/2021/smots survie_maj2016_11_03.xlsx
 
 **s_smolt** : taux de retour des smolts à Vichy. Il s'agit d'une donnée calculée à partir du taux de retour des poissons sans adipeuse à Vichy. Depuis 2017, suite à l'arrêt des déversements cette valeur n'a plus vocation à changer.
 

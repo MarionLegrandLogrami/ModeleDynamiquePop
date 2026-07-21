@@ -1,6 +1,9 @@
 # Notes de contexte privées (non destinées à être publiques)
 /.ai/
 
+# Chemin local vers le dossier de données externe au dépôt (voir chemin_local_template.R)
+/chemin_local.R
+
 # Données (volumineuses, non versionnées - voir data/CODA dans le README)
 /data/
 /Docear/

@@ -4,13 +4,13 @@
 ###############################################################################
 
 #Modèle 2014_12_05 A tourné avec MAJ données sur 2004 + correction sur indicatrice
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/")
 #Modèle 2014_12_20
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_20/")
 #Modèle 2015_01_24
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
 #Modèle 2016_01_20
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Standard_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Standard_thin200/")
 
 
 
@@ -376,8 +376,8 @@ for (t in (T+7):(T+20)){
 }
 
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/2014.12.05_OuverturePoutes.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/2014.12.05_OuverturePoutes.RData")
 
 #On agglomère les 2 matrix juv_tot_ et bugs_juv_tot_ pour avoir un tableau complet sur la période
 juv_tot_vichy_tot=array(0,dim=c(5000,T+20))
@@ -422,7 +422,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/50ImprovementSurvival_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/50ImprovementSurvival_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - improvement 50% old level survival",cex.lab=1.5)
@@ -522,7 +522,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/50ImprovementSurvival_Threshold_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/50ImprovementSurvival_Threshold_2015_02_02.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -901,8 +901,8 @@ for (t in (T+7):(T+20)){
 }
 
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie100_2016_03_14.RData")
-#load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie100_2015_02_11.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie100_2016_03_14.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie100_2015_02_11.RData")
 
 #On agglomère les 2 matrix juv_tot_ et bugs_juv_tot_ pour avoir un tableau complet sur la période
 juv_tot_vichy_tot=array(0,dim=c(5000,T+20))
@@ -947,7 +947,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/100ImprovementSurvival_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/100ImprovementSurvival_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - improvement 100% old level survival",cex.lab=1.5)
@@ -1047,7 +1047,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/100ImprovementSurvival_Threshold_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/100ImprovementSurvival_Threshold_2015_02_02.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 

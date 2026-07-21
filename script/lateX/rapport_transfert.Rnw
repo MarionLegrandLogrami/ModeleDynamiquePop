@@ -675,10 +675,10 @@ pr?c?dentes.
 
 
 <<init, echo=FALSE, eval=TRUE,results=hide >>=
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX") 
-datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"
-imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2014/"
-tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/tab/2014/"
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX") 
+datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"
+imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2014/"
+tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/tab/2014/"
 
 library(coda)
 library(lattice)
@@ -762,7 +762,7 @@ for(i in 1:9){
 }
 
 dev.off()
-#write.table(d_fake_q, "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/data_predict.txt")
+#write.table(d_fake_q, "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/data_predict.txt")
 
 @
 
@@ -794,13 +794,13 @@ adultes et les surfaces disponibles (en particulier pour le secteur Vichy-Langea
 <<Repartition_adultes, echo=FALSE, eval=TRUE,results=hide>>=
 #je cr?? un save.image ? partir du script figures_mod?le_VF.R afin de ne r?int?grer que le load 
 #(?a ?vite de pourrir mon rapport rnw) afin de g?n?rer le pdf dans sweave (sinon il ne g?re pas les accents)
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/SpawnersRedds_GeniteursPotentiels_2015.02.10.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/SpawnersRedds_GeniteursPotentiels_2015.02.10.RData")
 
 #Graph with all years
 surf=c(rep(c(916866,250441,0),11),rep(c(916866,250441,301101),12),rep(c(916866,250441,383049),6),rep(c(1202540,250441,383049),31))
 S_juv_JP<-matrix(surf,nrow=3)	
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SpawnersRedds_GeniteursPotentiels_2015_02_10.pdf")
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SpawnersRedds_GeniteursPotentiels_2015_02_10.pdf")
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.2,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........
 # Vichy
@@ -972,12 +972,12 @@ dev.off()
 <<Relation_adultes_comptages, echo=FALSE, eval=TRUE,results=hide>>=
 #je cr?? un save.image ? partir du script figures_mod?le_VF.R afin de ne r?int?grer que le load 
 #(?a ?vite de pourrir mon rapport rnw) afin de g?n?rer le pdf dans sweave (sinon il ne g?re pas les accents)
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2015.02.10.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2015.02.10.RData")
 
 ###########################
 #plot zone_effect /kappa
 ###############################
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Redds_kappa_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo"
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Redds_kappa_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo"
 par(mfrow=c(3,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Ann?es",ylim=c(0,3),ylab=expression(italic( kappa["t,1"])),main="Vichy-Langeac")
 # trace l'axe des ordonn?es
@@ -1100,9 +1100,9 @@ potentiel en aval de Pout?s.
 <<Repartition_adultes, echo=FALSE, eval=TRUE,results=hide>>=
 #je cr?? un save.image ? partir du script figures_mod?le_VF.R afin de ne r?int?grer que le load 
 #(?a ?vite de pourrir mon rapport rnw) afin de g?n?rer le pdf dans sweave (sinon il ne g?re pas les accents)
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/dd_2015.02.10.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/dd_2015.02.10.RData")
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/dd_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/dd_2015_02_10.pdf")#,width=800,height=800)
 par(mfrow=c(2,1),mar=c(4,5.5,2,1.5))
 #Graphe densite dependence juvenile sauvage
 plot(1,1,type="n",axes=FALSE,xlim=c(0,0.0025),xlab=expression(paste(S," ",(g?niteurs.m^-2))),ylim=c(0,0.35),ylab=expression(paste(d^sauvage," (0+",.m^-2,")")),main="relation de densit? d?pendance des 0+ sauvages",cex.main=1.5,cex.lab=1.2)
@@ -1178,12 +1178,12 @@ relation stock-recrutement des juv?niles sauvages.
 <<Repartition_adultes, echo=FALSE, eval=TRUE,results=hide>>=
 #je cr?? un save.image ? partir du script figures_mod?le_VF.R afin de ne r?int?grer que le load 
 #(?a ?vite de pourrir mon rapport rnw) afin de g?n?rer le pdf dans sweave (sinon il ne g?re pas les accents)
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/SurvivalJuv2Ad_2015.02.10.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/SurvivalJuv2Ad_2015.02.10.RData")
 
 palette_s=rainbow(15,start=0.1,end=2/6)
 palette_s=rev(palette_s)
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SurvivalJuv2Ad_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo")
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SurvivalJuv2Ad_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo")
 par(mfrow=c(2,1),mar=c(4,7.1,2,0.5),col.lab="grey25",col.axis="grey55",col.main="grey25")
 plot(1,1,type="n",axes=FALSE, xlim=c(0.5,39.5), xlab="Ann?es", ylim=c(0,0.05), ylab="",main="Survie moyenne du 0+ ? l'adulte de retour" )
 # trace l'axe des ordonn?es
@@ -1327,7 +1327,7 @@ li?s au r?am?nagement futur de Pout?s :
 #ATTENTION lors d'une nouvelle cession il faut charger retour_futur_init. Pour la suite on met en eval=false pour acc?lerer la compilation
 #La version longue avec le save() ? la fin est mis juste avant le \end{document} pour ne pas rallonger le script dans les parties utiles
 
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/data/2015_01_24_AnalyseRetro_2015.02.09.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/2015_01_24_AnalyseRetro_2015.02.09.RData")
 
 N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
 
@@ -1587,7 +1587,7 @@ en 5 minutes (section \ref{inf_dev}).
 d?versements}
 \label{resu_retour_20ans}
 <<Retour_20ans, echo=FALSE, eval=TRUE, results=hide>>=
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -1616,7 +1616,7 @@ for (t in (T+1):(T+20)){
 # Graph
 #------------------
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement",cex.lab=1.2)
 # trace l'axe des ordonn?es
@@ -1700,7 +1700,7 @@ for (t in 1:20){
 	
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Threshold_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Threshold_2015_02_10.pdf")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1775,7 +1775,7 @@ compar?e ? la version pr?c?dente du mod?le.
 \subsection{Projection ? 20 ans avec une am?lioration des conditions de franchissabilit? ? la montaison et une diminution des impacts ? la d?valaison de 50\% au barrage de Pout?s}
 \label{resu_poutes50}
 <<Retour_20ans_poutes50, echo=FALSE, eval=TRUE, results=hide>>=
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes50_2015_02_02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes50_2015_02_02.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -1804,7 +1804,7 @@ for (t in (T+1):(T+20)){
 # Graph
 #------------------
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50poutes_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50poutes_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement - Am?lioration ? la montaison  \n et ? la d?valaison ? Pout?s ? hauteur de 50%",cex.lab=1.2)
 # trace l'axe des ordonn?es
@@ -1888,7 +1888,7 @@ for (t in 1:20){
 	
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50poutes_Threshold_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50poutes_Threshold_2015_02_10.pdf")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1971,7 +1971,7 @@ suffisante pour assurer la viabilit? de la population.
 \subsection{Projection ? 20 ans avec la suppression du barrage de Pout?s}
 \label{resu_poutes100}
 <<Retour_20ans_poutes100, echo=FALSE, eval=TRUE, results=hide>>=
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes100_2015.02.02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes100_2015.02.02.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -2000,7 +2000,7 @@ for (t in (T+1):(T+20)){
 # Graph
 #------------------
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100poutes_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100poutes_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement - Am?lioration ? la montaison \n et ? la d?valaison ? Pout?s ? hauteur de 100%",cex.lab=1.2)
 # trace l'axe des ordonn?es
@@ -2084,7 +2084,7 @@ for (t in 1:20){
 	
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100poutes_Threshold_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100poutes_Threshold_2015_02_10.pdf")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2124,9 +2124,9 @@ dev.off()
 
 
 ######Pour pr?sentation Manchester. Threshold 500 puis 100 sur le m?me graph en fonction des 3 sc?narii
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes100_2015.02.02.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes50_2015_02_02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes100_2015.02.02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes50_2015_02_02.RData")
 
 under_100_vichy_1=array(0,dim=c(8000,20))
 under_100_vichy_2=array(0,dim=c(8000,20))
@@ -2200,7 +2200,7 @@ for (t in 1:20){
 	
 }
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/poutes_Threshold500_2015_08_27.png")#,width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/poutes_Threshold500_2015_08_27.png")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2243,7 +2243,7 @@ legend(5,0.5,legend=c("scenario 1: nothing changes","scenario 2: removal","scena
 
 dev.off()
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/poutes_Threshold100_2015_08_27.png")#,width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/poutes_Threshold100_2015_08_27.png")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2332,7 +2332,7 @@ des effectifs ? Vichy ? peu pr?s comparables ? ceux rencontr?s ces derni?res ann
 transition entre le tacon 0+ et l'adulte jusqu'? atteindre 50\% du niveau initial}
 \label{resu_Retour_20ans_survivalImprov50}
 <<Retour_20ans_survivalImprov50, echo=FALSE, eval=TRUE, results=hide>>=
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie50_2015_02_11.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie50_2015_02_11.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -2361,7 +2361,7 @@ for (t in (T+1):(T+20)){
 # Graph
 #------------------
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement - Am?lioration de la survie \n jusqu'? 50% du taux de survie initial",cex.lab=1.2)
 # trace l'axe des ordonn?es
@@ -2445,7 +2445,7 @@ for (t in 1:20){
 	
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50ImprovementSurvival_Threshold_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/50ImprovementSurvival_Threshold_2015_02_10.pdf")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2528,7 +2528,7 @@ transition entre le tacon 0+ et l'adulte jusqu'? l'atteinte de son niveau
 initial}
 \label{resu_Retour_20ans_survivalImprov100}
 <<Retour_20ans_survivalImprov100, echo=FALSE, eval=TRUE, results=hide>>=
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie100_2015_02_11.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie100_2015_02_11.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -2557,7 +2557,7 @@ for (t in (T+1):(T+20)){
 # Graph
 #------------------
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100ImprovementSurvival_TotalReturns_proj20years_2015_02_10.pdf")#,width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Ann?es",ylim=c(0,9000),ylab="Retours ? Vichy",main="Projection ? 20 ans sans repeuplement - Am?lioration de la survie  \n jusqu'? l'atteinte de son niveau initial",cex.lab=1.2)
 # trace l'axe des ordonn?es
@@ -2641,7 +2641,7 @@ for (t in 1:20){
 	
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100ImprovementSurvival_Threshold_2015_02_10.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/100ImprovementSurvival_Threshold_2015_02_10.pdf")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2860,7 +2860,7 @@ colnames(tab)<-c("2,5%","25%","50%","75%","97,5%")
 #		lines.page=45,
 #		caption="densit? pr?dite 0+/m2 (quantiles)",	
 #		file=str_c(tabwd,"prediction_IA.tex"))
-write.table(tab,"C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/tab/2015_01_24_thin200/predictionIA.csv",sep=";")
+write.table(tab,"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/tab/2015_01_24_thin200/predictionIA.csv",sep=";")
 @
 \includepdf[pages=-,nup=2x2,scale=1]{\Sexpr{tabwd}predictionIA.pdf}
 
@@ -3546,7 +3546,7 @@ for (t in 37:T){
 		
 	}
 }
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/data/2015_01_24_AnalyseRetro_2015.02.09.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/2015_01_24_AnalyseRetro_2015.02.09.RData")
 @
 
 \end{document}

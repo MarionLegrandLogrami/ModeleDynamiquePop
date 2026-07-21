@@ -5,7 +5,7 @@
 
 \section{Les débits}
 % Après analyse des timing de migration sur les données LOGRAMI (à Poutès et Vichy), CNSS (tambour à Chanteuges et Alleyras) et pêcheurs pro (guideau à Varades)
-% (voir tableau récapitulatif : "C:\Users\marion.legrand\Documents\Tableau de Bord\PROJETS\ModeleDynamiquePopSaumon\DévalaisonSmolt_timing.xlsx"), on s'accorde 
+% (voir tableau récapitulatif : "C:\Users\utilisateur\Documents\Tableau de Bord\PROJETS\ModeleDynamiquePopSaumon\DévalaisonSmolt_timing.xlsx"), on s'accorde 
 % avec Etienne sur la période 01/03 au 30/04 à la station de Vieille-Brioude et 15/03 au 15/05 pour la station de Montjean sur Loire
 % Par acquis de conscience on regarde si la période 01/03 au 31/05 est très différente ou non de la période 01/03 au 30/04 à Vieille brioude
 <<init,echo=FALSE, eval=FALSE,results=hide >>=
@@ -19,6 +19,8 @@ library(ggplot2)
 library(DBI) #pour connexion base de données
 library(RPostgres) #pour connexion base de données
 
+source(here::here("chemin_local.R")) #définit dossier_externe (chemin non versionné, voir chemin_local_template.R)
+
 #=============================================
 # On configure la connexion vers le serveur
 #=============================================
@@ -29,11 +31,11 @@ options(sqldf.RPostgreSQL.user = userserver,
 		sqldf.RPostgreSQL.host = "intranet.logrami.fr", 
 		sqldf.RPostgreSQL.port = 5433)
 
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
 @
 
 <<date_entree_SAT,echo=FALSE, eval=FALSE,results=hide >>=
-	sat<-read.csv(file="C:/Users/marion.legrand/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/CaptureSAT_Loire.csv",sep=";")
+	sat<-read.csv(file="C:/Users/utilisateur/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/CaptureSAT_Loire.csv",sep=";")
 	#on reformate le champ date 
 	#Sys.setlocale('LC_TIME', "French_France")
 	Sys.setlocale("LC_TIME", "English_United States")
@@ -52,7 +54,7 @@ datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12
 			scale_fill_discrete(name=iconv("Année","UTF8"))+
 			theme(legend.position="bottom")
 	
-	png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CaptureSAT_1987-1993.png",height=600,width=800)
+	png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CaptureSAT_1987-1993.png",height=600,width=800)
 	print(p)
 	dev.off()
 @
@@ -86,7 +88,7 @@ p<-ggplot(stacomi_yr_month, aes(x=as.factor(month),y=sum,fill=as.factor(year)))+
 			scale_fill_discrete(name=iconv("Année","UTF8"))+
 			theme(legend.position="bottom")
 
-	png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/Passage_SAT_stacomi.png",height=600,width=800)
+	png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/Passage_SAT_stacomi.png",height=600,width=800)
 	print(p)
 	dev.off()
 
@@ -106,7 +108,7 @@ p<-ggplot(stacomi, aes(x=sta_nom,y=jj))+
 		geom_segment(x=0,xend=2.4,y=305,yend=305,linetype="dashed")+
 		geom_text(y=305,x=2.5,label="Novembre",size=3)
 
-png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/Passage_SAT_stacomi_boxplot.png",height=600,width=800)
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/Passage_SAT_stacomi_boxplot.png",height=600,width=800)
 print(p)
 dev.off()
 @
@@ -268,7 +270,7 @@ paste0(q_p_mont_automne$mean,collapse=",")
 #------------- Vieille Brioude pour répartition des adultes 01/04 au 30/06 = montaison
 #dans les premières versions du modèle avec ajout de la covariable débit dans la survie s_juv2ad on avait essayé de mettre en fonctin des débits à VB pour la montaison sur la période mars_mai. Mais le paramètre n'était pas mis à jour (coef toujours centré sur 0 indiquant que pas d'effet). On a donc revu la façon de voir ces débits à la montaison et semble mieux de les incorporer dans les probabilités qu'ont les adultes de se répartir dans les zones (au prorata des surfaces et du homing + un paramètre de blocage + les débits)
 
-data_Q<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Vieille-Brioude_1919-2020.csv",sep=";",dec=",")
+data_Q<-read.csv(file=file.path(dossier_externe, "Data/co-variables environnement/Q_Vieille-Brioude_1919-2020.csv"),sep=";",dec=",")
 #on reformate le champ date 
 data_Q$date<-as.Date(data_Q$Jour,"%d/%m/%Y")
 data_Q[is.na(data_Q$Q),]
@@ -299,8 +301,8 @@ p<-ggplot(data=mean_data_Q[between(mean_data_Q$year,1975,2020),],aes(x=year,y=va
 		theme(legend.position="bottom",
 				axis.text=element_text(size=12),
 				axis.title=element_text(size=14,face="bold"))
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_1975-2018.png",height=600,width=800)
-png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_1975-2020.png",height=600,width=800)
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_1975-2018.png",height=600,width=800)
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_1975-2020.png",height=600,width=800)
 print(p)
 dev.off()
 
@@ -330,7 +332,7 @@ p2<-ggplot(data_Q_mars_avril_mai, aes(x = Q, y = as.factor(year), fill = as.fact
 
 p3<-plot_grid(p1, p2, ncol=2)
 
-png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_comparaison.png",height=800,width=900)
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/co-variables_env/Mean_Q_VieilleBrioude_comparaison.png",height=800,width=900)
 print(p3)
 dev.off()
 
@@ -346,7 +348,7 @@ as.data.frame(mean_data_Q_MA)[2] #pour Q_VB_deval
 #Attention on travaille sur les smolts mais s_juv2ad indicé t sur les retours d'adultes.
 #Les adultes sont issus du retour des juvéniles produit en t-3,t-4 et t-5 pour 1/3 chaque.
 #Les smolts ont une année de plus par rapport à l'année de production, d'où pour une année t de retour il faut considérer les Q des année t-2, t-3 et t-4 à 1/3 chaque
-data_Q<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Vieille-Brioude_1919-2020.csv",sep=";",dec=",")
+data_Q<-read.csv(file=file.path(dossier_externe, "Data/co-variables environnement/Q_Vieille-Brioude_1919-2020.csv"),sep=";",dec=",")
 #on reformate le champ date 
 data_Q$date<-as.Date(data_Q$Jour,"%d/%m/%Y")
 data_Q[is.na(data_Q$Q),]
@@ -364,7 +366,7 @@ mean_indic_adult<-cbind(year,as.vector(mean_indic_adult[55:100,2])) #commence à
 
 
 #------------- Montjean sur Loire
-data_Q2<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Montjean_1863-2020_V3.csv",sep=";",dec=",")
+data_Q2<-read.csv(file=file.path(dossier_externe, "Data/co-variables environnement/Q_Montjean_1863-2020_V3.csv"),sep=";",dec=",")
 #on reformate le champ date 
 data_Q2$date<-as.Date(data_Q2$Jour,"%d/%m/%Y")
 data_Q2$date[is.na(data_Q2$date)]<-as.Date(data_Q2$Jour[is.na(data_Q2$date)],"%Y-%m-%d") #des date sont formatées dans un autre format
@@ -434,13 +436,13 @@ p<-ggplot(data=data_MSL,aes(x=year,y=mean,color=ind))+
 				axis.text=element_text(size=12),
 				axis.title=element_text(size=14,face="bold"))
 
-png(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/co-variables_env/Mean_Q_Montjean_1970-2018.png",height=600,width=800)
+png(file=here::here("data/co-variables_env/Mean_Q_Montjean_1970-2018.png"),height=600,width=800)
 print(p)
 dev.off()
 
 
 #------------- Lempdes Alagnon 01/03 au 31/05 = montaison
-data_Q<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Lempdes_1967-2021.csv",sep=";",dec=",")
+data_Q<-read.csv(file=file.path(dossier_externe, "Data/co-variables environnement/Q_Lempdes_1967-2021.csv"),sep=";",dec=",")
 #on reformate le champ date 
 data_Q$date<-as.Date(data_Q$Jour,"%d/%m/%Y")
 data_Q[is.na(data_Q$Q),]# plusieurs NA mais sur les moois de septembre, décembre,août et juillet + en 2021
@@ -465,7 +467,7 @@ sd(data_Q_lempdes_yr$mean,na.rm=TRUE)#7.175608
 
 #----- Joursac sur l'Alagnon pour régression linéaire avec Lempdes pour combler les 3 années manquantes sur Lempdes -----#
 #----- A Joursac les données sont complètes pour les années 1979, 1980 et 1981 -----#
-data_Q_joursac<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Joursac_1975_2018.csv",sep=";",dec=",")
+data_Q_joursac<-read.csv(file=file.path(dossier_externe, "Data/co-variables environnement/Q_Joursac_1975_2018.csv"),sep=";",dec=",")
 #on reformate le champ date 
 data_Q_joursac$date<-as.Date(data_Q_joursac$Jour,"%d/%m/%Y")
 data_Q_joursac[is.na(data_Q_joursac$Q),]# plusieurs NA en 1999 et 2001
@@ -568,7 +570,7 @@ Q_lempdes_yr$mean #pour copier/coller dans openbugs
 #	+ 4 années pour les Q au printemps (avril-juin) : 1975/1983/2001/2002
 #Pour 2001/2002, ces débits existent pour St Haon. On regarde si on peut caler une relation entre Prades et St Haon pour estimer ces 2 années
 ## ATTENTION : ces Q servent pour la répartition en amont de Poutès, donc on n'a pas besoin de données avant 1986...
-data_Q_prades_st_haon<-read.csv(file="D:/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Data/co-variables environnement/Q_Prades_St_Haon.csv",sep=";",dec=",")
+data_Q_prades_st_haon<-read.csv(file=file.path(dossier_externe, "Data/co-variables environnement/Q_Prades_St_Haon.csv"),sep=";",dec=",")
 #on reformate le champ date 
 data_Q_prades_st_haon$date<-str_c(data_Q_prades_st_haon$annee,"-",data_Q_prades_st_haon$mois,"-",data_Q_prades_st_haon$jour)
 data_Q_prades_st_haon$date<-as.Date(data_Q_prades_st_haon$date,"%Y-%m-%d")
@@ -714,7 +716,7 @@ barplot(dbinom(0:186,186,0.6))
 <<graph_data_Q_model,echo=FALSE, eval=FALSE,results=hide >>=
 library(coda)
 library(stringr)
-path_model<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/"
+path_model<-here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/")
 bugs2jags(str_c(path_model,"data.txt"),"data_model.R")
 source("data_model.R")
 
@@ -744,7 +746,7 @@ g<-ggplot(data=q_rep)+
 		ylab("Débit log-transformé et centré-réduit")+
 		theme_bw()
 
-ggsave(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_log_cr_used_in_model.png",g)
+ggsave(file=here::here("img/2023_05/Q_log_cr_used_in_model.png"),g)
 
 #en débit naturel
 Q_L_mont_A<-data.frame(sta=rep("Lempdes-sur-Alagnon",48),saison=rep("Automne",48),year=1975:2022,Q=Q_L_mont_A)
@@ -765,7 +767,7 @@ g_nat<-ggplot(data=q_rep_nat)+
 		ylab("Débit m3/s")+
 		theme_bw()
 
-ggsave(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_naturel_used_in_model.png",g_nat)
+ggsave(file=here::here("img/2023_05/Q_naturel_used_in_model.png"),g_nat)
 
 #Q influence survie
 
@@ -788,7 +790,7 @@ g_surv<-ggplot(data=q_rep_surv)+
 		ylab("Débit log-transformé et centré-réduit")+
 		theme_bw()
 
-ggsave(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_surv_log_cr_used_in_model.png",g_surv)
+ggsave(file=here::here("img/2023_05/Q_surv_log_cr_used_in_model.png"),g_surv)
 
 #débit naturel
 Q_VB_deval<-data.frame(sta=rep("Vieille-Brioude",48),migration=rep("Dévalaison",48),year=1975:2022,Q=Q_VB_deval)
@@ -810,7 +812,7 @@ g_surv<-ggplot(data=q_rep_surv)+
 		ylab("Débit m3/s")+
 		theme_bw()
 
-ggsave(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_surv_naturel_used_in_model.png",g_surv)
+ggsave(file=here::here("img/2023_05/Q_surv_naturel_used_in_model.png"),g_surv)
 
 @
 
@@ -825,7 +827,7 @@ logit(0.1)
 
 #Estimation adultes poutès
 library(coda)
-N_poutes=read.coda("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/N_poutesCODAchain1.txt","D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/N_poutesCODAindex.txt")
+N_poutes=read.coda(here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/N_poutesCODAchain1.txt"),here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/N_poutesCODAindex.txt"))
 summary(N_poutes)
 mean(N_poutes[,2])
 @

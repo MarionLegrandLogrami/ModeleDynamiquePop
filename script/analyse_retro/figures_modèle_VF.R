@@ -3,7 +3,7 @@
 # Author: marion.legrand
 ###############################################################################
 
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200")
 
 library(lattice)
 library(coda)
@@ -17,7 +17,7 @@ T=40
 
 IA=c(52,82,131,120,159,15,21,21,61)
 
-d=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/dCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/dCODAindex.txt",5001,10000)
+d=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/dCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/dCODAindex.txt",5001,10000)
 
 
 q.d_1=quantile(d[,1],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
@@ -34,13 +34,13 @@ q.d=rbind(
 		q.d_1,q.d_2,q.d_3,q.d_4,q.d_5,q.d_6,q.d_7,q.d_8,q.d_9)
 
 
-d_fake=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/d_newCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/d_newCODAindex.txt",5001,10000)
+d_fake=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/d_newCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/d_newCODAindex.txt",5001,10000)
 
 
 #Graphes
 #densities
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Calibration_relation.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Calibration_relation.png",width=800, height=800, units = "px",type="cairo")
 
 par(mfrow=c(1,2))
 
@@ -102,7 +102,7 @@ for(i in 1:9){
 	q_d_v[i,]=quantile(d[,i],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-write.table(d_fake_q, "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/d_predict.csv")
+write.table(d_fake_q, "C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/d_predict.csv")
 
 
 
@@ -164,14 +164,14 @@ for (t in 1:6){
 	p_count_L_q[t,]=quantile(p_count_L[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-save.image(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2016.03.07.RData")
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2015.02.10.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2016.03.07.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2015.02.10.RData")
 
 ###########################
 #plot zone_effect /kappa
 ###############################
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Redds_kappa_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo"
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/Redds_kappa_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo"
 
 
 par(mfrow=c(3,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
@@ -336,7 +336,7 @@ dev.off()
 
 
 #plot mu_zone -->ne sert plus car mu_zone[2]=1
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Redds_MuZone.png",width=800, height=800, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Redds_MuZone.png",width=800, height=800, units = "px",type="cairo")
 #par(mfrow=c(1,2),mar=c(4,5,2,2))
 #plot(NULL,ylab="Density",xlab=expression(mu^kappa),xlim=c(0.2,2),ylim=c(0,3.5))
 #d_1=density(mu_zone[,1],bw=0.04)
@@ -404,7 +404,7 @@ for (i in 12:T){
 #p_langeac
 #####################
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Redds_ProbaPassageStation.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Redds_ProbaPassageStation.png",width=800, height=800, units = "px",type="cairo")
 
 
 par(mfrow=c(2,1),mar=c(4,6.1,0,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
@@ -599,7 +599,7 @@ for (i in 1:T){
 	S_langeac_q[i,]=quantile(S_langeac_real[,i],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-save.image(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/SpawnersRedds_GeniteursPotentiels_2016.03.07.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/SpawnersRedds_GeniteursPotentiels_2016.03.07.RData")
 
 
 #Graph with all years
@@ -607,7 +607,7 @@ surf=c(rep(c(916866,250441,0),11),rep(c(916866,250441,301101),12),rep(c(916866,2
 S_juv_JP<-matrix(surf,nrow=3)	
 
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SpawnersRedds_GeniteursPotentiels_2015_02_10.pdf")
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SpawnersRedds_GeniteursPotentiels_2015_02_10.pdf")
 
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.2,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........
@@ -894,10 +894,10 @@ for(t in 1:T){
 	
 }
 
-save.image(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/dd_2016.03.08.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/dd_2016.03.08.RData")
 
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/dd_2016_03_08.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/dd_2016_03_08.pdf")#,width=800,height=800)
 par(mfrow=c(2,1),mar=c(4,5.5,2,1.5))
 
 #Graphe densite dependence juvenile sauvage
@@ -1196,13 +1196,13 @@ for (t in 1:T){
 	
 }
 
-save.image(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/JuvProdRatioGeni_2016.03.08.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/JuvProdRatioGeni_2016.03.08.RData")
 
 
 
 #Graph with all years
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/SpawnersProdJuv_ratio.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/SpawnersProdJuv_ratio.png",width=800, height=800, units = "px",type="cairo")
 
 
 par(mfrow=c(3,3),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
@@ -1756,7 +1756,7 @@ tab=cbind(moy,ET,quantile[,1],quantile[,2],quantile[,3],quantile[,4],quantile[,5
 colnames(tab)=c("mean","sd","2.5th","25th","median","75th","97.5th")
 rownames(tab)=c("a_juv_down","a_juv_up","a_wild_down","a_wild_up","hel_effect","Rmax_down","Rmax_up","s_juv2ad","tau_p_L","tau_p_P","tau_vichy")
 
-write.table(tab,file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/TableauParametres.csv")
+write.table(tab,file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/TableauParametres.csv")
 
 
 #================#
@@ -1798,7 +1798,7 @@ which(N_vichy_real_q[,3]==min(N_vichy_real_q[3:22, 3]))
 
 #sans projections
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Spawners_ReturnsVichy.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Spawners_ReturnsVichy.png",width=800, height=800, units = "px",type="cairo")
 x11()
 par(mar=c(4,7.1,2,4),col.lab="grey25",col.axis="grey55",col.main="grey25")
 
@@ -1863,7 +1863,7 @@ dev.off()
 # avec projections a 20 ans sans repeuplement
 
 dev.new(width=30, height=25)
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Spawners_proj.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Spawners_proj.png",width=800, height=800, units = "px",type="cairo")
 
 
 
@@ -1976,7 +1976,7 @@ for (i in 1:T){
 #sans projections
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/ProdJuvTot.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/ProdJuvTot.png",width=800, height=800, units = "px",type="cairo")
 
 
 
@@ -2061,7 +2061,7 @@ for (t in 1:T){
 
 
 
-save.image(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/SurvivalJuv2Ad_2016.03.08.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/SurvivalJuv2Ad_2016.03.08.RData")
 
 
 
@@ -2069,7 +2069,7 @@ palette_s=rainbow(15,start=0.1,end=2/6)
 palette_s=rev(palette_s)
 
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SurvivalJuv2Ad_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo")
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/SurvivalJuv2Ad_2015_02_10.pdf")#,width=800, height=800, units = "px",type="cairo")
 
 
 par(mfrow=c(2,1),mar=c(4,7.1,2,0.5),col.lab="grey25",col.axis="grey55",col.main="grey25")
@@ -2189,7 +2189,7 @@ for (t in 7:T){
 	res_vichy_q[t,]=quantile(res_vichy[,t-6],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/ResidusVichy.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/ResidusVichy.png",width=800, height=800, units = "px",type="cairo")
 
 
 
@@ -2354,7 +2354,7 @@ for (i in 23:33){
 #############################################
 ###########################################
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/juvenile_production_VL.png",width=4800,height=2400)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/juvenile_production_VL.png",width=4800,height=2400)
 
 #######################################################
 # Contribution moyenne sur la periode 1995 a 2009
@@ -2835,7 +2835,7 @@ dev.off()
 
 
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/juvenile_production_LP.png",width=4800,height=2400)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/juvenile_production_LP.png",width=4800,height=2400)
 
 
 
@@ -3304,7 +3304,7 @@ dev.off()
 ##########################################
 
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/juvenile_production_upP.png",width=4800,height=2400)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/juvenile_production_upP.png",width=4800,height=2400)
 
 
 
@@ -3905,7 +3905,7 @@ plot(p_area_L,CV_L,pch=16)
 
 #Graph with all years : G�niteurs selon les secteurs
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Redds_G�niteurs.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Redds_G�niteurs.png",width=800, height=800, units = "px",type="cairo")
 
 
 

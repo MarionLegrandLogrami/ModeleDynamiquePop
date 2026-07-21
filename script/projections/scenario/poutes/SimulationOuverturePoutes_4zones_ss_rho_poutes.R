@@ -8,8 +8,8 @@
 #================
 
 #Mod�le 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 library(coda)
 library(boot)
@@ -532,9 +532,9 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que ça mar
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes50_2017_12_22.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes50_2017_12_22.RData")
 
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes50_2017_12_22.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes50_2017_12_22.RData")
 
 
 #On agglom�re les 2 matrix juv_tot_ et bugs_juv_tot_ pour avoir un tableau complet sur la p�riode
@@ -598,8 +598,8 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/50poutes_TotalReturns_proj20years_2016_12_09.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/50poutes_TotalReturns_proj20years_2017_12_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/50poutes_TotalReturns_proj20years_2016_12_09.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/50poutes_TotalReturns_proj20years_2017_12_22.png",width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Migration improvement at Poutes of 50%",cex.lab=1.5)
 
@@ -694,8 +694,8 @@ for (t in 1:20){
 #------------------------
 # Graph
 #-----------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/50poutes_Threshold_2016_12_09.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/50poutes_Threshold_2017_12_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/50poutes_Threshold_2016_12_09.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/50poutes_Threshold_2017_12_22.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -869,7 +869,7 @@ for (t in (T+1):(T+20)){
 #-------------------------------------------
 # FIGURE
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_Poutes50_2017_12_22.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_Poutes50_2017_12_22.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 #----------------------------
@@ -1255,7 +1255,7 @@ for (t in (T+1):(T+20)){
 #---------------------------------------------------
 # FIGURE
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_Poutes50_2017_12_22.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_Poutes50_2017_12_22.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 #..........
 # Nb total
@@ -1527,8 +1527,8 @@ dev.off()
 # AMELIORATION 100%
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #Mod�le 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 library(coda)
 library(boot)
@@ -2043,9 +2043,9 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que ça mar
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes100_2017_12_22.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes100_2017_12_22.RData")
 
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes100_2017_12_22.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes100_2017_12_22.RData")
 
 
 #==========================================================
@@ -2077,8 +2077,8 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/100poutes_TotalReturns_proj20years_2016_12_09.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/100poutes_TotalReturns_proj20years_2017_12_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/100poutes_TotalReturns_proj20years_2016_12_09.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/100poutes_TotalReturns_proj20years_2017_12_22.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Migration improvement at Poutes of 100%",cex.lab=1.5)
@@ -2173,8 +2173,8 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/100poutes_Threshold_2016_12_09.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/100poutes_Threshold_2017_12_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/100poutes_Threshold_2016_12_09.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/100poutes_Threshold_2017_12_22.png",width=800,height=800)
 
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
@@ -2347,7 +2347,7 @@ for (t in (T+1):(T+20)){
 #-------------------------------------------
 # FIGURE
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_Poutes100_2017_12_22.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_Poutes100_2017_12_22.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 #----------------------------
@@ -2732,7 +2732,7 @@ for (t in (T+1):(T+20)){
 #---------------------------------------------------
 # FIGURE
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_Poutes100_2017_12_22.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_Poutes100_2017_12_22.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 #..........
 # Nb total
@@ -3017,8 +3017,8 @@ dev.off()
 		#...................
 		# Nbr de g�niteurs
 		#...................
-S_vichy_real=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_vichyCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_vichyCODAindex.txt")
-S_langeac_real=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_langeacCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_langeacCODAindex.txt")
+S_vichy_real=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_vichyCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_vichyCODAindex.txt")
+S_langeac_real=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_langeacCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_langeacCODAindex.txt")
 
 S_vichy_q=array(rep(0,T*5),dim=c(T,5))
 S_langeac_q=array(rep(0,T*5),dim=c(T,5))
@@ -3122,7 +3122,7 @@ S_juv_JP<-matrix(surf,nrow=3)
 	#---------------------------------------------
 	# Graph G�niteurs avec projection sur 20 ans
 	#---------------------------------------------
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_SpawnersRedds_GeniteursPotentiels.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_SpawnersRedds_GeniteursPotentiels.png",width=800, height=800, units = "px",type="cairo")
 
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........
@@ -3433,7 +3433,7 @@ for (t in (T+1):(T+20)){
 
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_NbrJuveniles_RatioJuveniles.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_NbrJuveniles_RatioJuveniles.png",width=800, height=800, units = "px",type="cairo")
 
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........

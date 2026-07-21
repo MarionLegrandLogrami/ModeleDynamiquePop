@@ -41,9 +41,9 @@ library(purrr)
 library(forcats)
 library(scales)
 
-datawd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/co-variables_env/projection_climatique/"
-imgwd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2024_06/Explore2/"
-tabwd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2024_06/Explore2/"
+datawd <- here::here("data/co-variables_env/projection_climatique/")
+imgwd <- here::here("img/2024_06/Explore2/")
+tabwd <- here::here("tab/2024_06/Explore2/")
 
 T=49
 #plusieurs modèles narratifs :
@@ -67,7 +67,7 @@ con_bd_envir <- dbConnect(Postgres(),
 		password= getOption("password"))
 
 #on charge le txt des données du modèle
-path_model<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+path_model<-here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
 source(str_c(path_model,"data_model.R"))
 
 @

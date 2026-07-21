@@ -7,7 +7,7 @@
 ####On part de la version de Guillaume stockée ici : "C:\Mes Documents\Tableau de bord\PROJETS\ModeleDynamiquePopSaumon\Script\2014.05_AvecGuillaume\updated models\Model complet\simulation\script.txt"
 # On essaie de relancer la version avec les données de l'époque
 #setwd("C:/Mes Documents/Tableau de bord/PROJETS/ModeleDynamiquePopSaumon/Script/2014.05_AvecGuillaume/updated models/Model complet")
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200")
 library(coda)
 library(boot)
 

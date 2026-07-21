@@ -4,11 +4,11 @@
 ###############################################################################
 
 #Mod�le d�finitf 2016
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon")
 
 #Mod�le 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 
 library(coda)
@@ -716,15 +716,15 @@ for (t in T:T){
 }
 
 
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/data/2016_03_15_AnalyseRetro.RData")
-#save.image(file = "C:/Users/ecobiop/Desktop/Marion/2016_12_19_AnalyseRetro.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/data/2016_12_19_Alagnon_AnalyseRetro_2016_12_19.Rdata")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/2016_03_15_AnalyseRetro.RData")
+#save.image(file = "C:/Users/utilisateur/Desktop/Marion/2016_12_19_AnalyseRetro.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/2016_12_19_Alagnon_AnalyseRetro_2016_12_19.Rdata")
 
 #Mod�le 2017
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_Maj2016_2017_12_12.RData")
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_TxRenouv_2018_06.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_Maj2016_2017_12_12.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_TxRenouv_2018_06.RData")
 
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_TxRenouv_2018_06.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_TxRenouv_2018_06.RData")
 
 N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vichy_realCODAindex.txt")
 
@@ -740,8 +740,8 @@ for (t in 7:T){
 
 #---------- Echelle log -----------#
 #on enl�ve la d�nomination coef dans l'intitul� de la figure car c'est ce qu'on conserve tout le temps (le calcul 1/3,1/3,1/3 �tant faux)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_scenarioRetourVersLeFutur_81_2010.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef_scenarioRetourVersLeFutur.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_scenarioRetourVersLeFutur_81_2010.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef_scenarioRetourVersLeFutur.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(6.5,T+0.5-6),xlab="Years",ylim=c(-5,5),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -772,8 +772,8 @@ dev.off()
 
 #---------- Echelle naturelle -----------#
 #on enl�ve la d�nomination coef dans l'intitul� de la figure car c'est ce qu'on conserve tout le temps (le calcul 1/3,1/3,1/3 �tant faux)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_scenarioRetourVersLeFutur_EchelleNat.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef_scenarioRetourVersLeFutur.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_scenarioRetourVersLeFutur_EchelleNat.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef_scenarioRetourVersLeFutur.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(6.5,T+0.5-6),xlab="Years",ylim=c(0,3),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -818,7 +818,7 @@ for (i in 1:length(seq(7,(T-6),5))){
 }
 rownames(renew_rate_q_5yr)<-c("1981-1985","1986-1990","1991-1995","1996-2000","2001-2005","2006-2010")
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_scenarioRetourVersLeFutur_5yrs.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_scenarioRetourVersLeFutur_5yrs.png",width=1000,height=800)
 par("mar"=c(10.1,5.1,3.1,1.1))
 plot(renew_rate_q_5yr,axes=FALSE,ylim=c(0,ifelse(max(renew_rate_q_5yr)<1,1,max(renew_rate_q_5yr)+0.1)),xlab="",ylab="Taux renouvellement",main=iconv("Taux de renouvellement de la population sauvage (moyenne des m�dianes sur 5 ans)","UTF8"), cex.lab=1.5)
 mtext(1,text="Scenario : Retour vers le Futur",line=8)
@@ -843,7 +843,7 @@ for (i in 1:length(seq(7,(T-6),5))){
 }
 rownames(L_renew_rate_q_5yr)<-c("1981-1985","1986-1990","1991-1995","1996-2000","2001-2005","2006-2010")
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_scenarioRetourVersLeFutur_5yrs_log.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_scenarioRetourVersLeFutur_5yrs_log.png",width=1000,height=800)
 par("mar"=c(10,5.1,3.1,1.1))
 plot(L_renew_rate_q_5yr,axes=FALSE,ylim=c(round(min(L_renew_rate_q_5yr),1),ifelse(max(L_renew_rate_q_5yr)<0,0.1,max(L_renew_rate_q_5yr))),xlab="",ylab=iconv("Taux renouvellement (�chelle log)","UTF8"),main=iconv("Taux de renouvellement de la population (log de la moyenne des m�dianes sur 5 ans)","UTF8"),cex.lab=1.5)
 mtext(1,text="Scenario : Retour vers le Futur",line=8)
@@ -973,9 +973,9 @@ for (t in 7:T){
 }
 
 
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/RetourVersLeFutur.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/RetourVersLeFutur_2016_12_19.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RetourVersLeFutur_2017_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/RetourVersLeFutur.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/RetourVersLeFutur_2016_12_19.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RetourVersLeFutur_2017_12_12.png",width=1000,height=800)
 
 par(mfrow=c(2,2))
 
@@ -1897,8 +1897,8 @@ for (t in 37:T){
 
 
 #commande ML enregistre les objets dans RDATA pour les charger ensuite
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/data/2016.03.10_REtourFutur.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/outputAllier2014.05.30.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/2016.03.10_REtourFutur.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/outputAllier2014.05.30.RData")
 
 N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vichy_realCODAindex.txt")
 
@@ -1941,7 +1941,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#---------------------------
 		#Graph with all years
 		#---------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/spawners_reels.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/spawners_reels.png",width=800,height=800)
 		par(mfrow=c(3,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,6000),ylab=expression(italic(Spawners)),main="Vichy-Langeac")
@@ -2065,7 +2065,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#------------------------
 		# Graph with all years
 		#------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/spawners_DiffWith_WithoutStocking.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/spawners_DiffWith_WithoutStocking.png",width=800,height=800)
 		
 		par(mfrow=c(3,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
@@ -2227,7 +2227,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#--------------------------
 		#Graph with all years
 		#--------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/ContributionStockingAllierPopulation.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/ContributionStockingAllierPopulation.png",width=800,height=800)
 		
 		par(mfrow=c(3,1),mar=c(4,7.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
@@ -2356,7 +2356,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#-----------------------------
 		# Graph
 		#-----------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/TotalReturns.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/TotalReturns.png",width=800,height=800)
 		
 		par(mfrow=c(1,2))
 		
@@ -2485,7 +2485,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		# Graph
 		#------------------------
 
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/ReturnsDifferenceWith&withoutStocking_.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/ReturnsDifferenceWith&withoutStocking_.png",width=800,height=800)
 		par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(-500,1500),ylab=expression(Returns^stocking-Returns^without),main="Difference of returns in Vichy with or without stocking",cex.lab=1.5)
@@ -2524,7 +2524,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 # Retour vers le futur
 ################################################
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/RetourVersLeFutur.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/RetourVersLeFutur.png",width=800,height=800)
 
 par(mfrow=c(2,2))
 
@@ -2712,7 +2712,7 @@ max(pourcentage_N_vichy_q)
 #--------------------------
 #Graph with all years
 #--------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/ContributionStockingAllierPopulation.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/ContributionStockingAllierPopulation.png",width=800,height=800)
 
 par(mfrow=c(1,1))
 
@@ -2764,7 +2764,7 @@ dev.off()
 #		#------------------
 #		# Graph
 #		#------------------
-#		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/TotalReturns_proj20years.png",width=800,height=800)
+#		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_01_24_thin200/TotalReturns_proj20years.png",width=800,height=800)
 #		
 #		
 #		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - 2015_01_24_thin200 Model",cex.lab=1.5)
@@ -2864,7 +2864,7 @@ dev.off()
 #		#------------------------
 #		# Graph
 #		#------------------------
-#		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014_12_20/Threshold.png",width=800,height=800)
+#		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014_12_20/Threshold.png",width=800,height=800)
 #		
 #		par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 #		
@@ -2933,7 +2933,7 @@ dev.off()
 #--------------------------
 #Graph with all years
 #--------------------------
-#		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014_12_20/ContributionStockingAllierPopulation_.png",width=800,height=800)
+#		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014_12_20/ContributionStockingAllierPopulation_.png",width=800,height=800)
 
 #		par(mfrow=c(1,1))
 

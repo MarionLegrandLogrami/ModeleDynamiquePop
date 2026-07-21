@@ -28,119 +28,119 @@
 
 << init, echo=FALSE, eval=TRUE,results=hide >>=
 
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_10_07/CODA/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_10_07/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2015_10_07/"
-#	datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_06_09/"
-#	imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_06_09/"
-#	tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2015_06_09/"
-#	setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX")
-#	datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"
-#	imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/"
-#	tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2015_01_24_thin200/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_11_26/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_11_26/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2015_11_26/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2015_12_02_PoutesCor/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_standard/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_12_04_standard/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2015_12_04_standard/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_18_0_dore/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_01_18_0_dore/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2016_01_18_0_dore/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_01_20_standard_thin200/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2016_01_20_standard_thin200/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Devalaison_AvecRho_poutes/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_01_20_Devalaison_AvecRho_poutes/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2016_01_20_Devalaison_AvecRho_poutes/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_10_14_Alagnon_adjust_p/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2016_10_14_Alagnon_adjust_p/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_12_06_Alagnon/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2016_12_06_Alagnon/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_12_19_Alagnon/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2016_12_19_Alagnon/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2017_03_23_4zones_Interaction/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2017_03_23_4zones_Interaction/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2017_05_03_4zones_Interaction_ss_rho_poutes/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2017_05_03_4zones_Interaction_ss_rho_poutes/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_07_19_4zones_Interaction_ss_rho_poutes/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2017_07_19_4zones_Interaction_ss_rho_poutes/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2017_07_19_4zones_Interaction_ss_rho_poutes/"
-#datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
-#tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/tab/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
-#datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/"
-#imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2019_12_12/"
-#tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/tab/2019_12_12/"
-#datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/"
-#imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/"
-#tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/"
-#datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont/"
-#imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont/"
-#tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont/"
-# datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s/"
-# imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s/"
-# tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s/"
-# datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s_V2/"
-# imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s_V2/"
-# tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s_V2/"
-# datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont_V2/"
-# imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont_V2/"
-# tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont_V2/"
-#datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
-#imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
-#tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
-#datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/"
-#imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_09/"
-#tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/tab/2021_09/"
-#datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2022_11/InfluenceQ_survie_uniquement_data2020/"
-#imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2022_11/ModelMelange/Q_survie_uniquement/"
-#tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2022_11/ModelMelange/Q_survie_uniquement/"
-# datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2022_11/InfluenceQ_survie_repartition_data2018/"
-# imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2022_11/Q_influence_surv_repartition_data18/"
-# tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2022_11/Q_influence_surv_repartition_data18/"
-# datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2022_12/Model_melange_Qsurv_uniquement_data20/"
-# imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2022_12/Model_melange_Qsurv_uniquement_data20/"
-# tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2022_12/Model_melange_Qsurv_uniquement_data20/"
-# datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2022_12/Model_Qsurv+repartition_data20/"
-# imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2022_12/Model_Qsurv+repartition_data20/"
-# tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2022_12/Model_Qsurv+repartition_data20/"
-#datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2022_12/Model_Qsurv+repartition+model_melange_data20/"
-#imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2022_12/Model_Qsurv+repartition+model_melange_data20/"
-#tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2022_12/Model_Qsurv+repartition+model_melange_data20/"
-# datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_04/"
-# imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_04/Model_Qsurv+repartition+model_melange_data22/"
-# tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2023_04/Model_Qsurv+repartition+model_melange_data22/"
-# datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/"
-# imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/"
-# tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/"
-# datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/Model_melange_homogenisation_Q_printemps/"
-# imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/Model_melange_homogenisation_Q_printemps/"
-# tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2023_05/Model_melange_homogenisation_Q_printemps/"
-#datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/"
-#imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2023_05/3_Model_sans_distribution_melange/"
-#tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2023_05/3_Model_sans_distribution_melange/"
-#datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2024_06/hierarchisation_variance/"
-#imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2024_06/hierarchisation_variance/"
-#tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2024_06/hierarchisation_variance/"
-#datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac/"
-#imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2024_06/Hierarchisation_variance + comptage_Langeac/"
-#tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2024_06/Hierarchisation_variance + comptage_Langeac/"
-# datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
-# imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
-# tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_10_07/CODA/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_10_07/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2015_10_07/"
+#	datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_06_09/"
+#	imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_06_09/"
+#	tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2015_06_09/"
+#	setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX")
+#	datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"
+#	imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/"
+#	tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2015_01_24_thin200/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_11_26/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_11_26/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2015_11_26/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2015_12_02_PoutesCor/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_standard/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_12_04_standard/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2015_12_04_standard/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_18_0_dore/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_01_18_0_dore/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2016_01_18_0_dore/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_01_20_standard_thin200/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2016_01_20_standard_thin200/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Devalaison_AvecRho_poutes/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_01_20_Devalaison_AvecRho_poutes/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2016_01_20_Devalaison_AvecRho_poutes/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_10_14_Alagnon_adjust_p/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2016_10_14_Alagnon_adjust_p/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_12_06_Alagnon/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2016_12_06_Alagnon/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_12_19_Alagnon/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2016_12_19_Alagnon/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2017_03_23_4zones_Interaction/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2017_03_23_4zones_Interaction/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2017_05_03_4zones_Interaction_ss_rho_poutes/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2017_05_03_4zones_Interaction_ss_rho_poutes/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_07_19_4zones_Interaction_ss_rho_poutes/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2017_07_19_4zones_Interaction_ss_rho_poutes/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2017_07_19_4zones_Interaction_ss_rho_poutes/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2019_12_12/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2019_12_12/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont/"
+# datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s/"
+# imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s/"
+# tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s/"
+# datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s_V2/"
+# imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s_V2/"
+# tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s_V2/"
+# datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont_V2/"
+# imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont_V2/"
+# tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mont_V2/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
+#datawd<-here::here("data/CODA/2021_09/")
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_09/"
+#tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_09/"
+#datawd<-here::here("data/CODA/2022_11/InfluenceQ_survie_uniquement_data2020/")
+#imgwd<-here::here("img/2022_11/ModelMelange/Q_survie_uniquement/")
+#tabwd<-here::here("tab/2022_11/ModelMelange/Q_survie_uniquement/")
+# datawd<-here::here("data/CODA/2022_11/InfluenceQ_survie_repartition_data2018/")
+# imgwd<-here::here("img/2022_11/Q_influence_surv_repartition_data18/")
+# tabwd<-here::here("tab/2022_11/Q_influence_surv_repartition_data18/")
+# datawd<-here::here("data/CODA/2022_12/Model_melange_Qsurv_uniquement_data20/")
+# imgwd<-here::here("img/2022_12/Model_melange_Qsurv_uniquement_data20/")
+# tabwd<-here::here("tab/2022_12/Model_melange_Qsurv_uniquement_data20/")
+# datawd<-here::here("data/CODA/2022_12/Model_Qsurv+repartition_data20/")
+# imgwd<-here::here("img/2022_12/Model_Qsurv+repartition_data20/")
+# tabwd<-here::here("tab/2022_12/Model_Qsurv+repartition_data20/")
+#datawd<-here::here("data/CODA/2022_12/Model_Qsurv+repartition+model_melange_data20/")
+#imgwd<-here::here("img/2022_12/Model_Qsurv+repartition+model_melange_data20/")
+#tabwd<-here::here("tab/2022_12/Model_Qsurv+repartition+model_melange_data20/")
+# datawd<-here::here("data/CODA/2023_04/")
+# imgwd<-here::here("img/2023_04/Model_Qsurv+repartition+model_melange_data22/")
+# tabwd<-here::here("tab/2023_04/Model_Qsurv+repartition+model_melange_data22/")
+# datawd<-here::here("data/CODA/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/")
+# imgwd<-here::here("img/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/")
+# tabwd<-here::here("tab/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/")
+# datawd<-here::here("data/CODA/2023_05/Model_melange_homogenisation_Q_printemps/")
+# imgwd<-here::here("img/2023_05/Model_melange_homogenisation_Q_printemps/")
+# tabwd<-here::here("tab/2023_05/Model_melange_homogenisation_Q_printemps/")
+#datawd<-here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/")
+#imgwd<-here::here("img/2023_05/3_Model_sans_distribution_melange/")
+#tabwd<-here::here("tab/2023_05/3_Model_sans_distribution_melange/")
+#datawd<-here::here("data/CODA/2024_06/hierarchisation_variance/")
+#imgwd<-here::here("img/2024_06/hierarchisation_variance/")
+#tabwd<-here::here("tab/2024_06/hierarchisation_variance/")
+#datawd<-here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac/")
+#imgwd<-here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac/")
+#tabwd<-here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac/")
+# datawd<-here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
+# imgwd<-here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
+# tabwd<-here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
 
-datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2025_07/"
-imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2025_07/"
-tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2025_07/"
+datawd<-here::here("data/CODA/2025_07/")
+imgwd<-here::here("img/2025_07/")
+tabwd<-here::here("tab/2025_07/")
 
 	library(coda)
 	library(lattice)

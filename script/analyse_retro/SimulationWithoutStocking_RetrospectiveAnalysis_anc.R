@@ -4,16 +4,16 @@
 ###############################################################################
 
 #Output Allier 2014.05.30
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_05_30")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_05_30")
 #SurfERR+SurfDev 2014.08.28
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_08_26_SufERR+SurfDev")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_08_26_SufERR+SurfDev")
 #SurfERR+SurfDev 2014.08.28
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_09/")#SurfERR+SurfDev)
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_09/")#SurfERR+SurfDev)
 
 
 
 #charge rdata quand interruption cession et reprise
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/SaveEclipse/2014.09.08.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/SaveEclipse/2014.09.08.RData")
 
 
 library(coda)
@@ -795,9 +795,9 @@ for (t in 37:T){
 #commande ML enregistre les objets dans RDATA pour les charger ensuite
 save(juv_tot_vichy,juv_tot_langeac,juv_tot_poutes,juv_tot_system,ratio_juv_V,
 		ratio_juv_prod_L,ratio_juv_L,p_langeac,ratio_juv_prod_P,ratio_juv_P,
-		p_poutes,N_vichy,temp,N_langeac,N_poutes,S_vichy,S_langeac,S_poutes ,file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/outputAllier2014.05.30.RData")
+		p_poutes,N_vichy,temp,N_langeac,N_poutes,S_vichy,S_langeac,S_poutes ,file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/outputAllier2014.05.30.RData")
 
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/outputAllier2014.05.30.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/outputAllier2014.05.30.RData")
 
 N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vichy_realCODAindex.txt")
 
@@ -840,7 +840,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#---------------------------
 		#Graph with all years
 		#---------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_spawners_reels.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_spawners_reels.png",width=800,height=800)
 		par(mfrow=c(3,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,6000),ylab=expression(italic(Spawners)),main="Vichy-Langeac")
@@ -964,7 +964,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#------------------------
 		# Graph with all years
 		#------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_spawners_DiffWith_WithoutStocking.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_spawners_DiffWith_WithoutStocking.png",width=800,height=800)
 		
 		par(mfrow=c(3,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
@@ -1126,7 +1126,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#--------------------------
 		#Graph with all years
 		#--------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_ContributionStockingAllierPopulation.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_ContributionStockingAllierPopulation.png",width=800,height=800)
 		
 		par(mfrow=c(3,1),mar=c(4,7.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
@@ -1255,7 +1255,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#-----------------------------
 		# Graph
 		#-----------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/_outputAllier_TotalReturns.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/_outputAllier_TotalReturns.png",width=800,height=800)
 		
 		par(mfrow=c(1,2))
 		
@@ -1384,7 +1384,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		# Graph
 		#------------------------
 
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_ReturnsDifferenceWith&withoutStocking_.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_ReturnsDifferenceWith&withoutStocking_.png",width=800,height=800)
 		par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(-500,1500),ylab=expression(Returns^stocking-Returns^without),main="Difference of returns in Vichy with or without stocking",cex.lab=1.5)
@@ -1435,7 +1435,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#------------------
 		# Graph
 		#------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/_outputAllier_TotalReturns_proj20years.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/_outputAllier_TotalReturns_proj20years.png",width=800,height=800)
 		
 		
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking",cex.lab=1.5)
@@ -1542,7 +1542,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#------------------------
 		# Graph
 		#------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_Threshold.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_Threshold.png",width=800,height=800)
 		
 		par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 		
@@ -1611,7 +1611,7 @@ N_vichy_real=read.coda("simulation/N_vichy_realCODAchain1.txt","simulation/N_vic
 		#--------------------------
 		#Graph with all years
 		#--------------------------
-		png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_ContributionStockingAllierPopulation_.png",width=800,height=800)
+		png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2014.05.30/outputAllier_ContributionStockingAllierPopulation_.png",width=800,height=800)
 		
 		par(mfrow=c(1,1))
 		

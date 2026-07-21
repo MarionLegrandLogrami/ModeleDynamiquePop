@@ -3,10 +3,10 @@
 # Author: guillaume.dauphin
 ###############################################################################
 
-#setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2015_10_06/")
-#setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/")
-#setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/")
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/CalibrationTousLesPoints+Sioule/")
+#setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2015_10_06/")
+#setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/")
+#setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/CalibrationTousLesPoints+Sioule/")
 
 library(coda)
 
@@ -91,11 +91,11 @@ q.d=rbind(
 
 
 d_fake=read.coda("d_fakeCODAchain1.txt","d_fakeCODAindex.txt",5001,10000)
-#d_fake_old=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/d_fakeCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/d_fakeCODAindex.txt")
-d_fake_old=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/d_fakeCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/d_fakeCODAindex.txt")
+#d_fake_old=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/d_fakeCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/d_fakeCODAindex.txt")
+d_fake_old=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/d_fakeCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/d_fakeCODAindex.txt")
 
 #Pour ancienne relation Allier avec seulement les 9 points :
-d_fake_old_onema=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2014_05_24_GuillaumeDauphin/d_fakeCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2014_05_24_GuillaumeDauphin/d_fakeCODAindex.txt")
+d_fake_old_onema=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2014_05_24_GuillaumeDauphin/d_fakeCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2014_05_24_GuillaumeDauphin/d_fakeCODAindex.txt")
 
 #Graphes
 #densities
@@ -116,7 +116,7 @@ for (i in 1:300){
 }
 
 #Pour Allier
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/calibration/2017_09_28/CalibrationTousLesPoints+Sioule/RelationCalibration_new&old.png")
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/calibration/2017_09_28/CalibrationTousLesPoints+Sioule/RelationCalibration_new&old.png")
 plot(1,1,type="n",axes=FALSE,xlim=c(0,300),xlab="IA 5 minutes",ylim=c(0,1.4),ylab=iconv("densit� (0+ / m-2)","UTF8"),main=iconv("Relation IA vs densit� de 0+","UTF8"))
 
 # trace l'axe des ordonnées
@@ -335,7 +335,7 @@ lm(d_fake_old_onema_q[,3]~IA_fake_old_onema) #0.473
 
 
 # graph sans distinction couleur des points
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/calibration/2017_09_28/CalibrationTousLesPoints+Sioule/RelationCalibration_all_in_grey.png")
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/calibration/2017_09_28/CalibrationTousLesPoints+Sioule/RelationCalibration_all_in_grey.png")
 plot(1,1,type="n",axes=FALSE,xlim=c(0,300),xlab="IA 5 minutes",ylim=c(0,1.4),ylab=iconv("densité (0+ / m-2)","UTF8"),main=iconv("Relation IA vs densité de 0+","UTF8"))
 
 # trace l'axe des ordonnées
@@ -383,7 +383,7 @@ dev.off()
 #-------------------------------------------------
 # Allier sans la station de Monistrol 2017
 #-------------------------------------------------
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/CalibrationSS_Monistrol/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/CalibrationSS_Monistrol/")
 
 library(coda)
 
@@ -425,8 +425,8 @@ q.d=rbind(
 		q.d_16,q.d_17,q.d_18,q.d_19,q.d_20)
 
 d_fake=read.coda("d_fakeCODAchain1.txt","d_fakeCODAindex.txt",5001,10000)
-d_fake_21=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/d_fakeCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/d_fakeCODAindex.txt")
-d_fake_old=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/d_fakeCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/d_fakeCODAindex.txt")
+d_fake_21=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/d_fakeCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2017_09_28/d_fakeCODAindex.txt")
+d_fake_old=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/d_fakeCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/calibration/2016_11_16/d_fakeCODAindex.txt")
 
 d_fake_q=array(rep(0,1500),dim=c(300,5) )
 d_fake_21_q=array(rep(0,1500),dim=c(300,5) )
@@ -443,7 +443,7 @@ for (i in 1:300){
 	d_fake_old_q[i,]=quantile(d_fake_old[,i],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/calibration/2017_09_28/CalibrationSS_Monistrol/RelationCalibration_new&old.png")
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/calibration/2017_09_28/CalibrationSS_Monistrol/RelationCalibration_new&old.png")
 plot(1,1,type="n",axes=FALSE,xlim=c(0,300),xlab="IA 5 minutes",ylim=c(0,1.4),ylab=iconv("densité (0+ / m-2)","UTF8"),main=iconv("Relation IA vs densité de 0+","UTF8"))
 
 # trace l'axe des ordonnées
@@ -640,7 +640,7 @@ d_fake=read.coda("d_fakeCODAchain1.txt","d_fakeCODAindex.txt",5001,10000)
 
 #Pour GARTEMPE
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/calibration/2016_10_07_Gartempe/RelationCalibrationGartempe2.png")
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/calibration/2016_10_07_Gartempe/RelationCalibrationGartempe2.png")
 plot(1,1,type="n",axes=FALSE,xlim=c(0,50),xlab="IA 5 minutes",ylim=c(0,0.3),ylab="density (0+ / m-2)",main="IA vs 0+ density relationship")
 
 # trace l'axe des ordonnées
@@ -679,7 +679,7 @@ dev.off()
 
 	#Graphe avec couleur pour station
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/calibration/2016_10_07_Gartempe/RelationCalibrationGartempe_couleurStation.png")
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/calibration/2016_10_07_Gartempe/RelationCalibrationGartempe_couleurStation.png")
 plot(1,1,type="n",axes=FALSE,xlim=c(0,50),xlab="IA 5 minutes",ylim=c(0,0.3),ylab="density (0+ / m-2)",main="IA vs 0+ density relationship")
 
 # trace l'axe des ordonnées

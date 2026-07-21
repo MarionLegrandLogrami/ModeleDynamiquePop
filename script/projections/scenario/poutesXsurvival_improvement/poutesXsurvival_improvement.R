@@ -8,7 +8,7 @@
 # CHARGEMENT
 #================
 #Modèle 2015_01_24
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
 
 library(coda)
 library(boot)
@@ -441,7 +441,7 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que ça mar
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_Poutes50xAmeliorationSurvie50_2015_02_02.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_Poutes50xAmeliorationSurvie50_2015_02_02.RData")
 
 #============================
 # PROJECTION SUR LES 20 ANS 
@@ -471,7 +471,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes50xImprovementSurvival50_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes50xImprovementSurvival50_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - \n improvement 50% old level survival and 50% of downstream and upstream migration at Poutes",cex.lab=1.5)
@@ -571,7 +571,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes50xImprovementSurvival50_Threshold_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes50xImprovementSurvival50_Threshold_2015_02_02.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1029,7 +1029,7 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que ça mar
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_Poutes50xAmeliorationSurvie100_2015_02_02.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_Poutes50xAmeliorationSurvie100_2015_02_02.RData")
 
 #============================
 # PROJECTION SUR LES 20 ANS 
@@ -1059,7 +1059,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes50xImprovementSurvival100_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes50xImprovementSurvival100_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - \n improvement 100% old level survival and 50% of downstream and upstream migration at Poutes",cex.lab=1.5)
@@ -1159,7 +1159,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes50xImprovementSurvival100_Threshold_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes50xImprovementSurvival100_Threshold_2015_02_02.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1625,7 +1625,7 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que ça mar
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_Poutes100xAmeliorationSurvie50_2015.02.02.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_Poutes100xAmeliorationSurvie50_2015.02.02.RData")
 
 #============================
 # PROJECTION SUR LES 20 ANS 
@@ -1655,7 +1655,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes100xImprovementSurvival50_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes100xImprovementSurvival50_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - \n improvement 50% old level survival and 100% of downstream and upstream migration at Poutes",cex.lab=1.5)
@@ -1755,7 +1755,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes100xImprovementSurvival50_Threshold_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes100xImprovementSurvival50_Threshold_2015_02_02.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2219,7 +2219,7 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que ça mar
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_Poutes100xAmeliorationSurvie100_2015_02_02.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_Poutes100xAmeliorationSurvie100_2015_02_02.RData")
 
 #============================
 # PROJECTION SUR LES 20 ANS 
@@ -2249,7 +2249,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes100xImprovementSurvival100_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes100xImprovementSurvival100_TotalReturns_proj20years_2015_02_02.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - \n improvement 100% old level survival and 100% of downstream and upstream migration at Poutes",cex.lab=1.5)
@@ -2349,7 +2349,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes100xImprovementSurvival100_Threshold_2015_02_02.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/Poutes100xImprovementSurvival100_Threshold_2015_02_02.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 

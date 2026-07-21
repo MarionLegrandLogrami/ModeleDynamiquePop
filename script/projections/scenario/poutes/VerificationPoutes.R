@@ -4,18 +4,18 @@
 ###############################################################################
 
 #Modèle 2015_01_24
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
 
 #On charge les recalculs liés à Poutès 50% (script SimulationOuverturePoutes.R)
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes50_2015_02_02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes50_2015_02_02.RData")
 #On charge les recalculs liés à Poutès 100% (script SimulationOuverturePoutes.R)
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes100_2015.02.02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_OuverturePoutes100_2015.02.02.RData")
 #On charge les projections sans repeuplement à 20 ans
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_ProjectionSansRepeuplement_2015.02.02.RData")
 #On charge les projections avec amélioration de la survie de 50%
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie50_2015.02.02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie50_2015.02.02.RData")
 #On charge les projections avec amélioration de la survie de 100%
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie100_2015.02.02.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_01_24_AmeliorationSurvie100_2015.02.02.RData")
 
 library(coda)
 library(boot)
@@ -69,7 +69,7 @@ for (i in 12:(T+20)){
 	p_poutes_q[i,]=quantile(p_poutes_m[,i-11],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-png(file="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/ProbaPassagePoutesImprovementSurvival50_2015.02.02.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/ProbaPassagePoutesImprovementSurvival50_2015.02.02.png",width=800, height=800, units = "px",type="cairo")
 
 #par(mfrow=c(1,1),mar=c(4,6.1,0,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 
@@ -231,7 +231,7 @@ for (i in (T+1):(T+20)){
 #---------------
 # Spawners
 #--------------
-png(file="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/SpawnersRedds_GeniteursPotentielsImprovementSurvival100_2015.02.02.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/SpawnersRedds_GeniteursPotentielsImprovementSurvival100_2015.02.02.png",width=800, height=800, units = "px",type="cairo")
 
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........
@@ -594,7 +594,7 @@ for (t in 1:(T+20)){
 #=============================================
 # SEC: Figure : Spawners Production Juvenile
 #=============================================
-png(file="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/SpawnersProdJuv_ratioImprovementSurvival100_2015.02.02.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_01_24_thin200/SpawnersProdJuv_ratioImprovementSurvival100_2015.02.02.png",width=800, height=800, units = "px",type="cairo")
 par(mfrow=c(3,3),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 
 #----------

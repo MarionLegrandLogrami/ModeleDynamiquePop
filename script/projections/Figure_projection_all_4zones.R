@@ -10,19 +10,19 @@
 # Sans amélioration
 #=======================
 	#2016_01_20_standard
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_ProjectionSansRepeuplement_2016.03.11.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_ProjectionSansRepeuplement_2016.03.11.RData")
 	
 	#2016_12_06_Alagnon
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_09_ProjectionSansRepeuplementAlagnon.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_09_ProjectionSansRepeuplementAlagnon_cor_juv.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_ProjectionSansRepeuplementAlagnon_cor_juv.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_ProjectionSansRepeuplementAlagnon_cor_juv_2016_12_20.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_09_ProjectionSansRepeuplementAlagnon.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_09_ProjectionSansRepeuplementAlagnon_cor_juv.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_ProjectionSansRepeuplementAlagnon_cor_juv.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_ProjectionSansRepeuplementAlagnon_cor_juv_2016_12_20.RData")
 	
 	#2017_03_23_4zones_Interaction
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_ProjectionSansRepeuplementAlagnon_InteractionReciproque_2017_04_25.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_ProjectionSansRepeuplementAlagnon_InteractionReciproque_2017_04_25.RData")
 	
 	#2017_08_29_4zonesInteraction_ss_rho_poutes_MatriceVC
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2017_12_12.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2017_12_12.RData")
 	
 
 sans_N_vichy<-N_vichy
@@ -31,19 +31,19 @@ rm(N_vichy)
 # Suppression mortalité dévalaison
 #===================================
 	#2016_01_20_standard
-	#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_DevalaisonAvecPoutes_Surf&Prod_2016_04_08.RData")
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_Devalaison_ss_rho_poutes_Surf_thin200_2016_11_03.RData")
+	#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_DevalaisonAvecPoutes_Surf&Prod_2016_04_08.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_Devalaison_ss_rho_poutes_Surf_thin200_2016_11_03.RData")
 	
 	#2016_12_06_Alagnon
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes.RData")#mean(N_vichy[i,t]=629.6972
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes_cor_juv.RData")#mean(N_vichy[i,t]=629.6972
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_06_01_Devalaison_4zones.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes.RData")#mean(N_vichy[i,t]=629.6972
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes_cor_juv.RData")#mean(N_vichy[i,t]=629.6972
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_06_01_Devalaison_4zones.RData")
 	
 	#2017_05_02_4zones_Interaction
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_05_02_Devalaison_4zones_Interaction.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_05_02_Devalaison_4zones_Interaction.RData")
 
 	#2017_12_20_Devalaison_4zonesInteraction_ss_rho_poutes
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_12_20_Devalaison_ss_rho_poutes_Interaction_MatriceVC_2017_12_20.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_12_20_Devalaison_ss_rho_poutes_Interaction_MatriceVC_2017_12_20.RData")
 
 dev_N_vichy<-N_vichy
 rm(N_vichy)
@@ -52,17 +52,17 @@ rm(N_vichy)
 # Amélioration survie 50%
 #============================
 	#2016_01_20_standard	
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
 	#2016_12_06_Alagnon
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie50_2016_12_09.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_14.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_19.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie50_2016_12_09.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_14.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_19.RData")
 	
 	#2017_03_23_4zones_Interaction
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
 	
 	#2017_08_29_4zones_Interaction_ss_rho_poutes_MatriceVC
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2017_12_12.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2017_12_12.RData")
 
 surv50_N_vichy<-N_vichy
 rm(N_vichy)
@@ -71,18 +71,18 @@ rm(N_vichy)
 # Amélioration survie 100%
 #============================
 	#2016_01_20_standard
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie100_2016_03_14.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie100_2016_03_14.RData")
 
 	#2016_12_06_Alagnon
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie100_2016_12_09.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_14.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_19.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie100_2016_12_09.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_14.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_19.RData")
 	
 	#2017_03_23_4zones_Interaction
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie100_2017_04_28.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie100_2017_04_28.RData")
 
 	#2017_08_29_4zones_Interaction_ss_rho_poutes_MatriceVC
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2017_12_12.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2017_12_12.RData")
 	
 surv100_N_vichy<-N_vichy
 rm(N_vichy)
@@ -91,18 +91,18 @@ rm(N_vichy)
 # Amélioration poutès 50%
 #===========================
 	#2016_01_20_standard
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_Standard_OuverturePoutes50_2016_03_11.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_Standard_OuverturePoutes50_2016_03_11.RData")
 
 	#2016_12_06_Alagnon
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_OuverturePoutes50_2016_12_09.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_OuverturePoutes50_cor_juv_2016_12_14.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_OuverturePoutes50_cor_juv_2016_12_19.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_OuverturePoutes50_2016_12_09.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_OuverturePoutes50_cor_juv_2016_12_14.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_OuverturePoutes50_cor_juv_2016_12_19.RData")
 	
 	#2017_03_23_4zones_Interaction
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_OuverturePoutes50_2017_04_28.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_OuverturePoutes50_2017_04_28.RData")
 
 	#2017_08_29_4zones_Interaction_ss_rho_poutes_MatriceVC
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes50_2017_12_22.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes50_2017_12_22.RData")
 	
 pou50_N_vichy<-N_vichy
 rm(N_vichy)
@@ -111,18 +111,18 @@ rm(N_vichy)
 # Amélioration poutès 100%
 #============================
 	#2016_01_20_standard	
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_OuverturePoutes100_2016_03_11.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_OuverturePoutes100_2016_03_11.RData")
 
 	#2016_12_06_Alagnon
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_OuverturePoutes100_2016_12_09.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_OuverturePoutes100_cor_juv_2016_12_09.RData")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_OuverturePoutes100_cor_juv_2016_12_19.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_OuverturePoutes100_2016_12_09.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_OuverturePoutes100_cor_juv_2016_12_09.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_OuverturePoutes100_cor_juv_2016_12_19.RData")
 	
 	#2017_03_23_4zones_Interaction
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_OuverturePoutes100_2017_04_28.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_OuverturePoutes100_2017_04_28.RData")
 
 	#2017_08_29_4zones_Interaction_ss_rho_poutes_MatriceVC
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes100_2017_12_22.RData")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_OuverturePoutes100_2017_12_22.RData")
 	
 pou100_N_vichy<-N_vichy
 rm(N_vichy)
@@ -131,7 +131,7 @@ rm(N_vichy)
 # Continuité écologique
 #============================
 	#2017_08_29_4zoneInteraction_ss_rho_poutes_MatriceVC
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
 
 ecol_N_vichy<-N_vichy
 rm(N_vichy)
@@ -183,7 +183,7 @@ for (t in 1:20){
 }
 
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/All_Threshold_2017_12_22.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/All_Threshold_2017_12_22.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -244,7 +244,7 @@ dev.off()
 #=======================
 
 #2016_12_06_Alagnon
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_ProjectionSansRepeuplementAlagnon_cor_juv_2016_12_20.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_ProjectionSansRepeuplementAlagnon_cor_juv_2016_12_20.RData")
 
 sans_N_vichy_ss<-N_vichy
 rm(N_vichy)
@@ -253,7 +253,7 @@ rm(N_vichy)
 #===================================
 
 #2016_12_06_Alagnon
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes_cor_juv.RData")#mean(N_vichy[i,t]=629.6972
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes_cor_juv.RData")#mean(N_vichy[i,t]=629.6972
 
 dev_N_vichy_ss<-N_vichy
 rm(N_vichy)
@@ -262,7 +262,7 @@ rm(N_vichy)
 # Amélioration survie 50%
 #============================
 #2016_12_06_Alagnon
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_19.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_19.RData")
 
 surv50_N_vichy_ss<-N_vichy
 rm(N_vichy)
@@ -272,7 +272,7 @@ rm(N_vichy)
 #============================
 
 #2016_12_06_Alagnon
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_19.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_19.RData")
 
 surv100_N_vichy_ss<-N_vichy
 rm(N_vichy)
@@ -282,7 +282,7 @@ rm(N_vichy)
 #===========================
 
 #2016_12_06_Alagnon
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_OuverturePoutes50_cor_juv_2016_12_19.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_OuverturePoutes50_cor_juv_2016_12_19.RData")
 
 
 pou50_N_vichy_ss<-N_vichy
@@ -293,7 +293,7 @@ rm(N_vichy)
 #============================
 
 #2016_12_06_Alagnon
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_OuverturePoutes100_cor_juv_2016_12_19.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_OuverturePoutes100_cor_juv_2016_12_19.RData")
 
 pou100_N_vichy_ss<-N_vichy
 rm(N_vichy)
@@ -343,7 +343,7 @@ for (t in 1:20){
 
 
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/All_Threshold_With&WithoutInteraction_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/All_Threshold_With&WithoutInteraction_2017_04_28.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 

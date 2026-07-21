@@ -4,14 +4,14 @@
 ###############################################################################
 
 #Modèle 2016_12_06_Alagnon
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/")
 #Modï¿½le 2016_12_19_Alagnon - correction ratio_juv_prod
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon/")
 #Modï¿½le 2017.03.23_4zones_Interaction - interaction rï¿½ciproque juv sauvage/dï¿½versï¿½
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
 #Modï¿½le 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 
 library(coda)
@@ -476,16 +476,16 @@ for (t in (T+7):(T+20)){
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2017_12_12.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_19.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_14.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie50_2016_12_09.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/2014.12.05_OuverturePoutes.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_19.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2017_12_12.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2017_12_12.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_19.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_14.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie50_2016_12_09.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/2014.12.05_OuverturePoutes.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie50_cor_juv_2016_12_19.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2017_12_12.RData")
 
 
 #On agglomï¿½re les 2 matrix juv_tot_ et bugs_juv_tot_ pour avoir un tableau complet sur la pï¿½riode
@@ -531,9 +531,9 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/50ImprovementSurvival_TotalReturns_proj20years_2016_12_09.png",width=800,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50ImprovementSurvival_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/50ImprovementSurvival_TotalReturns_proj20years_2017_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/50ImprovementSurvival_TotalReturns_proj20years_2016_12_09.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50ImprovementSurvival_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/50ImprovementSurvival_TotalReturns_proj20years_2017_12_12.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main=iconv("Projection ï¿½ 20 ans sans repeuplement & Amï¿½lioration de la survie \
@@ -639,9 +639,9 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/50ImprovementSurvival_Threshold_2016_12_09.png",width=800,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50ImprovementSurvival_Threshold_2017_04_28.png",width=800,height=800)
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/50ImprovementSurvival_Threshold_2017_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/50ImprovementSurvival_Threshold_2016_12_09.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50ImprovementSurvival_Threshold_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/50ImprovementSurvival_Threshold_2017_12_12.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -687,7 +687,7 @@ dev.off()
 # CHAP : Figure : Rï¿½partitions des Juvï¿½niles dans les diffï¿½rents secteurs
 #=========================================================================
 #Modï¿½le 2017.03.23_4zones_Interaction - interaction rï¿½ciproque juv sauvage/dï¿½versï¿½
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
 
 library(coda)
 library(boot)
@@ -767,7 +767,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Rï¿½cupï¿½ration des caluls rï¿½alisï¿½s dans le cadre de la modï¿½lisation Poutï¿½s 50%
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
 
 
 #les juv_vichy,alagnon,langeac,poutes du load ne commencent qu'ï¿½ t=43 (T+2) on recrï¿½ï¿½ le t=42 (T+1)
@@ -818,8 +818,8 @@ for (t in (T+1):(T+20)){
 #-------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_Survival50_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_Survival50_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_Survival50_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_Survival50_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 #----------------------------
@@ -1068,7 +1068,7 @@ dev.off()
 # CHAP : Figure : Rï¿½partitions des Gï¿½niteurs dans les diffï¿½rents secteurs
 #=========================================================================
 #Modï¿½le 2017.03.23_4zones_Interaction - interaction rï¿½ciproque juv sauvage/dï¿½versï¿½
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
 
 library(coda)
 library(boot)
@@ -1087,7 +1087,7 @@ S_langeac_real=read.coda("S_langeacCODAchain1.txt","S_langeacCODAindex.txt")
 #On rï¿½cupï¿½re les donnï¿½es du modï¿½le directement dans le fichier data
 library(coda) 
 require(stringr)
-bugs2jags(str_c("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/","data.txt"),"data_4zones_Interaction.R")
+bugs2jags(str_c("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/","data.txt"),"data_4zones_Interaction.R")
 source("data_4zones_Interaction.R")
 head(N) #ï¿½a marche !
 
@@ -1178,7 +1178,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Rï¿½cupï¿½ration des caluls rï¿½alisï¿½s dans le cadre de la modï¿½lisation Poutes 50%
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie50_2017_04_28.RData")
 
 N_vichy_q<-array(0,c(T+20,5))
 
@@ -1217,8 +1217,8 @@ for (t in (T+1):(T+20)){
 #---------------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_Survival50_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_Survival50_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_Survival50_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_Survival50_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 #..........
@@ -1493,14 +1493,14 @@ dev.off()
 # AUGMENTATION DE 100% DU NIVEAU INITIAL
 #========================================
 #Modï¿½le 2016_12_06_Alagnon
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/")
 #Modï¿½le 2016_12_19_Alagnon - correction ratio_juv_prod
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon/")
 #Modï¿½le 2017.03.23_4zones_Interaction - interaction rï¿½ciproque juv sauvage/dï¿½versï¿½
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
 #Modï¿½le 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 
 library(coda)
@@ -1964,16 +1964,16 @@ for (t in (T+7):(T+20)){
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2017_12_12.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie100_2017_04_28.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_19.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_14.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie100_2016_12_09.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/2014.12.05_OuverturePoutes.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_19.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie100_2017_04_28.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2017_12_12.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2017_12_12.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie100_2017_04_28.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_19.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_14.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_AmeliorationSurvie100_2016_12_09.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/2014.12.05_OuverturePoutes.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_Alagnon_AmeliorationSurvie100_cor_juv_2016_12_19.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie100_2017_04_28.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2017_12_12.RData")
 
 #On agglomï¿½re les 2 matrix juv_tot_ et bugs_juv_tot_ pour avoir un tableau complet sur la pï¿½riode
 juv_tot_vichy_tot=array(0,dim=c(5000,T+20))
@@ -2018,9 +2018,9 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/100ImprovementSurvival_TotalReturns_proj20years_2016_12_09.png",width=800,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/100ImprovementSurvival_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/100ImprovementSurvival_TotalReturns_proj20years_2017_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/100ImprovementSurvival_TotalReturns_proj20years_2016_12_09.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/100ImprovementSurvival_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/100ImprovementSurvival_TotalReturns_proj20years_2017_12_12.png",width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main=iconv("Projection ï¿½ 20 ans sans repeuplement & Amï¿½lioration de la survie \
 						jusqu'ï¿½ 100% du taux de survie initial","UTF8"),cex.lab=1.5)
@@ -2125,9 +2125,9 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/100ImprovementSurvival_Threshold_2016_12_09.png",width=800,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/100ImprovementSurvival_Threshold_2017_04_28.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/100ImprovementSurvival_Threshold_2017_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_06_Alagnon/100ImprovementSurvival_Threshold_2016_12_09.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/100ImprovementSurvival_Threshold_2017_04_28.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/100ImprovementSurvival_Threshold_2017_12_12.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2173,7 +2173,7 @@ dev.off()
 # CHAP : Figure : Rï¿½partitions des Juvï¿½niles dans les diffï¿½rents secteurs
 #=========================================================================
 #Modï¿½le 2017.03.23_4zones_Interaction - interaction rï¿½ciproque juv sauvage/dï¿½versï¿½
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
 
 library(coda)
 library(boot)
@@ -2253,7 +2253,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Rï¿½cupï¿½ration des caluls rï¿½alisï¿½s dans le cadre de la modï¿½lisation Poutï¿½s 50%
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie100_2017_04_28.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_AmeliorationSurvie100_2017_04_28.RData")
 
 
 #les juv_vichy,alagnon,langeac,poutes du load ne commencent qu'ï¿½ t=43 (T+2) on recrï¿½ï¿½ le t=42 (T+1)
@@ -2304,8 +2304,8 @@ for (t in (T+1):(T+20)){
 #-------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_Survival100_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_Survival100_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_Survival100_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_Survival100_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 
@@ -2698,8 +2698,8 @@ for (t in (T+1):(T+20)){
 #---------------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_Survival100_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_Survival100_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_Survival100_2017_04_28.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_Survival100_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 #..........

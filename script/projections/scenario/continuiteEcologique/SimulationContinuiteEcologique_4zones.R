@@ -8,12 +8,12 @@
 #================
 
 #Modèle 2017.05.03_4zones_Interaction
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 #Modèle 2017.05.03_4zones_Interaction_ss_rho_poutes
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/")
 #Modèle 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 library(coda)
 library(boot)
@@ -547,11 +547,11 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que �a ma
   }
 }
 
-#save.image(file = "C:/Users/ecobiop/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
+#save.image(file = "C:/Users/utilisateur/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
 
-#load("C:/Users/ecobiop/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
-load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
+#load("C:/Users/utilisateur/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
 
 
 
@@ -1071,9 +1071,9 @@ for (t in (T+7):(T+20)){#juste pour le test mettre +20 quand on voit que �a ma
 	}
 }
 
-save.image(file = "C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
+save.image(file = "C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
 
-load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
+load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
 
 
 #==========================================================
@@ -1105,10 +1105,10 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/ContinuiteEcologique_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/ContinuiteEcologique_TotalReturns_proj20years_2017_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/ContinuiteEcologique_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/ContinuiteEcologique_TotalReturns_proj20years_2017_12_12.png",width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Improvement of upstream and downstream migration",cex.lab=1.5)
 
@@ -1213,10 +1213,10 @@ for (t in 1:20){
 #------------------------
 # Graph
 #-----------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_Threshold_2017_04_28.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_Threshold_2017_05_04.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/ContinuiteEcologique_Threshold_2017_05_04.png",width=800,height=800)
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/ContinuiteEcologique_Threshold_2017_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_Threshold_2017_04_28.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_Threshold_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/ContinuiteEcologique_Threshold_2017_05_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/ContinuiteEcologique_Threshold_2017_12_12.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1264,7 +1264,7 @@ dev.off()
 # CHAP : Figure : R�partitions des Juv�niles dans les diff�rents secteurs
 #=========================================================================
 #Mod�le 2017.03.23_4zones_Interaction - interaction r�ciproque juv sauvage/d�vers�
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 
 library(coda)
 library(boot)
@@ -1361,8 +1361,8 @@ max(ratio_juv_tot_q3)
 # PARTIE PROJECTION
 
 #R�cup�ration des caluls r�alis�s dans le cadre de la mod�lisation ContinuiteEcologique
-  #load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
-  #load("C:/Users/ecobiop/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
+  #load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
+  #load("C:/Users/utilisateur/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
 
 
 
@@ -1431,9 +1431,9 @@ max(ratio_juv_tot_q3)
 #-------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/RepartitionSpatialeJuv_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_ContinuiteEcologique_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/RepartitionSpatialeJuv_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_ContinuiteEcologique_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 
@@ -1683,7 +1683,7 @@ dev.off()
 # CHAP : Figure : R�partitions des G�niteurs dans les diff�rents secteurs
 #=========================================================================
 #Mod�le 2017.03.23_4zones_Interaction - interaction r�ciproque juv sauvage/d�vers�
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 
 library(coda)
 library(boot)
@@ -1702,7 +1702,7 @@ S_langeac_real=read.coda("S_langeacCODAchain1.txt","S_langeacCODAindex.txt")
 #On r�cup�re les donn�es du mod�le directement dans le fichier data
 #library(coda) 
 #require(stringr)
-#bugs2jags(str_c("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/","data.txt"),"data_4zones_Interaction.R")
+#bugs2jags(str_c("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/","data.txt"),"data_4zones_Interaction.R")
 #source("data_4zones_Interaction.R")
 #head(N) #�a marche !
 
@@ -1794,8 +1794,8 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #R�cup�ration des caluls r�alis�s dans le cadre de la mod�lisation ContinuiteEcologique
-  #load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
-  load("C:/Users/ecobiop/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
+  #load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
+  load("C:/Users/utilisateur/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
 
 N_vichy_q<-array(0,c(T+20,5))
 
@@ -1837,9 +1837,9 @@ max(ratio_S_vichy_q[,3])
 #---------------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/RepartitionSpatialeGen_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_ContinuiteEcologique_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/RepartitionSpatialeGen_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_ContinuiteEcologique_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 #..........

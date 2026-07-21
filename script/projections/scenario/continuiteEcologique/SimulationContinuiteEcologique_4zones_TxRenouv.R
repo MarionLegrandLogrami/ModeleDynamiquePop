@@ -8,29 +8,29 @@
 #================
 
 #Modèle 2017.05.03_4zones_Interaction
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 #Modèle 2017.05.03_4zones_Interaction_ss_rho_poutes
-setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/")
+setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/")
 #Modèle 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 #Modèle 2019.12.12_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2018
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
 # surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-2))) #T-2 pour calculer sur T+27 année
 # S_juv_JP<-matrix(surf,nrow=4)	
 
 #Modèle 2021_09 MAJ 2020
-setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/")
-datawd<-("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/")
-imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/"
+setwd(here::here("data/CODA/2021_09/"))
+datawd<-(here::here("data/CODA/2021_09/"))
+imgwd<-here::here("img/Simulation/2021_09/")
 
 library(coda)
 library(boot)
 T=46
 
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+source(here::here("script/fonctions/fct_graph.R"))
+source(here::here("script/fonctions/fct_data.R"))
 
 S_juv_JP<-keep_good_surf(surf_2021=TRUE)
 
@@ -572,22 +572,22 @@ for (t in (T+6):(T+20)){
 #   }
 # }
 
-#save.image(file = "C:/Users/ecobiop/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2018_06_26.RData")
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2019_03_22.RData")
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_TEST_ameliorationSurv_2020_01_09.RData")
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_04_04.RData")
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_05_04.RData") #correction sur calcul juv_tot_poutes
+#save.image(file = "C:/Users/utilisateur/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2018_06_26.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2019_03_22.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_TEST_ameliorationSurv_2020_01_09.RData")
+#save.image(file = here::here("2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_04_04.RData"))
+save.image(file = here::here("2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_05_04.RData")) #correction sur calcul juv_tot_poutes
 
 
-#load("C:/Users/ecobiop/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
-#load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
-#load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2019_03_22.RData")
-#load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
-#load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_04_04.RData")
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_05_04.RData") #correction sur calcul juv_tot_poutes
+#load("C:/Users/utilisateur/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2019_03_22.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
+#load(file = here::here("2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_04_04.RData"))
+load(file = here::here("2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_05_04.RData")) #correction sur calcul juv_tot_poutes
 
 #=================================
 # Taux renouvellement population
@@ -823,8 +823,8 @@ for (t in 7:(T+20)) {
   renew_rate_w_coef_q[t,]=quantile(renew_rate_w_coef[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-#pour dessiner le graph on fait appel à la fonction du script "D:/Documents/Workspace_eclipse/ModeleDynamiquePopscript/fonction/fct_graph.R"
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+#pour dessiner le graph on fait appel à la fonction du script "script/fonction/fct_graph.R"
+source(here::here("script/fonctions/fct_graph.R"))
 draw_indic_tx_ren(tx_renouv=renew_rate_w_coef,simulation=TRUE,scenario="Amélioration de la continuité écologique montaison+dévalaison",png=TRUE,pngName = "TauxRenouvellementPopSauvage_CE_corrige_2022_05_03")
 
 ###SANS enregistrer
@@ -837,7 +837,7 @@ data_renew_rate_w_coef$iteration<-1:5000
 cbind(data_renew_rate_w_coef[ncol(data_renew_rate_w_coef)],stack(data_renew_rate_w_coef[1:ncol(data_renew_rate_w_coef)-1]))
 
 ### A transformer en fonction quand j'aurai le temps
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_boxplot_2022_07_04.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_boxplot_2022_07_04.png"),width=1000,height=800)
 #par("mar"=c(7.1, 5.1, 4.1, 2.1))
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5-6),(T+20.5-6)),xlab="Année",ylim=c(0,2),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -871,7 +871,7 @@ exp(mean(renew_rate_w_coef[,(T+20-6-4):(T+20-6)]))
 #--------------------------------------
 # Tx renouvellement Population TOTALE
 #--------------------------------------
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_05_04.RData") #correction sur calcul juv_tot_poutes
+load(file = here::here("2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_ContinuiteEcologique_2022_05_04.RData")) #correction sur calcul juv_tot_poutes
 
 
 library(stringr)
@@ -1040,11 +1040,11 @@ for (t in (T+1):(T+20)){
 }
 
 #Pour faire graph sur ensemble de la période il faut récupérer la partie rétrospective
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/renew_rate_coef_tot_2021_09.Rdata")
+load(file=here::here("renew_rate_coef_tot_2021_09.Rdata"))
 
 #On fusionne les jeux de données renew_rate et renew_rate_coef pour reconstituer toute la série
 renew_rate_ce<-cbind(renew_rate_coef[,1:(T-6)],renew_rate[,(T-5):(T+20)])
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+source(here::here("script/fonctions/fct_graph.R"))
 draw_indic_tx_ren(tx_renouv=renew_rate_ce,simulation=TRUE,scenario="Amélioration continuité écologique montaison+dévalaison",
                   typ_pop = "Totale",png=TRUE,pngName="TauxRenouvellementPopTotale_CE_2022_05_06")
 
@@ -1075,7 +1075,7 @@ exp(mean(rowMeans(renew_rate[,(T+16):(T+20)]))) #0.95
 # }
 # rownames(renew_rate_q_5yr)<-c(str_c("",1975+T,"-",1975+T+4,""),str_c("",1975+T+5,"-",1975+T+9,""),str_c("",1975+T+10,"-",1975+T+14,""),str_c("",1975+T+15,"-",1975+T+19,""))
 # 
-# png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_5yrs.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_5yrs.png",width=1000,height=800)
 # par("mar"=c(10.1,5.1,3.1,1.1))
 # plot(renew_rate_q_5yr,axes=FALSE,ylim=c(0.8,1.2),xlab="",ylab="Taux renouvellement",main=iconv("Taux de renouvellement de la population sauvage (moyenne des médianes sur 5 ans)","UTF8"),cex.lab=1.5)
 # axis(1,at = seq(1,(20/5),1),
@@ -1104,7 +1104,7 @@ exp(mean(rowMeans(renew_rate[,(T+16):(T+20)]))) #0.95
 # #on créé une fonction pour arrondir le min(L_renew_rate_q_5yr) à la décimal du dessous la plus proche. ex min(L_renew_rate_q_5yr)=-0.43 et on veut arrondir à -0.5
 # floor_dec <- function(x, level=1) round(x - 5*10^(-level-1), level)
 # 
-# png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_5yrs_log.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_5yrs_log.png",width=1000,height=800)
 # par("mar"=c(10.1,5.1,3.1,1.1))
 # plot(L_renew_rate_q_5yr,axes=FALSE,xlab="",ylim=c(-0.2,0.2),ylab=iconv("Taux renouvellement (échelle log)","UTF8"),main=iconv("Taux de renouvellement de la population sauvage (log de la moyenne des médianes sur 5 ans)","UTF8"),cex.lab=1.5)
 # axis(1,at = seq(1,(20/5),1),
@@ -1150,12 +1150,12 @@ mean(N_vichy[,(T+20-4):(T+20)]) #451
 #------------------
 # Graph
 #------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/ContinuiteEcologique_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/ContinuiteEcologique_TotalReturns_proj20years_2017_12_12.png",width=800,height=800)
-#png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/ContinuiteEcologique_TotalReturns_proj20years_2022_04_04.png",width=800,height=800)
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/ContinuiteEcologique_TotalReturns_proj20years_2022_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_TotalReturns_proj20years_2017_04_28.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/ContinuiteEcologique_TotalReturns_proj20years_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/ContinuiteEcologique_TotalReturns_proj20years_2017_12_12.png",width=800,height=800)
+#png(filename=here::here("img/Simulation/2021_09/ContinuiteEcologique_TotalReturns_proj20years_2022_04_04.png"),width=800,height=800)
+png(filename=here::here("img/Simulation/2021_09/ContinuiteEcologique_TotalReturns_proj20years_2022_05_04.png"),width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Improvement of upstream and downstream migration",cex.lab=1.5)
 
@@ -1268,11 +1268,11 @@ for (t in 1:20){
 #------------------------
 # Graph
 #-----------------------
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_Threshold_2017_04_28.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_Threshold_2017_05_04.png",width=800,height=800)
-#png(filename="C:/Users/ecobiop/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/ContinuiteEcologique_Threshold_2017_05_04.png",width=800,height=800)
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/ContinuiteEcologique_Threshold_2017_12_12.png",width=800,height=800)
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/ContinuiteEcologique_Threshold_2022_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_03_23_4zones_Interaction/50poutes_Threshold_2017_04_28.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/ContinuiteEcologique_Threshold_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/ContinuiteEcologique_Threshold_2017_05_04.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/ContinuiteEcologique_Threshold_2017_12_12.png",width=800,height=800)
+png(filename=here::here("img/Simulation/2021_09/ContinuiteEcologique_Threshold_2022_05_04.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1323,7 +1323,7 @@ mean(p_under_50_vichy[16:20]) #0.0122
 # CHAP : Figure : Répartitions des juvéniles dans les différents secteurs
 #=========================================================================
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-#setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+#setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 # surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-8)))
 # S_juv_JP<-matrix(surf,nrow=4)	
 
@@ -1422,8 +1422,8 @@ max(ratio_juv_tot_q3)
 # PARTIE PROJECTION
 
 #Récupération des caluls réalisés dans le cadre de la modélisation ContinuiteEcologique
-  #load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
-  #load("C:/Users/ecobiop/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
+  #load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
+  #load("C:/Users/utilisateur/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
 
 
 
@@ -1492,10 +1492,10 @@ max(ratio_juv_tot_q3)
 #-------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/RepartitionSpatialeJuv_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_ContinuiteEcologique_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
-png(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/simulation/2021_09/RepartitionSpatialeJuv_ContinuiteEcologique_2022_04_05.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/RepartitionSpatialeJuv_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeJuv_ContinuiteEcologique_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
+png(file=here::here("img/simulation/2021_09/RepartitionSpatialeJuv_ContinuiteEcologique_2022_04_05.png"),width=800, height=1500, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 
@@ -1745,7 +1745,7 @@ dev.off()
 # CHAP : Figure : Répartitions des géniteurs dans les différents secteurs
 #=========================================================================
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-#setwd("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
+#setwd("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/")
 # surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-8)))
 # S_juv_JP<-matrix(surf,nrow=4)	
 
@@ -1765,7 +1765,7 @@ S_langeac_real=read.coda("S_langeacCODAchain1.txt","S_langeacCODAindex.txt")
 #On récupère les données du Modèle directement dans le fichier data
 #library(coda) 
 #require(stringr)
-#bugs2jags(str_c("C:/Users/ecobiop/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/","data.txt"),"data_4zones_Interaction.R")
+#bugs2jags(str_c("C:/Users/utilisateur/Desktop/Marion/CODA/2017_03_23_4zones_Interaction_new/","data.txt"),"data_4zones_Interaction.R")
 #source("data_4zones_Interaction.R")
 #head(N) #ça marche !
 
@@ -1857,8 +1857,8 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Récupération des caluls réalisés dans le cadre de la modélisation ContinuiteEcologique
-  #load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
-  load("C:/Users/ecobiop/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
+  #load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
+  load("C:/Users/utilisateur/Desktop/Marion/2017_05_03_ss_rho_poutes_ContinuiteEcologique_2017_05_04.RData")
 
 N_vichy_q<-array(0,c(T+20,5))
 
@@ -1900,10 +1900,10 @@ max(ratio_S_vichy_q[,3])
 #---------------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/ecobiop/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/RepartitionSpatialeGen_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_ContinuiteEcologique_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
-png(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/simulation/2021_09/RepartitionSpatialeGen_ContinuiteEcologique_2022_04_05.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/Desktop/Marion/img/2017_05_04_4zones_Interaction_ss_rho_poutes/RepartitionSpatialeGen_ContinuiteEcologique_2017_05_04.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/RepartitionSpatialeGen_ContinuiteEcologique_2017_12_12.png",width=800, height=1500, units = "px",type="cairo")
+png(file=here::here("img/simulation/2021_09/RepartitionSpatialeGen_ContinuiteEcologique_2022_04_05.png"),width=800, height=1500, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 #..........
@@ -2687,9 +2687,9 @@ for (t in (T+7):(T+26)){
 	}
 }
 
-save.image(file = "C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
+save.image(file = "C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
 
-load("C:/Users/ecobiop/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
+load("C:/Users/utilisateur/Desktop/Marion/2017_03_23_ContinuiteEcologique_2017_05_04.RData")
 
 
 

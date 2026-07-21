@@ -6,7 +6,7 @@
 #!!!!!!!!!!!!!!!!!!!!!!!!#
 # FIXME: libraries + path 
 #!!!!!!!!!!!!!!!!!!!!!!!!#
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_05_30")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_05_30")
 
 library(lattice)
 library(coda)
@@ -1441,7 +1441,7 @@ for (t in 1:42){
 		#----------------------
 		# sans projections
 		#----------------------
-		png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/_outputAllier_Spawners_ReturnsVichy.png",width=800, height=800, units = "px",type="cairo")
+		png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/_outputAllier_Spawners_ReturnsVichy.png",width=800, height=800, units = "px",type="cairo")
 		par(mar=c(4,7.1,2,4),col.lab="grey25",col.axis="grey55",col.main="grey25")
 		
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="Adults returns at Vichy",cex.lab=1.5)
@@ -3665,7 +3665,7 @@ S_poutes_counter=c(0,0,
 
 
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/_dd.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/_dd.png",width=800,height=800)
 par(mfrow=c(1,1),mar=c(4,7.1,2,0.5))
 
 

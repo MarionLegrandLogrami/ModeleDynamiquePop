@@ -2,10 +2,10 @@
 # 
 # Author: marion.legrand
 ###############################################################################
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200")
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_11_26")
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_standard")
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_11_26")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_standard")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200")
 
 library(coda)
 library(boot)
@@ -36,7 +36,7 @@ for (i in 1:T){
 }
 
 max(juv_tot_q)
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/ProdJuvTot.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/ProdJuvTot.png",width=800, height=800, units = "px",type="cairo")
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,500000),ylab="",main="total 0+ juvenile production (wild + stocked)")
 
 # trace l'axe des ordonn�es
@@ -97,7 +97,7 @@ for (i in 1:T){
 
 max(juv_wild_tot_q)
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/ProdJuvTot_WILD.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/ProdJuvTot_WILD.png",width=800, height=800, units = "px",type="cairo")
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,500000),ylab="",main="total wild 0+ juvenile production")
 
 # trace l'axe des ordonn�es
@@ -168,7 +168,7 @@ max(juv_V_q)#352108.6
 max(juv_L_q)#183536.9
 max(juv_P_q)#225391.8
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot.png",width=800, height=800, units = "px",type="cairo")
 par(mfrow=c(3,1))
 	#Vichy
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,400000),ylab="",main="total 0+ juvenile production at Vichy (wild+stocked)")
@@ -332,7 +332,7 @@ max(juv_P_q)#225391.8
 	}
 	
 	
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatiale_juv_totaux_ratio.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatiale_juv_totaux_ratio.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(4,1))
 
 	#Juv totaux tous secteurs
@@ -557,7 +557,7 @@ for (t in 1:T){
 }
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatiale_juv_totaux_ratio_acDevalaison.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatiale_juv_totaux_ratio_acDevalaison.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(4,1))
 
 #Juv totaux tous secteurs
@@ -712,7 +712,7 @@ max(juv_wild_V_q)#336430.2
 max(juv_wild_L_q)#183536.9
 max(juv_wild_P_q)#123462.4
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD.png",width=800, height=800, units = "px",type="cairo")
 par(mfrow=c(3,1))
 #Vichy
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,400000),ylab="",main="total wild 0+ juvenile production at Vichy")
@@ -864,7 +864,7 @@ for (t in 1:T){
 		ratio_juv_wild_P_q[t,]=quantile(ratio_juv_wild_P[,t],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
 	}
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD_ratio_même échelle.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD_ratio_même échelle.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(4,1))
 	#Juv tot sauvage
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,500000),ylab="",main="total wild 0+ juvenile production")
@@ -1075,7 +1075,7 @@ for (t in 1:T){
 	ratio_juv_wild_P_q[t,]=quantile(ratio_juv_wild_P[,t],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
 }
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD_ratio_acDevalaison.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD_ratio_acDevalaison.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(4,1))
 #Juv tot sauvage
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,500000),ylab="",main="total wild 0+ juvenile production with mortalities at the hydropower dams")
@@ -1331,7 +1331,7 @@ for (t in 1:T){
 }
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeGéniteurs_ratio.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeGéniteurs_ratio.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(4,1))
 	#..........
 	# Nb total
@@ -1481,7 +1481,7 @@ dev.off()
 
 	#---------- Avec projection --------------#
 #Récupération des caluls réalisés dans le cadre de la modélisation sans déversement sur le modèle standard
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_12_04_Standard_ProjectionSansRepeuplement_2015.12.08.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_12_04_Standard_ProjectionSansRepeuplement_2015.12.08.RData")
 
 
 

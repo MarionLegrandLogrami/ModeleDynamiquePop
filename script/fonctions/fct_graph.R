@@ -374,10 +374,10 @@ draw_indic_tx_ren_boxplot<-function(tx_renouv,pngName,Tyear=T,typ_pop="sauvage",
   return(output)
 }
 # 
-# png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_boxplot_2022_04_05.png",width=1000,height=800)
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_boxplot.png",width=1000,height=800)
-# #png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique.png",width=1000,height=800)
-# #png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
+# png(filename=here::here("img/Simulation/2021_09/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_boxplot_2022_04_05.png"),width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_boxplot.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 # par("mar"=c(7.1, 5.1, 4.1, 2.1))
 # plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5-5),(T+20.5-5)),xlab="Years",ylim=c(-2,2),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 # 

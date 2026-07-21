@@ -5,7 +5,7 @@
 
 
 #Modèle 2015_01_24
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/")
 library(coda)
 library(boot)
 T=39
@@ -116,7 +116,7 @@ tab3<-merge(tab,tab2,by=c("id","variable"),all.y=FALSE)
 #on réordonne
 tab3<-tab3[order(tab3[,2], tab3[,1]), ]
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/CorrSurvie0+Ad_AlvDev_2015.07.02_2.pdf",width=7,height=7)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/CorrSurvie0+Ad_AlvDev_2015.07.02_2.pdf",width=7,height=7)
 		plot(as.matrix(tab3[3]),as.matrix(tab3[4]),xlab="residus survie 0+-Adulte",ylab="Ratio alevins deverses/juveniles total",col=rgb(0,0,0,0.1))
 
 dev.off()
@@ -132,7 +132,7 @@ for (i in 1:5000){
 	cor[i]=cor(tab3[tab3$id==i,3],tab3[tab3$id==i,4])
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/CorrSurvie0+Ad_AlvDev_2015.07.06.pdf",width=7,height=7)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/CorrSurvie0+Ad_AlvDev_2015.07.06.pdf",width=7,height=7)
 hist(cor)
 dev.off()
 

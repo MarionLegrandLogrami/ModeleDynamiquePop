@@ -35,10 +35,10 @@
 %=================================================================================
 
 << init, echo=FALSE, eval=FALSE,results=hide >>=
-	setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop")
+	setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop")
 	
-	m2014_12_05<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/"#2014_12_05
-	imgwd_2014_12_05<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_12_05_Poutes/"
+	m2014_12_05<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/"#2014_12_05
+	imgwd_2014_12_05<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2014_12_05_Poutes/"
 	
 	captrois<-iconv("Modèle 2014_12_05","UTF-8","LATIN1")
 
@@ -474,7 +474,7 @@ for (i in 12:T){
 	p_poutes_q_m2014_12_05[i,]=quantile(p_poutes_m2014_12_05[,i-11],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2014.12.05.RData")#file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/wspace.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2014.12.05.RData")#file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/wspace.RData")
 @
 
 << init, echo=FALSE, eval=FALSE,results=hide >>=

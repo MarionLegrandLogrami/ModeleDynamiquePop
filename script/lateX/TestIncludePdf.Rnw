@@ -41,10 +41,10 @@
 
 \maketitle
 <<init, echo=FALSE, eval=TRUE,results=hide >>=
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX") 
-datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"
-imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/"
-tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/tab/2015_01_24_thin200/"
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX") 
+datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"
+imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015_01_24/"
+tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/tab/2015_01_24_thin200/"
 
 library(coda)
 library(lattice)

@@ -26,7 +26,7 @@
 \usepackage{pdflscape}
 \usepackage[font={it}]{caption}% pour des l?gendes en italique
 \usepackage{graphicx}
-\graphicspath{{illustrations/2016/}{C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_12_19_Alagnon/}}
+\graphicspath{{illustrations/2016/}{C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_12_19_Alagnon/}}
 %donne les chemins d'acc?s pour l'emplacement des images, on peut en donner plusieurs 
 
 \usepackage{tikz}
@@ -118,11 +118,11 @@
 \SweaveOpts{concordance=TRUE}
 
 <<init, echo=FALSE, eval=TRUE,results=hide >>=
-##Les CODA du mod?le d?finitif pour ce rapport = C:/Users/logrami/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/script/lateX") 
-datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/"
-imgwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/"
-tabwd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/script/lateX/tab/2016/"
+##Les CODA du mod?le d?finitif pour ce rapport = C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX") 
+datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/"
+imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/"
+tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/tab/2016/"
 
 library(coda)
 library(lattice)

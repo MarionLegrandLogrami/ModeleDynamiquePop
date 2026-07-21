@@ -4,7 +4,7 @@
 ###############################################################################
 
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
 
 library(coda)
 library(boot)
@@ -87,7 +87,7 @@ max(juv_P_q)#283883
 	}
 	
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatiale_juv_totaux_ratio.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatiale_juv_totaux_ratio.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 	#Juv totaux tous secteurs
@@ -241,7 +241,7 @@ dev.off()
 ###############################################################################################
 
 #Récupération des caluls réalisés dans le cadre de la modélisation sans déversement sur le modèle standard
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_ProjectionSansRepeuplementAlagnon_InteractionReciproque_2017_04_25.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_ProjectionSansRepeuplementAlagnon_InteractionReciproque_2017_04_25.RData")
 
 #les juv_vichy,alagnon,langeac,poutes du load ne commencent qu'à t=43 (T+2) on recréé le t=42 (T+1)
 for (t in (T+1):(T+1)){
@@ -288,7 +288,7 @@ for (t in (T+1):(T+20)){
 }
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatiale_juv_totaux_ratio_proj20years.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatiale_juv_totaux_ratio_proj20years.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 #Juv totaux tous secteurs
@@ -441,7 +441,7 @@ dev.off()
 # Figure avec période jusqu'à T puis de T à T+20
 #====================================================
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatiale_juv_totaux_ratio_serieTemp&proj20years.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatiale_juv_totaux_ratio_serieTemp&proj20years.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 #----------------------------
@@ -699,7 +699,7 @@ S_langeac_real=read.coda("S_langeacCODAchain1.txt","S_langeacCODAindex.txt")
 
 library(coda) 
 require(stringr)
-bugs2jags(str_c("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/","data.txt"),"data_4zones_Interaction.R")
+bugs2jags(str_c("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/","data.txt"),"data_4zones_Interaction.R")
 source("data_4zones_Interaction.R")
 head(N) #ça marche !
 
@@ -786,7 +786,7 @@ for (t in 1:T){
 }
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGéniteurs_ratio.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGéniteurs_ratio.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(5,1))
 	#..........
 	# Nb total
@@ -972,7 +972,7 @@ dev.off()
 ###############################################################################################
 
 #Récupération des caluls réalisés dans le cadre de la modélisation sans déversement sur le modèle standard
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_23_ProjectionSansRepeuplementAlagnon_InteractionReciproque_2017_04_25.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_23_ProjectionSansRepeuplementAlagnon_InteractionReciproque_2017_04_25.RData")
 
 N_vichy_q<-array(0,c(T+20,5))
 
@@ -1009,7 +1009,7 @@ for (t in (T+1):(T+20)){
 
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGéniteurs_ratio_proj20years.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGéniteurs_ratio_proj20years.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 #..........
 # Nb total
@@ -1179,7 +1179,7 @@ dev.off()
 # Figure avec période jusqu'à T puis de T à T+20
 #====================================================
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGéniteurs_ratio_serieTemp&proj20years.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGéniteurs_ratio_serieTemp&proj20years.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 #..........
 # Nb total

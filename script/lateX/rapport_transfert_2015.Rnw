@@ -110,11 +110,11 @@
 \begin{document}
 
 <<init, echo=FALSE, eval=TRUE,results=hide >>=
-##Les CODA du modèle définitif pour ce rapport = C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX") 
-datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/"
-imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015/"
-tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/tab/2015/"
+##Les CODA du modèle définitif pour ce rapport = C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_standard_thin200
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX") 
+datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/"
+imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2015/"
+tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/tab/2015/"
 
 library(coda)
 library(lattice)
@@ -291,7 +291,7 @@ if (chunk_true==1){
 	plot(x,f,type="l",ylab="")
 	dev.off()
 	
-	rho_surv=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_03_01/rho_surv_juvCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_03_01/rho_surv_juvCODAindex.txt")
+	rho_surv=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_03_01/rho_surv_juvCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_03_01/rho_surv_juvCODAindex.txt")
 	pdf(file=str_c(imgwd,"rho_surv.pdf"),width=8,height=5)
 	plot(rho_surv,main="surv")
 	dev.off()
@@ -1132,7 +1132,7 @@ réalisés afin de renforcer la robustesse de cette relation.
 #(ça évite de pourrir mon rapport rnw) afin de générer le pdf dans sweave (sinon il ne gère pas les accents)
 if(chunk_true==1){
 	
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/SpawnersRedds_GeniteursPotentiels_2016.03.07.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/SpawnersRedds_GeniteursPotentiels_2016.03.07.RData")
 
 #Graph with all years
 surf=c(rep(c(916866,250441,0),11),rep(c(916866,250441,301101),12),rep(c(916866,250441,383049),6),rep(c(1202540,250441,383049),(T-29)))
@@ -1324,7 +1324,7 @@ toutefois un léger excédent de géniteurs depuis 3 ans dans cette zone).
 #je créé un save.image à partir du script figures_modèle_VF.R afin de ne réintégrer que le load 
 #(ça évite de pourrir mon rapport rnw) afin de générer le pdf dans sweave (sinon il ne gère pas les accents)
 if (chunk_true==1){
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2016.03.07.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/Redds_kappa_2016.03.07.RData")
 
 ###########################
 #plot zone_effect /kappa
@@ -1454,7 +1454,7 @@ if (chunk_true==1){
 	
 #je créé un save.image à partir du script figures_modèle_VF.R afin de ne réintégrer que le load 
 #(ça évite de pourrir mon rapport rnw) afin de générer le pdf dans sweave (sinon il ne gère pas les accents)
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/dd_2016.03.08.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/dd_2016.03.08.RData")
 
 pdf(file=str_c(imgwd,"dd_2016_03_08.pdf"))#,width=800,height=800)
 par(mfrow=c(2,1),mar=c(4,5.5,2,1.5))
@@ -1536,7 +1536,7 @@ répartition des géniteurs et celle des juvéniles}
 if (chunk_true==1){
 	
 #Recopié du script figures_model_VF
-	load("C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/JuvProdRatioGeni_2016.03.08.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/JuvProdRatioGeni_2016.03.08.RData")
 	
 	pdf(file=str_c(imgwd,"JuvProdRatioGeni_2016_03_08.pdf"))
 	par(mfrow=c(3,3),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
@@ -1964,7 +1964,7 @@ if (chunk_true==1){
 
 #je créé un save.image à partir du script figures_modèle_VF.R afin de ne réintégrer que le load 
 #(ça évite de pourrir mon rapport rnw) afin de générer le pdf dans sweave (sinon il ne gère pas les accents)
-load(file = "C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/data/SurvivalJuv2Ad_2016.03.08.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/SurvivalJuv2Ad_2016.03.08.RData")
 
 palette_s=rainbow(15,start=0.1,end=2/6)
 palette_s=rev(palette_s)
@@ -2448,7 +2448,7 @@ dev.off()
 if (chunk_true==1){
 	
 #Récupération du CSV qui synthétise les quantités alevinées (copier/coller du excel "deversements allier_récapitulatif_maj2015_11_17" onglet summary 3 sector
-alv<-read.csv("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/AlevinageSecteur.csv",sep=";")
+alv<-read.csv("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/AlevinageSecteur.csv",sep=";")
 alv$Secteur<-as.factor(alv$Secteur)
 #alv$Annee<-as.factor(alv$Annee)
 alv$sec<-0
@@ -2633,7 +2633,7 @@ if (chunk_true==1){
 # Retour vers le futur
 ################################################
 #On commence par faire tourner le script SimulationWithoutStocking_REtrospectiveAnalysis et enregistrer le Rdata
-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/data/2016_03_15_AnalyseRetro.Rdata")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/data/2016_03_15_AnalyseRetro.Rdata")
 N_vichy_real=read.coda(str_c(datawd,"2016_01_20_standard_thin200/simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"2016_01_20_standard_thin200/simulation/N_vichy_realCODAindex.txt"))
 
 N_vichy_real_q=array(NA,dim=c((T+20-15),5))
@@ -2899,7 +2899,7 @@ déversements}
 if(chunk_true==1){
 
 #On récupère les données du script ProjectionModelWhithoutStocking :
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_ProjectionSansRepeuplement_2016.03.11.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_ProjectionSansRepeuplement_2016.03.11.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -3097,7 +3097,7 @@ montaison et de dévalaison à Poutès}
 if(chunk_true==1){
 
 #On charge le jeu de données générés dans le script SimulationOuverturePoutes
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_Standard_OuverturePoutes50_2016_03_11.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_Standard_OuverturePoutes50_2016_03_11.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -3311,7 +3311,7 @@ suffisante pour assurer la viabilité de la population.
 #On récupère les data dans le script SimulationOuverturePoutes
 if(chunk_true==1){
 
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_OuverturePoutes100_2016_03_11.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_OuverturePoutes100_2016_03_11.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -3341,7 +3341,7 @@ for (t in (T+1):(T+20)){
 # Graph
 #------------------
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/100poutes_TotalReturns_proj20years_2016_01_20.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/100poutes_TotalReturns_proj20years_2016_01_20.pdf")#,width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Années",ylim=c(0,9000),ylab="Retours à Vichy",main="Projection à 20 ans sans repeuplement - Amélioration à la montaison \n et à la dévalaison à Poutès à hauteur de 100%",cex.lab=1.2)
 # trace l'axe des ordonnées
@@ -3425,7 +3425,7 @@ for (t in 1:20){
 	
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/100poutes_Threshold_2016_01_20.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/100poutes_Threshold_2016_01_20.pdf")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -3517,7 +3517,7 @@ dernières années, mais un doute persiste, sur le long terme, sur la viabilité de
 if (chunk_true==1){
 	
 #On récupère les données après lancement du script PROJECTION MODELE WITHOUT STOCKING + SURVIVAL IMPROVED
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie50_2016_03_14.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -3548,7 +3548,7 @@ for (t in (T+1):(T+20)){
 # Graph
 #------------------
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/50ImprovementSurvival_TotalReturns_proj20years_2016_03_14.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/50ImprovementSurvival_TotalReturns_proj20years_2016_03_14.pdf")#,width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Années",ylim=c(0,9000),ylab="Retours à Vichy",main="Projection à 20 ans sans repeuplement - Amélioration de la survie \n jusqu'à 50% du taux de survie initial",cex.lab=1.2)
 # trace l'axe des ordonnées
@@ -3632,7 +3632,7 @@ for (t in 1:20){
 	
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/50ImprovementSurvival_Threshold_2016_03_14.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/50ImprovementSurvival_Threshold_2016_03_14.pdf")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -3719,7 +3719,7 @@ période de projection (moyenne sur les 5 dernières années =
 if (chunk_true==1){
 	
 #On récupère les données après lancement du script PROJECTION MODELE WITHOUT STOCKING + SURVIVAL IMPROVED
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie100_2016_03_14.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_AmeliorationSurvie100_2016_03_14.RData")
 #============================
 # PROJECTION SUR LES 20 ANS 
 #============================
@@ -3749,7 +3749,7 @@ for (t in (T+1):(T+20)){
 # Graph
 #------------------
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/100ImprovementSurvival_TotalReturns_proj20years_2016_03_14.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/100ImprovementSurvival_TotalReturns_proj20years_2016_03_14.pdf")#,width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Années",ylim=c(0,9000),ylab="Retours à Vichy",main="Projection à 20 ans sans repeuplement - Amélioration de la survie  \n jusqu'à l'atteinte de son niveau initial",cex.lab=1.2)
 # trace l'axe des ordonnées
@@ -3833,7 +3833,7 @@ for (t in 1:20){
 	
 }
 
-pdf(file="C:/Users/logrami/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/100ImprovementSurvival_Threshold_2016_03_14.pdf")#,width=800,height=800)
+pdf(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/100ImprovementSurvival_Threshold_2016_03_14.pdf")#,width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -3945,8 +3945,8 @@ if (chunk_true==1){
 
 	###### MODELISATION AVEC REPARTITION DES JUVENILES AU PRORATA DES SURFACES DISPONIBLES ET PRISE EN COMPTE DE LA PRODUCTIVITE DES RIVIERES
 #On récupère les données après lancement du script SimulationMortalitéDevalaison
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_2016_03_14.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_Devalaison_ss_rho_poutes_Surf_thin200_2016_11_03.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_2016_03_14.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_Devalaison_ss_rho_poutes_Surf_thin200_2016_11_03.RData")
 #==========================================
 # CHAP : Figure : TotalReturns_proj20years
 #==========================================
@@ -4127,8 +4127,8 @@ if (chunk_true==1){
 
 	###### MODELISATION AVEC REPARTITION DES JUVENILES AU PRORATA DES SURFACES DISPONIBLES
 #On récupère les données après lancement du script SimulationMortalitéDevalaison
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_11_03_Devalaisonac_rho_poutes_Surf_thin200.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_07_01_Devalaisonac_rho_poutes_Surf_2016_12_21.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_11_03_Devalaisonac_rho_poutes_Surf_thin200.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_07_01_Devalaisonac_rho_poutes_Surf_2016_12_21.RData")
 #==========================================
 # CHAP : Figure : TotalReturns_proj20years
 #==========================================
@@ -4309,8 +4309,8 @@ if (chunk_true==1){
 
 	###### MODELISATION AVEC REPARTITION DES JUVENILES AU PRORATA DES SURFACES DISPONIBLES ET PRISE EN COMPTE DE LA PRODUCTIVITE DES RIVIERES
 #On récupère les données après lancement du script SimulationMortalitéDevalaison
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_DevalaisonAvecPoutes_Surf&Prod_2016_04_08.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_07_01_Devalaisonac_rho_poutes_Surf&Prod_2016_12_20.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_DevalaisonAvecPoutes_Surf&Prod_2016_04_08.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_07_01_Devalaisonac_rho_poutes_Surf&Prod_2016_12_20.RData")
 
 #==========================================
 # CHAP : Figure : TotalReturns_proj20years
@@ -4597,8 +4597,8 @@ juvéniles de la Dore}
 if (chunk_true==1){
 	#### REPARTITION DES JUVENILES AU PRORATA DES SURFACES + PRISE EN COMPTE DE LA PRODUCTIVITE DES COURS D'EAU
 #On récupère les données après lancement du script SimulationMortalitéDevalaison partie
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_ssDore_2016_03_17.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_07_01_Devalaisonac_rho_poutes_Surf&prod_0_dore_2016_12_21.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_ssDore_2016_03_17.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_07_01_Devalaisonac_rho_poutes_Surf&prod_0_dore_2016_12_21.RData")
 	
 #==========================================
 # CHAP : Figure : TotalReturns_proj20years

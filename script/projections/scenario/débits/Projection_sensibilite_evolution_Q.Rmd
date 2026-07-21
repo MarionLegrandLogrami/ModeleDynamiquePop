@@ -24,7 +24,7 @@ Une fois tout cela fait pour les différents scénarios de débits souhaité (il
 
 ```{r setup, eval=TRUE,echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
-knitr::opts_knit$set(root.dir="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/")
+knitr::opts_knit$set(root.dir=here::here("img/Simulation/2023_05/"))
 ```
 
 ```{r init_quick, eval=TRUE,echo=FALSE}
@@ -39,12 +39,12 @@ library(Rlab) #pour fonction rbern
 #......................................
 # Modèle avec distribution de mélange
 #......................................
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_09_01_Projection_sensibilite_evolution_Q_init_ModelMelange.Rdata")
+load(file=here::here("2023_09_01_Projection_sensibilite_evolution_Q_init_ModelMelange.Rdata"))
 
 #......................................
 # Modèle sans distribution de mélange
 #......................................
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_09_01_Projection_sensibilite_evolution_Q_init_WithoutModelMelange.Rdata")
+load(file=here::here("2023_09_01_Projection_sensibilite_evolution_Q_init_WithoutModelMelange.Rdata"))
 ```
 
 ```{r init, eval=FALSE,echo=FALSE}
@@ -52,14 +52,14 @@ load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_09_01_Projecti
 type_mod<-"WithoutModelMelange" #"ModelMelange" / "WithoutModelMelange"
 
 if(type_mod=="ModelMelange"){
-  datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps/"
-  imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/"
-  tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2023_05/2_Model_melange_homogenisation_Q_printemps/"
+  datawd<-here::here("data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps/")
+  imgwd<-here::here("img/Simulation/2023_05/")
+  tabwd<-here::here("tab/2023_05/2_Model_melange_homogenisation_Q_printemps/")
 }
 if(type_mod=="WithoutModelMelange"){
-  datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/"
-  imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/"
-  tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2023_05/3_Model_sans_distribution_melange/"
+  datawd<-here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/")
+  imgwd<-here::here("img/Simulation/2023_05/")
+  tabwd<-here::here("tab/2023_05/3_Model_sans_distribution_melange/")
 }
 
 library(coda)
@@ -70,8 +70,8 @@ library(ggplot2)
 library(Rlab) #pour fonction rbern
 T=48
 
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+source(here::here("script/fonctions/fct_graph.R"))
+source(here::here("script/fonctions/fct_data.R"))
 #-- Appel à la fonction du script "fct_data.R" pour récupérer les surfaces productives
 S_juv_JP<-keep_good_surf(surf_2021=TRUE)
 ```
@@ -205,7 +205,7 @@ Qmsl_deval<-array(0,dim=c(iteration,T+20))
 s_juv2ad_20yr<-array(0,dim=c(iteration,T+20))
 L_s_juv2ad_20yr<-array(0,dim=c(iteration,T+20))
 
-save.image(file=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_09_01_Projection_sensibilite_evolution_Q_init_",type_mod,".Rdata"))
+save.image(file=str_c(here::here("2023_09_01_Projection_sensibilite_evolution_Q_init_"),type_mod,".Rdata"))
 
 ```
 
@@ -1819,8 +1819,8 @@ L_s_juv2ad_20yr[i,t] <- logit(s_juv2ad_20yr[i,t])
 
 ```{r save_calcul, eval=FALSE, echo=FALSE}
 
-save.image(file =str_c( "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_",type_mod,"_",scenario,"_2023_09_22.RData"))
-save(N_vichy,file =str_c( "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_",type_mod,"_",scenario,"_2023_09_22.RData"))
+save.image(file =str_c( here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_"),type_mod,"_",scenario,"_2023_09_22.RData"))
+save(N_vichy,file =str_c( here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_"),type_mod,"_",scenario,"_2023_09_22.RData"))
 ```
 
 ```{r graph_proj_20yr_avec_distri_melange,eval=FALSE,echo=FALSE}
@@ -1852,7 +1852,7 @@ for (t in (T+1):(T+20)){
 
 
 
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/TotalReturns_WithoutStocking_SensibiliteModel_",scenario,"_withModelMelange_2023_08_31.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/TotalReturns_WithoutStocking_SensibiliteModel_"),scenario,"_withModelMelange_2023_08_31.png"),width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="années",ylim=c(0,9000),ylab="Retours à Vichy",main=str_c("Projection sans repeuplement dans le scenario de débit : ",scenario),cex.lab=1.2)
@@ -1940,7 +1940,7 @@ for (t in 1:20){
 #..............
 # Graph
 #..............
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_",scenario,"_",type_mod,"_2023_08_31.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_"),scenario,"_",type_mod,"_2023_08_31.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1982,38 +1982,38 @@ dev.off()
 
 ```{r graph_threshold_compare_avec_ss_distri_melange,eval=FALSE,echo=FALSE}
 #sans_Q
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData")
+load(file=here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData"))
 N_vichy_av_melange<-N_vichy
 rm(N_vichy)
 #SS_model_melange
-load(file ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData")
+load(file =here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData"))
 N_vichy_ss_melange<-N_vichy
 rm(N_vichy)
 
 #identique
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData")
+load(file=here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData"))
 N_vichy_av_melange<-N_vichy
 rm(N_vichy)
 #SS_model_melange
-load(file ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData")
+load(file =here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData"))
 N_vichy_ss_melange<-N_vichy
 rm(N_vichy)
 
 #diminue_5
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData")
+load(file=here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData"))
 N_vichy_av_melange<-N_vichy
 rm(N_vichy)
 #SS_model_melange
-load(file ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData")
+load(file =here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData"))
 N_vichy_ss_melange<-N_vichy
 rm(N_vichy)
 
 #diminue_10
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData")
+load(file=here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData"))
 N_vichy_av_melange<-N_vichy
 rm(N_vichy)
 #SS_model_melange
-load(file ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData")
+load(file =here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData"))
 N_vichy_ss_melange<-N_vichy
 rm(N_vichy)
 
@@ -2069,7 +2069,7 @@ scenario<-"diminue_10"  #choisir dans "sans_Q" / "identique" / "diminue_5" / "di
 #..............
 # Graph
 #..............
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/Threshold_",scenario,"_compare_With_Without_Melange_2023_09_01.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/Threshold_"),scenario,"_compare_With_Without_Melange_2023_09_01.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2116,7 +2116,7 @@ T=48
 type_mod="ModelMelange"
 
 #On charge les différents N_Vichy
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData")
+load(here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData"))
 N_vichy_sans_Q<-N_vichy
 rm(N_vichy)
 
@@ -2133,7 +2133,7 @@ p_under_250_vichy_sans_Q=rep(NA,20)
 p_under_500_vichy_sans_Q=rep(NA,20)
 
 #identique
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData")
+load(here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData"))
 N_vichy_Q_identique<-N_vichy
 rm(N_vichy)
 
@@ -2150,7 +2150,7 @@ p_under_250_vichy_Q_identique=rep(NA,20)
 p_under_500_vichy_Q_identique=rep(NA,20)
 
 #diminue_5
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData")  
+load(file = here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData"))  
 N_vichy_diminue_5<-N_vichy
 rm(N_vichy)
 
@@ -2167,7 +2167,7 @@ p_under_250_vichy_diminue_5=rep(NA,20)
 p_under_500_vichy_diminue_5=rep(NA,20)
 
 #diminue_10
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData")
+load(file = here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData"))
 N_vichy_diminue_10<-N_vichy
 rm(N_vichy)
 
@@ -2234,7 +2234,7 @@ for (t in 1:20){
 #..............
 # Graph
 #..............
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_50_compare_scenario","_",type_mod,"_2023_09_01.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_50_compare_scenario"),"_",type_mod,"_2023_09_01.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2266,7 +2266,7 @@ legend("topleft",title=expression(p^seuils < 50),
 dev.off()
 
 
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_100_compare_scenario","_",type_mod,"_2023_09_01.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_100_compare_scenario"),"_",type_mod,"_2023_09_01.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2296,7 +2296,7 @@ legend("topleft",title=expression(p^seuils < 100),
 
 dev.off()
 
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_250_compare_scenario","_",type_mod,"_2023_09_01.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_250_compare_scenario"),"_",type_mod,"_2023_09_01.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2326,7 +2326,7 @@ legend("topleft",title=expression(p^seuils < 250),
 
 dev.off()
 
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_500_compare_scenario","_",type_mod,"_2023_09_01.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/Threshold_500_compare_scenario"),"_",type_mod,"_2023_09_01.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2387,7 +2387,7 @@ for (t in (T+1):(T+20)){
 
 
 
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/TotalReturns_WithoutStocking_Sensibilite_",scenario,"_",type_mod,"_2023_09_22.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange/TotalReturns_WithoutStocking_Sensibilite_"),scenario,"_",type_mod,"_2023_09_22.png"),width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="années",ylim=c(0,9000),ylab="Retours à Vichy",main=str_c("Projection sans repeuplement dans le scenario de débit : ",scenario),cex.lab=1.2)
@@ -2474,7 +2474,7 @@ for (t in 1:20){
 #..............
 # Graph
 #..............
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_",scenario,"_",type_mod,"_2023_09_22.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_"),scenario,"_",type_mod,"_2023_09_22.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2523,7 +2523,7 @@ T=48
 type_mod="WithoutModelMelange"
 
 #On charge les différents N_Vichy
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData")
+load(here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData"))
 N_vichy_sans_Q<-N_vichy
 rm(N_vichy)
 
@@ -2540,7 +2540,7 @@ p_under_250_vichy_sans_Q=rep(NA,20)
 p_under_500_vichy_sans_Q=rep(NA,20)
 
 #identique
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData")
+load(here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData"))
 N_vichy_Q_identique<-N_vichy
 rm(N_vichy)
 
@@ -2557,7 +2557,7 @@ p_under_250_vichy_Q_identique=rep(NA,20)
 p_under_500_vichy_Q_identique=rep(NA,20)
 
 #diminue_5
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData")  
+load(file = here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData"))  
 N_vichy_diminue_5<-N_vichy
 rm(N_vichy)
 
@@ -2574,7 +2574,7 @@ p_under_250_vichy_diminue_5=rep(NA,20)
 p_under_500_vichy_diminue_5=rep(NA,20)
 
 #diminue_10
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData")
+load(file = here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData"))
 N_vichy_diminue_10<-N_vichy
 rm(N_vichy)
 
@@ -2589,7 +2589,7 @@ p_under_250_vichy_diminue_10=rep(NA,20)
 p_under_500_vichy_diminue_10=rep(NA,20)
 
 #augmente_5
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_augmente_5_2023_09_22.RData")  
+load(file = here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_augmente_5_2023_09_22.RData"))  
 N_vichy_augmente_5<-N_vichy
 rm(N_vichy)
 
@@ -2606,7 +2606,7 @@ p_under_250_vichy_augmente_5=rep(NA,20)
 p_under_500_vichy_augmente_5=rep(NA,20)
 
 #augmente_10
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_augmente_10_2023_09_22.RData")
+load(file = here::here("2023_05_N_vichy_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_augmente_10_2023_09_22.RData"))
 N_vichy_augmente_10<-N_vichy
 rm(N_vichy)
 
@@ -2692,7 +2692,7 @@ for (t in 1:20){
 #..............
 # Graph
 #..............
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_50_compare_scenario","_",type_mod,"_2023_09_22.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_50_compare_scenario"),"_",type_mod,"_2023_09_22.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2726,7 +2726,7 @@ legend("topleft",title=expression(p^seuils < 50),
 dev.off()
 
 
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_100_compare_scenario","_",type_mod,"_2023_09_22.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_100_compare_scenario"),"_",type_mod,"_2023_09_22.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2758,7 +2758,7 @@ legend("topleft",title=expression(p^seuils < 100),
 
 dev.off()
 
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_250_compare_scenario","_",type_mod,"_2023_09_22.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_250_compare_scenario"),"_",type_mod,"_2023_09_22.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2790,7 +2790,7 @@ legend("topleft",title=expression(p^seuils < 250),
 
 dev.off()
 
-png(filename=str_c("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_500_compare_scenario","_",type_mod,"_2023_09_22.png"),width=800,height=800)
+png(filename=str_c(here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange/Threshold_500_compare_scenario"),"_",type_mod,"_2023_09_22.png"),width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2842,7 +2842,7 @@ knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemp
 Dans ce scénario sans prise en compte de l'influence des débits sur les 20 ans de projection (débit à 0), la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
 
 ```{r nb_adult_vichy_sans_q,eval=TRUE,include=TRUE,echo=FALSE}
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData")
+load(file = here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_sans_Q_2023_08_31.RData"))
 round(mean(N_vichy[,(T+20-4):(T+20)]),0)
 ```
 
@@ -2865,7 +2865,7 @@ knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/TotalRe
 Dans ce scénario sans prise en compte de l'influence des débits sur les 20 ans de projection (débit à 0), la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
 
 ```{r nb_adult_vichy_sans_q_ss_melange,eval=TRUE,include=TRUE,echo=FALSE}
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData")
+load(file = here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_sans_Q_2023_08_31.RData"))
 round(mean(N_vichy[,(T+20-4):(T+20)]),0)
 ```
 
@@ -2893,7 +2893,7 @@ knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemp
 Dans ce scénario de débits identiques à ce qui a été observé durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
 
 ```{r nb_adult_vichy_identique,eval=TRUE,include=TRUE,echo=FALSE}
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData") 
+load(file = here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_identique_2023_08_31.RData")) 
 round(mean(N_vichy[,(T+20-4):(T+20)]),0)
 ```
 ```{r threshold_print_q_identique, echo=FALSE, include=FALSE,out.width="100%", fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits identiques à ceux observés durant les 20 dernières années de la période rétrospective"}
@@ -2909,7 +2909,7 @@ knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/TotalRe
 Dans ce scénario de débits identiques à ce qui a été observé durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
 
 ```{r nb_adult_vichy_identique_ss_melange,eval=TRUE,include=TRUE,echo=FALSE}
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData") 
+load(file = here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_identique_2023_08_31.RData")) 
 round(mean(N_vichy[,(T+20-4):(T+20)]),0)
 ```
 
@@ -2932,7 +2932,7 @@ knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemp
 Dans ce scénario de débits en diminution de 5% par rapport aux débits observés durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
 
 ```{r nb_adult_vichy_diminue5,eval=TRUE,include=TRUE,echo=FALSE}
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData")
+load(here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_5_2023_08_31.RData"))
 round(mean(N_vichy[,(T+20-4):(T+20)]),0)
 ```
 
@@ -2947,7 +2947,7 @@ knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/TotalRe
 Dans ce scénario de débits en diminution de 5% par rapport aux débits observés durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
 
 ```{r nb_adult_vichy_diminue5_ss_melange,eval=TRUE,include=TRUE,echo=FALSE}
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData")
+load(here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_5_2023_08_31.RData"))
 round(mean(N_vichy[,(T+20-4):(T+20)]),0)
 ```
 ```{r threshold_print_q_diminue5_ss_melange,eval=FALSE,include=FALSE,echo=FALSE, fig.cap="Projection à 20 ans sans repeuplement sous l'hypothèse de débits en diminution de 5% par rapport à ceux observés durant les 20 dernières années de la période rétrospective - Modèle sans distribution de mélange à Vichy", out.width = '100%'}
@@ -2970,7 +2970,7 @@ knitr::include_graphics(normalizePath("2_Model_melange_homogenisation_Q_printemp
 Dans ce scénario de débits en diminution de 10% par rapport aux débits observés durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
 
 ```{r nb_adult_vichy_diminue10,eval=TRUE,include=TRUE,echo=FALSE}
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData")  
+load(file = here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_ModelMelange_diminue_10_2023_08_31.RData"))  
 
 round(mean(N_vichy[,(T+20-4):(T+20)]),0)
 ```
@@ -2986,7 +2986,7 @@ knitr::include_graphics(normalizePath("3_Model_sans_distribution_melange/TotalRe
 Dans ce scénario de débits en diminution de 10% par rapport aux débits observés durant les 20 dernières années de la période rétrospective, la moyenne des adultes de retour à Vichy durant les 5 dernières années de la période de projection est de :
 
 ```{r nb_adult_vichy_diminue10_ss_melange,eval=TRUE,include=TRUE,echo=FALSE}
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData")  
+load(file = here::here("2023_05_Projection_WithoutStocking_Sensibilite_evolution_WithoutModelMelange_diminue_10_2023_08_31.RData"))  
 
 round(mean(N_vichy[,(T+20-4):(T+20)]),0)
 ```

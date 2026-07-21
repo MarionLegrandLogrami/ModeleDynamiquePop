@@ -7,9 +7,9 @@
 	#----------------------------------------------------------------------------------
 	# 2017_07_19 (on charge le jeu de données issus du script ProjectionModelWithoutStocking_4zones_Interaction + on ajoute chemin vers données pour récupérer data.txt)
 	#----------------------------------------------------------------------------------
-	setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/")
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_07_19_ProjectionSansRepeuplementAlagnon_InteractionReciproque_Maj2016_2017_09_12.RData")
-	datawd<-("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_07_19_4zones_Interaction_ss_rho_poutes/")
+	setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_07_19_ProjectionSansRepeuplementAlagnon_InteractionReciproque_Maj2016_2017_09_12.RData")
+	datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_07_19_4zones_Interaction_ss_rho_poutes/")
 	library(coda)
 	library(stringr)
 	
@@ -72,8 +72,8 @@
 	#---------------------------------------------------------------------------------------
 	#2016_12_19 (on charge le jeu de données issus du script ProjectionModelWithoutStocking_4zones+ on ajoute chemin vers données pour récupérer data.txt)
 	#---------------------------------------------------------------------------------------
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_19_ProjectionSansRepeuplementAlagnon_cor_juv_2016_12_20.RData")
-	datawd<-("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon/")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_19_ProjectionSansRepeuplementAlagnon_cor_juv_2016_12_20.RData")
+	datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_19_Alagnon/")
 	
 	bugs_N_vichy_real_deux=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
 	N_vichy_real_q_deux=array(NA,dim=c(44,5))#44 car il y a 16 année de suivi station (soit T+20 - 15). Ne change rien car à part sur ces 23 années sinon on a tjrs un eff exhaustifs indiqué dans data_vichy
@@ -134,8 +134,8 @@
 	#---------------------------------------------------------------------------------------
 	#2017_08_29 (on charge le jeu de données issus du script ProjectionModelWithoutStocking_4zones+ on ajoute chemin vers données pour récupérer data.txt)
 	#---------------------------------------------------------------------------------------
-	load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_ProjectionSansRepeuplementAlagnon_cor_juv_2016_12_20.RData")
-	datawd<-("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Alagnon/")
+	load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_ProjectionSansRepeuplementAlagnon_cor_juv_2016_12_20.RData")
+	datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Alagnon/")
 	
 	bugs_N_vichy_real_trois=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
 	N_vichy_real_q_trois=array(NA,dim=c(44,5))#44 car il y a 16 année de suivi station (soit T+20 - 15). Ne change rien car à part sur ces 23 années sinon on a tjrs un eff exhaustifs indiqué dans data_vichy
@@ -196,7 +196,7 @@
 #===================================
 # Figure seuil
 #===================================
-	png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/Threshold_compareModel_2016_12_19_2017_07_19.png",width=800,height=800)
+	png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/Threshold_compareModel_2016_12_19_2017_07_19.png",width=800,height=800)
 	
 	par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 	

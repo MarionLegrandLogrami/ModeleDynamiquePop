@@ -14,8 +14,8 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 
 ```{r init, echo=FALSE, eval=TRUE}
 #Modèle 2023-05 3_Model_sans_distribution_melange
-datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_05/3_Model_sans_distribution_melange/"
-imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2023_05/3_Model_sans_distribution_melange/"
+datawd<-here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/")
+imgwd<-here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange/")
 
 library(coda)
 library(boot)
@@ -23,8 +23,8 @@ library(stringr)
 library(ggplot2)
 T=48
 
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+source(here::here("script/fonctions/fct_graph.R"))
+source(here::here("script/fonctions/fct_data.R"))
 
 # surf=c(rep(c(845482,68637,232048,0),11),rep(c(845482,68637,232048,168584),12),rep(c(845482,68637,232048,260326),6),rep(c(845482,349127,232048,260326),(T-8)))
 # S_juv_JP<-matrix(surf,nrow=4)

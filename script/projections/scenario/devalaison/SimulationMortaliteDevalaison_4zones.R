@@ -9,14 +9,14 @@
 #================
 
 #Modèle 2016_12_06_Alagnon
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/")
 
 #modèle 2017_03_08_Devalaison_4zones
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_08_Devalaison_4zones/")
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_06_01_Devalaison_4zones/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_08_Devalaison_4zones/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_06_01_Devalaison_4zones/")
 
 #Modèle 2017_05_02_Devalaison_4zones_Interaction
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_05_02_Devalaison_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_05_02_Devalaison_4zones_Interaction/")
 
 
 
@@ -616,25 +616,25 @@ for (t in (T+7):(T+20)){
 
 
 ###avec Rho_poutes
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_11_03_DevalaisonssDore_ac_rho_poutes_Surf&Prod_thin200.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_11_03_Devalaisonac_rho_poutes_Surf_thin200.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_11_03_Devalaisonac_rho_poutes_Surf&Prod_thin200.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes_cor_juv.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_03_08_Devalaison_4zones.RData")
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_06_01_Devalaison_4zones.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_05_02_Devalaison_4zones_Interaction.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_11_03_DevalaisonssDore_ac_rho_poutes_Surf&Prod_thin200.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_11_03_Devalaisonac_rho_poutes_Surf_thin200.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_11_03_Devalaisonac_rho_poutes_Surf&Prod_thin200.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_12_06_Alagnon_Devalaison_Surf&Prod_ac_rho_poutes_cor_juv.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_03_08_Devalaison_4zones.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_06_01_Devalaison_4zones.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_05_02_Devalaison_4zones_Interaction.RData")
 
 
 ###sans rho_poutes
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015.10.07_OuvertureDevalaison.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_2016_03_14.RData")
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_Devalaison_ss_rho_poutes_Surf_thin200_2016_11_03.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015.10.07_OuvertureDevalaison.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_2016_03_14.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_Devalaison_ss_rho_poutes_Surf_thin200_2016_11_03.RData")
 
 
 
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015.01.24_OuverturePoutes100.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_11_26_OuvertureDevalaison_2015_12_08.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015.01.24_OuverturePoutes100.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_11_26_OuvertureDevalaison_2015_12_08.RData")
 
 #On agglomère les 2 matrix juv_tot_ et bugs_juv_tot_ pour avoir un tableau complet sur la période
 #juv_tot_vichy_tot=array(0,dim=c(5000,T+20))
@@ -697,7 +697,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_06_01_Devalaison_4zones/DevalMorta_TotalReturns_proj20years_2017_06_01.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_06_01_Devalaison_4zones/DevalMorta_TotalReturns_proj20years_2017_06_01.png",width=800,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Improvement of downstream migration at 11 hydroelectric dams",cex.lab=1.5)
 
@@ -797,7 +797,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_06_01_Devalaison_4zones/DevalaisonMorta_Threshold_2017_06_01.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_06_01_Devalaison_4zones/DevalaisonMorta_Threshold_2017_06_01.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -843,7 +843,7 @@ dev.off()
 # CHAP : Figure : Répartitions des Juvéniles dans les différents secteurs
 #=========================================================================
 #Modèle 2017_05_02_Devalaison_4zones_Interaction
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_05_02_Devalaison_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_05_02_Devalaison_4zones_Interaction/")
 
 
 library(coda)
@@ -924,7 +924,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Récupération des caluls réalisés dans le cadre de la modélisation Poutès 50%
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_05_02_Devalaison_4zones_Interaction.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_05_02_Devalaison_4zones_Interaction.RData")
 
 
 #les juv_vichy,alagnon,langeac,poutes du load ne commencent qu'à t=43 (T+2) on recréé le t=42 (T+1)
@@ -975,7 +975,7 @@ for (t in (T+1):(T+20)){
 #-------------------------------------------
 # FIGURE
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_Devalaison_2017_05_02.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeJuv_Devalaison_2017_05_02.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 
 #----------------------------
@@ -1224,7 +1224,7 @@ dev.off()
 # CHAP : Figure : Répartitions des Géniteurs dans les différents secteurs
 #=========================================================================
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_05_02_Devalaison_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_05_02_Devalaison_4zones_Interaction/")
 
 library(coda)
 library(boot)
@@ -1243,7 +1243,7 @@ S_langeac_real=read.coda("S_langeacCODAchain1.txt","S_langeacCODAindex.txt")
 #On récupère les données du modèle directement dans le fichier data
 library(coda) 
 require(stringr)
-bugs2jags(str_c("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/","data.txt"),"data_4zones_Interaction.R")
+bugs2jags(str_c("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/","data.txt"),"data_4zones_Interaction.R")
 source("data_4zones_Interaction.R")
 head(N) #ça marche !
 
@@ -1334,7 +1334,7 @@ for (t in 1:T){
 # PARTIE PROJECTION
 
 #Récupération des caluls réalisés dans le cadre de la modélisation Poutes 50%
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_05_02_Devalaison_4zones_Interaction.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_05_02_Devalaison_4zones_Interaction.RData")
 
 N_vichy_q<-array(0,c(T+20,5))
 
@@ -1373,7 +1373,7 @@ for (t in (T+1):(T+20)){
 #---------------------------------------------------
 # FIGURE
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_Devalaison_2017_05_02.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatialeGen_Devalaison_2017_05_02.png",width=800, height=1500, units = "px",type="cairo")
 par(mfrow=c(5,1))
 #..........
 # Nb total
@@ -2415,7 +2415,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Devalaison_Thin200/DevalMorta_TotalReturns_proj20years_2016_03_16.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Devalaison_Thin200/DevalMorta_TotalReturns_proj20years_2016_03_16.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Improvement of downstream migration at 11 hydroelectric dams",cex.lab=1.5)
@@ -2516,7 +2516,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Devalaison_Thin200/DevalaisonMorta_Threshold_2016_03_16.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2016_01_20_Devalaison_Thin200/DevalaisonMorta_Threshold_2016_03_16.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -2565,7 +2565,7 @@ dev.off()
 
 gain500<-100-(p_under_500_vichy*100/simul_p_under_500_vichy)
 #on récupère s_juv2ad du modèle standard 2016.01.20
-s_juv2ad<-read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Standard_thin200/simulation/s_juv2adCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Standard_thin200/simulation/s_juv2adCODAindex.txt")
+s_juv2ad<-read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Standard_thin200/simulation/s_juv2adCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Standard_thin200/simulation/s_juv2adCODAindex.txt")
 #on créé une nouvelle variable pour recalculer le s_juv2ad amélioré suite à l'amélioration de la dévalaison
 s_juv2ad_new=array(0,dim=c(5000,T+20))
 for (t in (T+1):(T+20)){
@@ -2574,7 +2574,7 @@ s_juv2ad_new[i,t]<-s_juv2ad[i]+(gain500[t-40]/100*s_juv2ad[i])
 }
 }
 
-save(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_s_juv2ad_new_2016_03_14.RData",list="s_juv2ad_new")
+save(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_s_juv2ad_new_2016_03_14.RData",list="s_juv2ad_new")
 
 #plus on compare avec des effectifs petits plus la différence entre les 2 scénarii est grande
 #gain250<-100-(p_under_250_vichy*100/simul_p_under_250_vichy)
@@ -2598,9 +2598,9 @@ save(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_s_juv2ad_new
 # Simulation sans juvéniles sur la Dore
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #Modèle 2016_01_18_ss_Dore
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_18_ss_Dore/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_18_ss_Dore/")
 #Modèle 2016_01_20_Devalaison_Surf_ss_Dore
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Devalaison_Surf_ssDore_thin200/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_20_Devalaison_Surf_ssDore_thin200/")
 
 library(coda)
 library(boot)
@@ -3064,9 +3064,9 @@ for (t in (T+7):(T+20)){
 	}
 }
 
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015.10.07_OuvertureDevalaison.RData")
-#save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_ssDore_2016_03_17.RData")
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_Surf_ssDore_2016_03_17.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015.10.07_OuvertureDevalaison.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_ssDore_2016_03_17.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2016_01_20_OuvertureDevalaison_Surf_ssDore_2016_03_17.RData")
 
 
 
@@ -3515,9 +3515,9 @@ for (t in (T+7):(T+20)){
 	}
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_11_26_OuvertureMontaisonDevalaison_2015_12_08.RData")
-#load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015.01.24_OuverturePoutes100.RData")
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_11_26_OuvertureMontaisonDevalaison_2015_12_08.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_11_26_OuvertureMontaisonDevalaison_2015_12_08.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015.01.24_OuverturePoutes100.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_11_26_OuvertureMontaisonDevalaison_2015_12_08.RData")
 
 #On agglomère les 2 matrix juv_tot_ et bugs_juv_tot_ pour avoir un tableau complet sur la période
 #juv_tot_vichy_tot=array(0,dim=c(5000,T+20))
@@ -3580,7 +3580,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_11_26/DevalMontaMorta_TotalReturns_proj20years_2015_12_08.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_11_26/DevalMontaMorta_TotalReturns_proj20years_2015_12_08.png",width=800,height=800)
 
 
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,9000),ylab="Returns Vichy",main="20 years projection without stocking - Improvement of downstream migration at 11 hydroelectric dams",cex.lab=1.5)
@@ -3682,7 +3682,7 @@ for (t in 1:20){
 #------------------------
 # Graph
 #------------------------
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2015_11_26/DevalaisonMontaMorta_Threshold_2015_12_08_2.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2015_11_26/DevalaisonMontaMorta_Threshold_2015_12_08_2.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -3740,8 +3740,8 @@ dev.off()
 		#...................
 		# Nbr de géniteurs
 		#...................
-S_vichy_real=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_vichyCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_vichyCODAindex.txt")
-S_langeac_real=read.coda("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_langeacCODAchain1.txt","C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_langeacCODAindex.txt")
+S_vichy_real=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_vichyCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_vichyCODAindex.txt")
+S_langeac_real=read.coda("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_langeacCODAchain1.txt","C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_12_05_Poutes/S_langeacCODAindex.txt")
 
 S_vichy_q=array(rep(0,T*5),dim=c(T,5))
 S_langeac_q=array(rep(0,T*5),dim=c(T,5))
@@ -3845,7 +3845,7 @@ S_juv_JP<-matrix(surf,nrow=3)
 	#---------------------------------------------
 	# Graph Géniteurs avec projection sur 20 ans
 	#---------------------------------------------
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_SpawnersRedds_GeniteursPotentiels.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_SpawnersRedds_GeniteursPotentiels.png",width=800, height=800, units = "px",type="cairo")
 
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........
@@ -4156,7 +4156,7 @@ for (t in (T+1):(T+20)){
 
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_NbrJuveniles_RatioJuveniles.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2014_12_05_Poutes50/poutes50_NbrJuveniles_RatioJuveniles.png",width=800, height=800, units = "px",type="cairo")
 
 par(mfrow=c(3,2),mar=c(4,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4,col.lab="grey25",col.axis="grey55",col.main="grey25")
 #........

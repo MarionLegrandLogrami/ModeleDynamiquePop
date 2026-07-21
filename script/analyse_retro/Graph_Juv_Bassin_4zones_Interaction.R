@@ -3,13 +3,13 @@
 # Author: marion.legrand
 ###############################################################################
 #Modèle 2017.03.23_4zones_Interaction - interaction réciproque juv sauvage/déversé
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/")
 #Modèle 2017.08.29_Interraction_ss_rho_poutes_matriceVC
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 #Modèle 2019_12_Interraction_ss_rho_poutes_matriceVC
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
 #Modèle 2024_06\Hierarchisation_variance + comptage_Langeac + MAJ data 2023
-setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
+setwd(here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"))
 
 
 library(coda)
@@ -52,7 +52,7 @@ mean(juv_tot_q[(T-4):T,3])#204350.9
 mean(juv_tot)#178155.5
 mean(juv_tot[,(T-4):T])#207356.5
 
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/ProdJuvTot.png",width=800, height=800, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/ProdJuvTot.png",width=800, height=800, units = "px",type="cairo")
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,500000),ylab="",main="total 0+ juvenile production (wild + stocked)")
 
 # trace l'axe des ordonnées
@@ -165,8 +165,8 @@ for (t in 1:T){
 	ratio_juv_P_q[t,]=quantile(ratio_juv_P[,t],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
 }
 
-png("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/RepartitionSpatiale_juv_totaux_ratio.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatiale_juv_totaux_ratio.png",width=800, height=1000, units = "px",type="cairo")
+png("C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/RepartitionSpatiale_juv_totaux_ratio.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2017_03_23_4zones_Interaction/RepartitionSpatiale_juv_totaux_ratio.png",width=800, height=1000, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 
@@ -420,7 +420,7 @@ for (t in 1:T){
 }
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatiale_juv_totaux_ratio_acDevalaison.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatiale_juv_totaux_ratio_acDevalaison.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(4,1))
 
 #Juv totaux tous secteurs
@@ -575,7 +575,7 @@ max(juv_wild_V_q)#336430.2
 max(juv_wild_L_q)#183536.9
 max(juv_wild_P_q)#123462.4
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD.png",width=800, height=800, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD.png",width=800, height=800, units = "px",type="cairo")
 par(mfrow=c(3,1))
 #Vichy
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,400000),ylab="",main="total wild 0+ juvenile production at Vichy")
@@ -727,7 +727,7 @@ for (t in 1:T){
 		ratio_juv_wild_P_q[t,]=quantile(ratio_juv_wild_P[,t],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
 	}
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD_ratio_même échelle.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD_ratio_même échelle.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(4,1))
 	#Juv tot sauvage
 		plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,500000),ylab="",main="total wild 0+ juvenile production")
@@ -938,7 +938,7 @@ for (t in 1:T){
 	ratio_juv_wild_P_q[t,]=quantile(ratio_juv_wild_P[,t],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
 }
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD_ratio_acDevalaison.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeProdJuvTot_WILD_ratio_acDevalaison.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(4,1))
 #Juv tot sauvage
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+0.5),xlab="Years",ylim=c(0,500000),ylab="",main="total wild 0+ juvenile production with mortalities at the hydropower dams")
@@ -1072,7 +1072,7 @@ S_langeac_q=array(rep(0,T*5),dim=c(T,5))
 
 library(coda) 
 require(stringr)
-bugs2jags(str_c("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/","data.txt"),"data_4zones_Interaction.R")
+bugs2jags(str_c("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/","data.txt"),"data_4zones_Interaction.R")
 source("data_4zones_Interaction.R")
 head(N) #ça marche !
 
@@ -1166,7 +1166,7 @@ for (t in 1:T){
 }
 
 
-png(file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeGéniteurs_ratio.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2015_12_04_standard/RepartitionSpatialeGéniteurs_ratio.png",width=800, height=1000, units = "px",type="cairo")
 par(mfrow=c(5,1))
 #..........
 # Nb total
@@ -1351,7 +1351,7 @@ dev.off()
 
 	#---------- Avec projection --------------#
 #Récupération des caluls réalisés dans le cadre de la modélisation sans déversement sur le modèle standard
-load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2015_12_04_Standard_ProjectionSansRepeuplement_2015.12.08.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2015_12_04_Standard_ProjectionSansRepeuplement_2015.12.08.RData")
 
 
 

@@ -114,10 +114,10 @@
 \maketitle
 
 <<init, echo=FALSE, eval=TRUE,results=hide >>=
-setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX") 
-datawd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/"
-imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/"
-tabwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/script/lateX/tab/2016/"
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX") 
+datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/"
+imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/illustrations/2016/"
+tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/script/lateX/tab/2016/"
 @
 
 \chapter{Présentation des paramètres estimés par le modèle}

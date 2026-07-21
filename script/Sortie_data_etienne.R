@@ -7,7 +7,7 @@
 library(coda)
 require(stringr)
 
-datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2023_04/"
+datawd<-here::here("data/CODA/2023_04/")
 T=48
 
 ##Tableau avec année/I_mm/médiane s_juv2ad/médiane res_vichy_std
@@ -41,4 +41,4 @@ data<-cbind((1974+7):(1974+48),I_mm_mean,res_vichy_med,res_vichy_mean,s_juv2ad_m
 colnames(data)<-c("year","I_mm_mean","res_vichy_std_median","res_vichy_std_mean","s_juv2ad_median","s_juv2ad_mean")
 row.names(data) <- NULL
 library(xlsx)
-write.xlsx(data,"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/data_for_etienne.xlsx")
+write.xlsx(data,here::here("data/data_for_etienne.xlsx"))

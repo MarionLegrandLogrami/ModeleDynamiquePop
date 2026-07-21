@@ -36,42 +36,42 @@
 %=================================================================================
 
 << init, echo=FALSE, eval=FALSE,results=hide >>= #Mettre à TRUE la première fois puis à FALSE car prend bcp de temps
-	setwd("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop")
-	#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_05_30/" #Modèle Guillaume 2014.05.30
-	#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_09/SurfErrSeul/"#SurfErrSeul
-	#trois<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_09/"#SurfERR+SurfDev
-	#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_05_30/"
-	#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/"
-	#imgwdtrois<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/"
+	setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop")
+	#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_05_30/" #Modèle Guillaume 2014.05.30
+	#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_09/SurfErrSeul/"#SurfErrSeul
+	#trois<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_09/"#SurfERR+SurfDev
+	#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2014_05_30/"
+	#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/"
+	#imgwdtrois<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/"
 	#imgwddeux<-"/img/2014_09_26SurfERR+SurfDev/"
 	#imgwdtrois<-"/img/2014_09_26SurfERR+SurfDev/"
-#	un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"#Modèle transfert
-#	deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_11_26/" #Modèle avec mortalité à la dévalaison
-#	imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/"
-#	imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_11_26/"
-	#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"#Modèle transfert
-	#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/" #Modèle Poutes corrigé
-	#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/"
-	#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
-#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/"#Modèle transfert
-#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_Standard/" #Modèle Poutes corrigé
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
-#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_12_04_Standard/"	
-	#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_11_26/"#Modèle dévalaison
-	#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_18_0_dore/" #Modèle Dévalaison avec production sur la Dore = 0
-	#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_11_26/"
-	#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_01_18_0_dore/"	
-#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_05_27_Alagnon/"#Modèle Alagnon V1
-#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_10_14_Alagnon_adjust_p/" #Modèle Alagnon V2
+#	un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"#Modèle transfert
+#	deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_11_26/" #Modèle avec mortalité à la dévalaison
+#	imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/"
+#	imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_11_26/"
+	#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"#Modèle transfert
+	#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/" #Modèle Poutes corrigé
+	#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/"
+	#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
+#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/"#Modèle transfert
+#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_Standard/" #Modèle Poutes corrigé
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
+#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_12_04_Standard/"	
+	#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_11_26/"#Modèle dévalaison
+	#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_18_0_dore/" #Modèle Dévalaison avec production sur la Dore = 0
+	#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_11_26/"
+	#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_01_18_0_dore/"	
+#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_05_27_Alagnon/"#Modèle Alagnon V1
+#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_10_14_Alagnon_adjust_p/" #Modèle Alagnon V2
 #
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/"
-#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/"	
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/"
+#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/"	
 
-un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/" #Modèle 4 zones Interaction
-deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/" #Modèle 4 zones Interaction ss rho_poutes
+un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/" #Modèle 4 zones Interaction
+deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/" #Modèle 4 zones Interaction ss rho_poutes
 
-imgwd<- "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2017_03_23_4zones_Interaction/"
-imgwddeux<-	"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2017_05_03_4zones_Interaction_ss_rho_poutes/"
+imgwd<- "C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2017_03_23_4zones_Interaction/"
+imgwddeux<-	"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2017_05_03_4zones_Interaction_ss_rho_poutes/"
 
 
 library(lattice)
@@ -1126,54 +1126,54 @@ for (i in 12:T){
 	#p_poutes_q_trois[i,]=quantile(p_poutes_trois[,i-11],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-save.image(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_05_03_4zones_Interaction_CopyOfCompare.RData")#file="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/wspace.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_05_03_4zones_Interaction_CopyOfCompare.RData")#file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/wspace.RData")
 
 @
 
 << init, echo=FALSE, eval=TRUE,results=hide >>=
-#	un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_09/" #SurfERR+SurfDev
-#	deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_09/"# #SurfERR+SurfDev
-#	#trois<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2014_10_15/Poutes/"#Poutes 
-#	imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/"
-#	imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/"
-#	#imgwdtrois<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2014_10_15/Poutes/"
+#	un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_09/" #SurfERR+SurfDev
+#	deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_09/"# #SurfERR+SurfDev
+#	#trois<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2014_10_15/Poutes/"#Poutes 
+#	imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/"
+#	imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2014_09_26SurfERR+SurfDev/"
+#	#imgwdtrois<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2014_10_15/Poutes/"
 #	#capun<-"Modèle SurfErr seul"
 #	#Pour la légende des figures 
-#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"#Modèle transfert
-#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/" #Modèle Poutes corrigé
+#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_01_24_thin200/"#Modèle transfert
+#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/" #Modèle Poutes corrigé
 #
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/"
-#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_01_24_thin200/"
+#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
 
-#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/"#Modèle transfert
-#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_Standard/" #Modèle Poutes corrigé
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
-#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_12_04_Standard/"	
-#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2015_11_26/"#Modèle dévalaison
-#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_01_18_0_dore/" #Modèle Dévalaison avec production sur la Dore = 0
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2015_11_26/"
-#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_01_18_0_dore/"	
+#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_02_PoutesCor/"#Modèle transfert
+#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_12_04_Standard/" #Modèle Poutes corrigé
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_12_02_PoutesCor/"
+#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_12_04_Standard/"	
+#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2015_11_26/"#Modèle dévalaison
+#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_01_18_0_dore/" #Modèle Dévalaison avec production sur la Dore = 0
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2015_11_26/"
+#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_01_18_0_dore/"	
 
-#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_05_27_Alagnon/"#Modèle standard
-#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_10_14_Alagnon_adjust_p/" #Modèle Alagnon
+#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_05_27_Alagnon/"#Modèle standard
+#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_10_14_Alagnon_adjust_p/" #Modèle Alagnon
 
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/"
-#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/"	
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_05_27_Alagnon/"
+#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_10_14_Alagnon_adjust_p/"	
 
-#un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon_Copie/"#Modèle Alagnon V2
-#deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/" #Modèle Alagnon V2
+#un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon_Copie/"#Modèle Alagnon V2
+#deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2016_12_06_Alagnon/" #Modèle Alagnon V2
 
-#imgwd<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_12_06_Alagnon_Copie/"
-#imgwddeux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2016_12_06_Alagnon/"	
+#imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_12_06_Alagnon_Copie/"
+#imgwddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2016_12_06_Alagnon/"	
 
-un<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/" #Modèle 4 zones Interaction
-deux<-"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/data/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/" #Modèle 4 zones Interaction ss rho_poutes
+un<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_03_23_4zones_Interaction/" #Modèle 4 zones Interaction
+deux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_05_03_4zones_Interaction_ss_rho_poutes/" #Modèle 4 zones Interaction ss rho_poutes
 
-imgwd<- "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2017_03_23_4zones_Interaction/"
-imgwddeux<-	"C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/2017_05_03_4zones_Interaction_ss_rho_poutes/"
+imgwd<- "C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2017_03_23_4zones_Interaction/"
+imgwddeux<-	"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2017_05_03_4zones_Interaction_ss_rho_poutes/"
 
 
-	load("C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_05_03_4zones_Interaction_CopyOfCompare.RData")
+	load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_05_03_4zones_Interaction_CopyOfCompare.RData")
 	
 library(lattice)
 library(coda)

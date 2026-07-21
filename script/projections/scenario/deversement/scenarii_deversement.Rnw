@@ -5,17 +5,17 @@
 
 <<init,echo=FALSE, eval=FALSE,results=hide >>=
 #Modèle 2019.12.12_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2018
-#setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2019_12_12/")
-#datawd<-("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2019_12_12/")
+#setwd(here::here("data/CODA/2019_12_12/"))
+#datawd<-(here::here("data/CODA/2019_12_12/"))
 #T=44
 #surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-2))) #T-2 pour calculer sur T+27 année
 #S_juv_JP<-matrix(surf,nrow=4)
 
 #Modèle 2021.09 = structure du modèle 2019.12.12 mais avec MAJ données jusqu'en 2020
-setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/")
-datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/"
-imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/"
-tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2021_09/"
+setwd(here::here("data/CODA/2021_09/"))
+datawd<-here::here("data/CODA/2021_09/")
+imgwd<-here::here("img/Simulation/2021_09/")
+tabwd<-here::here("tab/2021_09/")
 
 library(coda)
 library(boot)
@@ -26,8 +26,8 @@ T=46
 # surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-2))) #T-2 pour calculer sur T+27 année
 # S_juv_JP<-matrix(surf,nrow=4)	
 
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+source(here::here("script/fonctions/fct_graph.R"))
+source(here::here("script/fonctions/fct_data.R"))
 #-- Appel à la fonction du script "fct_data.R" pour récupérer les surfaces productives
 S_juv_JP<-keep_good_surf(surf_2021=TRUE)
 
@@ -570,16 +570,16 @@ for (t in (T+6):(T+26)){
 	}
 }
 
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_07_01.RData")
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Deversement_Maj2020_2022_04_04.RData")
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Deversement_Maj2020_2022_05_06.RData")
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Deversement_capt15_Maj2020_2022_07_06.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_07_01.RData")
+#save.image(file = here::here("2021_09_Projection_Deversement_Maj2020_2022_04_04.RData"))
+#save.image(file = here::here("2021_09_Projection_Deversement_Maj2020_2022_05_06.RData"))
+save.image(file = here::here("2021_09_Projection_Deversement_capt15_Maj2020_2022_07_06.RData"))
 @
 
 \subsubsection{Taux de renouvellement}
 <<transport_gen_15_tx_renouv,echo=FALSE, eval=FALSE,results=hide>>=
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_07_01.RData")
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Deversement_Maj2020_2022_05_06.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_07_01.RData")
+load(file = here::here("2021_09_Projection_Deversement_Maj2020_2022_05_06.RData"))
 
 #..................................................................................
 # Taux renouvellement population SAUVAGE
@@ -787,8 +787,8 @@ for (t in 7:(T+20)) {
 	renew_rate_w_coef_q[t,]=quantile(renew_rate_w_coef[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-#pour dessiner le graph on fait appel à la fonction du script "D:/Documents/Workspace_eclipse/ModeleDynamiquePopscript/fonction/fct_graph.R"
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+#pour dessiner le graph on fait appel à la fonction du script "script/fonction/fct_graph.R"
+source(here::here("script/fonctions/fct_graph.R"))
 draw_indic_tx_ren(tx_renouv=renew_rate_w_coef,simulation=TRUE,scenario="Transport 15% géniteurs Amont Poutès",png=TRUE,pngName = "TauxRenouvellementPopSauvage_transportGeniteur_15_2022_05_06")
 
 ##SANS enregistrer
@@ -798,7 +798,7 @@ draw_indic_tx_ren(tx_renouv=renew_rate_w_coef,simulation=TRUE,scenario="Transpor
 # Taux renouvellement population TOTALE
 #..................................................................................
 
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Deversement_Maj2020_2022_05_06.RData")
+load(file = here::here("2021_09_Projection_Deversement_Maj2020_2022_05_06.RData"))
 
 # library(stringr)
 # bugs2jags(str_c(datawd,"data.txt"),"data_4zones_Interaction_2017.12.12.R")
@@ -922,15 +922,15 @@ for (t in (T+1):(T+20)){
 
 #Pour lisser sur 5 ans, il faut récupérer les taux de renouvellement de 
 # 1974+(T+1)-8 à 1974+(T+1)-4 --> 1974+(T+1)-4= 1ere année calculée dans les projections donc on récupère jusqu'à 1974+(T+1)-5
-#load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/renew_rate_coef_tot_2019_12_12.Rdata")
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/renew_rate_coef_tot_2021_09.Rdata")
+#load(file=here::here("renew_rate_coef_tot_2019_12_12.Rdata"))
+load(file=here::here("renew_rate_coef_tot_2021_09.Rdata"))
 
 #On fusionne les jeux de données renew_rate et renew_rate_coef pour reconstituer toute la série
 renew_rate_final<-cbind(renew_rate_coef[,1:(T-6)],renew_rate[,(T-5):(T+20)])
 
 
 #--- Sortie et enregistrement du graph
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+source(here::here("script/fonctions/fct_graph.R"))
 draw_indic_tx_ren(tx_renouv=renew_rate_final,simulation=TRUE,scenario="Transport 15% géniteurs Amont Poutès",typ_pop = "Totale",png=TRUE,pngName="TauxRenouvellementPopTotale_transportGeniteur_15_2022_05_06")
 
 
@@ -951,7 +951,7 @@ draw_indic_tx_ren(tx_renouv=renew_rate_final,simulation=TRUE,scenario="Transport
 
 \subsubsection{Niveau de population}
 <<transport_gen_15_Niv_pop, echo=FALSE, eval=FALSE,results=hide >>=
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_07_01.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_07_01.RData")
 
 library(coda)
 library(boot)
@@ -1090,8 +1090,8 @@ mean(N_vichy[,(T+20-4):(T+20)]) #moyenne des effectifs estimés à Vichy
 <<transport_gen_tot, echo=FALSE, eval=FALSE,results=hide >>=
 
 # #Modèle 2019.12.12_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2018
-# setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
-# datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+# setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+# datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
 # 
 # library(coda)
 # library(boot)
@@ -1652,17 +1652,17 @@ for (t in (T+6):(T+26)){
 	}
 }
 
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_transport_gen_tot_2020_07_01.RData")
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Transport_gen_tot_2022_04_08.RData")
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Transport_gen_tot_2022_05_06.RData")
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Transport100_gen_tot_2022_07_06.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_transport_gen_tot_2020_07_01.RData")
+#save.image(file = here::here("2021_09_Projection_Transport_gen_tot_2022_04_08.RData"))
+#save.image(file = here::here("2021_09_Projection_Transport_gen_tot_2022_05_06.RData"))
+save.image(file = here::here("2021_09_Projection_Transport100_gen_tot_2022_07_06.RData"))
 @
 
 \subsubsection{Taux de renouvellement}
 
 <<transport_gen_tot_tx_renouv,echo=FALSE, eval=FALSE,results=hide>>=
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_transport_gen_tot_2020_07_01.RData")
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Transport_gen_tot_2022_05_06.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_transport_gen_tot_2020_07_01.RData")
+load(here::here("2021_09_Projection_Transport_gen_tot_2022_05_06.RData"))
 
 #========================================
 # Taux renouvellement population SAUVAGE
@@ -1865,8 +1865,8 @@ for (t in 7:(T+20)) {
 	renew_rate_w_coef_q[t,]=quantile(renew_rate_w_coef[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-#pour dessiner le graph on fait appel à la fonction du script "D:/Documents/Workspace_eclipse/ModeleDynamiquePopscript/fonction/fct_graph.R"
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+#pour dessiner le graph on fait appel à la fonction du script "script/fonction/fct_graph.R"
+source(here::here("script/fonctions/fct_graph.R"))
 draw_indic_tx_ren(tx_renouv=renew_rate_w_coef,simulation=TRUE,scenario="Transport 100% géniteurs Amont Poutès",png=TRUE,pngName="TauxRenouvellementPopSauvage_transportGeniteur_100_2022_05_06")
 
 ##SANS enregistrer
@@ -1876,7 +1876,7 @@ draw_indic_tx_ren(tx_renouv=renew_rate_w_coef,simulation=TRUE,scenario="Transpor
 # Taux renouvellement population TOTALE
 #========================================
 
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Transport_gen_tot_2022_05_06.RData")
+load(here::here("2021_09_Projection_Transport_gen_tot_2022_05_06.RData"))
 
 library(stringr)
 bugs2jags(str_c(datawd,"data.txt"),"data_4zones_Interaction_2017.12.12.R")
@@ -1997,15 +1997,15 @@ for (t in (T+1):(T+20)){
 #--- On récupère le calcul du tx de renouvellement sur la période rétrospective (script Indicateurs PLAGEPOMI.Rnw)
 #Pour lisser sur 5 ans, il faut récupérer les taux de renouvellement de 
 # 1974+(T+1)-8 à 1974+(T+1)-4 réalisé dans les calculs sur la partie rétrospective sur la pop totale --> 1974+(T+1)-4= 1ere année calculée dans les projections donc on récupère jusqu'à 1974+(T+1)-5
-#load(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/renew_rate_coef_tot_2019_12_12.Rdata")
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/renew_rate_coef_tot_2021_09.Rdata")
+#load(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/renew_rate_coef_tot_2019_12_12.Rdata")
+load(here::here("renew_rate_coef_tot_2021_09.Rdata"))
 
 #On fusionne les jeux de données renew_rate et renew_rate_coef pour reconstituer toute la série
 renew_rate_final<-cbind(renew_rate_coef[,1:(T-6)],renew_rate[,(T-5):(T+20)])
 
 
 #--- Sortie et enregistrement du graph
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+source(here::here("script/fonctions/fct_graph.R"))
 draw_indic_tx_ren(tx_renouv=renew_rate_final,simulation=TRUE,scenario="Transport 100% géniteurs Amont Poutès",typ_pop = "Totale",png=TRUE,pngName="TauxRenouvellementPopTotale_transportGeniteur_100_2022_05_06")
 
 
@@ -2025,7 +2025,7 @@ draw_indic_tx_ren(tx_renouv=renew_rate_final,simulation=TRUE,scenario="Transport
 \subsubsection{Niveau de population}
 
 <<transport_gen_tot_Niv_pop,echo=FALSE, eval=FALSE,results=hide>>=
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_transport_gen_tot_2020_07_01.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_transport_gen_tot_2020_07_01.RData")
 
 surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-2))) #T-2 pour calculer sur T+27 année
 S_juv_JP<-matrix(surf,nrow=4)
@@ -2149,7 +2149,7 @@ graph_niveau_pop_ws_transp_tot<-ggplot()+
 		theme_bw()+
 		theme(plot.title = element_text(hjust = 0.5)) 
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/NiveauPop_moyMobil_WS_transp_tot_2020_07_02.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/NiveauPop_moyMobil_WS_transp_tot_2020_07_02.png",width=1000,height=800)
 print(graph_niveau_pop_ws_transp_tot)
 dev.off()
 
@@ -2275,7 +2275,7 @@ dev_mean<-mean(rowSums(stock_juv)[(T-4):T]) #411015 #510343
 #Modèle Validation Projection 2021_06_01
 #--------------------------------------------
 #on récupère les quantités réellement déversées sur la période 2008-2018
-# bugs2jags("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/data.txt","data_reelementDeversee_2019_12_12.R")
+# bugs2jags("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/data.txt","data_reelementDeversee_2019_12_12.R")
 # source("data_reelementDeversee_2019_12_12.R")
 # mean(stock_juv[35:40,1]) #environ 495000 alevins sur Vichy-Langeac sur 6 premières années
 # mean(stock_juv[35:40,2]) #environ 157000 alevins sur Alagnon sur 6 premières années
@@ -3220,105 +3220,105 @@ for (t in (T+6):(T+25)){
 #--------------------------------------------------------
 # Scénario0 : avec stock_juv_scenar = quantité de 2018
 #--------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2020_07_03.RData")
-#(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement + ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev2018_2022_04_08.RData") #on garde déversement de 2018 qu'on prolonge car à partir de 2019 on a déversé également en amont Poutès 
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev2018_2022_05_09.RData") 
-# CORROMPU A REFAIRE : save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev2018_2022_07_05.RData") 
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2020_07_03.RData")
+#(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement + ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = here::here("2021_09_Projection_scenar_dev2018_2022_04_08.RData")) #on garde déversement de 2018 qu'on prolonge car à partir de 2019 on a déversé également en amont Poutès 
+#save.image(file = here::here("2021_09_Projection_scenar_dev2018_2022_05_09.RData")) 
+# CORROMPU A REFAIRE : save.image(file = here::here("2021_09_Projection_scenar_dev2018_2022_07_05.RData")) 
 #---------------------------------------------------------------------
 # Scénario1 : avec stock_juv_scenar = quantité de 2018 divisée par 2
 #---------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_01_27.RData")
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement + ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_05_06.RData") #division par 2 des capture d'adulte puisque division par 2 des déversements
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_half2018_2022_04_08.RData") #division par 2 des capture d'adulte et des déversements
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_half2018_2022_05_09.RData") #division par 2 des capture d'adulte et des déversements
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_half2018_2022_07_05.RData") #division par 2 
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_01_27.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement + ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_05_06.RData") #division par 2 des capture d'adulte puisque division par 2 des déversements
+#save.image(file = here::here("2021_09_Projection_scenar_dev_half2018_2022_04_08.RData")) #division par 2 des capture d'adulte et des déversements
+#save.image(file = here::here("2021_09_Projection_scenar_dev_half2018_2022_05_09.RData")) #division par 2 des capture d'adulte et des déversements
+save.image(file = here::here("2021_09_Projection_scenar_dev_half2018_2022_07_05.RData")) #division par 2 
 #------------------------------------------------------------------------
 # Scénario2 : avec stock_juv_scenar = quantité de 2018 multipliée par 2
 #------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_01_27.RData")
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement + ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_05_06.RData") #Multiplication par 2 des capture d'adultes puisque multiplication par 2 des déversements
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_double2018_2022_04_08.RData") 
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_double2018_2022_05_09.RData") 
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_double2018_2022_07_05.RData") 
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_01_27.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement + ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_05_06.RData") #Multiplication par 2 des capture d'adultes puisque multiplication par 2 des déversements
+#save.image(file = here::here("2021_09_Projection_scenar_dev_double2018_2022_04_08.RData")) 
+#save.image(file = here::here("2021_09_Projection_scenar_dev_double2018_2022_05_09.RData")) 
+save.image(file = here::here("2021_09_Projection_scenar_dev_double2018_2022_07_05.RData")) 
 
 #------------------------------------------------------------------------------------------------
 # Scénario3 : avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout en amont de Poutès
 #------------------------------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_01_27.RData")
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_04_08.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_05_09.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_07_05.RData") # ajouté 	
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_01_27.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = here::here("2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_04_08.RData")) # ajouté prélèvement pisci et correction oubli N_poutes
+save.image(file = here::here("2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_05_09.RData")) # ajouté prélèvement pisci et correction oubli N_poutes
+save.image(file = here::here("2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_07_05.RData")) # ajouté 	
 #------------------------------------------------------------------------------------------
 # Scénario4 : avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout sur l'Alagnon
 #------------------------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_01_28.RData")
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Alagnon_2022_04_21.RData") # ajouté prélèvement pisci et correction oubli N_poute
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Alagnon_2022_05_09.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Alagnon_2022_07_05.RData") # ajouté 
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_01_28.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = here::here("2021_09_Projection_scenar_dev_2018_Alagnon_2022_04_21.RData")) # ajouté prélèvement pisci et correction oubli N_poute
+#save.image(file = here::here("2021_09_Projection_scenar_dev_2018_Alagnon_2022_05_09.RData")) # ajouté prélèvement pisci et correction oubli N_poutes
+save.image(file = here::here("2021_09_Projection_scenar_dev_2018_Alagnon_2022_07_05.RData")) # ajouté 
 
 #------------------------------------------------------------------------------------------------------------
 # Scénario5 : avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout sur le secteur Langeac-Poutès
 #------------------------------------------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_01_28.RData")
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Langeac_2022_04_21.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Langeac_2022_05_09.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Langeac_2022_07_05.RData") # ajouté 
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_01_28.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = here::here("2021_09_Projection_scenar_dev_2018_Langeac_2022_04_21.RData")) # ajouté prélèvement pisci et correction oubli N_poutes
+save.image(file = here::here("2021_09_Projection_scenar_dev_2018_Langeac_2022_05_09.RData")) # ajouté prélèvement pisci et correction oubli N_poutes
+save.image(file = here::here("2021_09_Projection_scenar_dev_2018_Langeac_2022_07_05.RData")) # ajouté 
 
 #------------------------------------------------------------------------------------------------------------------------
 # Scénario6 : avec stock_juv_scenar = quantité de 2018 multiplié par 2 ET en mettant tout sur le secteur amont Poutès
 #------------------------------------------------------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar6_dev_double2018_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar6_dev_double2018_Poutes_2022_04_21.RData")
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar6_dev_double2018_Poutes_2022_05_09.RData")
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar6_dev_double2018_Poutes_2022_07_05.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar6_dev_double2018_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = here::here("2021_09_Projection_scenar6_dev_double2018_Poutes_2022_04_21.RData"))
+#save.image(file = here::here("2021_09_Projection_scenar6_dev_double2018_Poutes_2022_05_09.RData"))
+save.image(file = here::here("2021_09_Projection_scenar6_dev_double2018_Poutes_2022_07_05.RData"))
 				
 #------------------------------------------------------------------------------------------------------------------------------------
 # Scénario7 : avec stock_juv_scenar = quantité de 2018 multiplié par 2 ET en mettant moitié sur amont Poutès et moitié sur alagnon
 #------------------------------------------------------------------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar7_dev_double2018_Alagnon_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_04_21.RData"
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_07_05.RData") 
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar7_dev_double2018_Alagnon_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = here::here("2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_04_21.RData")
+save.image(file = here::here("2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_07_05.RData")) 
 #-----------------------------------------------------------------------------------------------------------------------------------------
 # Scénario8 : avec stock_juv_scenar = quantité de 2018 multiplié par 2 ET en mettant moitié sur amont Poutès et moitié sur vichy-Langeac
 #-----------------------------------------------------------------------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar8_dev_double2018_Vichy_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_04_21.RData")
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_07_05.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar8_dev_double2018_Vichy_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = here::here("2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_04_21.RData"))
+save.image(file = here::here("2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_07_05.RData"))
 
 #------------------------------------------------------------------------------------------------------------------------------------
 # Scénario9 : avec stock_juv_scenar = quantité de 2018 multiplié par 1.5 ET en mettant tout sur le secteur amont Poutès
 #------------------------------------------------------------------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar9_dev_x1.5_2018_Poutes_2021_05_10.RData")
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar9_dev_x1.5_2018_Poutes_2022_04_21.RData")
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar9_dev_x1.5_2018_Poutes_2022_07_05.RData")
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar9_dev_x1.5_2018_Poutes_2021_05_10.RData")
+#save.image(file = here::here("2021_09_Projection_scenar9_dev_x1.5_2018_Poutes_2022_04_21.RData"))
+save.image(file = here::here("2021_09_Projection_scenar9_dev_x1.5_2018_Poutes_2022_07_05.RData"))
 
 #------------------------------------------------------------------------------------------------------------------------------------
 # Scénario10 : avec stock_juv_scenar = quantité de 2018 multiplié par 3 ET en mettant tout sur le secteur amont Poutès
 #------------------------------------------------------------------------------------------------------------------------------------
-#save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar9_dev_x3_2018_Poutes_2021_05_10.RData") # ajouté prélèvement pisci et correction oubli N_poutes
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar10_dev_x3_2018_Poutes_2022_04_21.RData") 
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar10_dev_x3_2018_Poutes_2022_07_04.RData") 
+#save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar9_dev_x3_2018_Poutes_2021_05_10.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+#save.image(file = here::here("2021_09_Projection_scenar10_dev_x3_2018_Poutes_2022_04_21.RData")) 
+save.image(file = here::here("2021_09_Projection_scenar10_dev_x3_2018_Poutes_2022_07_04.RData")) 
 		
 #------------------------------------------------------------------------------------------------------------------------------------
 # Scénario11 : avec stock_juv_scenar = quantité de 2018 divisée par 2 ET en mettant tout sur le secteur amont Poutès
 #------------------------------------------------------------------------------------------------------------------------------------
-#save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_06_30.RData") 
-save.image(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_07_05.RData") 
+#save.image(file = here::here("2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_06_30.RData")) 
+save.image(file = here::here("2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_07_05.RData")) 
 
 #----------------------------------------------------------------------------------------------------------------------------------------
 # ValidationProjection - modèle 2021_06_01 : on met les vraies données sur les 10 premières années de projection 
 # (2009-2018, puis on met les déversements de 2018 pour les dernières années de la projection)
 #----------------------------------------------------------------------------------------------------------------------------------------
-save.image(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2021_06_01_ValidationProjection_trueData_Idem2018_10lastYear.RData")
+save.image(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2021_06_01_ValidationProjection_trueData_Idem2018_10lastYear.RData")
 
 
 
@@ -3337,10 +3337,10 @@ median(N_vichy[,(T+20-4):(T+20)])
 <<dev_secteur_tx_renouv_SAUVAGE,echo=FALSE, eval=FALSE,results=hide>>=
 
 #Modèle 2021.09 = structure du modèle 2019.12.12 mais avec MAJ données jusqu'en 2020
-setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/")
-datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/"
-imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/"
-tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2021_09/"
+setwd(here::here("data/CODA/2021_09/"))
+datawd<-here::here("data/CODA/2021_09/")
+imgwd<-here::here("img/Simulation/2021_09/")
+tabwd<-here::here("tab/2021_09/")
 
 library(coda)
 library(boot)
@@ -3348,8 +3348,8 @@ library(stringr)
 library(ggplot2)
 T=46
 
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+source(here::here("script/fonctions/fct_graph.R"))
+source(here::here("script/fonctions/fct_data.R"))
 #-- Appel à la fonction du script "fct_data.R" pour récupérer les surfaces productives
 S_juv_JP<-keep_good_surf(surf_2021=TRUE)
 
@@ -3384,34 +3384,34 @@ renew_rate_w_coef_q=array(NA,dim=c((T+20),5))
 ##---- Choix du scénario -----##
 
 # Scénario0 : avec stock_juv_scenar = quantité de 2018
-#load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev2018_2022_04_08.RData")
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev2018_2022_05_09.RData")
+#load(file = here::here("2021_09_Projection_scenar_dev2018_2022_04_08.RData"))
+load(file = here::here("2021_09_Projection_scenar_dev2018_2022_05_09.RData"))
 
 
 ## scénario 1
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_half2018_2022_04_08.RData")
+load(file = here::here("2021_09_Projection_scenar_dev_half2018_2022_04_08.RData"))
 ## scénario 2
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_double2018_2022_04_08.RData") 
+load(file = here::here("2021_09_Projection_scenar_dev_double2018_2022_04_08.RData")) 
 ## scénario 3
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_04_08.RData")
+load(file = here::here("2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_04_08.RData"))
 ## scénario 4
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Alagnon_2022_04_21.RData")
+load(file = here::here("2021_09_Projection_scenar_dev_2018_Alagnon_2022_04_21.RData"))
 ## scénario 5
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Langeac_2022_04_21.RData")
+load(file = here::here("2021_09_Projection_scenar_dev_2018_Langeac_2022_04_21.RData"))
 ## scénario 6
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar6_dev_double2018_Poutes_2022_04_21.RData")
+load(file = here::here("2021_09_Projection_scenar6_dev_double2018_Poutes_2022_04_21.RData"))
 ## scénario 7
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_04_21.RData") 
+load(file = here::here("2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_04_21.RData")) 
 ## scénario 8
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_04_21.RData")
+load(file = here::here("2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_04_21.RData"))
 ## scénario 11
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_06_30.RData")
+load(file = here::here("2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_06_30.RData"))
 
 #capt 100%
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Transport_gen_tot_2022_05_06.RData")
+load(here::here("2021_09_Projection_Transport_gen_tot_2022_05_06.RData"))
 
 ## capt 15%
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Deversement_capt15_Maj2020_2022_07_06.RData")
+load(file = here::here("2021_09_Projection_Deversement_capt15_Maj2020_2022_07_06.RData"))
 
 
 
@@ -3579,11 +3579,11 @@ for (t in 7:(T+20)) {
 }
 
 #==============================================================================================================================================
-#pour dessiner le graph on fait appel à la fonction du script "D:/Documents/Workspace_eclipse/ModeleDynamiquePopscript/fonction/fct_graph.R"
+#pour dessiner le graph on fait appel à la fonction du script "script/fonction/fct_graph.R"
 #==============================================================================================================================================
 ##on rappel le script de fonction car dans les jeux de données qu'on a enregistré, on avait fait un source mais du coup il a la mauvaise version de la fonction en mémoire
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+source(here::here("script/fonctions/fct_graph.R"))
+source(here::here("script/fonctions/fct_data.R"))
 
 ##Scenario0
 draw_indic_tx_ren(tx_renouv=renew_rate_w_coef,simulation=TRUE,png=TRUE,scenario="Scénario0 : déversements identiques 2018",pngName = "TauxRenouvellementPopSauvage_dev_scenario0_2022_05_09")
@@ -3686,7 +3686,7 @@ seqx <- data.frame(breaks=seq(1,(Tyear_def-16),1),label=seq(1985,(1974+Tyear_def
   seqx <- rbind(seqx_debut,seqx_milieu,seqx_fin)
   xintercept <- T-16#if(simulation==TRUE){Tyear_def}else{}
 
-png(filename ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/Scenar0-11_2022_07_05.png" ,width=1000,height=800)
+png(filename =here::here("img/Simulation/2021_09/Scenar0-11_2022_07_05.png") ,width=1000,height=800)
 ggplot()+
   geom_rect(data=rect_2_col, aes(xmin=1, xmax=(T+4), ymin=ystart,ymax=yend), fill=rect_2_col$col, alpha =0.5) +
   geom_line(data=data_concat,aes(x=annee,y=running_mean,group=scenar))+
@@ -3714,7 +3714,7 @@ write.xlsx(x=data_concat[data_concat$année==2034,],file=str_c(datawd,"resu_fig_
 scenarios<- c(str_c("scenario",0:6),"scenario11")
 data_concat_0_6_11<-data_concat[data_concat$scenar %in% scenarios,]
 
-png(filename ="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/Scenar0-6-11_2022_07_05.png" ,width=1000,height=800)
+png(filename =here::here("img/Simulation/2021_09/Scenar0-6-11_2022_07_05.png") ,width=1000,height=800)
 ggplot()+
   geom_rect(data=rect_2_col, aes(xmin=1, xmax=(T+4), ymin=ystart,ymax=yend), fill=rect_2_col$col, alpha =0.5) +
   geom_line(data=data_concat_0_6_11,aes(x=annee,y=running_mean,group=scenar))+
@@ -3858,32 +3858,32 @@ write.xlsx(x=data_concat_0_6_11[data_concat_0_6_11$année==2034,],file=str_c(img
 # #Pour les projections, on charge le jeu de données souhaité
 # #============================================================
 # # Scénario0 : avec stock_juv_scenar = quantité de 2018
-# #load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData")
-# load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev2018_2022_04_08.RData")
+# #load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData")
+# load(file = here::here("2021_09_Projection_scenar_dev2018_2022_04_08.RData"))
 # 
 # # Scénario1 : avec stock_juv_scenar = quantité de 2018 divisée par 2
-# load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_05_06.RData")
+# load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_05_06.RData")
 # 
 # # Scénario2 : avec stock_juv_scenar = quantité de 2018 multipliée par 2
-# load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_05_06.RData")
+# load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_05_06.RData")
 # 
 # # Scénario3 : avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout en amont de Poutès
-# load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_05_06.RData")
+# load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_05_06.RData")
 # 
 # # Scénario4 : avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout sur l'Alagnon
-# load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_05_06.RData")
+# load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_05_06.RData")
 # 
 # # Scénario5 : avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout sur le secteur Langeac-Poutès
-# load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_05_06.RData")
+# load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_05_06.RData")
 # 
 # # Scénario6 : avec stock_juv_scenar = quantité de 2018 multiplié par 2 ET en mettant tout sur le secteur amont Poutès
-# load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar6_dev_double2018_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+# load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar6_dev_double2018_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
 # 
 # # Scénario7 : avec stock_juv_scenar = double 2018 et moitié sur amont poutès / moitié sur alagnon
-# load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar7_dev_double2018_Alagnon_Poutes_2021_05_06.RData")
+# load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar7_dev_double2018_Alagnon_Poutes_2021_05_06.RData")
 # 
 # # Scénario8 : avec stock_juv_scenar = quantité de 2018 multiplié par 2 ET en mettant moitié sur amont Poutès et moitié sur vichy-Langeac
-# load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar8_dev_double2018_Vichy_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
+# load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar8_dev_double2018_Vichy_Poutes_2021_05_06.RData") # ajouté prélèvement pisci et correction oubli N_poutes
 # 
 # 
 # 
@@ -4108,15 +4108,15 @@ write.xlsx(x=data_concat_0_6_11[data_concat_0_6_11$année==2034,],file=str_c(img
 # 		theme_bw()+
 # 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 # 
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario0_TxRenouv_SAUVAGE_dev_idem2018.png",width=1000,height=800)
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario1_TxRenouv_SAUVAGE_dev_half2018.png",width=1000,height=800)
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario2_TxRenouv_SAUVAGE_dev_double2018.png",width=1000,height=800)
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario3_TxRenouv_SAUVAGE_dev_2018_AmontPoutes.png",width=1000,height=800)
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario4_TxRenouv_SAUVAGE_dev_2018_Alagnon.png",width=1000,height=800)
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario5_TxRenouv_SAUVAGE_dev_2018_Langeac.png",width=1000,height=800)
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario6_TxRenouv_SAUVAGE_dev_double2018_AmontPoutes.png",width=1000,height=800)
-# #png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario7_TxRenouv_SAUVAGE_dev_double2018_Poutes_Alagnon.png",width=1000,height=800)
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario8_TxRenouv_SAUVAGE_dev_double2018_Poutes_Vichy.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario0_TxRenouv_SAUVAGE_dev_idem2018.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario1_TxRenouv_SAUVAGE_dev_half2018.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario2_TxRenouv_SAUVAGE_dev_double2018.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario3_TxRenouv_SAUVAGE_dev_2018_AmontPoutes.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario4_TxRenouv_SAUVAGE_dev_2018_Alagnon.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario5_TxRenouv_SAUVAGE_dev_2018_Langeac.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario6_TxRenouv_SAUVAGE_dev_double2018_AmontPoutes.png",width=1000,height=800)
+# #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario7_TxRenouv_SAUVAGE_dev_double2018_Poutes_Alagnon.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario8_TxRenouv_SAUVAGE_dev_double2018_Poutes_Vichy.png",width=1000,height=800)
 # 
 # graph_tx_ren_ws_wild
 # dev.off()
@@ -4137,10 +4137,10 @@ write.xlsx(x=data_concat_0_6_11[data_concat_0_6_11$année==2034,],file=str_c(img
 
 <<dev_secteur_tx_renouv,echo=FALSE, eval=FALSE,results=hide>>=
 
-setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/")
-datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/"
-imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/"
-tabwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2021_09/"
+setwd(here::here("data/CODA/2021_09/"))
+datawd<-here::here("data/CODA/2021_09/")
+imgwd<-here::here("img/Simulation/2021_09/")
+tabwd<-here::here("tab/2021_09/")
 
 library(coda)
 library(boot)
@@ -4151,82 +4151,82 @@ T=46
 # surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-2))) #T-2 pour calculer sur T+27 année
 # S_juv_JP<-matrix(surf,nrow=4)	
 
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+source(here::here("script/fonctions/fct_graph.R"))
+source(here::here("script/fonctions/fct_data.R"))
 #-- Appel à la fonction du script "fct_data.R" pour récupérer les surfaces productives
 S_juv_JP<-keep_good_surf(surf_2021=TRUE)
 
 
 #Scénario0 : même quantité/secteur que 2018
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2020_07_03.RData")
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement + ajouté prélèvement pisci et correction oubli N_poutes
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev2018_2022_05_09.RData") 
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2020_07_03.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement + ajouté prélèvement pisci et correction oubli N_poutes
+load(file = here::here("2021_09_Projection_scenar_dev2018_2022_05_09.RData")) 
 
 #Scénario1 : même secteur 2018 / moitié quantité 2018
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_01_27.RData")
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_05_06.RData") #Division des capture d'adulte pour la pisci par 2 puisqu'on divise les eff déversés
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_half2018_2022_07_05.RData") #division par 2 
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_01_27.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_05_06.RData") #Division des capture d'adulte pour la pisci par 2 puisqu'on divise les eff déversés
+load(file = here::here("2021_09_Projection_scenar_dev_half2018_2022_07_05.RData")) #division par 2 
 
 
 #Scénario2 : même secteur 2018 / double quantité 2018
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_01_27.RData")
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_05_06.RData") #Multiplication des capture d'adulte pour la pisci par 2 puisqu'on multiplie les eff déversés
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_double2018_2022_07_05.RData") 
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_01_27.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData") #Correction pour l'année T+1 car prenait sans déversement
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_05_06.RData") #Multiplication des capture d'adulte pour la pisci par 2 puisqu'on multiplie les eff déversés
+load(file = here::here("2021_09_Projection_scenar_dev_double2018_2022_07_05.RData")) 
 
 
 #Scénario3 : quantité 2018 mais tout en amont de Poutès
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_01_27.RData")
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData")
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_05_06.RData")
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_07_05.RData") # ajouté 	
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_01_27.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_05_06.RData")
+load(file = here::here("2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_07_05.RData")) # ajouté 	
 
 
 #Scénario4 : quantité 2018 mais tout sur Alagnon
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_01_28.RData")
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData")
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Alagnon_2022_07_05.RData") # ajouté 
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_01_28.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData")
+load(file = here::here("2021_09_Projection_scenar_dev_2018_Alagnon_2022_07_05.RData")) # ajouté 
 
 
 #Scénario5 : quantité 2018 mais tout sur secteur Langeac-Poutès
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_01_28.RData")
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData")
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Langeac_2022_07_05.RData") # ajout
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_01_28.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData")
+load(file = here::here("2021_09_Projection_scenar_dev_2018_Langeac_2022_07_05.RData")) # ajout
 
 #------------------------------------------------------------------------------------------------------------------------
 # Scénario6 : avec stock_juv_scenar = quantité de 2018 multiplié par 2 ET en mettant tout sur le secteur amont Poutès
 #------------------------------------------------------------------------------------------------------------------------
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar6_dev_double2018_Poutes_2022_07_05.RData")
+load(file = here::here("2021_09_Projection_scenar6_dev_double2018_Poutes_2022_07_05.RData"))
 
 #------------------------------------------------------------------------------------------------------------------------------------
 # Scénario7 : avec stock_juv_scenar = quantité de 2018 multiplié par 2 ET en mettant moitié sur amont Poutès et moitié sur alagnon
 #------------------------------------------------------------------------------------------------------------------------------------
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_07_05.RData") 
+load(file = here::here("2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_07_05.RData")) 
 #-----------------------------------------------------------------------------------------------------------------------------------------
 # Scénario8 : avec stock_juv_scenar = quantité de 2018 multiplié par 2 ET en mettant moitié sur amont Poutès et moitié sur vichy-Langeac
 #-----------------------------------------------------------------------------------------------------------------------------------------
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_07_05.RData")
+load(file = here::here("2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_07_05.RData"))
 
 
 #Scénario9 : quantité de 2018 multiplié par 1.5 ET en mettant tout sur le secteur amont Poutès
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar9_dev_x1.5_2018_Poutes_2022_07_05.RData")
+load(file = here::here("2021_09_Projection_scenar9_dev_x1.5_2018_Poutes_2022_07_05.RData"))
 
 ------------------------------------------------------------------------------------------------------------------------------------
 # Scénario10 : avec stock_juv_scenar = quantité de 2018 multiplié par 3 ET en mettant tout sur le secteur amont Poutès
 #------------------------------------------------------------------------------------------------------------------------------------
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar10_dev_x3_2018_Poutes_2022_07_04.RData") 
+load(file = here::here("2021_09_Projection_scenar10_dev_x3_2018_Poutes_2022_07_04.RData")) 
 		
 #------------------------------------------------------------------------------------------------------------------------------------
 # Scénario11 : avec stock_juv_scenar = quantité de 2018 divisée par 2 ET en mettant tout sur le secteur amont Poutès
 #------------------------------------------------------------------------------------------------------------------------------------
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_07_05.RData") 
+load(file = here::here("2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_07_05.RData")) 
 
 ## capt 15%
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Deversement_Maj2020_2022_05_06.RData")
+load(file = here::here("2021_09_Projection_Deversement_Maj2020_2022_05_06.RData"))
 
 #capt 100%
-load("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Transport_gen_tot_2022_05_06.RData")
+load(here::here("2021_09_Projection_Transport_gen_tot_2022_05_06.RData"))
 
 #=================================
 # Taux renouvellement population
@@ -4333,7 +4333,7 @@ for (t in (T+1):(T+20)){
 exp(mean(rowMeans(renew_rate[,(T+16):(T+20)])))
 
 ##Pour export données
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/renew_rate_coef_tot_2021_09.Rdata")
+load(file=here::here("renew_rate_coef_tot_2021_09.Rdata"))
 ##On ne selectionne que les 4 dernières années 
 renew_rate_old<-renew_rate_coef[,1:(T-6)]
 colnames(renew_rate_old)<-paste0("[,",seq(1,(T-6),1),"]")
@@ -4356,8 +4356,8 @@ running.mean(median_data,5)[3:22]
 
 ##Pour lisser sur 5 ans, il faut récupérer les taux de renouvellement de 
 ## 1974+(T+1)-8 à 1974+(T+1)-4 --> 1974+(T+1)-4= 1ere année calculée dans les projections donc on récupère jusqu'à 1974+(T+1)-5
-#load(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/renew_rate_coef_tot_2019_12_12.Rdata")
-load(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/renew_rate_coef_tot_2021_09.Rdata")
+#load(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/renew_rate_coef_tot_2019_12_12.Rdata")
+load(file=here::here("renew_rate_coef_tot_2021_09.Rdata"))
 ##On ne selectionne que les 4 dernières années 
 renew_rate_old<-renew_rate_coef[,(T-9):(T-6)]
 colnames(renew_rate_old)<-c(str_c("[,",(T-9),"]"),str_c("[,",(T-8),"]"),str_c("[,",(T-7),"]"),str_c("[,",(T-6),"]"))
@@ -4396,13 +4396,13 @@ graph_tx_ren<-ggplot()+
 	theme_bw()+
 	theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTotale_dev_idem2018_2020_07_03.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTotale_dev_idem2018_2020_07_03.png",width=1000,height=800)
 #graph_tx_ren
 #dev.off()
 
 
 ##Si on fait sur toute la série
-load(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/renew_rate_coef_tot_2019_12_12.Rdata")
+load(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/renew_rate_coef_tot_2019_12_12.Rdata")
 #On ne selectionne que les 4 dernières années 
 renew_rate_old<-renew_rate_coef[,7:(T-6)]
 colnames(renew_rate_old)<-paste0("[,",seq(7,(T-6),1),"]")
@@ -4478,17 +4478,17 @@ graph_tx_ren_tot<-ggplot()+
 #------ Comparaison entre scénarii ----------#
 mean(median_data[(T+20-4-7-4):(T+20-7-4)])
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario9_TauxRenouvellementPopTotale_dev_x3_2018_Poutes_totSerie_2021_05_10.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario9_TauxRenouvellementPopTotale_dev_x1.5_2018_Poutes_totSerie_2021_05_10.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario8_TauxRenouvellementPopTotale_dev_double2018_Vichy_Poutes_totSerie_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario7_TauxRenouvellementPopTotale_dev_double2018_Alagnon_Poutes_totSerie_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario6_TauxRenouvellementPopTotale_dev_double2018_Poutes_totSerie_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario5_TauxRenouvellementPopTotale_dev_2018_Langeac_totSerie_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario4_TauxRenouvellementPopTotale_dev_2018_Alagnon_totSerie_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario3_TauxRenouvellementPopTotale_dev_2018_AmontPoutes_totSerie_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario2_TauxRenouvellementPopTotale_dev_double2018_totSerie_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario1_TauxRenouvellementPopTotale_dev_half2018_totSerie_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario0_TauxRenouvellementPopTotale_dev_idem2018_totSerie_2021_05_06.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario9_TauxRenouvellementPopTotale_dev_x3_2018_Poutes_totSerie_2021_05_10.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario9_TauxRenouvellementPopTotale_dev_x1.5_2018_Poutes_totSerie_2021_05_10.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario8_TauxRenouvellementPopTotale_dev_double2018_Vichy_Poutes_totSerie_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario7_TauxRenouvellementPopTotale_dev_double2018_Alagnon_Poutes_totSerie_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario6_TauxRenouvellementPopTotale_dev_double2018_Poutes_totSerie_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario5_TauxRenouvellementPopTotale_dev_2018_Langeac_totSerie_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario4_TauxRenouvellementPopTotale_dev_2018_Alagnon_totSerie_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario3_TauxRenouvellementPopTotale_dev_2018_AmontPoutes_totSerie_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario2_TauxRenouvellementPopTotale_dev_double2018_totSerie_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario1_TauxRenouvellementPopTotale_dev_half2018_totSerie_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario0_TauxRenouvellementPopTotale_dev_idem2018_totSerie_2021_05_06.png",width=1000,height=800)
 graph_tx_ren_tot
 dev.off()
 
@@ -4496,20 +4496,20 @@ dev.off()
 
 <<sortie_comp_scenar,echo=FALSE, eval=FALSE,results=hide>>=
 #Scenario 0
-s0<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev2018_2022_05_09.RData")
-s1<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_half2018_2022_07_05.RData")
-s2<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_double2018_2022_07_05.RData") 
-s3<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_07_05.RData") # ajouté 	
-s4<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Alagnon_2022_07_05.RData") # ajouté 
-s5<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar_dev_2018_Langeac_2022_07_05.RData") # ajouté 
-s6<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar6_dev_double2018_Poutes_2022_07_05.RData")
-s7<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_07_05.RData") 
-s8<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_07_05.RData")
-s9<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar9_dev_x1.5_2018_Poutes_2022_07_05.RData")
-s10<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar10_dev_x3_2018_Poutes_2022_07_04.RData") 
-s11<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_07_05.RData") 
-capt15<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Deversement_capt15_Maj2020_2022_07_06.RData")
-capt100<-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_Transport100_gen_tot_2022_07_06.RData")
+s0<-load(file = here::here("2021_09_Projection_scenar_dev2018_2022_05_09.RData"))
+s1<-load(file = here::here("2021_09_Projection_scenar_dev_half2018_2022_07_05.RData"))
+s2<-load(file = here::here("2021_09_Projection_scenar_dev_double2018_2022_07_05.RData")) 
+s3<-load(file = here::here("2021_09_Projection_scenar_dev_2018_AmontPoutes_2022_07_05.RData")) # ajouté 	
+s4<-load(file = here::here("2021_09_Projection_scenar_dev_2018_Alagnon_2022_07_05.RData")) # ajouté 
+s5<-load(file = here::here("2021_09_Projection_scenar_dev_2018_Langeac_2022_07_05.RData")) # ajouté 
+s6<-load(file = here::here("2021_09_Projection_scenar6_dev_double2018_Poutes_2022_07_05.RData"))
+s7<-load(file = here::here("2021_09_Projection_scenar7_dev_double2018_Alagnon_Poutes_2022_07_05.RData")) 
+s8<-load(file = here::here("2021_09_Projection_scenar8_dev_double2018_Vichy_Poutes_2022_07_05.RData"))
+s9<-load(file = here::here("2021_09_Projection_scenar9_dev_x1.5_2018_Poutes_2022_07_05.RData"))
+s10<-load(file = here::here("2021_09_Projection_scenar10_dev_x3_2018_Poutes_2022_07_04.RData")) 
+s11<-load(file = here::here("2021_09_Projection_scenar11_dev_half_2018_Poutes_2022_07_05.RData")) 
+capt15<-load(file = here::here("2021_09_Projection_Deversement_capt15_Maj2020_2022_07_06.RData"))
+capt100<-load(file = here::here("2021_09_Projection_Transport100_gen_tot_2022_07_06.RData"))
 
 popTot<-mean(N_vichy[,(T+20-4):(T+20)])
 
@@ -4626,7 +4626,7 @@ popSau<-mean(N_wild_vichy[,(T+20-4):(T+20)])
 
 <<dev_secteur_tx_renouv_boxplot,echo=FALSE, eval=FALSE,results=hide>>=
 
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2020_07_03.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2020_07_03.RData")
 
 #=================================
 # Taux renouvellement population
@@ -4739,14 +4739,14 @@ exp(mean(renew_rate_q[(T+19-10):(T+19-5),3])) #0.92
 exp(mean(rowMeans(renew_rate[,(T+1):(T+15)]))) # donne résultat quasi-identique que moyenne sur les quantiles
 exp(mean(rowMeans(renew_rate[,(T+20-7):(T+20-3)])))#0.71 sur 5 dernières années projection
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_2018_Langeac_boxplot.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_2018_Alagnon_boxplot.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_2018_AmontPoutes_boxplot.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_double2018_boxplot.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_half2018_boxplot.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_idem2018_boxplot.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_2018_Langeac_boxplot.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_2018_Alagnon_boxplot.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_2018_AmontPoutes_boxplot.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_double2018_boxplot.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_half2018_boxplot.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/TauxRenouvellementPopTot_dev_idem2018_boxplot.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 par("mar"=c(7.1, 5.1, 4.1, 2.1))
 plot(1,1,type="n",axes=FALSE,xlim=c((T-0.5-5),(T+19.5-5)),xlab="Years",ylim=c(-2,2),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -4797,19 +4797,19 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_06_01/ReturnVichy_2021_06_01_ValidationProjection_trueData_Idem2018_10lastYear.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar10_dev_x3_2018_Poutes_2021_05_06.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar9_dev_x1.5_2018_Poutes_2021_05_06.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar8_dev_double2018_Vichy_Poutes_2021_05_06.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar7_dev_double2018_Alagnon_Poutes_2021_05_06.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar6_dev_double2018_Poutes_2021_05_06.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_2018_Langeac_2021_03_17.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_2018_Alagnon_2021_03_17.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_2018_AmontPoutes_2021_03_17.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_double2018_2021_03_17.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_half2018_2021_03_17.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_idem2018_2021_03_17.png",width=800,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_2020_07_03.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/ReturnVichy_2021_06_01_ValidationProjection_trueData_Idem2018_10lastYear.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar10_dev_x3_2018_Poutes_2021_05_06.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar9_dev_x1.5_2018_Poutes_2021_05_06.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar8_dev_double2018_Vichy_Poutes_2021_05_06.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar7_dev_double2018_Alagnon_Poutes_2021_05_06.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar6_dev_double2018_Poutes_2021_05_06.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_2018_Langeac_2021_03_17.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_2018_Alagnon_2021_03_17.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_2018_AmontPoutes_2021_03_17.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_double2018_2021_03_17.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_half2018_2021_03_17.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_idem2018_2021_03_17.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/ReturnVichy_scenar_dev_2020_07_03.png",width=800,height=800)
 T=34
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,8000),ylab="Returns Vichy",main=iconv("Retour Vichy - deversement réel 2009-2018 puis prolongation 2018","UTF8"),cex.lab=1.5)
 
@@ -4888,7 +4888,7 @@ for (t in (T+1):(T+20)){
 #------------------
 # Graph
 #------------------
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/2021_06_01/ReturnPoutes_2021_06_01_ValidationProjection_trueData_Idem2018_10lastYear.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/ReturnPoutes_2021_06_01_ValidationProjection_trueData_Idem2018_10lastYear.png",width=800,height=800)
 T=34
 plot(1,1,type="n",axes=FALSE,xlim=c(0.5,T+20+0.5),xlab="Years",ylim=c(0,600),ylab=iconv("Retours Poutès","UTF8"),main=iconv("Retours Poutès - deversement réel 2009-2018 puis prolongation 2018","UTF8"),cex.lab=1.5)
 
@@ -4945,17 +4945,17 @@ median(N_poutes[,35:44]) #51 = estimation nbr adultes à Poutès
 
 <<dev_secteur_part_juv,echo=FALSE, eval=FALSE, results=hide>>=
 #Simulation quantité à déverser similaire 2018 et mêmes lieux
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData")
 #Simulation quantité divisée par 2 par rapport à 2018
-load(file ="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData")
+load(file ="C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData")
 #Simulation double 2018
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData")
 #Simulation quantité 2018 en amont de Poutès
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData")
 #Simulation quantité 2018 sur Alagnon
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData")
 #Simulation quantité 2018 Langeac-Poutès
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData")
 
 surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-8)))
 S_juv_JP<-matrix(surf,nrow=4)	
@@ -5060,18 +5060,18 @@ graph_part_juv<-ggplot()+
 					theme_bw()+
 					theme(plot.title = element_text(hjust = 0.5)) 
 			
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_idem2018_2021_03_17_V2.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_idem2018_2021_03_17.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_half2018_2021_03_17.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_double2018_2021_03_17.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_Poutes2018_2021_03_17.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_Alagnon2018_2021_03_17.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_Langeac2018_2021_03_17.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario6_Part_juv_sauvage_double2018_Poutes_2021_05_06_V2.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario7_Part_juv_sauvage_double2018_Alagnon_Poutes_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario8_Part_juv_sauvage_double2018_Vichy_Poutes_2021_05_06.png",width=1000,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario9_Part_juv_sauvage_x1.5_2018_Poutes_2021_05_10.png",width=1000,height=800)
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario10_Part_juv_sauvage_x3_2018_Poutes_2021_05_10.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_idem2018_2021_03_17_V2.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_idem2018_2021_03_17.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_half2018_2021_03_17.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_double2018_2021_03_17.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_Poutes2018_2021_03_17.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_Alagnon2018_2021_03_17.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Part_juv_sauvage_Langeac2018_2021_03_17.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario6_Part_juv_sauvage_double2018_Poutes_2021_05_06_V2.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario7_Part_juv_sauvage_double2018_Alagnon_Poutes_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario8_Part_juv_sauvage_double2018_Vichy_Poutes_2021_05_06.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario9_Part_juv_sauvage_x1.5_2018_Poutes_2021_05_10.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2020_07_scenarii_deversement_2019_12_12/Scenario10_Part_juv_sauvage_x3_2018_Poutes_2021_05_10.png",width=1000,height=800)
 
 	print(graph_part_juv)
 dev.off()
@@ -5090,17 +5090,17 @@ mean(median_ratio_juv_wild[(T+20-4):(T+20)])
 ######################################################################################################
 
 # Déversement identique 2018
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData")
 # avec stock_juv_scenar = quantité de 2018 divisée par 2
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData") 
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData") 
 # avec stock_juv_scenar = quantité de 2018 multipliée par 2
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData") 
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData") 
 # avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout en amont de Poutès
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData")
 # avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout sur l'Alagnon
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData")
 # avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout sur le secteur Langeac-Poutès
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData")
 
 
 
@@ -5187,13 +5187,13 @@ for (t in 1:(T+20)){
 	ratio_juv_P_q[t,]=quantile(ratio_juv_P[,t],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
 }
 
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_idem2018_2021_03_17_V2.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_idem2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_half2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_double2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_Poutes2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_Alagnon2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_Langeac2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_idem2018_2021_03_17_V2.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_idem2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_half2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_double2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_Poutes2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_Alagnon2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatiale_juv_totaux_ratio_Langeac2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 
@@ -5480,13 +5480,13 @@ for (t in 1:(T+20)){
 	ratio_juv_wild_P_q[t,]=quantile(ratio_juv_wild_P[,t],probs=c(0.05,0.25,0.5,0.75,0.95),names=FALSE)
 }
 
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_idem2018_2021_03_17_V2.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_idem2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_half2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_double2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_Poutes2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_Alagnon2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
-png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_Langeac2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_idem2018_2021_03_17_V2.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_idem2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_half2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_double2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_Poutes2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_Alagnon2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeProdJuvTot_WILD_ratio_Langeac2018_2021_03_17.png",width=800, height=1000, units = "px",type="cairo")
 
 
 par(mfrow=c(5,1))
@@ -5711,17 +5711,17 @@ dev.off()
 ###########################################################################################
 
 # Déversement identique 2018
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2021_03_17.RData")
 # avec stock_juv_scenar = quantité de 2018 divisée par 2
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData") 
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_half2018_2021_03_17.RData") 
 # avec stock_juv_scenar = quantité de 2018 multipliée par 2
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData") 
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_double2018_2021_03_17.RData") 
 # avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout en amont de Poutès
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_AmontPoutes_2021_03_17.RData")
 # avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout sur l'Alagnon
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Alagnon_2021_03_17.RData")
 # avec stock_juv_scenar = quantité de 2018 MAIS en mettant tout sur le secteur Langeac-Poutès
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_scenar_dev_2018_Langeac_2021_03_17.RData")
 
 
 
@@ -5878,12 +5878,12 @@ for (t in (T+1):(T+20)){
 #---------------------------------------------------
 # FIGURE
 
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_idem2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_half2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_double2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_Poutes2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
-#png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_Alagnon2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
-png(file="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_Langeac2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_idem2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_half2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_double2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_Poutes2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
+#png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_Alagnon2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
+png(file="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/simulation/2020_07_scenarii_deversement_2019_12_12/RepartitionSpatialeGen_ratio_Langeac2018_2021_03_17.png",width=800, height=1500, units = "px",type="cairo")
 
 par(mfrow=c(5,1))
 #..........

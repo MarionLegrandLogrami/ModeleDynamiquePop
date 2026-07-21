@@ -5,8 +5,8 @@
 
 
 #Modèle 2017.08.29_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2016
-setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 
 
 library(coda)
@@ -174,7 +174,7 @@ S_juv_JP_tot<-S_juv_JP[,T]
 #}
 #
 #
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_SaturationGenTheorique_2018_10_10.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_SaturationGenTheorique_2018_10_10.png",width=800,height=800)
 #
 #plot(1,1,type="n",axes=FALSE,xlim=c(1.5,T+0.5),xlab=iconv("Années","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5,cex.main=1,main=iconv("Diagnostique Conservation - Saturation théorique des habitats en géniteurs","UTF8"),sub=iconv("Surfaces totales même si non accessibles en début de période","UTF8"))
 ## trace l'axe des ordonn�es
@@ -209,7 +209,7 @@ S_juv_JP_tot<-S_juv_JP[,T]
 #dev.off()
 #
 #
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_SaturationGenTheorique_2018_10_10.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_SaturationGenTheorique_2018_10_10.png",width=800,height=800)
 #
 #plot(1,1,type="n",axes=FALSE,xlim=c(1.5,T+0.5),xlab=iconv("Années","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5,cex.main=1,main=iconv("Diagnostique Conservation - Saturation théorique des habitats en géniteurs","UTF8"),sub=iconv("Surfaces réellement accessibles - évolutif au cours du temps","UTF8"))
 ## trace l'axe des ordonn�es
@@ -382,8 +382,8 @@ for (t in 2:T){
 #}
 
 
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_annuel_surfTot_2018_04_20.png",width=800,height=800)
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_2018_06_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_annuel_surfTot_2018_04_20.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_2018_06_22.png",width=800,height=800)
 
 
 #par(mfrow=c(1,1),mar=c(4,6.1,4,0.5),cex.lab=1.4, cex.lab=1.4)
@@ -421,8 +421,8 @@ abline(h=0.25,col="red",lty=2)
 dev.off()
 
 
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_annuel_surfTot_2018_04_20.png",width=800,height=800)
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_2018_06_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_annuel_surfTot_2018_04_20.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_2018_06_22.png",width=800,height=800)
 
 
 #par(mfrow=c(1,1),mar=c(4,6.1,4,0.5),cex.lab=1.4, cex.lab=1.4)
@@ -565,9 +565,9 @@ p_upper_25_Rmax_mean5<-rev(p_upper_25_Rmax_mean5)
 p_upper_50_Rmax_mean5<-rev(p_upper_50_Rmax_mean5)
 p_upper_75_Rmax_mean5<-rev(p_upper_75_Rmax_mean5)
 
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_mean5_2018_04_20.png",width=800,height=800)
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_2018_06_22.png",width=800,height=800)
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_2018_06_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_mean5_2018_04_20.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_2018_06_22.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_2018_06_22.png",width=800,height=800)
 
 par(mar=c(6,6.1,4,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -603,9 +603,9 @@ abline(h=0.25,col="red",lty=2)
 dev.off()
 
 
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_mean5_2018_04_20.png",width=800,height=800)
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_2018_06_22.png",width=800,height=800)
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_2018_06_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_mean5_2018_04_20.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_2018_06_22.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_2018_06_22.png",width=800,height=800)
 
 par(mar=c(6,6.1,4,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -784,7 +784,7 @@ for (t in 2:T){
 #}
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservationWild_annuel_surfTot_2018_06_22.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservationWild_annuel_surfTot_2018_06_22.png",width=800,height=800)
 
 #par(mfrow=c(1,1),mar=c(4,6.1,4,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -821,7 +821,7 @@ abline(h=0.25,col="red",lty=2)
 dev.off()
 
 
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservationWild_annuel_2018_06_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservationWild_annuel_2018_06_22.png",width=800,height=800)
 #
 ##par(mfrow=c(1,1),mar=c(4,6.1,4,0.5),cex.lab=1.4, cex.lab=1.4)
 #
@@ -982,7 +982,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -1001,7 +1001,7 @@ p<-ggplot(mean_risk_secteur)+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_secteur_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_secteur_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -1076,8 +1076,8 @@ p_w_upper_25_Rmax_mean5<-rev(p_w_upper_25_Rmax_mean5)
 p_w_upper_50_Rmax_mean5<-rev(p_w_upper_50_Rmax_mean5)
 p_w_upper_75_Rmax_mean5<-rev(p_w_upper_75_Rmax_mean5)
 
-#png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_mean5_2018_06_22.png",width=800,height=800)
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservationWild_mean5_surfTot_2018_06_22.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/DiagnostiqueConservation_mean5_2018_06_22.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservationWild_mean5_surfTot_2018_06_22.png",width=800,height=800)
 
 par(mar=c(6,6.1,4,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1123,7 +1123,7 @@ dev.off()
 #=========================
 
 #On charge les donn�es du sc�nario Retour vers le futur
-retourVersFutur<-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_TxRenouv_2018_06.RData")
+retourVersFutur<-load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AnalyseRetro_InteractionReciproqueMatriceVC_TxRenouv_2018_06.RData")
 #On charge Rmax avec les lignes de code du d�but du script
 
 DC_tot_tot_RVF=array(rep(0,T*5000),dim=c(5000,T)) #en prenant l'ensemble des surfaces m�me si elles ne sont pas accessibles
@@ -1236,7 +1236,7 @@ for (t in 2:T){
 }
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_RetourVersLeFutur_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_RetourVersLeFutur_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6,2,0.5))
 plot(1,1,type="n",axes=FALSE,xlim=c(1.5,T+0.5),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -1272,7 +1272,7 @@ mtext(1,text="Scenario : Retour vers le Futur",line=6)
 dev.off()
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_RetourVersLeFutur_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_RetourVersLeFutur_2018_06_25.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(8,6,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c(1.5,T+0.5),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -1413,7 +1413,7 @@ p_upper_25_Rmax_mean5_RVF<-rev(p_upper_25_Rmax_mean5_RVF)
 p_upper_50_Rmax_mean5_RVF<-rev(p_upper_50_Rmax_mean5_RVF)
 p_upper_75_Rmax_mean5_RVF<-rev(p_upper_75_Rmax_mean5_RVF)
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_RetourVersLeFutur_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_RetourVersLeFutur_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c(4.5,(T+0.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -1448,7 +1448,7 @@ mtext(1,text="Scenario : Retour vers le Futur",line=6)
 
 dev.off()
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_RetourVersLeFutur_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_RetourVersLeFutur_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c(4.5,(T+0.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -1493,7 +1493,7 @@ rm(list=ls(pattern="RVF$"))
 #======================
 
 #On charge les donn�es du sc�nario Retour vers le futur
-withoutStocking<-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2018_06_25.RData")
+withoutStocking<-load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2018_06_25.RData")
 #On charge Rmax avec les lignes de code du d�but du script
 
 #On remet S_juv_JP car annul� avec l'import de withoutStocking
@@ -1600,7 +1600,7 @@ for (t in (T+1):(T+20)){
 }
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_WithoutStocking_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_WithoutStocking_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6,2,0.5))
 plot(1,1,type="n",axes=FALSE,xlim=c(T+0.5,T+20.5),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -1636,7 +1636,7 @@ mtext(1,text="Scenario : Retour vers le Futur",line=6)
 dev.off()
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_WithoutStocking_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_WithoutStocking_2018_06_25.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(8,6,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+20.5)),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -1777,7 +1777,7 @@ p_upper_25_Rmax_mean5_WS<-rev(p_upper_25_Rmax_mean5_WS)
 p_upper_50_Rmax_mean5_WS<-rev(p_upper_50_Rmax_mean5_WS)
 p_upper_75_Rmax_mean5_WS<-rev(p_upper_75_Rmax_mean5_WS)
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_WithoutStocking_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_WithoutStocking_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -1813,7 +1813,7 @@ mtext(1,text=iconv("Scenario : Projection � 20 ans sans d�versement","UTF8")
 
 dev.off()
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_WithoutStocking_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_WithoutStocking_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -1859,7 +1859,7 @@ rm(list=ls(pattern="WS$"))
 #======================
 
 #On charge les donn�es du sc�nario Retour vers le futur
-devalaison<-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_12_20_Devalaison_ss_rho_poutes_Interaction_MatriceVC_2018_06_25.RData")
+devalaison<-load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_12_20_Devalaison_ss_rho_poutes_Interaction_MatriceVC_2018_06_25.RData")
 #On charge Rmax avec les lignes de code du d�but du script
 
 #On remet S_juv_JP car annul� avec l'import de withoutStocking
@@ -1966,7 +1966,7 @@ for (t in (T+1):(T+20)){
 }
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_Devalaison_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_Devalaison_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6,2,0.5))
 plot(1,1,type="n",axes=FALSE,xlim=c(T+0.5,T+20.5),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2002,7 +2002,7 @@ mtext(1,text=iconv("Scenario : Suppression des impacts � la d�valaison","UTF
 dev.off()
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_Devalaison_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_Devalaison_2018_06_25.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(8,6,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+20.5)),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2143,7 +2143,7 @@ p_upper_25_Rmax_mean5_D<-rev(p_upper_25_Rmax_mean5_D)
 p_upper_50_Rmax_mean5_D<-rev(p_upper_50_Rmax_mean5_D)
 p_upper_75_Rmax_mean5_D<-rev(p_upper_75_Rmax_mean5_D)
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_Devalaison_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_Devalaison_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2179,7 +2179,7 @@ mtext(1,text=iconv("Scenario : Suppression des impacts � la d�valaison","UTF
 
 dev.off()
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_Devalaison_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_Devalaison_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2224,7 +2224,7 @@ rm(list=ls(pattern="D$"))
 #======================
 
 #On charge les donn�es du sc�nario Retour vers le futur
-surv50<-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2018_06_26.RData")
+surv50<-load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie50_2018_06_26.RData")
 #On charge Rmax avec les lignes de code du d�but du script
 
 #On remet S_juv_JP car annul� avec l'import de withoutStocking
@@ -2331,7 +2331,7 @@ for (t in (T+1):(T+20)){
 }
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_Surv50_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_Surv50_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6,2,0.5))
 plot(1,1,type="n",axes=FALSE,xlim=c(T+0.5,T+20.5),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2367,7 +2367,7 @@ mtext(1,text=iconv("Scenario : Am�lioration de la survie � hauteur de 50%","
 dev.off()
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_Surv50_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_Surv50_2018_06_25.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(8,6,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+20.5)),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2508,7 +2508,7 @@ p_upper_25_Rmax_mean5_S50<-rev(p_upper_25_Rmax_mean5_S50)
 p_upper_50_Rmax_mean5_S50<-rev(p_upper_50_Rmax_mean5_S50)
 p_upper_75_Rmax_mean5_S50<-rev(p_upper_75_Rmax_mean5_S50)
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_Surv50_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_Surv50_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2544,7 +2544,7 @@ mtext(1,text=iconv("Scenario : Am�lioration de la survie � hauteur de 50%","
 
 dev.off()
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_Surv50_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_Surv50_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2590,7 +2590,7 @@ rm(list=ls(pattern="S50$"))
 #======================
 
 #On charge les donn�es du sc�nario Retour vers le futur
-surv100<-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2018_06_26.RData")
+surv100<-load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_AmeliorationSurvie100_2018_06_26.RData")
 #On charge Rmax avec les lignes de code du d�but du script
 
 #On remet S_juv_JP car annul� avec l'import de withoutStocking
@@ -2697,7 +2697,7 @@ for (t in (T+1):(T+20)){
 }
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_Surv100_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_Surv100_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6,2,0.5))
 plot(1,1,type="n",axes=FALSE,xlim=c(T+0.5,T+20.5),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2733,7 +2733,7 @@ mtext(1,text=iconv("Scenario : Am�lioration de la survie � hauteur de 100%",
 dev.off()
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_Surv100_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_Surv100_2018_06_25.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(8,6,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+20.5)),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2874,7 +2874,7 @@ p_upper_25_Rmax_mean5_S100<-rev(p_upper_25_Rmax_mean5_S100)
 p_upper_50_Rmax_mean5_S100<-rev(p_upper_50_Rmax_mean5_S100)
 p_upper_75_Rmax_mean5_S100<-rev(p_upper_75_Rmax_mean5_S100)
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_Surv100_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_Surv100_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2910,7 +2910,7 @@ mtext(1,text=iconv("Scenario : Am�lioration de la survie � hauteur de 100%",
 
 dev.off()
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_Surv100_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_Surv100_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -2956,7 +2956,7 @@ rm(list=ls(pattern="S100$"))
 #=======================
 
 #On charge les donn�es du sc�nario Retour vers le futur
-continuiteEcologique<-load(file = "C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2018_06_26.RData")
+continuiteEcologique<-load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2018_06_26.RData")
 #On charge Rmax avec les lignes de code du d�but du script
 
 #On remet S_juv_JP car annul� avec l'import de withoutStocking
@@ -3063,7 +3063,7 @@ for (t in (T+1):(T+20)){
 }
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_ContinuiteEcologique_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_surfTot_ContinuiteEcologique_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6,2,0.5))
 plot(1,1,type="n",axes=FALSE,xlim=c(T+0.5,T+20.5),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -3099,7 +3099,7 @@ mtext(1,text=iconv("Scenario : Am�lioration de la continuit� �cologique (m
 dev.off()
 
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_ContinuiteEcologique_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_annuel_ContinuiteEcologique_2018_06_25.png",width=800,height=800)
 
 par(mfrow=c(1,1),mar=c(8,6,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+20.5)),xlab=iconv("Ann�es","UTF8","LATIN1"),ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -3240,7 +3240,7 @@ p_upper_25_Rmax_mean5_CE<-rev(p_upper_25_Rmax_mean5_CE)
 p_upper_50_Rmax_mean5_CE<-rev(p_upper_50_Rmax_mean5_CE)
 p_upper_75_Rmax_mean5_CE<-rev(p_upper_75_Rmax_mean5_CE)
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_ContinuiteEcologique_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_surfTot_ContinuiteEcologique_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)
@@ -3276,7 +3276,7 @@ mtext(1,text=iconv("Scenario : Am�lioration de la continuit� �cologique (m
 
 dev.off()
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_ContinuiteEcologique_2018_06_25.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservation_mean5_ContinuiteEcologique_2018_06_25.png",width=800,height=800)
 
 par(mar=c(8,6.1,2,0.5),cex.lab=1.4, cex.lab=1.4)
 plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5),(T+16.5)),xlab="",ylim=c(0,1),ylab=expression(italic(p^seuils)),cex.lab=1.5)

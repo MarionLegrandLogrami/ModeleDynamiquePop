@@ -4,11 +4,11 @@
 
 <<init,echo=FALSE, eval=FALSE, results=hide>>=
 #Modèle 2017.08.29_Interraction_ss_rho_poutes_matriceVC
-#setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
-#datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+#setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
+#datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/")
 #Modèle 2019_12_12_InteractionSsRhoPoutes_MatriceVC
-#setwd("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
-#datawd<-("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+#setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
+#datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
 #Ancienne surface basées sur carto Malavoi 1999
 #surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-8)))
 #S_juv_JP<-matrix(surf,nrow=4)
@@ -16,9 +16,9 @@
 #S_juv_JP_tot<-S_juv_JP[,T]
 
 #Modèle 2021_09
-setwd("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/")
-datawd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2021_09/"
-imgwd<-"D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/"
+setwd(here::here("data/CODA/2021_09/"))
+datawd<-here::here("data/CODA/2021_09/")
+imgwd<-here::here("img/Simulation/2021_09/")
 
 library(coda)
 library(boot)
@@ -26,8 +26,8 @@ library(stringr)
 library(ggplot2)
 T=46
 
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
-source("D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_data.R")
+source(here::here("script/fonctions/fct_graph.R"))
+source(here::here("script/fonctions/fct_data.R"))
 
 # surf=c(rep(c(845482,68637,232048,0),11),rep(c(845482,68637,232048,168584),12),rep(c(845482,68637,232048,260326),6),rep(c(845482,349127,232048,260326),(T-8)))
 # S_juv_JP<-matrix(surf,nrow=4)
@@ -542,7 +542,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -565,7 +565,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -589,7 +589,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 #=======================
@@ -621,7 +621,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_moy_mob5_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_moy_mob5_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -645,7 +645,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_moy_mob5_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_moy_mob5_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -669,7 +669,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_moy_mob5_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_moy_mob5_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -737,7 +737,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_5yr_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_actu_5yr_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -760,7 +760,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_5yr_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_50_5yr_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -784,7 +784,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_5yr_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/Niveau_pop_surv_100_5yr_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 @
@@ -974,7 +974,7 @@ mean(renew_rate_w_coef_q[32:36,3]) #moyenne des médiane sur 5 dernières année
 mean(renew_rate_w_coef_q[7:11,3]) #moyenne des médiane sur 5 premières années : -0.55
 
 
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage.png",width=1000,height=800)
 #
 #plot(1,1,type="n",axes=FALSE,xlim=c(10.5,T+0.5),xlab="Years",ylim=c(-5,5),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 #
@@ -1007,9 +1007,9 @@ mean(renew_rate_w_coef_q[7:11,3]) #moyenne des médiane sur 5 premières années
 #===============================
 # figure en échelle naturelle
 #===============================
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_EchelleNat.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_EchelleNat.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_EchelleNat.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_EchelleNat.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(6.5,T-7+0.5),xlab="Years",ylim=c(0,2),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -1042,9 +1042,9 @@ dev.off()
 # figure en log
 #=================
 #on enlève la dénomination coef dans l'intitulé de la figure car c'est ce qu'on conserve tout le temps (le calcul 1/3,1/3,1/3 étant faux)
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(7.5,T-7+0.5),xlab="Années",ylim=c(-3,3),ylab="log(Taux de renouvellement)",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -1074,8 +1074,8 @@ abline(h=exp(mean(renew_rate_w_coef_q[7:(T-6),3])),col="black",lty=5,lwd=2)
 dev.off()
 
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_82_2011.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_82_2011.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(7.5,T-6+0.5),xlab="Years",ylim=c(-5,5),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
 
@@ -1271,8 +1271,8 @@ mean(renew_rate_coef_q[7:11,3])
 # Echelle naturelle
 #=====================
 #on enlève la dénomination coef dans l'intitulé de la figure car c'est ce qu'on conserve tout le temps (le calcul 1/3,1/3,1/3 étant faux)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_EchelleNat.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_EchelleNat.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(6.5,T-7+0.5),xlab="Years",ylim=c(0,9),ylab="Taux renouvellement",main="Taux de renouvellement de la population",cex.lab=1.5)
 
@@ -1307,8 +1307,8 @@ dev.off()
 # figure log
 #====================
 #on enlève la dénomination coef dans l'intitulé de la figure car c'est ce qu'on conserve tout le temps (le calcul 1/3,1/3,1/3 étant faux)
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(6.5,T+0.5-6),xlab="Years",ylim=c(-3,3),ylab="Taux renouvellement",main="Taux de renouvellement de la population",cex.lab=1.5)
 
@@ -1336,8 +1336,8 @@ abline(h=0,col="red")
 
 dev.off()
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_82_2011.png",width=1000,height=800)
-#png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_82_2011.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPop_coef.png",width=1000,height=800)
 
 plot(1,1,type="n",axes=FALSE,xlim=c(7.5,T+0.5-6),xlab="Years",ylim=c(-5,5),ylab="Taux renouvellement",main="Taux de renouvellement de la population",cex.lab=1.5)
 
@@ -1377,7 +1377,7 @@ for (i in 1:length(seq(7,(T-6),5))){
 }
 rownames(renew_rate_coef_q_5yr)<-c("1981-1985","1986-1990","1991-1995","1996-2000","2001-2005","2006-2010")
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_5yrs.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_5yrs.png",width=1000,height=800)
 par("mar"=c(6.1,5.1,3.1,1.1))
 plot(renew_rate_coef_q_5yr,axes=FALSE,xlab="",ylab="Taux renouvellement",main=iconv("Taux de renouvellement de la population (moyenne des médianes sur 5 ans)","UTF8"),cex.lab=1.5)
 axis(1,at = seq(1,length(seq(7,(T-6),5)),1),
@@ -1401,7 +1401,7 @@ for (i in 1:length(seq(7,(T-6),5))){
 }
 rownames(L_renew_rate_coef_q_5yr)<-c("1981-1985","1986-1990","1991-1995","1996-2000","2001-2005","2006-2010")
 
-png(filename="C:/Users/LOGRAMI/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_5yrs_log.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPop_5yrs_log.png",width=1000,height=800)
 par("mar"=c(6.1,5.1,3.1,1.1))
 plot(L_renew_rate_coef_q_5yr,axes=FALSE,xlab="",ylab=iconv("Taux renouvellement (échelle log)","UTF8"),main=iconv("Taux de renouvellement de la population (log de la moyenne des médianes sur 5 ans)","UTF8"),cex.lab=1.5)
 axis(1,at = seq(1,length(seq(7,(T-6),5)),1),
@@ -1533,7 +1533,7 @@ for (t in 2:T){
 	
 }
 
-png(filename="C:/Users/logrami/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservationWild_annuel_surfTot_2018_06_22.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/DiagnostiqueConservationWild_annuel_surfTot_2018_06_22.png",width=800,height=800)
 
 #par(mfrow=c(1,1),mar=c(4,6.1,4,0.5),cex.lab=1.4, cex.lab=1.4)
 
@@ -1694,7 +1694,7 @@ p<-ggplot()+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()
 
@@ -1713,7 +1713,7 @@ p<-ggplot(mean_risk_secteur)+
 		theme(legend.position ="top")+
 		theme_bw()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_secteur_2019_07_04.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_secteur_2019_07_04.png",width=800,height=800)
 print(p)
 dev.off()	
 @
@@ -1993,13 +1993,13 @@ ref<-round(max(datapoly$y[datapoly$values=="red"]),0)
 
 
 
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_2021_12_15.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_2021_12_15.png",width=1000,height=800)
 # print(graph_niveau_pop)
 # dev.off()
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/NiveauPop_moyMobil_2019_07_18.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/NiveauPop_moyMobil_2019_07_18.png",width=1000,height=800)
 #print(graph_niveau_pop)
 #dev.off()
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_2019_12_12.png",width=1000,height=800)
 #print(graph_niveau_pop)
 #dev.off()
 
@@ -2060,7 +2060,7 @@ ref<-round(max(datapoly$y[datapoly$values=="red"]),0)
 #					theme_bw()+
 #					theme(plot.title = element_text(hjust = 0.5)) #on est obligé de rappeler thèse pour centrer le titre car sinon theme_bw() écrase l'info
 #
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Niveau_pop_surv_actu_moy_mob5_Rmax50_2019_07_11.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Niveau_pop_surv_actu_moy_mob5_Rmax50_2019_07_11.png",width=800,height=800)
 #print(graph_niveau_pop_proba)
 #dev.off()
 
@@ -2225,13 +2225,13 @@ graph_niveau_pop_CU<-ggplot()+
 		theme(plot.title = element_text(hjust = 0.5)) 
 
 
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_CU_moyMobil_2019_12_12.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_CU_moyMobil_2019_12_12.png",width=1000,height=800)
 # print(graph_niveau_pop_CU)
 # dev.off()
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_CU_moyMobil_2021_12_16.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_CU_moyMobil_2021_12_16.png",width=1000,height=800)
 # print(graph_niveau_pop_CU)
 # dev.off()
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/NiveauPop_CU_moyMobil_2022_04_04.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/NiveauPop_CU_moyMobil_2022_04_04.png"),width=1000,height=800)
 print(graph_niveau_pop_CU)
 dev.off()
 
@@ -2283,7 +2283,7 @@ dev.off()
 #		theme_bw()+
 #		theme(plot.title = element_text(hjust = 0.5)) #on est obligé de rappeler thèse pour centrer le titre car sinon theme_bw() écrase l'info
 #
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Niveau_pop_CU_surv_50_moy_mob5_Rmax50_2019_07_19.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Niveau_pop_CU_surv_50_moy_mob5_Rmax50_2019_07_19.png",width=800,height=800)
 #print(graph_niveau_CU_pop_proba_surv50)
 #dev.off()
 #
@@ -2309,7 +2309,7 @@ dev.off()
 #		theme_bw()+
 #		theme(plot.title = element_text(hjust = 0.5)) #on est obligé de rappeler thèse pour centrer le titre car sinon theme_bw() écrase l'info
 #
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Niveau_pop_CU_surv_actu_moy_mob5_Rmax50_2019_07_19.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Niveau_pop_CU_surv_actu_moy_mob5_Rmax50_2019_07_19.png",width=800,height=800)
 #print(graph_niveau_pop_proba_cu_surv_actu)
 #dev.off()
 
@@ -2462,7 +2462,7 @@ for (t in 36:(T-1)){
 	}
 }
 
-save(renew_rate_coef,file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/renew_rate_coef_tot_2021_09.Rdata")
+save(renew_rate_coef,file=here::here("renew_rate_coef_tot_2021_09.Rdata"))
 
 #========================================================================
 # Probabilité d'observer tx renouvellement >=1 en moyenne mobile 5 ans
@@ -2505,7 +2505,7 @@ graph_tx_ren_proba<-ggplot()+
 		theme_bw()+
 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/TauxRenouvellementPopTotale_EchelleNat_17_07_19.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/TauxRenouvellementPopTotale_EchelleNat_17_07_19.png",width=1000,height=800)
 graph_tx_ren_proba
 dev.off()
 
@@ -2536,13 +2536,13 @@ graph_tx_ren<-ggplot()+
 		theme_bw(base_size = 22)+
 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/TauxRenouvellementPopTotale_MoyMob_18_07_19.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/TauxRenouvellementPopTotale_MoyMob_18_07_19.png",width=1000,height=800)
 #graph_tx_ren
 #dev.off()
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopTotale_MoyMob_19_12_12.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopTotale_MoyMob_19_12_12.png",width=1000,height=800)
 # graph_tx_ren
 # dev.off()
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/TauxRenouvellementPopTotale_MoyMob_2022_04_04.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/TauxRenouvellementPopTotale_MoyMob_2022_04_04.png"),width=1000,height=800)
 graph_tx_ren
 dev.off()
 
@@ -2566,7 +2566,7 @@ graph_tx_ren_boxplot<-ggplot(data %>% group_by(ind) %>%mutate(med_val = exp(medi
 		theme_bw()+
 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/TauxRenouvellementPopTotale_EchelleNat__boxplot_2022_04_04.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/TauxRenouvellementPopTotale_EchelleNat__boxplot_2022_04_04.png"),width=1000,height=800)
 graph_tx_ren_boxplot
 dev.off()
 @
@@ -2782,7 +2782,7 @@ for (t in 7:T){
 #		theme_bw()+
 #		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 #
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/TauxRenouvellementPopSauvage_Proba_19_07_19.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/TauxRenouvellementPopSauvage_Proba_19_07_19.png",width=1000,height=800)
 #graph_tx_ren_w_proba_CU
 #dev.off()
 
@@ -2816,7 +2816,7 @@ graph_tx_ren_w_CU<-ggplot()+
 		#theme_bw(base_size = 22)+ #pour augmenter la taille des textes quand svg en png
 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/TauxRenouvellementPopSauvage_MoyMob_2022_04_04.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/TauxRenouvellementPopSauvage_MoyMob_2022_04_04.png"),width=1000,height=800)
 graph_tx_ren_w_CU
 dev.off()
 
@@ -2829,10 +2829,10 @@ data[length(data)] #Comme c'est une moyenne mobile 5 ans, la dernière valeur es
 data[1] #0.65 moy 5 premières années (comme en moy mobile il suffit de prendre la 1ere valeur qui correspond aux 5 premières années)
 mean(data)
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/TauxRenouvellementPopSauvage_MoyMob_19_07_19.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/TauxRenouvellementPopSauvage_MoyMob_19_07_19.png",width=1000,height=800)
 #graph_tx_ren_w_CU
 #dev.off()
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_MoyMob_19_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_MoyMob_19_12_12.png",width=1000,height=800)
 #graph_tx_ren_w_CU
 #dev.off()
 
@@ -2868,7 +2868,7 @@ graph_tx_ren_w_CU<-ggplot()+
 		theme_bw(base_size = 22)+ #pour augmenter la taille des textes
 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_MoyMob_19_07_19.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_MoyMob_19_07_19.png",width=1000,height=800)
 graph_tx_ren_w_CU
 dev.off()
 
@@ -3033,16 +3033,16 @@ graph_diagnostic<-ggplot()+
 		#theme_bw(base_size=20)+ #pour sauvegarde en png
 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2019_12_13.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2019_12_13.png",width=800,height=800)
 #print(graph_diagnostic)
 #dev.off()
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2019_12_12.png",width=800,height=800)
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2020_06_03.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2019_12_12.png",width=800,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2020_06_03.png",width=800,height=800)
 # print(graph_diagnostic)
 # dev.off()
 
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2022_04_04.png",width=800,height=800)
+png(filename=here::here("img/Simulation/2021_09/DiagnosticConservation_Wild_Moy_mob10_25_Rmax_2022_04_04.png"),width=800,height=800)
 print(graph_diagnostic)
 dev.off()
 
@@ -3130,12 +3130,12 @@ graph_diagnostic_CU<-ggplot()+
 		#theme_bw(base_size=22)+ #pour sauvegarde png
 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_CU_Moy_mob10_50_Rmax_2019_12_12.png",width=800,height=800)
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_CU_Moy_mob10_50_Rmax_2020_06_03.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_CU_Moy_mob10_50_Rmax_2019_12_12.png",width=800,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_CU_Moy_mob10_50_Rmax_2020_06_03.png",width=800,height=800)
 # print(graph_diagnostic_CU)
 # dev.off()
 
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/DiagnosticConservation_Wild_CU_Moy_mob10_50_Rmax_2022_04_04.png",width=800,height=800)
+png(filename=here::here("img/Simulation/2021_09/DiagnosticConservation_Wild_CU_Moy_mob10_50_Rmax_2022_04_04.png"),width=800,height=800)
 print(graph_diagnostic_CU)
 dev.off()
 
@@ -3254,7 +3254,7 @@ for (t in 2:T){
 #		theme_bw()+
 #		theme(plot.title = element_text(hjust = 0.5)) 
 #
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Proba_part_juv_sauvage_2019_07_17.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Proba_part_juv_sauvage_2019_07_17.png",width=1000,height=800)
 #print(graph_part_juv_proba)
 #dev.off()
 
@@ -3280,19 +3280,19 @@ graph_part_juv<-ggplot()+
   	      #theme_bw(base_size=22)+ #pour sauvegarde en png
 					theme(plot.title = element_text(hjust = 0.5)) 
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Part_juv_sauvage_2019_07_11.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Part_juv_sauvage_2019_07_11.png",width=1000,height=800)
 #	print(graph_part_juv)
 #dev.off()
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_2019_12_12.png",width=1000,height=800)
 #print(graph_part_juv)
 #dev.off()
 
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_2021_12_10.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_2021_12_10.png",width=1000,height=800)
 # print(graph_part_juv)
 # dev.off()
 
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/Part_juv_sauvage_2022_04_04.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/Part_juv_sauvage_2022_04_04.png"),width=1000,height=800)
 print(graph_part_juv)
 dev.off()
 
@@ -3345,7 +3345,7 @@ data[length(data)]
 #		theme_bw()+
 #		theme(plot.title = element_text(hjust = 0.5)) 
 #
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Proba_part_juv_sauvage_CU_2019_07_19.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/Proba_part_juv_sauvage_CU_2019_07_19.png",width=1000,height=800)
 #print(graph_part_juv_proba_CU)
 #dev.off()
 #
@@ -3371,15 +3371,15 @@ graph_part_juv_CU<-ggplot()+
 		#theme_bw(base_size=22)+ #pour sauvegarde png 
 		theme(plot.title = element_text(hjust = 0.5)) 
 
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_CU_2019_12_12.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_CU_2019_12_12.png",width=1000,height=800)
 # print(graph_part_juv_CU)
 # dev.off()
 
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_CU_2021_12_16.png",width=1000,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_CU_2021_12_16.png",width=1000,height=800)
 # print(graph_part_juv_CU)
 # dev.off()
 
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/Part_juv_sauvage_CU_2022_04_04.png",width=1000,height=800)
+png(filename=here::here("img/Simulation/2021_09/Part_juv_sauvage_CU_2022_04_04.png"),width=1000,height=800)
 print(graph_part_juv_CU)
 dev.off()
 
@@ -3430,9 +3430,9 @@ dev.off()
 # #=============================
 # # cible intermédiaire
 # #=============================
-# # png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/IndicSAT_proba_2019_07_17.png",width=900,height=800)
+# # png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/IndicSAT_proba_2019_07_17.png",width=900,height=800)
 # 
-# png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/IndicSAT_proba_2022_04_04.png",width=900,height=800)
+# png(filename=here::here("img/Simulation/2021_09/IndicSAT_proba_2022_04_04.png"),width=900,height=800)
 # grid.arrange(yellow,graph_niveau_pop_proba,
 # 		green,graph_tx_ren,#graph_tx_ren_proba,
 # 		red,graph_diagnostic,
@@ -3445,7 +3445,7 @@ dev.off()
 # # cible ultime
 # #=============================
 # 
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/IndicSAT_proba_CibleUltime_2019_07_19.png",width=900,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/IndicSAT_proba_CibleUltime_2019_07_19.png",width=900,height=800)
 # grid.arrange(red,graph_niveau_CU_pop_proba_surv50,
 # 		red,graph_tx_ren_w_proba_CU,
 # 		red,graph_diagnostic_CU,
@@ -3628,12 +3628,12 @@ for (t in 1:T){
 #===========================================================================================================
 #On récupère jeu de données créé dans script ProjectionModelWithoutStocking_4zones_Interaction_TxRenouv.R
 #===========================================================================================================
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2018_06_25.RData")
-#datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_01_03.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2018_06_25.RData")
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_01_03.RData")
 
-#load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_2022_05_03.RData") #avec 10 000 itérations
-load(file = "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_2022_04_04.RData") #avec 5000 itérations
+#load(file = here::here("2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_2022_05_03.RData")) #avec 10 000 itérations
+load(file = here::here("2021_09_Projection_InteractionReciproqueMatriceVC_Maj2020_2022_04_04.RData")) #avec 5000 itérations
 
 
 
@@ -3743,13 +3743,13 @@ graph_tx_ren_ws_wild<-ggplot()+
 mean(running.mean(median_data,5)[!is.na(running.mean(median_data,5))][16:20])
 
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopSauvage_MoyMob_WS_20_01_03.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopSauvage_MoyMob_WS_20_01_03.png",width=1000,height=800)
 #graph_tx_ren_ws_wild
 #dev.off()
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_WS_MoyMob_19_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_WS_MoyMob_19_12_12.png",width=1000,height=800)
 #graph_tx_ren_ws_wild
 #dev.off()
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_WS_MoyMob_2021_12_16.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_WS_MoyMob_2021_12_16.png",width=1000,height=800)
 graph_tx_ren_ws_wild
 dev.off()
 
@@ -3757,16 +3757,16 @@ dev.off()
 # POP TOTALE
 #========================================
 #On récupère jeu de données créé dans script ProjectionModelWithoutStocking_4zones_Interaction_TxRenouv.R
-#load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2018_06_25.RData")
-load(file = "C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_01_03.RData")
+#load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_2018_06_25.RData")
+load(file = "C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_2020_01_03.RData")
 
 renew_rate=array(NA,dim=c(5000,T+20-5))
 renew_rate_q=array(NA,dim=c((T+20-5),5))
 
 library(stringr)
 library(coda)
-#datawd<-"C:/Users/marion.legrand/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Script/2019.12/"
-#datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
+#datawd<-"C:/Users/utilisateur/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Script/2019.12/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
 #bugs2jags(str_c(datawd,"data.txt"),"data_4zones_Interaction_2017.12.12.R")
 #source("data_4zones_Interaction_2017.12.12.R")
 bugs2jags(str_c(datawd,"data.txt"),"data_4zones_Interaction_2019.12.12.R")
@@ -3882,10 +3882,10 @@ graph_tx_ren_ws<-ggplot()+
 		theme_bw()+
 		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopTotale_MoyMob_WS_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopTotale_MoyMob_WS_2019_12_12.png",width=1000,height=800)
 #graph_tx_ren_ws
 #dev.off()
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopTotale_MoyMob_WS_2019_12_12.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopTotale_MoyMob_WS_2019_12_12.png",width=1000,height=800)
 graph_tx_ren_ws
 dev.off()
 
@@ -4022,13 +4022,13 @@ graph_niveau_pop_ws<-ggplot()+
 ##pour avoir idée de nbr adultes en fin de période (5 dernières années)
 mean(running.mean(mean_N_vichy_ws,5)[!is.na(running.mean(mean_N_vichy_ws,5))][16:20])
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/NiveauPop_moyMobil_WS_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/NiveauPop_moyMobil_WS_2019_12_12.png",width=1000,height=800)
 #print(graph_niveau_pop_ws)
 #dev.off()
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_WS_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_WS_2019_12_12.png",width=1000,height=800)
 #print(graph_niveau_pop_ws)
 #dev.off()
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_WS_2021_12_16.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_WS_2021_12_16.png",width=1000,height=800)
 print(graph_niveau_pop_ws)
 dev.off()
 
@@ -4123,13 +4123,13 @@ graph_part_juv_ws<-ggplot()+
     #theme_bw(base_size=22)+ #pour sauvegarde png
 		theme(plot.title = element_text(hjust = 0.5)) 
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/Part_juv_sauvage_WS_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/Part_juv_sauvage_WS_2019_12_12.png",width=1000,height=800)
 #print(graph_part_juv_ws)
 #dev.off()
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_WS_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_WS_2019_12_12.png",width=1000,height=800)
 #print(graph_part_juv_ws)
 #dev.off()
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_WS_2021_12_16.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_WS_2021_12_16.png",width=1000,height=800)
 print(graph_part_juv_ws)
 dev.off()
 
@@ -4296,13 +4296,13 @@ mean(mean_risk_10_Rmax_25_ws[(T+1):(T+20)][16:20]) #0.00372
 mean(mean_risk_20_Rmax_25_ws[(T+1):(T+20)][16:20]) #0.00708
 mean(mean_risk_30_Rmax_25_ws[(T+1):(T+20)][16:20]) #0.01216
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/DiagnosticConservation_Wild_Moy_mob10_WS_25_Rmax_2019_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/DiagnosticConservation_Wild_Moy_mob10_WS_25_Rmax_2019_12_12.png",width=800,height=800)
 #print(graph_diagnostic_ws)
 #dev.off()
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_WS_25_Rmax_2019_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_WS_25_Rmax_2019_12_12.png",width=800,height=800)
 #print(graph_diagnostic_ws)
 #dev.off()
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_WS_25_Rmax_2021_12_16.png",width=800,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_WS_25_Rmax_2021_12_16.png",width=800,height=800)
 print(graph_diagnostic_ws)
 dev.off()
 
@@ -4425,11 +4425,11 @@ for (t in 1:T){
 	N_wild_vichy_q[t,]=quantile(N_wild_vichy[,t],probs=c(0.025,0.25,0.5,0.75,0.975),names=FALSE)
 }
 
-load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
 #REPONSE à une question d'Etienne - quelle mortalité faut-il compenser pour obtenir un taux de renouvellement au moins égal à 1
 #Méthode empirique réalisé dans le script de projection à 20 ans dans le scénario de CE qui nous a permis d'établir qu'en compensant 37% de mortalité
 #on obtient un tx de renouvellement = à 1 une fois que la montaison est traitée
-#load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_TEST_ameliorationSurv_2020_01_09.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_TEST_ameliorationSurv_2020_01_09.RData")
 
 #A partir de T on a juv_vichy. On rassemble les 2 jeux de données mais en prenant les bugs_ uniquement jusqu'à T-1 (=41)
 juv_vichy<-cbind(juv_wild_vichy[,1:(T-1)],juv_vichy[,T:(T+27)])
@@ -4537,11 +4537,11 @@ graph_tx_ren_ce_wild<-ggplot()+
 mean(running.mean(median_data,5)[!is.na(running.mean(median_data,5))][16:20]) #0.8879985
 
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_MoyMob_CE_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_MoyMob_CE_2019_12_12.png",width=1000,height=800)
 #graph_tx_ren_ce_wild
 #dev.off()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_MoyMob_CE_2021_12_16.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/TauxRenouvellementPopSauvage_MoyMob_CE_2021_12_16.png",width=1000,height=800)
 graph_tx_ren_ce_wild
 dev.off()
 
@@ -4549,19 +4549,19 @@ dev.off()
 #Population totale
 #---------------------
 ##On récupère jeu de données créé dans script SimulationContinuiteEcologique_4zones_TxRenouv.R
-##load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2019_03_22.RData")
-#load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
+##load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2019_03_22.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
 #
 ##On récupère les taux de renouvellement calculés dans le script analyse_retro/TauxRenouvellement
-##load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Tx_renouv_period_retro_2019_12_12")
+##load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Tx_renouv_period_retro_2019_12_12")
 #
 #renew_rate=array(NA,dim=c(5000,T+20-5))
 #renew_rate_q=array(NA,dim=c((T+20-5),5))
 #
 #library(stringr)
 #library(coda)
-##datawd<-"C:/Users/marion.legrand/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Script/2019.12/"
-#datawd<-"C:/Users/marion.legrand/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
+##datawd<-"C:/Users/utilisateur/Documents/Tableau de Bord/PROJETS/ModeleDynamiquePopSaumon/Script/2019.12/"
+#datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
 #bugs2jags(str_c(datawd,"data.txt"),"data_4zones_Interaction_2017.12.12.R")
 #source("data_4zones_Interaction_2017.12.12.R")
 #data_vichy<-N[,1]
@@ -4675,7 +4675,7 @@ dev.off()
 #		theme_bw()+
 #		theme(plot.title = element_text(hjust = 0.5),legend.position="bottom")
 #
-##png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopTotale_MoyMob_CE_2019_12_13.png",width=1000,height=800)
+##png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopTotale_MoyMob_CE_2019_12_13.png",width=1000,height=800)
 ##graph_tx_ren_ce
 ##dev.off()
 
@@ -4683,7 +4683,7 @@ dev.off()
 ##############################
 ## Niveau de la population
 ##############################
-#load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2019_03_22.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2019_03_22.RData")
 
 
 library(coda)
@@ -4810,15 +4810,15 @@ graph_niveau_pop_ce<-ggplot()+
 
 mean(running.mean(mean_N_vichy_ce,5)[!is.na(running.mean(mean_N_vichy_ce,5))][16:20])
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/NiveauPop_moyMobil_CE_2019_12_13.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/NiveauPop_moyMobil_CE_2019_12_13.png",width=1000,height=800)
 #print(graph_niveau_pop_ce)
 #dev.off()
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_CE_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_CE_2019_12_12.png",width=1000,height=800)
 #print(graph_niveau_pop_ce)
 #dev.off()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_CE_2021_12_16.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/NiveauPop_moyMobil_CE_2021_12_16.png",width=1000,height=800)
 print(graph_niveau_pop_ce)
 dev.off()
 ##########################
@@ -4912,15 +4912,15 @@ graph_part_juv_ce<-ggplot()+
 		#theme_bw(base_size=22)+
 		theme(plot.title = element_text(hjust = 0.5)) 
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/Part_juv_sauvage_CE_2019_12_13.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/Part_juv_sauvage_CE_2019_12_13.png",width=1000,height=800)
 #print(graph_part_juv_ce)
 #dev.off()
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_CE_2019_12_12.png",width=1000,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_CE_2019_12_12.png",width=1000,height=800)
 #print(graph_part_juv_ce)
 #dev.off()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_CE_2021_12_16.png",width=1000,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/Part_juv_sauvage_CE_2021_12_16.png",width=1000,height=800)
 print(graph_part_juv_ce)
 dev.off()
 
@@ -4930,8 +4930,8 @@ dev.off()
 library(coda)
 library(ggplot2)
 library(stringr)
-#load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
-load("C:/Users/marion.legrand/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
+#load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2017_08_29_Projection_InteractionReciproqueMatriceVC_Maj2016_ContinuiteEcologique_2017_12_12.RData")
+load("C:/Users/utilisateur/workspace/ModeleDynamiquePop/2019_12_12_Projection_InteractionReciproqueMatriceVC_Maj2018_ContinuiteEcologique_2020_01_03.RData")
 
 surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-8)))
 S_juv_JP<-matrix(surf,nrow=4)
@@ -5088,15 +5088,15 @@ mean(mean_risk_10_Rmax_25_ce[(T+1):(T+20)][16:20])
 mean(mean_risk_20_Rmax_25_ce[(T+1):(T+20)][16:20])
 mean(mean_risk_30_Rmax_25_ce[(T+1):(T+20)][16:20])
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/DiagnosticConservation_Wild_Moy_mob10_CE_25_Rmax_2019_12_13.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/DiagnosticConservation_Wild_Moy_mob10_CE_25_Rmax_2019_12_13.png",width=800,height=800)
 #print(graph_diagnostic_ce)
 #dev.off()
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_CE_25_Rmax_2019_12_12.png",width=800,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_CE_25_Rmax_2019_12_12.png",width=800,height=800)
 #print(graph_diagnostic_ce)
 #dev.off()
 
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_CE_25_Rmax_2021_12_16.png",width=1100,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/DiagnosticConservation_Wild_Moy_mob10_CE_25_Rmax_2021_12_16.png",width=1100,height=800)
 print(graph_diagnostic_ce)
 dev.off()
 @
@@ -5156,7 +5156,7 @@ green<-ggplot()+
 # Cible intermédiaire
 #===========================
 #Avec pastille couleur
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_2019_12_12.png",width=1100,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_2019_12_12.png",width=1100,height=800)
 #grid.arrange(red,graph_niveau_pop,
 #		red_tx,graph_tx_ren_w_CU, #graph_tx_ren,
 #		green,graph_part_juv,
@@ -5167,11 +5167,11 @@ green<-ggplot()+
 #dev.off()
 
 ##Sans pastille couleur
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_sansPastille_2019_12_12.png",width=1100,height=800)
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_sansPastille_2020_06_03.png",width=1100,height=800)
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_sansPastille_2021_12_16.png",width=1100,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_sansPastille_2019_12_12.png",width=1100,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_sansPastille_2020_06_03.png",width=1100,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_sansPastille_2021_12_16.png",width=1100,height=800)
 
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/IndicSAT_moyMobil_sansPastille_2022_04_04.png",width=1100,height=800)
+png(filename=here::here("img/Simulation/2021_09/IndicSAT_moyMobil_sansPastille_2022_04_04.png"),width=1100,height=800)
 grid.arrange(graph_niveau_pop,
 		graph_tx_ren_w_CU, #graph_tx_ren,
 		graph_part_juv,
@@ -5184,7 +5184,7 @@ dev.off()
 #==========================
 
 #Avec pastille
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/IndicSAT_CU_moyMobil_2019_07_19.png",width=900,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_07_IndicateursSat_model2017_08_29/IndicSAT_CU_moyMobil_2019_07_19.png",width=900,height=800)
 grid.arrange(red,graph_niveau_pop_CU,
 		red,graph_tx_ren_w_CU,
 		red,graph_diagnostic_CU,
@@ -5194,13 +5194,13 @@ grid.arrange(red,graph_niveau_pop_CU,
 dev.off()
 
 #Sans pastille
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_CU_moyMobil_2019_12_12.png",width=900,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_CU_moyMobil_2019_12_12.png",width=900,height=800)
 
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_CU_moyMobil_2020_06_03.png",width=900,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_CU_moyMobil_2020_06_03.png",width=900,height=800)
 
-# png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_CU_moyMobil_2021_12_16.png",width=1100,height=800)
+# png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_CU_moyMobil_2021_12_16.png",width=1100,height=800)
 
-png(filename="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/Simulation/2021_09/IndicSAT_CU_moyMobil_2022_04_04.png",width=1100,height=800)
+png(filename=here::here("img/Simulation/2021_09/IndicSAT_CU_moyMobil_2022_04_04.png"),width=1100,height=800)
 grid.arrange(graph_niveau_pop_CU,
 		graph_tx_ren_w_CU,
 		graph_part_juv_CU,
@@ -5267,8 +5267,8 @@ green_tx<-ggplot()+
 # Cible intermédiaire
 #===========================
 ## AVEC Pastille
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/IndicSAT_moyMobil_WS_2019_12_12.png",width=900,height=800)
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_WS_2019_12_12.png",width=900,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/IndicSAT_moyMobil_WS_2019_12_12.png",width=900,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_WS_2019_12_12.png",width=900,height=800)
 #grid.arrange(
 #		red,graph_niveau_pop_ws,
 #		red_tx,graph_tx_ren_ws_wild, #graph_tx_ren_ws,
@@ -5283,8 +5283,8 @@ green_tx<-ggplot()+
 #================
 ## SANS pastille
 #================
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_WS_SansPastille_2019_12_12.png",width=1100,height=800)
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_WS_SansPastille_2021_12_16.png",width=1100,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_WS_SansPastille_2019_12_12.png",width=1100,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_WS_SansPastille_2021_12_16.png",width=1100,height=800)
 grid.arrange(
 		graph_niveau_pop_ws,
 		graph_tx_ren_ws_wild, #graph_tx_ren_ws,
@@ -5355,7 +5355,7 @@ green_tx<-ggplot()+
 # Cible intermédiaire
 #===========================
 ## AVEC pastille
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_CE_2019_12_13.png",width=900,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_CE_2019_12_13.png",width=900,height=800)
 #grid.arrange(
 #		red,graph_niveau_pop_ce,
 #		red,graph_tx_ren_ce_wild,
@@ -5368,8 +5368,8 @@ green_tx<-ggplot()+
 #dev.off()
 
 ##SANS pastille
-#png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_CE_SansPastille_2019_12_13.png",width=1100,height=800)
-png(filename="C:/Users/marion.legrand/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_CE_SansPastille_2021_12_16.png",width=1100,height=800)
+#png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_CE_SansPastille_2019_12_13.png",width=1100,height=800)
+png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2018_2019_12_12/IndicSAT_moyMobil_CE_SansPastille_2021_12_16.png",width=1100,height=800)
 grid.arrange(
 		graph_niveau_pop_ce,
 		graph_tx_ren_ce_wild,

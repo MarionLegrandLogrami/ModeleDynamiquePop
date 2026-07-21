@@ -39,15 +39,15 @@ library(boot)
 library(ggplot2)
 
 #Modèle de 2024_06
-imgwd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+imgwd <- here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
 
-tabwd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+tabwd <- here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
 
-datawd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"
+datawd <- here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
 
-datanetcdfwd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/data/co-variables_env/projection_climatique/"
+datanetcdfwd <- here::here("data/co-variables_env/projection_climatique/")
 
-dataqwd <- "D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/integration_q_model/data/"
+dataqwd <- here::here("script/integration_q_model/data/")
 
 T=49
 
@@ -67,8 +67,8 @@ smart_round <- function(x, dir = c("low", "up")) {
 
 
 #on va chercher le fichier qui créée la fonction load_reindex_coda
-source(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_load_reindex_coda.R")
-source(file="D:/Documents/Workspace_eclipse/ModeleDynamiquePop/script/fonctions/fct_graph.R")
+source(file=here::here("script/fonctions/fct_load_reindex_coda.R"))
+source(file=here::here("script/fonctions/fct_graph.R"))
 
 ```
 
