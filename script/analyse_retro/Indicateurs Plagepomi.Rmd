@@ -5,159 +5,214 @@ date: "2023-09-15"
 output:
   html_document:
     df_print: paged
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
-
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, results = "hide", fig.align = "center")
 ```
 
-```{r init, echo=FALSE, eval=TRUE}
-#Modèle 2023-05 3_Model_sans_distribution_melange
-datawd<-paste0(here::here("data/CODA/2023_05/3_Model_sans_distribution_melange"), "/")
-imgwd<-paste0(here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange"), "/")
+```{r init}
+# Modèle 2026_07 Model_influence_Q
+datawd <- paste0(here::here("data/CODA/2026_07/Model_influence_Q"), "/")
+imgwd <- paste0(here::here("img/Simulation/2026_07/Model_influence_Q"), "/")
 
 library(coda)
 library(boot)
 library(stringr)
 library(ggplot2)
-T=48
+library(dplyr)
+library(gridExtra)
+T <- 51
 
 source(here::here("script/fonctions/fct_graph.R"))
 source(here::here("script/fonctions/fct_data.R"))
 
-# surf=c(rep(c(845482,68637,232048,0),11),rep(c(845482,68637,232048,168584),12),rep(c(845482,68637,232048,260326),6),rep(c(845482,349127,232048,260326),(T-8)))
-# S_juv_JP<-matrix(surf,nrow=4)
-# S_juv_JP<-rbind(S_juv_JP,colSums(S_juv_JP)) #Créé une 5eme ligne qui correspond à la somme par année des surfaces sur l'ensemble des secteurs
-S_juv_JP<-keep_good_surf(surf_2021=TRUE)
-S_juv_JP_tot<-S_juv_JP[,T]
-
-```
-
-```{r niveau_pop_graph4,eval=TRUE}
-bugs_res_vichy=read.coda(str_c(datawd,"simulation/res_vichyCODAchain1.txt"),str_c(datawd,"simulation/res_vichyCODAindex.txt"))
-bugs_s_juv2ad=read.coda(str_c(datawd,"simulation/s_juv2adCODAchain1.txt"),str_c(datawd,"simulation/s_juv2adCODAindex.txt"))
-bugs_sigma_vichy=read.coda(str_c(datawd,"sigma_vichyCODAchain1.txt"),str_c(datawd,"sigma_vichyCODAindex.txt"))
-Rmax=read.coda(str_c(datawd,"RmaxCODAchain1.txt"),str_c(datawd,"RmaxCODAindex.txt"))
-bugs_nu_d=read.coda(str_c(datawd,"nu_dCODAchain1.txt"),str_c(datawd,"nu_dCODAindex.txt"))
-
-#######################
-# CIBLE INTERMEDIAIRE
-#######################
-##Exemple on choisit en cible intermédiaire d'assurer prod de juvénile correspondant à 50% de Rmax dans les conditions de survie juv/adulte actuelle
-##On regarde comment on se situe aujourd'hui par rapport à cette cible en terme d'adulte de retour à Vichy (par rapport au nbr d'adulte qui seraient produits par les juv correspondant à 50% de Rmax)
-#-------------------------------------------------
-# Niveau pop avec 50% Rmax et survie actuelle
-#-------------------------------------------------
-Juv_Rmax_50_V=array(0,dim=c(10000,T))
-Juv_Rmax_50_A=array(0,dim=c(10000,T))
-Juv_Rmax_50_L=array(0,dim=c(10000,T))
-Juv_Rmax_50_P=array(0,dim=c(10000,T))
-Juv_Rmax_50=array(0,dim=c(10000,T))
-
-for (t in 1:T){
-	for (i in 1:10000){
-		Juv_Rmax_50_V[i,t]<-0.50*Rmax[i]*exp(bugs_nu_d[i,1])*S_juv_JP[1,t] #multiplie par nu_d pour tenir compte de la différence de production de juvéniles des différentes zones
-		Juv_Rmax_50_A[i,t]<-0.50*Rmax[i]*exp(bugs_nu_d[i,2])*S_juv_JP[2,t] #multiplie par nu_d pour tenir compte de la différence de production de juvéniles des différentes zones
-		Juv_Rmax_50_L[i,t]<-0.50*Rmax[i]*exp(bugs_nu_d[i,3])*S_juv_JP[3,t] #multiplie par nu_d pour tenir compte de la différence de production de juvéniles des différentes zones
-		Juv_Rmax_50_P[i,t]<-0.50*Rmax[i]*exp(bugs_nu_d[i,4])*S_juv_JP[4,t] #multiplie par nu_d pour tenir compte de la différence de production de juvéniles des différentes zones
-		Juv_Rmax_50[i,t]<-Juv_Rmax_50_V[i,t]+Juv_Rmax_50_A[i,t]+Juv_Rmax_50_L[i,t]+Juv_Rmax_50_P[i,t] #mean=213031.8
-	}
-}
-
-niveau_pop_50_actu<-array(0,dim=c(10000,T))
-N_vichy_50_actu<-array(0,dim=c(10000,T))
-
-#Attention avec la version du modèle incluant les Q on estime un nbr d'adulte cible pour 50% Rmax bcp plus élevé qu'auparavent...
-
-for (t in 1:T){
-	for (i in 1:10000){
-		##Scénario 50% Rmax et survie actuelle
-		niveau_pop_50_actu[i,t]<- log(bugs_s_juv2ad[i]*Juv_Rmax_50[i,t])
-		N_vichy_50_actu[i,t]<-rlnorm(1,niveau_pop_50_actu[i,t],bugs_sigma_vichy[i]) #juv 50% Rmax dans condition actuelle de survie produiraient 752 SAT de retour en moyenne à Vichy
-	}
-}
-
-
-mean_N_vichy_50_actu<-0
-
-for (t in 1:T){
-	mean_N_vichy_50_actu[t]<-mean(N_vichy_50_actu[,t]) # 752
-}
-
-#On récupère les estimations du nbr d'adulte à Vichy
-bugs_N_vichy_real=read.coda(str_c(datawd,"simulation/N_vichy_realCODAchain1.txt"),str_c(datawd,"simulation/N_vichy_realCODAindex.txt"))
-#On récupère les données de passage
-#bugs2jags(str_c(datawd,"data.txt"),"data_4zones_Interaction_2017.12.12.R")
-#source("data_4zones_Interaction_2017.12.12.R")
-bugs2jags(str_c(datawd,"data.txt"),"data_model_2023_05_3_ModelSansDistriMelange.R")
+# Comptages réels d'adultes à Vichy (data.txt -> data.R). Fait AVANT keep_good_surf()
+# ci-dessous : ce source() écrit aussi ses propres T/S_juv_JP dans l'environnement
+# global, qu'il ne faut donc pas laisser écraser la version correctement
+# transposée/complétée de S_juv_JP utilisée par les indicateurs.
+bugs2jags(str_c(datawd, "data.txt"), "data_model_2023_05_3_ModelSansDistriMelange.R")
 source("data_model_2023_05_3_ModelSansDistriMelange.R")
-data_vichy<-N[,1]
-#on reconstitue un seul jeu de donnée en prenant valeur de data_vichy quand comptage à Vichy et en prenant moyenne de bugs_N_vichy_real à chaque fois qu'on n'a pas de comptage à Vichy
-mean_bugs_N_vichy_real<-round(apply(bugs_N_vichy_real,MARGIN=2,FUN=mean),0)
-data_vichy_all<-c(as.vector(mean_bugs_N_vichy_real[1:22]),data_vichy[23:29],as.vector(mean_bugs_N_vichy_real[23]),data_vichy[31:T])
+data_vichy <- N[, 1]
+T <- 51
 
-#===========================
-# En moyenne mobile
-#==========================
-#On cherche à tracer la ref en moyenne mobile
-#library(igraph) #fonction running.mean() qui calcule moyenne mobile (glissante) sur un pas de temps donné
-#On remplace la fonction running.mean du package igraph par une fonction maison qu'on appelle running.mean pour ne pas à avoir à changer le code
-#Par rapport à la version de la fonction du package igraph, cette fonction permet de faire la moyenne mobile centrée sur une valeur (en prenant 2 valeurs avant et 2 valeurs après)
-running.mean<- function(x, n = 5){stats::filter(x, rep(1 / n, n), sides = 2)}
-x_mob=seq(2,(T-3),1)
-
-#On créé les polygones pour avoir les couleurs vertes et rouge en fonction de l'évolution du niveau de ref (un peu compliqué à faire mais ça marche). Pour mémo polygone attend x1=x_droit / x2=x_gauche / y1=y_gauche / y2=y_droit
-# poly_2_col <- data.frame(ystart = c(rep(0,length(x_mob)),running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))]), yend = c(running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))],rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),length(x_mob))),col = c(rep("red",length(x_mob)),rep("green",length(x_mob))))
-# ids<-factor(c(str_c("1.",seq(1,(T-5),1)),str_c("2.",seq(1,(T-5),1))))
-# values<-data.frame(id=ids,values=c(rep("red",(T-5)),rep("green",(T-5))))
-# positions<-data.frame(id=rep(ids,each=4),
-# 						x=rep(c(rbind(seq(4,(T-2),1),seq(3,(T-3),1),seq(3,(T-3),1),seq(4,(T-2),1))),2),
-# 						y=c(
-# 								c(rbind(0,0,running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:(length(x_mob)-1)],running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][2:(length(x_mob))])),
-# 								c(rbind(running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][2:(length(x_mob))],running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:(length(x_mob)-1)],rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),(length(x_mob)-1)),rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),(length(x_mob)-1)))))
-# 						#y=c(c(rbind(0,running.mean(mean_N_vichy_50_actu,5))),c(rbind(running.mean(mean_N_vichy_50_actu,5),rep(max(running.mean(data_vichy_all,5)),38))))
-# 				)
-
-poly_2_col <- data.frame(ystart = c(rep(0,length(x_mob)),running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))]), yend = c(running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))],rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),length(x_mob))),col = c(rep("red",length(x_mob)),rep("green",length(x_mob))))
-ids<-factor(c(str_c("1.",seq(1,(T-5),1)),str_c("2.",seq(1,(T-5),1))))
-values<-data.frame(id=ids,values=c(rep("red",(T-5)),rep("green",(T-5))))
-positions<-data.frame(id=rep(ids,each=4),
-						x=rep(c(rbind(seq(3,(T-3),1),seq(2,(T-4),1),seq(2,(T-4),1),seq(3,(T-3),1))),2),
-						y=c(
-								c(rbind(0,0,running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:(length(x_mob)-1)],running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][2:(length(x_mob))])),
-								c(rbind(running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][2:(length(x_mob))],running.mean(mean_N_vichy_50_actu,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:(length(x_mob)-1)],rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),(length(x_mob)-1)),rep(max(running.mean(data_vichy_all,5),na.rm=TRUE),(length(x_mob)-1)))))
-)
-
-#detach("package:dplyr", unload=TRUE)
-library(plyr)
-datapoly <- plyr::join(values, positions) #on utilise join et non merge car sinon tri sur les id et on a 1.1 puis 1.10 au lieu d'avoir 1.1 puis 1.2
-
-graph_niveau_pop<-ggplot()+
-		geom_polygon(data=datapoly, aes(x=x, y=y, group=id),fill=datapoly$values, alpha =0.5) +
-		#geom_line(aes(x_mob,running.mean(mean_N_vichy_50_actu,5)),size=0.5)+
-		geom_line(aes(x_mob[1:23],running.mean(data_vichy_all,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][1:23]),size=1,linetype = "dashed")+ #poissons estimés
-		geom_line(aes(x_mob[23:(length(x_mob))],running.mean(data_vichy_all,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))][23:(length(x_mob))]),size=1)+ #poissons observés
-		xlab("Année") + 
-		ylab("Adultes observés ou estimés à Vichy")+
-		ggtitle("Adultes observés ou estimés à Vichy par rapport au nombre de géniteurs \nque produiraient la quantité de juvéniles correspondant à 50% de Rmax \n(moyenne mobile 5 ans)")+
-		scale_x_continuous(breaks=c(3,13,23,33,(T-3)), labels=c(1980,1990,2000,2010,(1974+T)))+
-		theme(legend.position="none")+
-    theme_bw()+
-		#theme_bw(base_size = 22)+ #pour sortie png
-		theme(plot.title = element_text(hjust = 0.5)) 
-
-png(filename=str_c(imgwd,"NiveauPop_moyMobil_2022_04_04.png",width=1000,height=800))
-print(graph_niveau_pop)
-dev.off()
-
-###------------------------
-### On sort des stats
-###------------------------
-niv<-running.mean(data_vichy_all,5)[!is.na(running.mean(mean_N_vichy_50_actu,5))]
-niv[length(niv)] # comme c'est une moyenne mobile 5 ans, la dernière valeur est déjà la moyenne des 5 denrières années
-ref<-round(max(datapoly$y[datapoly$values=="red"]),0)
-
-
+S_juv_JP <- keep_good_surf(surf_2021 = TRUE)
+S_juv_JP_tot <- S_juv_JP[, T]
 ```
 
+```{r load_params}
+# Paramètres communs à plusieurs indicateurs
+Rmax <- read.coda(str_c(datawd, "RmaxCODAchain1.txt"), str_c(datawd, "RmaxCODAindex.txt"))
+nu_d <- read.coda(str_c(datawd, "nu_dCODAchain1.txt"), str_c(datawd, "nu_dCODAindex.txt"))
+sigma_vichy <- read.coda(str_c(datawd, "sigma_vichyCODAchain1.txt"), str_c(datawd, "sigma_vichyCODAindex.txt"))
+s_juv2ad <- read.coda(str_c(datawd, "simulation/s_juv2adCODAchain1.txt"), str_c(datawd, "simulation/s_juv2adCODAindex.txt"))
+res_vichy <- read.coda(str_c(datawd, "simulation/res_vichyCODAchain1.txt"), str_c(datawd, "simulation/res_vichyCODAindex.txt"))
+N_vichy_bugs <- read.coda(str_c(datawd, "N_vichyCODAchain1.txt"), str_c(datawd, "N_vichyCODAindex.txt"))
+bugs_N_vichy_real <- read.coda(str_c(datawd, "simulation/N_vichy_realCODAchain1.txt"), str_c(datawd, "simulation/N_vichy_realCODAindex.txt"))
+
+n_iter <- nrow(Rmax)
+
+# Densités moyennes sauvages et totales par secteur (V/A/L/P)
+d_wild_moy_V <- read.coda(str_c(datawd, "dmoywild_VCODAchain1.txt"), str_c(datawd, "dmoywild_VCODAindex.txt"))
+d_wild_moy_A <- read.coda(str_c(datawd, "dmoywild_ACODAchain1.txt"), str_c(datawd, "dmoywild_ACODAindex.txt"))
+d_wild_moy_L <- read.coda(str_c(datawd, "dmoywild_LCODAchain1.txt"), str_c(datawd, "dmoywild_LCODAindex.txt"))
+d_wild_moy_P <- read.coda(str_c(datawd, "dmoywild_PCODAchain1.txt"), str_c(datawd, "dmoywild_PCODAindex.txt"))
+d_tot_moy_V <- read.coda(str_c(datawd, "dmoytot_VCODAchain1.txt"), str_c(datawd, "dmoytot_VCODAindex.txt"))
+d_tot_moy_A <- read.coda(str_c(datawd, "dmoytot_ACODAchain1.txt"), str_c(datawd, "dmoytot_ACODAindex.txt"))
+d_tot_moy_L <- read.coda(str_c(datawd, "dmoytot_LCODAchain1.txt"), str_c(datawd, "dmoytot_LCODAindex.txt"))
+d_tot_moy_P <- read.coda(str_c(datawd, "dmoytot_PCODAchain1.txt"), str_c(datawd, "dmoytot_PCODAindex.txt"))
+```
+
+## Niveau de population
+
+Nombre d'adultes observés ou estimés à Vichy (moyenne mobile 5 ans), comparé à la
+cible intermédiaire : le nombre d'adultes que produirait la quantité de
+juvéniles correspondant à 50% de Rmax, dans les conditions de survie
+juvénile/adulte actuelles.
+
+```{r niveau_pop, fig.width=8, fig.height=6}
+juv_rmax_50 <- compute_juv_rmax(0.5, Rmax, nu_d, S_juv_JP, T)
+Juv_Rmax_50 <- juv_rmax_50$total
+
+# Survie juv->adulte "actuelle" : comme dans le rapport d'indicateurs 2021
+# (§1.3), la cible est calculée avec une survie de référence FIXE représentant
+# les conditions actuelles (le rapport utilise "le taux de transfert observé
+# actuellement, en médiane, sur la période récente stabilisée"), appliquée
+# uniformément sur toute la série rétrospective - ce n'est pas une survie qui
+# varie année par année.
+# On l'estime sur la période post-effondrement (à partir de 1992, cf. rapport
+# 2021 et chute similaire visible dans s_juv2ad) plutôt que sur les 5 dernières
+# années seules : ces dernières (2023-2025) sont tirées vers le bas par le
+# manque de recul sur les retours des cohortes les plus récentes, ce qui rend
+# leur moyenne instable et non représentative d'un "niveau actuel" stable.
+annee_post_effondrement <- 1992
+year_origin <- 1974
+col_post_effondrement <- (annee_post_effondrement - year_origin - 6):ncol(s_juv2ad)
+s_juv2ad_actu <- apply(s_juv2ad[, col_post_effondrement], 1, median)
+niveau_pop_50_actu <- log(s_juv2ad_actu * Juv_Rmax_50)
+N_vichy_50_actu <- matrix(
+  rlnorm(n_iter * T, as.vector(niveau_pop_50_actu), rep(as.vector(sigma_vichy), T)),
+  nrow = n_iter
+)
+mean_N_vichy_50_actu <- colMeans(N_vichy_50_actu)
+
+data_vichy_all <- reconstitute_data_vichy(bugs_N_vichy_real, data_vichy, T)
+
+graph_niveau_pop <- draw_niveau_pop(
+  mean_target = mean_N_vichy_50_actu,
+  observed = data_vichy_all,
+  T = T,
+  split_at = 23,
+  title = "Adultes observés ou estimés à Vichy par rapport au nombre de géniteurs \nque produiraient la quantité de juvéniles correspondant à 50% de Rmax \n(moyenne mobile 5 ans)",
+  ylab_txt = "Adultes observés ou estimés à Vichy"
+)
+print(graph_niveau_pop)
+```
+
+## Taux de renouvellement de la population sauvage
+
+Ratio entre le nombre d'adultes sauvages revenus à Vichy et le nombre
+d'adultes (génération parentale) revenus 5 ans plus tôt, en moyenne mobile 5
+ans.
+
+```{r tx_renouv, fig.width=8, fig.height=6}
+juv_wild <- compute_juv_wild_by_zone(d_wild_moy_V, d_wild_moy_A, d_wild_moy_L, d_wild_moy_P, S_juv_JP, T, n_iter)
+juv_wild_tot_system <- compute_juv_wild_tot_system(juv_wild, T, n_iter)
+coef_juv <- compute_juv_cohort_weights(juv_wild, T, n_iter)
+N_wild_vichy <- compute_N_wild_vichy(juv_wild_tot_system, s_juv2ad, res_vichy, T, n_iter)
+renew_rate_w_coef <- compute_renew_rate_wild(N_wild_vichy, coef_juv, N_vichy_bugs, data_vichy, T, n_iter)
+
+taux_renouv_annuel <- rep(NA_real_, T)
+taux_renouv_annuel[7:(T - 6)] <- exp(colMeans(renew_rate_w_coef[, 7:(T - 6)], na.rm = TRUE))
+
+tx_ren_result <- draw_indic_tx_ren(renew_rate_w_coef, pngName = "TauxRenouvellementPopSauvage",
+                                    Tyear = T, typ_pop = "sauvage", simulation = FALSE, png = FALSE)
+
+# draw_indic_tx_ren() est une fonction partagée avec d'autres scripts (import
+# ancien) : on harmonise ici son axe et son thème plutôt que de modifier son
+# comportement par défaut. Le calcul du taux de renouvellement nécessite les
+# retours des 3 années suivantes : la dernière année disponible est donc
+# mécaniquement 2019 (T-6), 6 ans avant la dernière année des 3 autres
+# indicateurs (2025) - ce n'est pas un défaut d'affichage, la donnée s'arrête
+# réellement là.
+# La fonction fixe aussi en dur une limite basse de l'axe Y à 0.2 (échelle
+# log) : avec le modèle 2026_07 la dernière valeur (2019) descend à 0.195 et
+# se retrouvait donc supprimée silencieusement (les warnings sont masqués par
+# le réglage global du document) - on élargit la limite basse pour ne clipper
+# aucun point de la série.
+y_min_tx <- min(0.2, min(taux_renouv_annuel, na.rm = TRUE) * 0.9)
+graph_tx_ren <- tx_ren_result[[1]] +
+  scale_x_years_plagepomi(year_origin + 1 + 10, year_origin + T - 6, function(year) year - year_origin - 10) +
+  scale_y_continuous(trans = "log10", limits = c(y_min_tx, 5)) +
+  theme_plagepomi() +
+  theme(legend.position = "bottom")
+print(graph_tx_ren)
+```
+
+## Diagnostic de conservation
+
+Probabilité, sur une fenêtre glissante de 10 ans, d'assurer la conservation de
+la population sauvage pour une cible de 25% de Rmax, selon 3 niveaux de risque
+toléré (10/20/30% des années sous le seuil).
+
+```{r diagnostic, fig.width=8, fig.height=6}
+dc_wild_ratio <- compute_dc_wild_ratio(d_wild_moy_V, d_wild_moy_A, d_wild_moy_L, d_wild_moy_P, Rmax, nu_d, S_juv_JP, T, n_iter)
+risk_25 <- compute_diagnostic_risk(dc_wild_ratio, threshold_pct = 25, T = T, n_iter = n_iter)
+
+graph_diagnostic <- draw_diagnostic_conservation(
+  risk_25$mean_risk_10, risk_25$mean_risk_20, risk_25$mean_risk_30, T, target_pct = 25
+)
+print(graph_diagnostic)
+```
+
+## Part des juvéniles sauvages
+
+Part des juvéniles sauvages dans l'ensemble des juvéniles (sauvages et issus
+de déversement), en moyenne mobile 5 ans.
+
+```{r part_juv, fig.width=8, fig.height=6}
+ratio_result <- compute_ratio_juv_wild(
+  d_tot_moy_V, d_tot_moy_A, d_tot_moy_L, d_tot_moy_P,
+  d_wild_moy_V, d_wild_moy_A, d_wild_moy_L, d_wild_moy_P,
+  S_juv_JP, T, n_iter
+)
+graph_part_juv <- draw_part_juv_wild(ratio_result$mean_ratio, T)
+print(graph_part_juv)
+```
+
+## Synthèse des 4 indicateurs
+
+```{r dashboard, fig.width=13, fig.height=10}
+grid.arrange(
+  graph_niveau_pop, graph_tx_ren, graph_part_juv, graph_diagnostic,
+  layout_matrix = rbind(c(1, NA, 2), c(NA, NA, NA), c(3, NA, 4)),
+  widths = c(1, 0.12, 1),
+  heights = c(1, 0.08, 1)
+)
+```
+
+## Tableaux de synthèse
+
+Pour chaque indicateur : la dernière année disponible, la moyenne des 5
+dernières et des 5 premières années disponibles, et la médiane sur
+l'ensemble de la série (plus robuste qu'une moyenne aux valeurs extrêmes).
+
+```{r tables, results='asis'}
+knitr::kable(format = "html",summarize_indicator_series(data_vichy_all, "Adultes observés/estimés à Vichy"),
+             caption = "Niveau de population")
+knitr::kable(format = "html",summarize_indicator_series(mean_N_vichy_50_actu, "Cible (50% Rmax, survie actuelle)"))
+
+knitr::kable(format = "html",summarize_indicator_series(taux_renouv_annuel, "Taux de renouvellement (pop. sauvage)"),
+             caption = "Taux de renouvellement de la population sauvage")
+
+knitr::kable(format = "html",rbind(
+  summarize_indicator_series(risk_25$mean_risk_10, "Probabilité de conservation (risque 10%)"),
+  summarize_indicator_series(risk_25$mean_risk_20, "Probabilité de conservation (risque 20%)"),
+  summarize_indicator_series(risk_25$mean_risk_30, "Probabilité de conservation (risque 30%)")
+), caption = "Diagnostic de conservation (25% Rmax)")
+
+knitr::kable(format = "html",summarize_indicator_series(ratio_result$mean_ratio, "Part de juvéniles sauvages"),
+             caption = "Part des juvéniles sauvages")
+```

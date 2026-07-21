@@ -28,6 +28,7 @@ Rdata_av2021.zip
 script/lateX/data_model.R
 script/lateX/data_2021_09.r
 script/lateX/data_covariable_2019_12_12.R
+script/analyse_retro/data_model_2023_05_3_ModelSansDistriMelange.R
 
 # Doublons générés à la racine quand du code est exécuté à la console
 # (répertoire de travail = racine du .Rproj) plutôt que via Knit/Compile PDF

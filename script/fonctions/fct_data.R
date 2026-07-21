@@ -230,3 +230,245 @@ concat_export_tab<-function(tab){
   }
   write.xlsx(x=dat,file=str_c(gsub(x=dataFilename,".xlsx",""),"_concat.xlsx"))
 }
+
+#===================================================================================
+# Fonctions pour les 4 indicateurs PLAGEPOMI (script/analyse_retro/Indicateurs
+# Plagepomi.Rmd). Portées depuis Indicateurs PLAGEPOMI.Rnw, en generalisant les
+# blocs V/A/L/P/total répétés et en les adaptant au modèle 2026_07 (survie
+# juv->adulte annualisée s_juv2ad[t] au lieu de la constante + scénario
+# level_s/I_surv de l'ancien modèle).
+#===================================================================================
+
+#===================================================================================
+# Quantité de juvéniles atteignable pour une fraction (pct) de Rmax, ventilée par
+# secteur (V/A/L/P) puis sommée sur le système. Généralise le motif Juv_Rmax_25/
+# 50/75/100 de l'indicateur "niveau de population" ; avec pct=1 donne aussi
+# Rmax_ponder utilisé par le diagnostic de conservation.
+#===================================================================================
+compute_juv_rmax <- function(pct, Rmax, nu_d, S_juv_JP, T) {
+  Rmax <- as.vector(Rmax)
+  zones <- lapply(1:4, function(z) outer(pct * Rmax * exp(nu_d[, z]), S_juv_JP[z, 1:T]))
+  names(zones) <- c("V", "A", "L", "P")
+  zones$total <- Reduce(`+`, zones)
+  zones
+}
+
+#===================================================================================
+# Reconstitue la chronique d'adultes à Vichy en prenant les comptages réels
+# (data_vichy) quand la station fonctionnait, et la moyenne postérieure du modèle
+# (bugs_N_vichy_real) sinon. Le découpage (1:22 estimé / 23:29 réel / 30 estimé /
+# 31:T réel) reflète l'historique réel de la station (arrêt ponctuel une année) et
+# reste valable quel que soit T car ancré sur des années calendaires fixes.
+#===================================================================================
+reconstitute_data_vichy <- function(bugs_N_vichy_real, data_vichy, T) {
+  mean_bugs <- round(apply(bugs_N_vichy_real, MARGIN = 2, FUN = mean), 0)
+  c(as.vector(mean_bugs[1:22]), data_vichy[23:29], as.vector(mean_bugs[23]), data_vichy[31:T])
+}
+
+#===================================================================================
+# Juvéniles sauvages par secteur et par année (densité sauvage x surface), à
+# partir des paramètres dmoywild_V/A/L/P. Le secteur Poutes n'est colonisé/suivi
+# qu'à partir de l'année 13 d'où l'indice t-11 (dmoywild_P commence à l'année 13).
+#===================================================================================
+compute_juv_wild_by_zone <- function(d_wild_moy_V, d_wild_moy_A, d_wild_moy_L, d_wild_moy_P,
+                                      S_juv_JP, T, n_iter) {
+  juv_V <- matrix(0, n_iter, T + 1)
+  juv_A <- matrix(0, n_iter, T + 1)
+  juv_L <- matrix(0, n_iter, T + 1)
+  juv_P <- matrix(0, n_iter, T + 1)
+  for (t in 1:T) {
+    juv_V[, t + 1] <- d_wild_moy_V[, t] * S_juv_JP[1, t + 1]
+    juv_A[, t + 1] <- d_wild_moy_A[, t] * S_juv_JP[2, t + 1]
+    juv_L[, t + 1] <- d_wild_moy_L[, t] * S_juv_JP[3, t + 1]
+  }
+  for (t in 12:T) {
+    juv_P[, t + 1] <- d_wild_moy_P[, t - 11] * S_juv_JP[4, t + 1]
+  }
+  list(V = juv_V, A = juv_A, L = juv_L, P = juv_P)
+}
+
+#===================================================================================
+# Pool de juvéniles sauvages à l'origine des retours d'adultes ("juv_wild_tot_
+# system") : moyenne des cohortes produites 3, 4 et 5 ans plus tôt (délai
+# smolt+mer avant retour), sommée sur les secteurs (Poutes intégré à partir de
+# l'année 16 seulement, une fois le recul de cohorte disponible).
+#===================================================================================
+compute_juv_wild_tot_system <- function(juv_wild, T, n_iter) {
+  tot_V <- matrix(0, n_iter, T + 1)
+  tot_A <- matrix(0, n_iter, T + 1)
+  tot_L <- matrix(0, n_iter, T + 1)
+  tot_P <- matrix(0, n_iter, T + 1)
+  for (t in 7:T) {
+    tot_V[, t] <- (1 / 3) * juv_wild$V[, t - 3] + (1 / 3) * juv_wild$V[, t - 4] + (1 / 3) * juv_wild$V[, t - 5]
+    tot_A[, t] <- (1 / 3) * juv_wild$A[, t - 3] + (1 / 3) * juv_wild$A[, t - 4] + (1 / 3) * juv_wild$A[, t - 5]
+    tot_L[, t] <- (1 / 3) * juv_wild$L[, t - 3] + (1 / 3) * juv_wild$L[, t - 4] + (1 / 3) * juv_wild$L[, t - 5]
+  }
+  tot_P[, 16] <- (1 / 3) * juv_wild$P[, 16 - 3]
+  tot_P[, 17] <- (1 / 3) * juv_wild$P[, 17 - 3] + (1 / 3) * juv_wild$P[, 17 - 4]
+  for (t in 18:T) {
+    tot_P[, t] <- (1 / 3) * juv_wild$P[, t - 3] + (1 / 3) * juv_wild$P[, t - 4] + (1 / 3) * juv_wild$P[, t - 5]
+  }
+  system <- matrix(0, n_iter, T + 1)
+  for (t in 7:15) system[, t] <- tot_V[, t] + tot_A[, t] + tot_L[, t]
+  for (t in 16:T) system[, t] <- tot_V[, t] + tot_A[, t] + tot_L[, t] + tot_P[, t]
+  system
+}
+
+#===================================================================================
+# Coefficients de pondération des 3 cohortes de juvéniles (t-4/t-5/t-6, t-3/t-4/
+# t-5, t-2/t-3/t-4) utilisés pour répartir un retour d'adultes observé à l'année t
+# entre les 3 années de production juvénile voisines (délai mer variable selon les
+# individus). Basé sur les juvéniles sauvages bruts par secteur (pas la cohorte).
+#===================================================================================
+compute_juv_cohort_weights <- function(juv_wild, T, n_iter) {
+  coef1 <- matrix(0, n_iter, T)
+  coef2 <- matrix(0, n_iter, T)
+  coef3 <- matrix(0, n_iter, T)
+  sum_zones <- function(t) juv_wild$V[, t] + juv_wild$A[, t] + juv_wild$L[, t] + juv_wild$P[, t]
+  for (t in 7:T) {
+    s2 <- sum_zones(t - 2); s3 <- sum_zones(t - 3); s4 <- sum_zones(t - 4)
+    s5 <- sum_zones(t - 5); s6 <- sum_zones(t - 6)
+    coef1[, t] <- s4 / (s4 + s5 + s6)
+    coef2[, t] <- s4 / (s3 + s4 + s5)
+    coef3[, t] <- s4 / (s2 + s3 + s4)
+  }
+  list(coef1 = coef1, coef2 = coef2, coef3 = coef3)
+}
+
+#===================================================================================
+# Adultes d'origine sauvage revenant à Vichy (N_wild_vichy), à partir du pool de
+# juvéniles sauvages, de la survie juv->adulte annuelle du modèle (s_juv2ad[t],
+# qui remplace la constante + ajustement de scénario level_s/I_surv de l'ancien
+# modèle) et du résidu du modèle sur les retours à Vichy (res_vichy, appliqué de
+# la même façon à la population totale et à la population sauvage, comme dans
+# l'ancien code). s_juv2ad et res_vichy sont indexés à partir de l'année 7
+# (colonne 1 = année 7), d'où le décalage t-6.
+#===================================================================================
+compute_N_wild_vichy <- function(juv_wild_tot_system, s_juv2ad, res_vichy, T, n_iter) {
+  N_wild_vichy <- matrix(0, n_iter, T)
+  for (t in 7:T) {
+    N_wild_vichy[, t] <- exp(log(juv_wild_tot_system[, t]) + log(s_juv2ad[, t - 6]) + res_vichy[, t - 6])
+  }
+  N_wild_vichy
+}
+
+#===================================================================================
+# Taux de renouvellement de la population sauvage (renew_rate_w_coef, échelle
+# log) : ratio entre le retour d'adultes sauvages pondéré sur 3 cohortes voisines
+# et le nombre d'adultes revenus à Vichy 5 ans plus tôt (génération parentale).
+# Le dénominateur alterne entre l'estimation bayésienne (N_vichy_bugs, pour les
+# années sans comptage réel) et le comptage réel (data_vichy) : ce découpage
+# reflète l'historique réel de la station de comptage de Vichy (cf.
+# reconstitute_data_vichy) et reste valable quel que soit T.
+#===================================================================================
+compute_renew_rate_wild <- function(N_wild_vichy, coef, N_vichy_bugs, data_vichy, T, n_iter) {
+  renew <- matrix(NA, n_iter, T)
+  weighted <- function(t) {
+    coef$coef1[, t] * N_wild_vichy[, t - 1] +
+      coef$coef2[, t] * N_wild_vichy[, t] +
+      coef$coef3[, t] * N_wild_vichy[, t + 1]
+  }
+  for (t in 7:27) renew[, t - 5] <- log(weighted(t) / N_vichy_bugs[, t - 5])
+  for (t in 28:34) renew[, t - 5] <- log(weighted(t) / data_vichy[t - 5])
+  for (t in 35) renew[, t - 5] <- log(weighted(t) / N_vichy_bugs[, t - 12])
+  for (t in 36:(T - 1)) renew[, t - 5] <- log(weighted(t) / data_vichy[t - 5])
+  renew
+}
+
+#===================================================================================
+# Pourcentage de Rmax atteint par la production de juvéniles sauvages
+# (DC_tot_wild_tot), secteur par secteur puis rapporté à la capacité d'accueil
+# pondérée (Rmax * nu_d * surface, cf. compute_juv_rmax(pct=1,...)). Le secteur
+# Poutes n'entre dans le calcul qu'à partir de l'année 13.
+#===================================================================================
+compute_dc_wild_ratio <- function(d_wild_moy_V, d_wild_moy_A, d_wild_moy_L, d_wild_moy_P,
+                                   Rmax, nu_d, S_juv_JP, T, n_iter) {
+  rmax_ponder <- compute_juv_rmax(1, Rmax, nu_d, S_juv_JP, T)$total
+  dc <- matrix(NA, n_iter, T)
+  for (t in 2:12) {
+    dc[, t] <- (d_wild_moy_V[, t - 1] * S_juv_JP[1, t] +
+      d_wild_moy_A[, t - 1] * S_juv_JP[2, t] +
+      d_wild_moy_L[, t - 1] * S_juv_JP[3, t]) * 100 / rmax_ponder[, t]
+  }
+  for (t in 13:T) {
+    dc[, t] <- (d_wild_moy_V[, t - 1] * S_juv_JP[1, t] +
+      d_wild_moy_A[, t - 1] * S_juv_JP[2, t] +
+      d_wild_moy_L[, t - 1] * S_juv_JP[3, t] +
+      d_wild_moy_P[, t - 12] * S_juv_JP[4, t]) * 100 / rmax_ponder[, t]
+  }
+  dc
+}
+
+#===================================================================================
+# Risque de ne pas atteindre un seuil de diagnostic de conservation (% de Rmax)
+# sur une fenêtre glissante de `window` ans (10 par défaut), pour 3 niveaux de
+# risque toléré (au plus 1, 2 ou 3 années en dessous du seuil sur la fenêtre).
+# La valeur à l'année t est centrée sur la fenêtre [t-window+1, t].
+#===================================================================================
+compute_diagnostic_risk <- function(dc_ratio, threshold_pct, T, n_iter, window = 10) {
+  above <- dc_ratio > threshold_pct
+  risk10 <- matrix(NA, n_iter, T)
+  risk20 <- matrix(NA, n_iter, T)
+  risk30 <- matrix(NA, n_iter, T)
+  for (t in 2:(T - (window - 1))) {
+    below_count <- rowSums(!above[, t:(t + window - 1)])
+    idx <- t + window - 1
+    risk10[, idx] <- as.numeric(below_count <= 1)
+    risk20[, idx] <- as.numeric(below_count <= 2)
+    risk30[, idx] <- as.numeric(below_count <= 3)
+  }
+  list(
+    mean_risk_10 = colMeans(risk10),
+    mean_risk_20 = colMeans(risk20),
+    mean_risk_30 = colMeans(risk30)
+  )
+}
+
+#===================================================================================
+# Part des juvéniles sauvages dans l'ensemble des juvéniles (sauvages + issus de
+# déversement), secteur par secteur puis rapportée au total. Le secteur Poutes
+# n'entre dans le calcul qu'à partir de l'année 13.
+#===================================================================================
+compute_ratio_juv_wild <- function(dmoy_tot_V, dmoy_tot_A, dmoy_tot_L, dmoy_tot_P,
+                                    dmoy_wild_V, dmoy_wild_A, dmoy_wild_L, dmoy_wild_P,
+                                    S_juv_JP, T, n_iter) {
+  juv_tot <- matrix(0, n_iter, T)
+  juv_wild <- matrix(0, n_iter, T)
+  for (t in 2:12) {
+    juv_tot[, t] <- dmoy_tot_V[, t - 1] * S_juv_JP[1, t] + dmoy_tot_A[, t - 1] * S_juv_JP[2, t] +
+      dmoy_tot_L[, t - 1] * S_juv_JP[3, t]
+    juv_wild[, t] <- dmoy_wild_V[, t - 1] * S_juv_JP[1, t] + dmoy_wild_A[, t - 1] * S_juv_JP[2, t] +
+      dmoy_wild_L[, t - 1] * S_juv_JP[3, t]
+  }
+  for (t in 13:T) {
+    juv_tot[, t] <- dmoy_tot_V[, t - 1] * S_juv_JP[1, t] + dmoy_tot_A[, t - 1] * S_juv_JP[2, t] +
+      dmoy_tot_L[, t - 1] * S_juv_JP[3, t] + dmoy_tot_P[, t - 12] * S_juv_JP[4, t]
+    juv_wild[, t] <- dmoy_wild_V[, t - 1] * S_juv_JP[1, t] + dmoy_wild_A[, t - 1] * S_juv_JP[2, t] +
+      dmoy_wild_L[, t - 1] * S_juv_JP[3, t] + dmoy_wild_P[, t - 12] * S_juv_JP[4, t]
+  }
+  ratio <- juv_wild / juv_tot
+  ratio[, 1] <- NA
+  list(ratio = ratio, mean_ratio = colMeans(ratio))
+}
+
+#===================================================================================
+# Résumé chiffré d'une série annuelle d'indicateur (valeurs = 1 par année, NA
+# pour les années non calculées) : dernière année disponible, moyenne sur les 5
+# dernières / 5 premières années disponibles, et médiane sur toute la série
+# (plus robuste qu'une moyenne aux valeurs extrêmes, cf. demande utilisateur).
+#===================================================================================
+summarize_indicator_series <- function(values, label, year_origin = 1974, digits = 2) {
+  valid <- which(!is.na(values))
+  last1 <- tail(valid, 1)
+  last5 <- tail(valid, 5)
+  first5 <- head(valid, 5)
+  data.frame(
+    Indicateur = label,
+    `Dernière année (année)` = year_origin + last1,
+    `Dernière année` = round(values[last1], digits),
+    `Moyenne 5 dernières années` = round(mean(values[last5]), digits),
+    `Moyenne 5 premières années` = round(mean(values[first5]), digits),
+    `Médiane (toute la série)` = round(median(values[valid]), digits),
+    check.names = FALSE
+  )
+}

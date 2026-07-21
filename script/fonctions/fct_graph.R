@@ -405,4 +405,136 @@ draw_indic_tx_ren_boxplot<-function(tx_renouv,pngName,Tyear=T,typ_pop="sauvage",
 # mtext(1,text=iconv("Scenario : Projection sans déversement à 20 ans et amélioration de la continuité écologique (montaison + dévalaison)","UTF8"),line=5)
 # dev.off()
 
-  
+#===================================================================================
+# Fonctions graphiques pour les 4 indicateurs PLAGEPOMI (script/analyse_retro/
+# Indicateurs Plagepomi.Rmd), portées depuis Indicateurs PLAGEPOMI.Rnw.
+#===================================================================================
+
+#===================================================================================
+# Thème et axe des années communs aux 4 indicateurs PLAGEPOMI, pour un rendu
+# harmonisé : ticks majeurs (labellisés) tous les 10 ans + grille mineure tous
+# les 5 ans, plus la dernière année réellement disponible si elle ne tombe pas
+# sur une décennie ronde. `to_position` convertit une année civile en position x
+# du graphique (chaque indicateur a son propre décalage position <-> année selon
+# la façon dont sa moyenne mobile a été construite).
+#===================================================================================
+scale_x_years_plagepomi <- function(year_first, year_last, to_position) {
+  major_years <- seq(ceiling(year_first / 10) * 10, floor(year_last / 10) * 10, by = 10)
+  if (!(year_last %in% major_years)) major_years <- sort(c(major_years, year_last))
+  minor_years <- seq(floor(year_first / 5) * 5, ceiling(year_last / 5) * 5, by = 5)
+  scale_x_continuous(breaks = to_position(major_years), labels = major_years,
+                      minor_breaks = to_position(minor_years))
+}
+
+#===================================================================================
+# Thème harmonisé (taille de police, marges des titres) pour les 4 indicateurs
+# PLAGEPOMI. Ne fixe pas legend.position pour ne pas écraser le choix propre à
+# chaque graphique (absent/bas selon qu'il y a une légende ou non).
+#===================================================================================
+theme_plagepomi <- function(base_size = 13) {
+  theme_bw(base_size = base_size) +
+    theme(
+      plot.title = element_text(hjust = 0.5, margin = margin(b = 10)),
+      axis.title.x = element_text(margin = margin(t = 8)),
+      axis.title.y = element_text(margin = margin(r = 8))
+    )
+}
+
+#===================================================================================
+# Indicateur "niveau de population" : nombre d'adultes observés/estimés à Vichy
+# (moyenne mobile 5 ans), comparé à la cible (nombre d'adultes que produirait la
+# quantité de juvéniles visée dans les conditions de survie actuelles), avec un
+# polygone rouge/vert indiquant si l'observé est en dessous/au-dessus de la
+# cible. `split_at` est la position (dans la série moyennée mobile) à partir de
+# laquelle la série observée passe de "estimée" (tirets) à "réelle" (trait plein).
+#===================================================================================
+draw_niveau_pop <- function(mean_target, observed, T, split_at, title, ylab_txt,
+                             year_origin = 1974) {
+  x_mob <- seq(2, (T - 3), 1)
+  target_ma <- running.mean(mean_target, 5)
+  keep <- !is.na(target_ma)
+  target_ma <- target_ma[keep]
+  observed_ma <- running.mean(observed, 5)[keep]
+  n <- length(x_mob)
+
+  ids <- factor(c(str_c("1.", seq(1, (T - 5), 1)), str_c("2.", seq(1, (T - 5), 1))))
+  values <- data.frame(id = ids, values = c(rep("red", (T - 5)), rep("green", (T - 5))))
+  positions <- data.frame(
+    id = rep(ids, each = 4),
+    x = rep(c(rbind(seq(3, (T - 3), 1), seq(2, (T - 4), 1), seq(2, (T - 4), 1), seq(3, (T - 3), 1))), 2),
+    y = c(
+      c(rbind(0, 0, target_ma[1:(n - 1)], target_ma[2:n])),
+      c(rbind(target_ma[2:n], target_ma[1:(n - 1)],
+              rep(max(observed_ma, na.rm = TRUE), (n - 1)), rep(max(observed_ma, na.rm = TRUE), (n - 1))))
+    )
+  )
+  datapoly <- plyr::join(values, positions)
+
+  ggplot() +
+    geom_polygon(data = datapoly, aes(x = x, y = y, group = id), fill = datapoly$values, alpha = 0.5) +
+    geom_line(aes(x_mob[1:split_at], observed_ma[1:split_at]), size = 1, linetype = "dashed") +
+    geom_line(aes(x_mob[split_at:n], observed_ma[split_at:n]), size = 1) +
+    xlab("Année") +
+    ylab(ylab_txt) +
+    ggtitle(title) +
+    scale_x_years_plagepomi(year_origin + x_mob[1] + 3, year_origin + T, function(year) year - year_origin - 3) +
+    theme(legend.position = "none") +
+    theme_plagepomi()
+}
+
+#===================================================================================
+# Indicateur "diagnostic de conservation" : probabilité, sur une fenêtre glissante
+# de `window` ans, d'assurer la conservation pour 3 niveaux de risque toléré
+# (10/20/30%), pour un seuil cible de `target_pct`% de Rmax.
+#===================================================================================
+draw_diagnostic_conservation <- function(mean_risk_10, mean_risk_20, mean_risk_30, T,
+                                          target_pct, window = 10, year_origin = 1974) {
+  x_diag <- seq(window + 1, T, 1)
+  rects <- data.frame(ystart = seq(0, 0.75, 0.25), yend = seq(0.25, 1, 0.25),
+                       col = c("red", "orange", "yellow", "green"))
+
+  ggplot() +
+    geom_rect(data = rects, aes(xmin = (window + 1), xmax = T, ymin = ystart, ymax = yend), fill = rects$col, alpha = 0.5) +
+    geom_line(aes(x_diag, mean_risk_10[x_diag], colour = "1"), size = 1) +
+    geom_line(aes(x_diag, mean_risk_20[x_diag], colour = "2"), size = 1) +
+    geom_line(aes(x_diag, mean_risk_30[x_diag], colour = "3"), size = 1) +
+    geom_hline(yintercept = 0.5, linetype = "dashed", size = 2) +
+    geom_hline(yintercept = 0.75, linetype = "dashed", size = 1) +
+    geom_hline(yintercept = 0.25, linetype = "dashed", size = 1) +
+    xlab("Année") +
+    ylab("Probabilité d'assurer la conservation selon le diagnostic choisi") +
+    ggtitle(str_c("Diagnostic de conservation de la population sauvage pour ", target_pct, "% Rmax \n(fenêtre glissante sur ", window, " ans)")) +
+    scale_x_years_plagepomi(year_origin + window + 1, year_origin + T, function(year) year - year_origin) +
+    scale_y_continuous(breaks = seq(0, 1, 0.2), labels = seq(0, 1, 0.2)) +
+    scale_colour_manual("", breaks = c("1", "2", "3"), values = c("black", "gray50", "gray80"),
+                        labels = c("Risque 10%", "Risque 20%", "Risque 30%")) +
+    theme_plagepomi() +
+    theme(legend.position = "bottom")
+}
+
+#===================================================================================
+# Indicateur "part des juvéniles sauvages" : ratio juvéniles sauvages / juvéniles
+# totaux (moyenne mobile 5 ans), avec un fond rouge/vert selon que le ratio est
+# en dessous/au-dessus de 50%.
+#===================================================================================
+draw_part_juv_wild <- function(mean_ratio, T, year_origin = 1974) {
+  x_juv <- seq(1, (T - 5), 1)
+  rect_2_col <- data.frame(ystart = c(0, 0.5), yend = c(0.5, 1), col = c("red", "green"))
+  ratio_ma <- running.mean(mean_ratio, 5)
+  ratio_ma <- ratio_ma[!is.na(ratio_ma)]
+
+  ggplot() +
+    geom_rect(data = rect_2_col, aes(xmin = 1, xmax = (T - 5), ymin = ystart, ymax = yend), fill = rect_2_col$col, alpha = 0.5) +
+    geom_line(aes(x_juv, ratio_ma), size = 1) +
+    geom_hline(yintercept = 0.5, linetype = "dashed", size = 2) +
+    geom_hline(yintercept = 0.75, linetype = "dashed", size = 1) +
+    geom_hline(yintercept = 0.25, linetype = "dashed", size = 1) +
+    xlab("Année") +
+    ylab("Ratio juvénile sauvage sur juvénile total") +
+    ggtitle("Part de juvéniles sauvages dans l'ensemble des juvéniles \n(moyenne mobile 5 ans)") +
+    scale_x_years_plagepomi(year_origin + x_juv[1] + 5, year_origin + T, function(year) year - year_origin - 5) +
+    coord_cartesian(xlim = c(1, (T - 5))) +
+    theme(legend.position = "none") +
+    theme_plagepomi()
+}
+
