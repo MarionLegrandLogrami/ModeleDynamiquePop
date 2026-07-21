@@ -9,7 +9,7 @@ setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_In
 #Modèle 2019_12_Interraction_ss_rho_poutes_matriceVC
 setwd("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/")
 #Modèle 2024_06\Hierarchisation_variance + comptage_Langeac + MAJ data 2023
-setwd(here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/"))
+setwd(paste0(here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/"))
 
 
 library(coda)

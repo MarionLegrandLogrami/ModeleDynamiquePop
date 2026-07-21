@@ -27,18 +27,18 @@ données jusqu'en 2024)}
 
 
 << init, echo=FALSE, eval=TRUE,results=hide >>=
-#datawd<-here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
-#imgwd<-here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
-#tabwd<-here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
+#datawd<-paste0(here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
+#imgwd<-paste0(here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
+#tabwd<-paste0(here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
 
-datawd<-here::here("data/CODA/2025_07/")
-imgwd<-here::here("img/2025_07/")
-tabwd<-here::here("tab/2025_07/")
+datawd<-paste0(here::here("data/CODA/2025_07"), "/")
+imgwd<-paste0(here::here("img/2025_07"), "/")
+tabwd<-paste0(here::here("tab/2025_07"), "/")
 
 #quand on lance sous eclipse le setwd n'est pas défini (va sur C:/WINDOWS/system32)
 #ça met la zone quand on lance la fonction bugs2jags. On définit le setwd au niveau
 #du datawd pour qu'il enregistre le data_model.R au bon endroit
-setwd(here::here("data/CODA/2025_07/"))
+setwd(paste0(here::here("data/CODA/2025_07"), "/"))
 
 library(coda)
 library(boot)

@@ -13,14 +13,14 @@ datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12
 # S_juv_JP<-matrix(surf,nrow=4)	
 
 #Modèle 2021_09 - modèle 2019_12_12 avec MAJ des données jusqu'en 2020
-setwd(here::here("data/CODA/2021_09/"))
-datawd<-here::here("data/CODA/2021_09/")
-imgwd<-here::here("img/Simulation/2021_09/")
+setwd(paste0(here::here("data/CODA/2021_09"), "/"))
+datawd<-paste0(here::here("data/CODA/2021_09"), "/")
+imgwd<-paste0(here::here("img/Simulation/2021_09"), "/")
 
 #Modèle 2023_05 - modèle 2019_12_12 avec MAJ des données jusqu'en 2020 + ajout de l'influence des débits sur la survie et la répartition des adultes & modèle de mélange
-setwd(here::here("data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps/"))
-datawd<-here::here("data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps/")
-imgwd<-here::here("img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps/")
+setwd(paste0(here::here("data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps"), "/"))
+datawd<-paste0(here::here("data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps"), "/")
+imgwd<-paste0(here::here("img/Simulation/2023_05/2_Model_melange_homogenisation_Q_printemps"), "/")
 
 library(coda)
 library(boot)

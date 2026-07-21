@@ -7,7 +7,7 @@
 library(coda)
 require(stringr)
 
-datawd<-here::here("data/CODA/2023_04/")
+datawd<-paste0(here::here("data/CODA/2023_04"), "/")
 T=48
 
 ##Tableau avec année/I_mm/médiane s_juv2ad/médiane res_vichy_std

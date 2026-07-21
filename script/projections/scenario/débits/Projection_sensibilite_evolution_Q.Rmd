@@ -24,7 +24,7 @@ Une fois tout cela fait pour les différents scénarios de débits souhaité (il
 
 ```{r setup, eval=TRUE,echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
-knitr::opts_knit$set(root.dir=here::here("img/Simulation/2023_05/"))
+knitr::opts_knit$set(root.dir=paste0(here::here("img/Simulation/2023_05"), "/"))
 ```
 
 ```{r init_quick, eval=TRUE,echo=FALSE}
@@ -52,14 +52,14 @@ load(file=here::here("2023_09_01_Projection_sensibilite_evolution_Q_init_Without
 type_mod<-"WithoutModelMelange" #"ModelMelange" / "WithoutModelMelange"
 
 if(type_mod=="ModelMelange"){
-  datawd<-here::here("data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps/")
-  imgwd<-here::here("img/Simulation/2023_05/")
-  tabwd<-here::here("tab/2023_05/2_Model_melange_homogenisation_Q_printemps/")
+  datawd<-paste0(here::here("data/CODA/2023_05/2_Model_melange_homogenisation_Q_printemps"), "/")
+  imgwd<-paste0(here::here("img/Simulation/2023_05"), "/")
+  tabwd<-paste0(here::here("tab/2023_05/2_Model_melange_homogenisation_Q_printemps"), "/")
 }
 if(type_mod=="WithoutModelMelange"){
-  datawd<-here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/")
-  imgwd<-here::here("img/Simulation/2023_05/")
-  tabwd<-here::here("tab/2023_05/3_Model_sans_distribution_melange/")
+  datawd<-paste0(here::here("data/CODA/2023_05/3_Model_sans_distribution_melange"), "/")
+  imgwd<-paste0(here::here("img/Simulation/2023_05"), "/")
+  tabwd<-paste0(here::here("tab/2023_05/3_Model_sans_distribution_melange"), "/")
 }
 
 library(coda)

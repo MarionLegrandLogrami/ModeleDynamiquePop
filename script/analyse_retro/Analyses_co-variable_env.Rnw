@@ -716,7 +716,7 @@ barplot(dbinom(0:186,186,0.6))
 <<graph_data_Q_model,echo=FALSE, eval=FALSE,results=hide >>=
 library(coda)
 library(stringr)
-path_model<-here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/")
+path_model<-paste0(here::here("data/CODA/2023_05/3_Model_sans_distribution_melange"), "/")
 bugs2jags(str_c(path_model,"data.txt"),"data_model.R")
 source("data_model.R")
 

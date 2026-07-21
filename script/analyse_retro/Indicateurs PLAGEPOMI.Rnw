@@ -16,9 +16,9 @@
 #S_juv_JP_tot<-S_juv_JP[,T]
 
 #Modèle 2021_09
-setwd(here::here("data/CODA/2021_09/"))
-datawd<-here::here("data/CODA/2021_09/")
-imgwd<-here::here("img/Simulation/2021_09/")
+setwd(paste0(here::here("data/CODA/2021_09"), "/"))
+datawd<-paste0(here::here("data/CODA/2021_09"), "/")
+imgwd<-paste0(here::here("img/Simulation/2021_09"), "/")
 
 library(coda)
 library(boot)

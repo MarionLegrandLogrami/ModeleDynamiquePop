@@ -5,17 +5,17 @@
 
 <<init,echo=FALSE, eval=FALSE,results=hide >>=
 #Modèle 2019.12.12_4zones_Interaction_ss_rho_poutes_MatriceVC_Maj2018
-#setwd(here::here("data/CODA/2019_12_12/"))
-#datawd<-(here::here("data/CODA/2019_12_12/"))
+#setwd(paste0(here::here("data/CODA/2019_12_12"), "/"))
+#datawd<-(paste0(here::here("data/CODA/2019_12_12"), "/"))
 #T=44
 #surf=c(rep(c(846021,70845,250441,0),11),rep(c(846021,70845,250441,301101),12),rep(c(846021,70845,250441,383049),6),rep(c(846021,356519,250441,383049),(T-2))) #T-2 pour calculer sur T+27 année
 #S_juv_JP<-matrix(surf,nrow=4)
 
 #Modèle 2021.09 = structure du modèle 2019.12.12 mais avec MAJ données jusqu'en 2020
-setwd(here::here("data/CODA/2021_09/"))
-datawd<-here::here("data/CODA/2021_09/")
-imgwd<-here::here("img/Simulation/2021_09/")
-tabwd<-here::here("tab/2021_09/")
+setwd(paste0(here::here("data/CODA/2021_09"), "/"))
+datawd<-paste0(here::here("data/CODA/2021_09"), "/")
+imgwd<-paste0(here::here("img/Simulation/2021_09"), "/")
+tabwd<-paste0(here::here("tab/2021_09"), "/")
 
 library(coda)
 library(boot)
@@ -3337,10 +3337,10 @@ median(N_vichy[,(T+20-4):(T+20)])
 <<dev_secteur_tx_renouv_SAUVAGE,echo=FALSE, eval=FALSE,results=hide>>=
 
 #Modèle 2021.09 = structure du modèle 2019.12.12 mais avec MAJ données jusqu'en 2020
-setwd(here::here("data/CODA/2021_09/"))
-datawd<-here::here("data/CODA/2021_09/")
-imgwd<-here::here("img/Simulation/2021_09/")
-tabwd<-here::here("tab/2021_09/")
+setwd(paste0(here::here("data/CODA/2021_09"), "/"))
+datawd<-paste0(here::here("data/CODA/2021_09"), "/")
+imgwd<-paste0(here::here("img/Simulation/2021_09"), "/")
+tabwd<-paste0(here::here("tab/2021_09"), "/")
 
 library(coda)
 library(boot)
@@ -4137,10 +4137,10 @@ write.xlsx(x=data_concat_0_6_11[data_concat_0_6_11$année==2034,],file=str_c(img
 
 <<dev_secteur_tx_renouv,echo=FALSE, eval=FALSE,results=hide>>=
 
-setwd(here::here("data/CODA/2021_09/"))
-datawd<-here::here("data/CODA/2021_09/")
-imgwd<-here::here("img/Simulation/2021_09/")
-tabwd<-here::here("tab/2021_09/")
+setwd(paste0(here::here("data/CODA/2021_09"), "/"))
+datawd<-paste0(here::here("data/CODA/2021_09"), "/")
+imgwd<-paste0(here::here("img/Simulation/2021_09"), "/")
+tabwd<-paste0(here::here("tab/2021_09"), "/")
 
 library(coda)
 library(boot)

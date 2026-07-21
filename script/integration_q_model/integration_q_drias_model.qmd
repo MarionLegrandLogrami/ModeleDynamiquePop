@@ -39,15 +39,15 @@ library(boot)
 library(ggplot2)
 
 #Modèle de 2024_06
-imgwd <- here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
+imgwd <- paste0(here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
 
-tabwd <- here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
+tabwd <- paste0(here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
 
-datawd <- here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
+datawd <- paste0(here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
 
-datanetcdfwd <- here::here("data/co-variables_env/projection_climatique/")
+datanetcdfwd <- paste0(here::here("data/co-variables_env/projection_climatique"), "/")
 
-dataqwd <- here::here("script/integration_q_model/data/")
+dataqwd <- paste0(here::here("script/integration_q_model/data"), "/")
 
 T=49
 

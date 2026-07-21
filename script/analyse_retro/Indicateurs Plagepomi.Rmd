@@ -14,8 +14,8 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 
 ```{r init, echo=FALSE, eval=TRUE}
 #Modèle 2023-05 3_Model_sans_distribution_melange
-datawd<-here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/")
-imgwd<-here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange/")
+datawd<-paste0(here::here("data/CODA/2023_05/3_Model_sans_distribution_melange"), "/")
+imgwd<-paste0(here::here("img/Simulation/2023_05/3_Model_sans_distribution_melange"), "/")
 
 library(coda)
 library(boot)

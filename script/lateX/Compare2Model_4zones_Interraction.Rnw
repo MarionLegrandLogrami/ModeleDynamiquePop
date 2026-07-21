@@ -97,12 +97,12 @@ require(stringr)
 #datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2017_08_29_Interaction_ss_rho_poutes_matriceVC/"
 #datawddeux<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12/"
 
-un<-here::here("data/CODA/2019_12_12/")	#Modèle 4 zones Interaction ss rho_poutes matriceVC maj2018
-deux<-here::here("data/CODA/2021_09/") 										#Modèle 4 zones Interaction ss rho_poutes matriceVC maj2018
-imgwd<-here::here("img/2019_12_12/")	
-imgwddeux<-here::here("img/2021_09/")	
-datawd<-here::here("data/CODA/2019_12_12/")
-datawddeux<-here::here("data/CODA/2021_09/")
+un<-paste0(here::here("data/CODA/2019_12_12"), "/")	#Modèle 4 zones Interaction ss rho_poutes matriceVC maj2018
+deux<-paste0(here::here("data/CODA/2021_09"), "/") 										#Modèle 4 zones Interaction ss rho_poutes matriceVC maj2018
+imgwd<-paste0(here::here("img/2019_12_12"), "/")	
+imgwddeux<-paste0(here::here("img/2021_09"), "/")	
+datawd<-paste0(here::here("data/CODA/2019_12_12"), "/")
+datawddeux<-paste0(here::here("data/CODA/2021_09"), "/")
 
 
 
@@ -1235,12 +1235,12 @@ library(coda)
 library(boot)
 require(stringr)
 	
-un<-here::here("data/CODA/2019_12_12/")	#Modèle 4 zones Interaction ss rho_poutes matriceVC maj2018
-deux<-here::here("data/CODA/2021_09/") 										#Modèle 4 zones Interaction ss rho_poutes matriceVC maj2018
-imgwd<-here::here("img/2019_12_12/")	
-imgwddeux<-here::here("img/2021_09/")	
-datawd<-here::here("data/CODA/2019_12_12/")
-datawddeux<-here::here("data/CODA/2019_12_12/")
+un<-paste0(here::here("data/CODA/2019_12_12"), "/")	#Modèle 4 zones Interaction ss rho_poutes matriceVC maj2018
+deux<-paste0(here::here("data/CODA/2021_09"), "/") 										#Modèle 4 zones Interaction ss rho_poutes matriceVC maj2018
+imgwd<-paste0(here::here("img/2019_12_12"), "/")	
+imgwddeux<-paste0(here::here("img/2021_09"), "/")	
+datawd<-paste0(here::here("data/CODA/2019_12_12"), "/")
+datawddeux<-paste0(here::here("data/CODA/2019_12_12"), "/")
 
 Tnew=46
 Told=44	

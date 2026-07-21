@@ -21,9 +21,9 @@ datawd<-("C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2019_12_12
 # S_juv_JP<-matrix(surf,nrow=4)	
 
 #Modèle 2021_09 MAJ 2020
-setwd(here::here("data/CODA/2021_09/"))
-datawd<-(here::here("data/CODA/2021_09/"))
-imgwd<-here::here("img/Simulation/2021_09/")
+setwd(paste0(here::here("data/CODA/2021_09"), "/"))
+datawd<-(paste0(here::here("data/CODA/2021_09"), "/"))
+imgwd<-paste0(here::here("img/Simulation/2021_09"), "/")
 
 library(coda)
 library(boot)
