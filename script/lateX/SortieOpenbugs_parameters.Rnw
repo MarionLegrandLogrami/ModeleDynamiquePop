@@ -161,6 +161,9 @@ tabwd<-paste0(here::here("tab/2026_07/Model_influence_Q"), "/")
 source("../fonctions/fct_graph.R")
 source("../fonctions/fct_data.R")
 
+# source(str_c(getwd(),"/script/fonctions/fct_graph.R"))
+# source(str_c(getwd(),"/script/fonctions/fct_data.R"))
+
 bugs2jags(str_c(datawd,"/data.txt"),"data_model.R")
 source("data_model.R")
 
@@ -1528,7 +1531,7 @@ q <- align_sparse_year_param(p_Rmax_V, T)
 
 # années 1:(T-1) uniquement (p_Rmax n'est pas défini/affiché la dernière année)
 boxplot_years_png(imgwd, "p_Rmax_V",
-                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   data = q$quantiles, years = 1:T, year_origin = 1975,
                    ylab_txt = "p_Rmax_V", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
                    col_box = "green", center_line = q$mean,
                    mean_line = mean(q$mean, na.rm = TRUE), mean_line_range = c(0, T),
@@ -1555,7 +1558,7 @@ source("data_covariable_2019_12_12.R")
 q <- align_sparse_year_param(p_Rmax_A, T)
 
 boxplot_years_png(imgwd, "p_Rmax_A",
-                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   data = q$quantiles, years = 1:T, year_origin = 1975,
                    ylab_txt = "p_Rmax_A", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
                    col_box = "green", center_line = q$mean,
                    mean_line = mean(q$mean, na.rm = TRUE), mean_line_range = c(0, T),
@@ -1581,7 +1584,7 @@ source("data_covariable_2019_12_12.R")
 q <- align_sparse_year_param(p_Rmax_L, T)
 
 boxplot_years_png(imgwd, "p_Rmax_L",
-                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   data = q$quantiles, years = 1:T, year_origin = 1975,
                    ylab_txt = "p_Rmax_L", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
                    col_box = "green", center_line = q$mean,
                    mean_line = mean(q$mean, na.rm = TRUE), mean_line_range = c(0, T),
@@ -1607,7 +1610,7 @@ source("data_covariable_2019_12_12.R")
 q <- align_sparse_year_param(p_Rmax_P, T)
 
 boxplot_years_png(imgwd, "p_Rmax_P",
-                   data = q$quantiles, years = 1:(T-1), year_origin = 1975,
+                   data = q$quantiles, years = 1:T, year_origin = 1975,
                    ylab_txt = "p_Rmax_P", ylim_range = c(0, 1), y_at = seq(0, 1, by = 0.2),
                    col_box = "green", center_line = q$mean,
                    mean_line = mean(q$mean, na.rm = TRUE), mean_line_range = c(0, T),
@@ -2132,10 +2135,10 @@ q <- param_quantiles(d_egg_moy_V)
 # sous-plage 10:(T-22) alors que les boxplots couvrent 10:(T-13) - incohérence
 # préexistante conservée telle quelle pour ne pas changer la valeur affichée
 boxplot_years_png(imgwd, "d_egg_moy_V",
-                   data = q$quantiles[10:(T-13), ], years = 1:(T-22), year_origin = 1996,
+                   data = q$quantiles[10:(T-13), ], years = 1:(T-22), year_origin = 1995,
                    ylab_txt = "d_egg_moy_V", ylim_range = c(0, 0.02), y_at = seq(0, 0.02, by = 0.01),
                    col_box = "green", center_line = q$mean[10:(T-13)],
-                   mean_line = mean(q$mean[10:(T-22)]), mean_line_range = c(0, T - 21))
+                   mean_line = mean(q$mean[10:(T-13)]), mean_line_range = c(0, T - 21))
 @
 
 \begin{figure}[ht]
@@ -2154,7 +2157,7 @@ d_egg_moy_L <- read_param_coda("stocking_egg_L", datawd)
 q <- param_quantiles(d_egg_moy_L)
 
 boxplot_years_png(imgwd, "d_egg_moy_L",
-                   data = q$quantiles[12:22, ], years = 1:11, year_origin = 1996,
+                   data = q$quantiles[12:22, ], years = 1:11, year_origin = 1997,
                    ylab_txt = "d_egg_moy_L", ylim_range = c(0, 0.05), y_at = seq(0, 0.05, by = 0.01),
                    col_box = "green", center_line = q$mean[12:22],
                    mean_line = mean(q$mean[12:22]), mean_line_range = c(0, 12))
