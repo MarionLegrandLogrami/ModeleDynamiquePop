@@ -14,6 +14,9 @@ Rdata_av2021.zip
 *.RData
 *.Rdata
 
+# Package LaTeX local (installé au besoin, pas d'utilité versionné)
+/fancyvrb.sty
+
 # État local IDE / éditeurs
 .dbeaver/
 .settings/
