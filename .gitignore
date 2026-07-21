@@ -26,6 +26,8 @@ Rdata_av2021.zip
 
 # Fichiers générés par bugs2jags() à chaque exécution (dump JAGS de data.txt)
 script/lateX/data_model.R
+script/lateX/data_2021_09.r
+script/lateX/data_covariable_2019_12_12.R
 
 # Device R par défaut quand un plot() tourne sans device explicitement ouvert
 Rplots.pdf
