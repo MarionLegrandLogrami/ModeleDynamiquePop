@@ -1,13 +1,15 @@
 ---
 title: "Indicateurs Plagepomi"
 author: "Marion Legrand"
-date: "2023-09-15"
+date: "2026-07-21"
 output:
   html_document:
     df_print: paged
     toc: true
     toc_float: true
 ---
+
+<!-- Le script a été démarré en septembre 2023 mais non terminé. J4ai repris ça avec de l'IA (Claude) en juillet 2026 -->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, results = "hide", fig.align = "center")
@@ -29,10 +31,11 @@ T <- 51
 source(here::here("script/fonctions/fct_graph.R"))
 source(here::here("script/fonctions/fct_data.R"))
 
+# source(str_c(getwd(),"/script/fonctions/fct_graph.R"))
+# source(str_c(getwd(),"/script/fonctions/fct_data.R"))
+
 # Comptages réels d'adultes à Vichy (data.txt -> data.R). Fait AVANT keep_good_surf()
-# ci-dessous : ce source() écrit aussi ses propres T/S_juv_JP dans l'environnement
-# global, qu'il ne faut donc pas laisser écraser la version correctement
-# transposée/complétée de S_juv_JP utilisée par les indicateurs.
+# car dans le data.txt il y a des surfaces mais non formatées comme attendu. Il faut donc faire le keep_good_surf après
 bugs2jags(str_c(datawd, "data.txt"), "data_model_2023_05_3_ModelSansDistriMelange.R")
 source("data_model_2023_05_3_ModelSansDistriMelange.R")
 data_vichy <- N[, 1]
@@ -84,9 +87,8 @@ Juv_Rmax_50 <- juv_rmax_50$total
 # varie année par année.
 # On l'estime sur la période post-effondrement (à partir de 1992, cf. rapport
 # 2021 et chute similaire visible dans s_juv2ad) plutôt que sur les 5 dernières
-# années seules : ces dernières (2023-2025) sont tirées vers le bas par le
-# manque de recul sur les retours des cohortes les plus récentes, ce qui rend
-# leur moyenne instable et non représentative d'un "niveau actuel" stable.
+# années seules qui ont vu s'effondrer encore le taux de transfert.
+
 annee_post_effondrement <- 1992
 year_origin <- 1974
 col_post_effondrement <- (annee_post_effondrement - year_origin - 6):ncol(s_juv2ad)
@@ -135,13 +137,12 @@ tx_ren_result <- draw_indic_tx_ren(renew_rate_w_coef, pngName = "TauxRenouvellem
 # comportement par défaut. Le calcul du taux de renouvellement nécessite les
 # retours des 3 années suivantes : la dernière année disponible est donc
 # mécaniquement 2019 (T-6), 6 ans avant la dernière année des 3 autres
-# indicateurs (2025) - ce n'est pas un défaut d'affichage, la donnée s'arrête
-# réellement là.
+# indicateurs (2025).
 # La fonction fixe aussi en dur une limite basse de l'axe Y à 0.2 (échelle
 # log) : avec le modèle 2026_07 la dernière valeur (2019) descend à 0.195 et
 # se retrouvait donc supprimée silencieusement (les warnings sont masqués par
-# le réglage global du document) - on élargit la limite basse pour ne clipper
-# aucun point de la série.
+# le réglage global du document) - on élargit la limite basse pour conserver 
+# tous les point de la série.
 y_min_tx <- min(0.2, min(taux_renouv_annuel, na.rm = TRUE) * 0.9)
 graph_tx_ren <- tx_ren_result[[1]] +
   scale_x_years_plagepomi(year_origin + 1 + 10, year_origin + T - 6, function(year) year - year_origin - 10) +

@@ -32,10 +32,10 @@ custom_plot <- function(data,
                         mean_label_digits = 5,
                         mean_label_line = 0,
                         lang = "fr") {
-  
+
   # Opérateur fallback
   `%||%` <- function(a, b) if (!is.null(a)) a else b
-  
+
   # Textes localisés
   default_titles <- list(
     fr = list(xlab = "Années", ylab = "Valeurs"),
@@ -51,7 +51,7 @@ custom_plot <- function(data,
   # Pas de titre par défaut : main_title reste NULL si non renseigné (plot() n'affiche alors rien)
   ylab_txt <- ifelse(is.null(ylab_txt), labels$ylab, ylab_txt)
   xlab_txt <- labels$xlab
-  
+
   # Plot vide
   plot(1, 1, type = "n", axes = FALSE,
        xlim = c(min(years) - 0.5, max(years) + 0.5),
@@ -61,27 +61,27 @@ custom_plot <- function(data,
        main = main_title,
        cex.main = 2,
        cex.lab = 1.5)
-  
+
   #Pour ne représenter que toutes les 5 années + 1er et dernière année
   # Conversion en années réelles (par ex. 1974 + 1:50, ou year_origin + years
   # si la série démarre plus tard que l'année 1 du modèle, ex. décalage lié à un délai bio)
   real_years <- year_origin + years
-  
+
   # Sélectionner les indices où les années sont multiples de 5, + la première et dernière année
   ticks_to_show <- which((real_years %% 5 == 0) |
                            real_years == min(real_years) |
                            real_years == max(real_years))
-  
+
   if (is.null(y_at)) {
     axis(2, las = 1, cex.axis = 1.4, col = "grey55")
   } else {
     axis(2, at = y_at, labels = y_at, las = 1, cex.axis = 1.4, col = "grey55")
   }
   axis(1, at = years[ticks_to_show], labels = real_years[ticks_to_show], las = 1, cex.axis = 1, col = "grey55")
-  
+
   text(max(years), ylim_range[2], labels = subplot_label, col = "grey55", cex = 1.5)
   yr_deb <- ifelse(is.null(yr_deb),1,yr_deb)
-  
+
   # Affichage par année
   for (i in seq_along(years)) {
     #gestion des couleurs
@@ -98,10 +98,10 @@ custom_plot <- function(data,
     } else {
       col_box
     }
-    
+
     if (i < yr_deb) next
     idx <- years[i]
-    
+
     if (!is.null(yr_point) && i %in% yr_point) {
       # Affichage point unique
       if (!is.na(data[i, 1])) {
@@ -115,12 +115,12 @@ custom_plot <- function(data,
         segments(idx, data[idx, 4], idx, data[idx, 5])
         segments(idx - 0.15, data[idx, 1], idx + 0.15, data[idx, 1])
         segments(idx, data[idx, 2], idx, data[idx, 1])
-        
+
         # Boîte
         polygon(c(idx - 0.3, idx + 0.3, idx + 0.3, idx - 0.3),
                 c(data[idx, 2], data[idx, 2], data[idx, 4], data[idx, 4]),
                 col = this_col, border = NA)
-        
+
         # Trait central : médiane par défaut (5e/25e/50e/75e/95e centiles attendus en
         # colonnes 1:5), ou moyenne arithmétique si center_line est fourni (vecteur
         # aligné sur years) - les deux usages coexistent selon les sorties du modèle
@@ -129,7 +129,7 @@ custom_plot <- function(data,
       }
     }
   }
-  
+
   # Segments supplémentaires
   if (!is.null(add_segments)) {
     for (seg in add_segments) {
@@ -139,7 +139,7 @@ custom_plot <- function(data,
                lwd = seg$lwd %||% 2)
     }
   }
-  
+
   # Texte additionnel
   if (!is.null(add_text)) {
     for (txt in add_text) {
@@ -258,7 +258,7 @@ draw_indic_tx_ren<-function(tx_renouv,pngName,Tyear=T,typ_pop="sauvage",simulati
     # rect_yEnd=c(1,5)
     # rect_col=c("red","green")
   #......................
-  if(simulation==TRUE){Tyear_def<-Tyear+20}else{Tyear_def<-Tyear}  
+  if(simulation==TRUE){Tyear_def<-Tyear+20}else{Tyear_def<-Tyear}
   data <- stack(as.data.frame(tx_renouv[,7:(Tyear_def-6)]))
   mean_data <- tapply(exp(data[,1]),data[,2],mean)
   x_tx_moyMob <- seq(1,(ncol(tx_renouv[,7:(Tyear_def-6)])-4),1)
@@ -280,34 +280,34 @@ draw_indic_tx_ren<-function(tx_renouv,pngName,Tyear=T,typ_pop="sauvage",simulati
           scale_y_continuous(trans="log10",limits=c(0.2,5)) +
           annotation_logticks(sides="l") +
           scale_x_continuous(breaks=seqx$breaks, labels=seqx$label) +
-          xlab(iconv("Année de reproduction","UTF8")) + 
+          xlab(iconv("Année de reproduction","UTF8")) +
           ylab("Tx de renouvellement") +
           ggtitle(str_c("Tx de renouvellement de la population ",tolower(typ_pop)," \n(moyenne mobile 5 ans)"),
                   subtitle = scenario) +
           labs(fill = "") +
           theme_bw() +
           theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5),legend.position="bottom",text = element_text(size = 20))
-  
+
   if(simulation==TRUE) {
     graph<-graph +
             geom_vline(aes(xintercept=xintercept), linetype="dotted",size=0.8) +
             annotate(geom="text", x=xintercept/2, y=max(4.77,max(running.mean(mean_data,5)[!is.na(running.mean(mean_data,5))])+0.5), label=iconv("Rétrospectif","UTF8"),fontface =2,size=6) +
             annotate(geom="text", x=xintercept+(seqx_fin$breaks-xintercept)/2, y=max(4.77,max(running.mean(mean_data,5)[!is.na(running.mean(mean_data,5))])+0.5), label="Simulation",fontface =2,size=6)
   } else{graph<-graph}
-  
+
   if(png==TRUE) {
     if(!exists("imgwd")) {
       print(message(iconv("Entrez dans la console R le chemin du dossier où enregistrer la figure","UTF8")))
       imgwd <- readline()
       pngFilename<-str_c(imgwd,pngName,".png")
     }else{}
-     
+
     pngFilename<-str_c(imgwd,pngName,".png")
     png(filename=pngFilename,width=pngWidth,height=pngHeight)
     print(graph)
     dev.off()
-      
-  
+
+
   } else {}
   output<-list(graph,mean_data)
   return(output)
@@ -330,64 +330,64 @@ draw_indic_tx_ren_boxplot<-function(tx_renouv,pngName,Tyear=T,typ_pop="sauvage",
   # annee_debut=1981
   # annee_fin=(1974+Tyear-6)
   #......................
-  
-  if(simulation==TRUE){Tyear_def<-Tyear+20}else{Tyear_def<-Tyear}  
+
+  if(simulation==TRUE){Tyear_def<-Tyear+20}else{Tyear_def<-Tyear}
   graph<-ggplot()+
     geom_boxplot
-    
-    
+
+
     geom_rect(data=rect_2_col, aes(xmin=1, xmax=length(x_tx_moyMob), ymin=ystart,ymax=yend), fill=rect_2_col$col, alpha =0.5) +
     geom_line(aes(x_tx_moyMob,running.mean(mean_data,5)[!is.na(running.mean(mean_data,5))]),size=1) +
     scale_y_continuous(trans="log10",limits=c(0.2,5)) +
     annotation_logticks(sides="l") +
     scale_x_continuous(breaks=seqx$breaks, labels=seqx$label) +
-    xlab(iconv("Année de reproduction","UTF8")) + 
+    xlab(iconv("Année de reproduction","UTF8")) +
     ylab("Tx de renouvellement") +
     ggtitle(str_c("Tx de renouvellement de la population ",tolower(typ_pop)," \n(moyenne mobile 5 ans)"),
             subtitle = scenario) +
     labs(fill = "") +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5),legend.position="bottom",text = element_text(size = 20))
-  
+
   if(simulation==TRUE) {
     graph<-graph +
       geom_vline(aes(xintercept=xintercept), linetype="dotted",size=0.8) +
       annotate(geom="text", x=xintercept/2, y=max(4.77,max(running.mean(mean_data,5)[!is.na(running.mean(mean_data,5))])+0.5), label=iconv("Rétrospectif","UTF8"),fontface =2,size=6) +
       annotate(geom="text", x=xintercept+(seqx_fin$breaks-xintercept)/2, y=max(4.77,max(running.mean(mean_data,5)[!is.na(running.mean(mean_data,5))])+0.5), label="Simulation",fontface =2,size=6)
   } else{graph<-graph}
-  
+
   if(png==TRUE) {
     if(!exists("imgwd")) {
       print(message(iconv("Entrez dans la console R le chemin du dossier où enregistrer la figure","UTF8")))
       imgwd <- readline()
       pngFilename<-str_c(imgwd,pngName,".png")
     }else{}
-    
+
     pngFilename<-str_c(imgwd,pngName,".png")
     png(filename=pngFilename,width=pngWidth,height=pngHeight)
     print(graph)
     dev.off()
-    
-    
+
+
   } else {}
   output<-list(graph,mean_data)
   return(output)
 }
-# 
+#
 # png(filename=here::here("img/Simulation/2021_09/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_boxplot_2022_04_05.png"),width=1000,height=800)
 # #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2019_12_IndicateursSat_model_data2016/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique_boxplot.png",width=1000,height=800)
 # #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2018_06_TxRenouv_DiagConserv_model2017_08_29/TauxRenouvellementPopSauvage_ScenarioContinuiteEcologique.png",width=1000,height=800)
 # #png(filename="C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/Simulation/2017_08_29_Interaction_ss_rho_poutes_matriceVC/TauxRenouvellementPopSauvage_coef.png",width=1000,height=800)
 # par("mar"=c(7.1, 5.1, 4.1, 2.1))
 # plot(1,1,type="n",axes=FALSE,xlim=c((T+0.5-5),(T+20.5-5)),xlab="Years",ylim=c(-2,2),ylab="Taux renouvellement",main="Taux de renouvellement de la population sauvage",cex.lab=1.5)
-# 
+#
 # # trace l'axe des ordonnées
 # axis(2,at = seq(-2,2,0.5),labels=seq(-2,2,0.5),cex.axis = 1.2,las = 1,lwd=2,col = "black")
 # # trace l'axe des abscisses
 # axis(1,at = c((T+1-5),(T+10-5),(T+20-5)),
 # 		labels=c((1975+T-5),(1975+T+9-5),(1975+T+19-5)),
 # 		cex.axis = 1.2,las = 1,lwd=2,col = "black")
-# 
+#
 # for(i in (T+1-5):(T+20-5)){
 # 	#whiskers
 # 	#95%
@@ -472,8 +472,8 @@ draw_niveau_pop <- function(mean_target, observed, T, split_at, title, ylab_txt,
 
   ggplot() +
     geom_polygon(data = datapoly, aes(x = x, y = y, group = id), fill = datapoly$values, alpha = 0.5) +
-    geom_line(aes(x_mob[1:split_at], observed_ma[1:split_at]), size = 1, linetype = "dashed") +
-    geom_line(aes(x_mob[split_at:n], observed_ma[split_at:n]), size = 1) +
+    geom_line(aes(x_mob[1:split_at], observed_ma[1:split_at]), linewidth = 1, linetype = "dashed") +
+    geom_line(aes(x_mob[split_at:n], observed_ma[split_at:n]), linewidth = 1) +
     xlab("Année") +
     ylab(ylab_txt) +
     ggtitle(title) +
