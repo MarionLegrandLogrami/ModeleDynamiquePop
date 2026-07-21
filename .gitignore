@@ -29,6 +29,14 @@ script/lateX/data_model.R
 script/lateX/data_2021_09.r
 script/lateX/data_covariable_2019_12_12.R
 
+# Doublons générés à la racine quand du code est exécuté à la console
+# (répertoire de travail = racine du .Rproj) plutôt que via Knit/Compile PDF
+/data_covariable_2019_12_12.R
+/Indicateurs-Plagepomi.html
+
+# Document de travail personnel, non destiné à être versionné
+/script/lateX/Synthese_et_analyse_modele_2026_07.md
+
 # Device R par défaut quand un plot() tourne sans device explicitement ouvert
 Rplots.pdf
 
