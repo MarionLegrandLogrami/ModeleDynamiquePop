@@ -186,8 +186,17 @@ print(graph_part_juv)
 ## Synthèse des 4 indicateurs
 
 ```{r dashboard, fig.width=13, fig.height=10}
+# Chaque graphique est mis à l'échelle pour son propre affichage en pleine
+# taille (theme_plagepomi(base_size=13)) ; réunis à 4 sur la même figure, les
+# titres (souvent sur 2 lignes) débordaient du panneau réduit. On surcharge
+# donc ici une police plus petite, seulement pour cette version combinée -
+# les graphiques individuels plus haut dans le document ne sont pas affectés.
+small_theme <- theme_plagepomi(base_size = 9)
 grid.arrange(
-  graph_niveau_pop, graph_tx_ren, graph_part_juv, graph_diagnostic,
+  graph_niveau_pop + small_theme,
+  graph_tx_ren + small_theme + theme(legend.position = "bottom"),
+  graph_part_juv + small_theme,
+  graph_diagnostic + small_theme + theme(legend.position = "bottom"),
   layout_matrix = rbind(c(1, NA, 2), c(NA, NA, NA), c(3, NA, 4)),
   widths = c(1, 0.12, 1),
   heights = c(1, 0.08, 1)

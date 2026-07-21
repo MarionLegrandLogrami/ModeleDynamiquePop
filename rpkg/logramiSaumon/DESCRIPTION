@@ -1,0 +1,19 @@
+Package: logramiSaumon
+Type: Package
+Title: Fonctions de traitement et de graphiques pour le modele de dynamique de population du saumon de l'Allier
+Version: 0.1.0
+Author: Marion Legrand [aut, cre]
+Maintainer: Marion Legrand <marion.legrand@example.org>
+Description: Regroupe, pour documentation via l'aide R (?fonction), les
+    fonctions de traitement de donnees (script/fonctions/fct_data.R) et de
+    graphiques (script/fonctions/fct_graph.R) utilisees dans les scripts
+    d'analyse retrospective, de projection et d'indicateurs PLAGEPOMI du
+    projet ModeleDynamiquePop. Ce package est un miroir documente : les
+    fichiers sources originaux dans script/fonctions/ restent la version de
+    reference utilisee par source() dans les autres scripts du projet (voir
+    rpkg/README.md pour la procedure de mise a jour de ce package apres une
+    modification de ces fichiers).
+License: Unlimited
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.3
