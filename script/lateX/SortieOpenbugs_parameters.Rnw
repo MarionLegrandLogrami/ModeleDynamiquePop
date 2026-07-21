@@ -1,12 +1,12 @@
-% 
+%
 \documentclass[a4paper]{article}
 \usepackage{Sweave}
 \usepackage[utf8]{inputenc} %encodage du fichier source
-\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf) 
+\usepackage[T1]{fontenc}  %gestion des accents (pour les pdf)
 \usepackage[french]{babel}
 \usepackage{float}
 \usepackage[document]{ragged2e} % pour que le texte soit aligné à gauche
-\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier 
+\usepackage[section]{placeins}%The placeins package provides the command \FloatBarrier
 \usepackage{amsmath} % equation numbering
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
 \usepackage{wrapfig}
@@ -17,7 +17,7 @@
 \pagestyle{empty}
 
 \title{Sortie des parametres Openbugs Modele
-2025\_07 (Mise à jour des données 2024)}
+2026\_07 (Mise à jour des données 2025)}
 \author{Marion Legrand \& Etienne Prévost}
 
 \begin{document}
@@ -98,49 +98,52 @@
 #datawd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/data/CODA/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
 #imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
 #tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_06_01/Ajout co-variableQ/sans_Q_VB_mon & level_s & corr_Langeac/"
-#datawd<-here::here("data/CODA/2021_09/")
+#datawd<-paste0(here::here("data/CODA/2021_09"), "/")
 #imgwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/img/2021_09/"
 #tabwd<-"C:/Users/utilisateur/workspace/ModeleDynamiquePop/tab/2021_09/"
-#datawd<-here::here("data/CODA/2022_11/InfluenceQ_survie_uniquement_data2020/")
-#imgwd<-here::here("img/2022_11/ModelMelange/Q_survie_uniquement/")
-#tabwd<-here::here("tab/2022_11/ModelMelange/Q_survie_uniquement/")
-# datawd<-here::here("data/CODA/2022_11/InfluenceQ_survie_repartition_data2018/")
-# imgwd<-here::here("img/2022_11/Q_influence_surv_repartition_data18/")
-# tabwd<-here::here("tab/2022_11/Q_influence_surv_repartition_data18/")
-# datawd<-here::here("data/CODA/2022_12/Model_melange_Qsurv_uniquement_data20/")
-# imgwd<-here::here("img/2022_12/Model_melange_Qsurv_uniquement_data20/")
-# tabwd<-here::here("tab/2022_12/Model_melange_Qsurv_uniquement_data20/")
-# datawd<-here::here("data/CODA/2022_12/Model_Qsurv+repartition_data20/")
-# imgwd<-here::here("img/2022_12/Model_Qsurv+repartition_data20/")
-# tabwd<-here::here("tab/2022_12/Model_Qsurv+repartition_data20/")
-#datawd<-here::here("data/CODA/2022_12/Model_Qsurv+repartition+model_melange_data20/")
-#imgwd<-here::here("img/2022_12/Model_Qsurv+repartition+model_melange_data20/")
-#tabwd<-here::here("tab/2022_12/Model_Qsurv+repartition+model_melange_data20/")
-# datawd<-here::here("data/CODA/2023_04/")
-# imgwd<-here::here("img/2023_04/Model_Qsurv+repartition+model_melange_data22/")
-# tabwd<-here::here("tab/2023_04/Model_Qsurv+repartition+model_melange_data22/")
-# datawd<-here::here("data/CODA/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/")
-# imgwd<-here::here("img/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/")
-# tabwd<-here::here("tab/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne/")
-# datawd<-here::here("data/CODA/2023_05/Model_melange_homogenisation_Q_printemps/")
-# imgwd<-here::here("img/2023_05/Model_melange_homogenisation_Q_printemps/")
-# tabwd<-here::here("tab/2023_05/Model_melange_homogenisation_Q_printemps/")
-#datawd<-here::here("data/CODA/2023_05/3_Model_sans_distribution_melange/")
-#imgwd<-here::here("img/2023_05/3_Model_sans_distribution_melange/")
-#tabwd<-here::here("tab/2023_05/3_Model_sans_distribution_melange/")
-#datawd<-here::here("data/CODA/2024_06/hierarchisation_variance/")
-#imgwd<-here::here("img/2024_06/hierarchisation_variance/")
-#tabwd<-here::here("tab/2024_06/hierarchisation_variance/")
-#datawd<-here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac/")
-#imgwd<-here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac/")
-#tabwd<-here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac/")
-# datawd<-here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
-# imgwd<-here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
-# tabwd<-here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023/")
+#datawd<-paste0(here::here("data/CODA/2022_11/InfluenceQ_survie_uniquement_data2020"), "/")
+#imgwd<-paste0(here::here("img/2022_11/ModelMelange/Q_survie_uniquement"), "/")
+#tabwd<-paste0(here::here("tab/2022_11/ModelMelange/Q_survie_uniquement"), "/")
+# datawd<-paste0(here::here("data/CODA/2022_11/InfluenceQ_survie_repartition_data2018"), "/")
+# imgwd<-paste0(here::here("img/2022_11/Q_influence_surv_repartition_data18"), "/")
+# tabwd<-paste0(here::here("tab/2022_11/Q_influence_surv_repartition_data18"), "/")
+# datawd<-paste0(here::here("data/CODA/2022_12/Model_melange_Qsurv_uniquement_data20"), "/")
+# imgwd<-paste0(here::here("img/2022_12/Model_melange_Qsurv_uniquement_data20"), "/")
+# tabwd<-paste0(here::here("tab/2022_12/Model_melange_Qsurv_uniquement_data20"), "/")
+# datawd<-paste0(here::here("data/CODA/2022_12/Model_Qsurv+repartition_data20"), "/")
+# imgwd<-paste0(here::here("img/2022_12/Model_Qsurv+repartition_data20"), "/")
+# tabwd<-paste0(here::here("tab/2022_12/Model_Qsurv+repartition_data20"), "/")
+#datawd<-paste0(here::here("data/CODA/2022_12/Model_Qsurv+repartition+model_melange_data20"), "/")
+#imgwd<-paste0(here::here("img/2022_12/Model_Qsurv+repartition+model_melange_data20"), "/")
+#tabwd<-paste0(here::here("tab/2022_12/Model_Qsurv+repartition+model_melange_data20"), "/")
+# datawd<-paste0(here::here("data/CODA/2023_04"), "/")
+# imgwd<-paste0(here::here("img/2023_04/Model_Qsurv+repartition+model_melange_data22"), "/")
+# tabwd<-paste0(here::here("tab/2023_04/Model_Qsurv+repartition+model_melange_data22"), "/")
+# datawd<-paste0(here::here("data/CODA/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne"), "/")
+# imgwd<-paste0(here::here("img/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne"), "/")
+# tabwd<-paste0(here::here("tab/2023_05/Q_surv_repartition_model_melange_ajout_Q_automne"), "/")
+# datawd<-paste0(here::here("data/CODA/2023_05/Model_melange_homogenisation_Q_printemps"), "/")
+# imgwd<-paste0(here::here("img/2023_05/Model_melange_homogenisation_Q_printemps"), "/")
+# tabwd<-paste0(here::here("tab/2023_05/Model_melange_homogenisation_Q_printemps"), "/")
+#datawd<-paste0(here::here("data/CODA/2023_05/3_Model_sans_distribution_melange"), "/")
+#imgwd<-paste0(here::here("img/2023_05/3_Model_sans_distribution_melange"), "/")
+#tabwd<-paste0(here::here("tab/2023_05/3_Model_sans_distribution_melange"), "/")
+#datawd<-paste0(here::here("data/CODA/2024_06/hierarchisation_variance"), "/")
+#imgwd<-paste0(here::here("img/2024_06/hierarchisation_variance"), "/")
+#tabwd<-paste0(here::here("tab/2024_06/hierarchisation_variance"), "/")
+#datawd<-paste0(here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac"), "/")
+#imgwd<-paste0(here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac"), "/")
+#tabwd<-paste0(here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac"), "/")
+# datawd<-paste0(here::here("data/CODA/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
+# imgwd<-paste0(here::here("img/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
+# tabwd<-paste0(here::here("tab/2024_06/Hierarchisation_variance + comptage_Langeac + MAJ data 2023"), "/")
+# datawd<-paste0(here::here("data/CODA/2025_07"), "/")
+# imgwd<-paste0(here::here("img/2025_07"), "/")
+# tabwd<-paste0(here::here("tab/2025_07"), "/")
 
-datawd<-here::here("data/CODA/2025_07/")
-imgwd<-here::here("img/2025_07/")
-tabwd<-here::here("tab/2025_07/")
+datawd<-paste0(here::here("data/CODA/2026_07/Model_influence_Q"), "/")
+imgwd<-paste0(here::here("img/2026_07/Model_influence_Q"), "/")
+tabwd<-paste0(here::here("tab/2026_07/Model_influence_Q"), "/")
 
 	library(coda)
 	library(lattice)
@@ -151,13 +154,14 @@ tabwd<-here::here("tab/2025_07/")
   library(tidyverse)
   library(corrplot)
   library(corrgram)
+
  # library(bayesplot) test pour les plots
-	T=50
+	T=51
 
 source("../fonctions/fct_graph.R")
 source("../fonctions/fct_data.R")
 
-bugs2jags(str_c(datawd,"data.txt"),"data_model.R")
+bugs2jags(str_c(datawd,"/data.txt"),"data_model.R")
 source("data_model.R")
 
 @
@@ -187,7 +191,7 @@ boxplot_years_png(imgwd, "s_juv2ad",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}s_juv2ad.png}%{a_juv.png}
      \caption{s\_juv2ad : la mediane est representée}
-     \label{s_juv2ad} 
+     \label{s_juv2ad}
 \end{figure}
 
 s\_juv2ad représente le taux de transition entre le juvénile 0+ et l'adulte.
@@ -208,11 +212,11 @@ report_param(m_surv, imgwd, tabwd, "m_surv")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}m_surv.png}%{a_juv.png}
      \caption{m\_surv}
-     \label{m_surv} 
+     \label{m_surv}
 \end{figure}
 
 \input{\Sexpr{tabwd}m_surv.tex}
-m\_surv représente la survie moyenne. Il est utiliser dans la relation qui lie la survie du juvénile à l'adulte aux débits.
+m\_surv représente la survie moyenne. Il est utilisé dans la relation qui lie la survie du juvénile à l'adulte aux débits.
 
 \clearpage
 
@@ -227,7 +231,7 @@ report_param(beta_Q_VB_deval, imgwd, tabwd, "beta_Q_VB_deval", digits = c(0,4,4,
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}beta_Q_VB_deval.png}
      \caption{beta\_Q\_VB\_deval}
-     \label{beta_Q_VB_deval} 
+     \label{beta_Q_VB_deval}
 \end{figure}
 
 \input{\Sexpr{tabwd}beta_Q_VB_deval.tex}
@@ -247,7 +251,7 @@ report_param(beta_Q_MSL_mont, imgwd, tabwd, "beta_Q_MSL_mont", digits = c(0,4,4,
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}beta_Q_MSL_mont.png}
      \caption{beta\_Q\_MSL\_mont}
-     \label{beta_Q_MSL_mont} 
+     \label{beta_Q_MSL_mont}
 \end{figure}
 
 \input{\Sexpr{tabwd}beta_Q_MSL_mont.tex}
@@ -267,7 +271,7 @@ report_param(beta_Q_MSL_deval, imgwd, tabwd, "beta_Q_MSL_deval", digits = c(0,4,
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}beta_Q_MSL_deval.png}
      \caption{beta\_Q\_MSL\_deval}
-     \label{beta_Q_MSL_deval} 
+     \label{beta_Q_MSL_deval}
 \end{figure}
 
 \input{\Sexpr{tabwd}beta_Q_MSL_deval.tex}
@@ -295,7 +299,7 @@ corrplot_png(Q_surv, imgwd, "corr_Q_surv")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}corr_Q_surv.png}%{a_juv.png}
     % \caption{corr\_Q\_survie : débits utilisés dans le modèle linéaire expliquant le taux de transition 0\ensuremath{+}/adulte par les débits (Montjean-sur Loire à la dévalaison, Montjean-sur Loire à la montaison et Vieille-Brioude à la dévalaison)}
-     \label{corr_Q_surv} 
+     \label{corr_Q_surv}
 \end{figure}
 
 
@@ -320,7 +324,7 @@ plot_Q_surv <- ggplot(data=Q_surv_serie_bugs,aes(x=year,y=Q))+
 		geom_line()+
 		facet_wrap(~ sta, scales="free_y",ncol=1)+
 		theme(strip.text = element_text(face = "bold"))
-ggsave(str_c(imgwd,"plot_Q_surv.png"), plot_Q_surv, dpi = 300, width = 3, height = 5)	
+ggsave(str_c(imgwd,"plot_Q_surv.png"), plot_Q_surv, dpi = 300, width = 3, height = 5)
 @
 
 
@@ -346,9 +350,9 @@ corrplot_png(Q_repartition_surv, imgwd, "corr_Q_surv_data")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}corr_Q_surv_data.png}%{a_juv.png}
      %\caption{Débits utilisés dans le modèle linéaire expliquant le taux de
-     %transition 0\ensuremath{+}/adulte par les débits                                                                                     
+     %transition 0\ensuremath{+}/adulte par les débits
      %(Montjean-sur-Loire montaison et dévalaison et Vieille-Brioude dévalaison)}
-     \label{corr_Q_rep_surv} 
+     \label{corr_Q_rep_surv}
 \end{figure}
 
 
@@ -366,7 +370,7 @@ I_mm <- read_param_coda("I_mm", datawd)
 I_mm_mean=colMeans(I_mm)
 
 png(filename=str_c(imgwd,"I_mm.png"),width=800,height=800)
-plot(x=seq(7,T,by=1),y=I_mm_mean, type = "b",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="I_mm")   
+plot(x=seq(7,T,by=1),y=I_mm_mean, type = "b",axes=FALSE,xlim=c(0,T),xlab="Years",ylim=c(0,1),ylab="I_mm")
 
 axis(2,at = seq(0,1,by=0.1),labels=seq(0,1,by=0.1),cex.axis = 0.9,las = 1,col = "grey55")
 # trace l'axe des abscisses
@@ -384,9 +388,9 @@ dev.off()
 %      \caption{I\_mm : représentation des moyennes}
 %      \label{I_mm}
 % \end{figure}
-% 
+%
 % I\_mm représente l'indicatrice des bonnes et des mauvaises années (1=mauvaise année / 0= bonne année) pour les retours d'adultes à Vichy.
-% 
+%
 % \clearpage
 %=================================================================================
 %\subsubsection{ratio\_surv}
@@ -401,7 +405,7 @@ report_param(ratio_surv, imgwd, tabwd, "ratio_surv")
 %      \caption{ratio\_surv}
 %      \label{ratio_surv}
 % \end{figure}
-% 
+%
 % \input{\Sexpr{tabwd}ratio_surv.tex}
 % \clearpage
 
@@ -413,17 +417,17 @@ report_param(ratio_surv, imgwd, tabwd, "ratio_surv")
 p_surv <- read_param_coda("p_surv", datawd)
 report_param(p_surv, imgwd, tabwd, "p_surv")
 @
-% 
+%
 % \begin{figure}[ht]
 %      \includegraphics{\Sexpr{imgwd}p_surv.png}
 %      \caption{p\_surv}
 %      \label{p_surv}
 % \end{figure}
-% 
+%
 % \input{\Sexpr{tabwd}p_surv.tex}
-% 
+%
 % p\_surv représente le paramètre de surmortalité lorsque l'on se trouve dans une mauvaise année.
-% 
+%
 % \clearpage
 
 %=================================================================================
@@ -437,7 +441,7 @@ report_param(sigma_vichy, imgwd, tabwd, "sigma_vichy")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_vichy.png}%{a_juv.png}
      \caption{sigma\_vichy}
-     \label{sigma_vichy} 
+     \label{sigma_vichy}
 \end{figure}
 
 \input{\Sexpr{tabwd}sigma_vichy.tex}
@@ -475,7 +479,7 @@ boxplot_years_png(imgwd, "N_vichy",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}N_vichy.png}%{a_juv.png}
      \caption{N\_vichy}
-     \label{N_vichy} 
+     \label{N_vichy}
 \end{figure}
 
 N\_Vichy représente les adultes de retour à Vichy. Lorsque la station de comptage est en fonctionnement, la donnée observée est représentée sous forme de point. Sinon, les estimations des effectifs sont représentées sous forme de boxplot.
@@ -505,7 +509,7 @@ boxplot_years_png(imgwd, "res_vichy_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_vichy_std.png}%{a_juv.png}
      \caption{res\_vichy\_std}
-     \label{res_vichy_std} 
+     \label{res_vichy_std}
 \end{figure}
 
 res\_vichy\_std représente les résidus standardisés des retours d'adultes à Vichy.
@@ -539,7 +543,7 @@ boxplot_years_png(imgwd, "N_alagnon",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}N_alagnon.png}%{a_juv.png}
      \caption{N\_alagnon}
-     \label{N_alagnon} 
+     \label{N_alagnon}
 \end{figure}
 
 N\_Alagnon représente les adultes migrant sur le cours d'eau Alagnon.
@@ -564,7 +568,7 @@ boxplot_years_png(imgwd, "N_langeac",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}N_langeac.png}%{a_juv.png}
      \caption{N\_langeac}
-     \label{N_langeac} 
+     \label{N_langeac}
 \end{figure}
 
 N\_Langeac représente les effectifs d'adultes ayant franchi Langeac. Ils sont calculés en tirant dans une binomiale avec probabilité de franchir Langeac et effectif égal à ce qui est passé à Vichy moins les captures pour la pisciculture moins les poissons qui ont migré sur l'Alagnon. La station de Langeac est considérée comme partielle dans le modèle. Ainsi, même lorsque la station de comptage est en fonctionnement, les effectifs sont estimés. A titre d'indication, les données observées à Langeac sont représentées sous forme de point.
@@ -608,7 +612,7 @@ N\_Poutès représente les effectifs de saumon ayant franchi Poutès. Durant la 
 %=================================================================================
 \subsection{Adultes restant sur les différents secteurs de l'Allier}
 %=================================================================================
-Les adultes restant sur l'Alagnon correspondent au paramètre N\_alagnon (voir plus haut), et ceux restant en amont de Poutès correspondent au paramètre N\_poutes (voir plus haut). En revenche, pour le secteur Vichy-Langeac et Langeac-Poutès, les effectifs restant sur ces secteurs peuvent être estimés.
+Les adultes restant sur l'Alagnon correspondent au paramètre N\_alagnon (voir plus haut), et ceux restant en amont de Poutès correspondent au paramètre N\_poutes (voir plus haut). En revanche, pour le secteur Vichy-Langeac et Langeac-Poutès, les effectifs restant sur ces secteurs peuvent être estimés.
 
 %=================================================================================
 \subsubsection{Adultes restant sur Vichy-Langeac}
@@ -678,7 +682,7 @@ boxplot_years_png(imgwd, "adultes_langeac",
      \label{adultes_langeac_poutes}
 \end{figure}
 
-Le nombre d'adultes restant sur le secteur Langeac-Poutès est estimé à partir des effectifs qui sont passés à Vichy mais ne sont pas allés sur l'Alagnon et n'ont pas été capturé par la pisciculture et qui n'ont pas non plus franchi Poutès (on soustrait les effectifs comptés ou estimés à Poutès). Lorsque les stations de Langeac et Poutès ont fonctionné sur la même période on soustrait les effectifs comptés à Poutès à ceux de Langeac (pour rappel, la station de Langeac est considérée comme une station non-exhaustive dans le modèle).
+Le nombre d'adultes restant sur le secteur Langeac-Poutès est estimé à partir des effectifs qui sont passés à Vichy mais ne sont pas allés sur l'Alagnon et n'ont pas été capturés par la pisciculture et qui n'ont pas non plus franchi Poutès (on soustrait les effectifs comptés ou estimés à Poutès). Lorsque les stations de Langeac et Poutès ont fonctionné sur la même période on soustrait les effectifs comptés à Poutès à ceux de Langeac (pour rappel, la station de Langeac est considérée comme une station non-exhaustive dans le modèle).
 
 \clearpage
 
@@ -764,7 +768,7 @@ dev.off()
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}proportion_adultes.png}%{a_juv.png}
      \caption{proportion des adultes dans les différents secteurs}
-     \label{proportion_adultes} 
+     \label{proportion_adultes}
 \end{figure}
 
 
@@ -795,7 +799,7 @@ boxplot_years_png(imgwd, "p_comptage_L",
      \caption{p\_comptage\_L : les boxplots verts représentent les probabilités
      d'être comptés pour les années où la station de Langeac est en
      fonctionnement. En dehors de ces années, les boxplots sont gris}
-     \label{p_comptage_L} 
+     \label{p_comptage_L}
 \end{figure}
 
 
@@ -834,7 +838,7 @@ boxplot_years_png(imgwd, "N_langeac_obs",
      Langeac (station de comptage en service). Les boxplots sont les
      estimations des effectifs comptés à Langeac lorsque la station n'est pas
      en service}
-     \label{N_langeac_obs} 
+     \label{N_langeac_obs}
 \end{figure}
 
 
@@ -853,7 +857,7 @@ report_param(rho_station, imgwd, tabwd, "rho_station")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}rho_station.png}%{a_juv.png}
      \caption{rho\_station}
-     \label{rho_station} 
+     \label{rho_station}
 \end{figure}
 
 \input{\Sexpr{tabwd}rho_station.tex}
@@ -873,7 +877,7 @@ report_param(adjust_p_A, imgwd, tabwd, "adjust_p_A")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}adjust_p_A.png}%{a_juv.png}
      \caption{adjust\_p\_A}
-     \label{adjust_p_A} 
+     \label{adjust_p_A}
 \end{figure}
 
 \input{\Sexpr{tabwd}adjust_p_A.tex}
@@ -893,7 +897,7 @@ report_param(adjust_p_L, imgwd, tabwd, "adjust_p_L")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}adjust_p_L.png}%{a_juv.png}
      \caption{adjust\_p\_L}
-     \label{adjust_p_L} 
+     \label{adjust_p_L}
 \end{figure}
 
 \input{\Sexpr{tabwd}adjust_p_L.tex}
@@ -913,7 +917,7 @@ report_param(adjust_p_P, imgwd, tabwd, "adjust_p_P")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}adjust_p_P.png}%{a_juv.png}
      \caption{adjust\_p\_P}
-     \label{adjust_p_P} 
+     \label{adjust_p_P}
 \end{figure}
 
 \input{\Sexpr{tabwd}adjust_p_P.tex}
@@ -942,7 +946,7 @@ boxplot_years_png(imgwd, "res_p_alagnon_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_p_alagnon_std.png}%{a_juv.png}
      \caption{res\_p\_alagnon\_std}
-     \label{res_p_alagnon_std} 
+     \label{res_p_alagnon_std}
 \end{figure}
 
 res\_p\_alagnon\_standardisé représente les résidus standardisés du paramètre de blocage de la migration pour le secteur Alagnon.
@@ -971,7 +975,7 @@ boxplot_years_png(imgwd, "res_p_langeac_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_p_langeac_std.png}%{a_juv.png}
      \caption{res\_p\_langeac\_std}
-     \label{res_p_langeac_std} 
+     \label{res_p_langeac_std}
 \end{figure}
 
 res\_p\_langeac\_standardisé représente les résidus standardisés du paramètre de blocage de la migration pour le secteur Langeac-Poutès.
@@ -999,7 +1003,7 @@ boxplot_years_png(imgwd, "res_p_poutes_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_p_poutes_std.png}%{a_juv.png}
      \caption{res\_p\_poutes\_std}
-     \label{res_p_poutes_std} 
+     \label{res_p_poutes_std}
 \end{figure}
 
 res\_p\_poutes\_standardisé représente les résidus standardisés du paramètre de blocage de la migration pour le secteur amont de Poutès.
@@ -1018,7 +1022,7 @@ report_param(sigma_p_alagnon, imgwd, tabwd, "sigma_p_alagnon")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_p_alagnon.png}%{a_juv.png}
      \caption{sigma\_p\_alagnon}
-     \label{sigma_p_alagnon} 
+     \label{sigma_p_alagnon}
 \end{figure}
 
 \input{\Sexpr{tabwd}sigma_p_alagnon.tex}
@@ -1038,7 +1042,7 @@ report_param(sigma_p_langeac, imgwd, tabwd, "sigma_p_langeac")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_p_langeac.png}%{a_juv.png}
      \caption{sigma\_p\_langeac}
-     \label{sigma_p_langeac} 
+     \label{sigma_p_langeac}
 \end{figure}
 
 \input{\Sexpr{tabwd}sigma_p_langeac.tex}
@@ -1058,7 +1062,7 @@ report_param(sigma_p_poutes, imgwd, tabwd, "sigma_p_poutes")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_p_poutes.png}%{a_juv.png}
      \caption{sigma\_p\_poutes}
-     \label{sigma_p_poutes} 
+     \label{sigma_p_poutes}
 \end{figure}
 
 \input{\Sexpr{tabwd}sigma_p_poutes.tex}
@@ -1081,7 +1085,7 @@ report_param(hel_effect, imgwd, tabwd, "hel_effect")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}hel_effect.png}%{a_juv.png}
      \caption{hel\_effect}
-     \label{hel_effect} 
+     \label{hel_effect}
 \end{figure}
 
 \input{\Sexpr{tabwd}hel_effect.tex}
@@ -1115,7 +1119,7 @@ boxplot_years_png(imgwd, "zone_effect_V",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}zone_effect_V.png}%{a_juv.png}
      \caption{zone\_effect\_V}
-     \label{zone_effect_V} 
+     \label{zone_effect_V}
 \end{figure}
 \clearpage
 
@@ -1133,7 +1137,7 @@ boxplot_years_png(imgwd, "zone_effect_A",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}zone_effect_A.png}%{a_juv.png}
      \caption{zone\_effect\_A}
-     \label{zone_effect_A} 
+     \label{zone_effect_A}
 \end{figure}
 \clearpage
 
@@ -1155,7 +1159,7 @@ boxplot_years_png(imgwd, "zone_effect_L",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}zone_effect_L.png}%{a_juv.png}
      \caption{zone\_effect\_L}
-     \label{zone_effect_L} 
+     \label{zone_effect_L}
 \end{figure}
 \clearpage
 %-------------------------------------------
@@ -1175,7 +1179,7 @@ boxplot_years_png(imgwd, "zone_effect_P",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}zone_effect_P.png}%{a_juv.png}
      \caption{zone\_effect\_P}
-     \label{zone_effect_P} 
+     \label{zone_effect_P}
 \end{figure}
 
 \clearpage
@@ -1199,9 +1203,9 @@ boxplot_years_png(imgwd, "p_comptage",
 % \begin{figure}[ht]
 %      \includegraphics{\Sexpr{imgwd}p_comptage.png}%{a_juv.png}
 %      \caption{p\_comptage}
-%      \label{p_comptage} 
+%      \label{p_comptage}
 % \end{figure}
-% 
+%
 % \clearpage
 
 %====================================
@@ -1219,9 +1223,9 @@ report_param(sigma_p_comptage, imgwd, tabwd, "sigma_p_comptage",
 % \begin{figure}[ht]
 %      \includegraphics{\Sexpr{imgwd}sigma_p_comptage.png}%{a_juv.png}
 %      \caption{sigma\_p\_comptage}
-%      \label{sigma_p_comptage} 
+%      \label{sigma_p_comptage}
 % \end{figure}
-% 
+%
 % \input{\Sexpr{tabwd}sigma_p_comptage.tex}
 % \clearpage
 
@@ -1252,9 +1256,9 @@ boxplot_years_png(imgwd, "N_langeac_count",
 % \begin{figure}[ht]
 %      \includegraphics{\Sexpr{imgwd}N_langeac_count.png}%{a_juv.png}
 %      \caption{N\_Langeac\_count : estimation de ce qu'on aurait compté si la station de Langeac avait été en service.}
-%      \label{N_Langeac_count} 
+%      \label{N_Langeac_count}
 % \end{figure}
-% 
+%
 % \clearpage
 
 %=================================================================
@@ -1328,7 +1332,7 @@ beta\_Q\_VB\_mont\_P représente le coefficient modélisant l'influence des déb
 
 %=================================================================================
 \subsubsection{beta\_Q\_VB\_mont\_A}
-%=================================================================================			
+%=================================================================================
 
 << beta_Q_VB_mont_A, echo=FALSE, eval=TRUE,results=hide >>=
 beta_Q_VB_mont_A <- read_param_coda("beta_Q_VB_mont_A", datawd)
@@ -1366,7 +1370,7 @@ report_param(beta_Q_P_mont_P, imgwd, tabwd, "beta_Q_P_mont_P", digits = c(0,4,4,
 
 \input{\Sexpr{tabwd}beta_Q_P_mont_P.tex}
 
-beta\_Q\_P\_mont\_P représente le coefficient modélisant l'influence des débits à Prades au printemps sur la répartition des adultes en amont Poutès 
+beta\_Q\_P\_mont\_P représente le coefficient modélisant l'influence des débits à Prades au printemps sur la répartition des adultes en amont Poutès
 
 \clearpage
 
@@ -1388,7 +1392,7 @@ report_param(beta_Q_P_mont_A, imgwd, tabwd, "beta_Q_P_mont_A", digits = c(0,4,4,
 
 \input{\Sexpr{tabwd}beta_Q_P_mont_A.tex}
 
-beta\_Q\_P\_mont\_A représente le coefficient modélisant l'influence des débits à Prades à l'automne sur la répartition des adultes en amont Poutès 
+beta\_Q\_P\_mont\_A représente le coefficient modélisant l'influence des débits à Prades à l'automne sur la répartition des adultes en amont Poutès
 
 \clearpage
 
@@ -1415,7 +1419,7 @@ plot_Q <- ggplot(data=Q_serie_bugs,aes(x=year,y=Q))+
 		geom_line()+
 		facet_grid(sta ~ saison, switch = "y",scales="free_y")+
 		theme(strip.text = element_text(face = "bold"))
-ggsave(str_c(imgwd,"plot_Q.png"), plot_Q, dpi = 300, width = 4, height = 6)	
+ggsave(str_c(imgwd,"plot_Q.png"), plot_Q, dpi = 300, width = 4, height = 6)
 @
 
 
@@ -1444,7 +1448,7 @@ corrplot_png(Q_repartition, imgwd, "corr_Q_rep")
      adultes migrant dans l'Alagnon, Vieille-Brioude pour les adultes migrant
      entre Langeac et Poutès et Prades pour les adultes migrant en amont de
      Poutès)}
-     \label{corr_Q_rep} 
+     \label{corr_Q_rep}
 \end{figure}
 
 
@@ -1463,7 +1467,7 @@ report_param(a, imgwd, tabwd, "a")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}a.png}%{a_juv.png}
      \caption{a}
-     \label{a} 
+     \label{a}
 \end{figure}
 
 \input{\Sexpr{tabwd}a.tex}
@@ -1481,7 +1485,7 @@ report_param(a_juv, imgwd, tabwd, "a_juv", caption = c("Statistiques de a\\_juv"
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}a_juv.png}%{a_juv.png}
      \caption{a\_juv}
-     \label{a_juv} 
+     \label{a_juv}
 \end{figure}
 
 \input{\Sexpr{tabwd}a_juv.tex}
@@ -1500,7 +1504,7 @@ report_param(Rmax, imgwd, tabwd, "Rmax")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}Rmax.png}%{a_juv.png}
      \caption{Rmax}
-     \label{Rmax} 
+     \label{Rmax}
 \end{figure}
 
 \input{\Sexpr{tabwd}Rmax.tex}
@@ -1534,7 +1538,7 @@ boxplot_years_png(imgwd, "p_Rmax_V",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}p_Rmax_V.png}
      \caption{p\_Rmax\_V}
-     \label{p_Rmax_V} 
+     \label{p_Rmax_V}
 \end{figure}
 
 \clearpage
@@ -1561,7 +1565,7 @@ boxplot_years_png(imgwd, "p_Rmax_A",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}p_Rmax_A.png}
      \caption{p\_Rmax\_A}
-     \label{p_Rmax_A} 
+     \label{p_Rmax_A}
 \end{figure}
 \clearpage
 
@@ -1587,7 +1591,7 @@ boxplot_years_png(imgwd, "p_Rmax_L",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}p_Rmax_L.png}
      \caption{p\_Rmax\_L}
-     \label{p_Rmax_L} 
+     \label{p_Rmax_L}
 \end{figure}
 \clearpage
 
@@ -1613,7 +1617,7 @@ boxplot_years_png(imgwd, "p_Rmax_P",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}p_Rmax_P.png}
      \caption{p\_Rmax\_P}
-     \label{p_Rmax_P} 
+     \label{p_Rmax_P}
 \end{figure}
 \clearpage
 
@@ -1628,7 +1632,7 @@ report_param(mu_tau, imgwd, tabwd, "mu_tau", digits = c(0,6,6,6,6,6,6,6))
 %\begin{figure}[ht]
 %     \includegraphics{\Sexpr{imgwd}mu_tau.png}%{a_juv.png}
 %     \caption{mu\_tau}
-%     \label{mu_tau} 
+%     \label{mu_tau}
 %\end{figure}
 
 %\input{\Sexpr{tabwd}mu_tau.tex}
@@ -1649,7 +1653,7 @@ report_param(alpha_sigma, imgwd, tabwd, "alpha_sigma", digits = c(0,6,6,6,6,6,6,
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}alpha_sigma.png}%{a_juv.png}
      \caption{alpha\_sigma}
-     \label{alpha_sigma} 
+     \label{alpha_sigma}
 \end{figure}
 
 \input{\Sexpr{tabwd}alpha_sigma.tex}
@@ -1671,7 +1675,7 @@ report_param(mu_sigma, imgwd, tabwd, "mu_sigma")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}mu_sigma.png}%{a_juv.png}
      \caption{mu\_sigma}
-     \label{mu_sigma} 
+     \label{mu_sigma}
 \end{figure}
 
 \input{\Sexpr{tabwd}mu_sigma.tex}
@@ -1692,7 +1696,7 @@ report_param(beta_tau, imgwd, tabwd, "beta_tau")
 %\begin{figure}[ht]
 %     \includegraphics{\Sexpr{imgwd}beta_tau.png}%{a_juv.png}
 %     \caption{beta\_tau}
-%     \label{beta_tau} 
+%     \label{beta_tau}
 %\end{figure}
 %
 %\input{\Sexpr{tabwd}beta_tau.tex}
@@ -1713,7 +1717,7 @@ report_param(rho_D, imgwd, tabwd, "rho_D")
 %\begin{figure}[ht]
 %\includegraphics{\Sexpr{imgwd}rho_D.png}%{a_juv.png}
 %		\caption{rho\_D}
-%\label{rho_D} 
+%\label{rho_D}
 %\end{figure}
 %
 %
@@ -1738,7 +1742,7 @@ write_multiparam_table(nu_wild, tabwd, "nu_wild", row_labels = c("nu_wild_V","nu
 %\begin{figure}[ht]
 %     \includegraphics{\Sexpr{imgwd}nu_wild.png}
 %     \caption{nu\_wild}
-%     \label{nu_wild} 
+%     \label{nu_wild}
 %\end{figure}
 %
 %\input{\Sexpr{tabwd}nu_wild.tex}
@@ -1761,7 +1765,7 @@ write_multiparam_table(nu_d, tabwd, "nu_d", row_labels = c("nu_d_V","nu_d_A","nu
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}nu_d.png}
      \caption{nu\_d}
-     \label{nu_d} 
+     \label{nu_d}
 \end{figure}
 
 \input{\Sexpr{tabwd}nu_d.tex}
@@ -1780,7 +1784,7 @@ report_param(sigma_wild_m, imgwd, tabwd, "sigma_wild_moy")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_wild_moy.png}%{a_juv.png}
      \caption{sigma\_wild\_moy}
-     \label{sigma_wild_moy} 
+     \label{sigma_wild_moy}
 \end{figure}
 
 
@@ -1800,7 +1804,7 @@ report_param(sigma_juv_m, imgwd, tabwd, "sigma_juv_moy")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_juv_moy.png}%{a_juv.png}
      \caption{sigma\_juv\_moy}
-     \label{sigma_juv_moy} 
+     \label{sigma_juv_moy}
 \end{figure}
 
 
@@ -1821,7 +1825,7 @@ report_param(sigma_egg_m, imgwd, tabwd, "sigma_egg_moy")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_egg_moy.png}%{a_juv.png}
      \caption{sigma\_egg\_moy}
-     \label{sigma_egg_moy} 
+     \label{sigma_egg_moy}
 \end{figure}
 
 \input{\Sexpr{tabwd}sigma_egg_moy.tex}
@@ -1841,7 +1845,7 @@ report_param(sigma_wild_s, imgwd, tabwd, "sigma_wild_site")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_wild_site.png}%{a_juv.png}
      \caption{sigma\_wild\_site}
-     \label{sigma_wild_site} 
+     \label{sigma_wild_site}
 \end{figure}
 
 \input{\Sexpr{tabwd}sigma_wild_site.tex}
@@ -1863,7 +1867,7 @@ report_param(sigma_juv_s, imgwd, tabwd, "sigma_juv_site")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_juv_site.png}%{a_juv.png}
      \caption{sigma\_juv\_site}
-     \label{sigma_juv_site} 
+     \label{sigma_juv_site}
 \end{figure}
 
 \input{\Sexpr{tabwd}sigma_juv_site.tex}
@@ -1883,7 +1887,7 @@ report_param(sigma_egg_s, imgwd, tabwd, "sigma_egg_site")
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}sigma_egg_site.png}%{a_juv.png}
      \caption{sigma\_egg\_site}
-     \label{sigma_egg_site} 
+     \label{sigma_egg_site}
 \end{figure}
 
 \input{\Sexpr{tabwd}sigma_egg_site.tex}
@@ -1916,7 +1920,7 @@ boxplot_years_png(imgwd, "d_wild_moy_V",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_wild_moy_V.png}%{a_juv.png}
      \caption{d\_wild\_moy\_V}
-     \label{d_wild_moy_V} 
+     \label{d_wild_moy_V}
 \end{figure}
 
 \clearpage
@@ -1939,7 +1943,7 @@ boxplot_years_png(imgwd, "d_wild_moy_A",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_wild_moy_A.png}%{a_juv.png}
      \caption{d\_wild\_moy\_A}
-     \label{d_wild_moy_A} 
+     \label{d_wild_moy_A}
 \end{figure}
 
 \clearpage
@@ -1961,7 +1965,7 @@ boxplot_years_png(imgwd, "d_wild_moy_L",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_wild_moy_L.png}%{a_juv.png}
      \caption{d\_wild\_moy\_L}
-     \label{d_wild_moy_L} 
+     \label{d_wild_moy_L}
 \end{figure}
 
 \clearpage
@@ -1983,7 +1987,7 @@ boxplot_years_png(imgwd, "d_wild_moy_P",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_wild_moy_P.png}%{a_juv.png}
      \caption{d\_wild\_moy\_P}
-     \label{d_wild_moy_P} 
+     \label{d_wild_moy_P}
 \end{figure}
 
 \clearpage
@@ -2019,7 +2023,7 @@ boxplot_years_png(imgwd, "d_juv_moy_V",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_juv_moy_V.png}%{a_juv.png}
      \caption{d\_juv\_moy\_V}
-     \label{d_juv_moy_V} 
+     \label{d_juv_moy_V}
 \end{figure}
 
 \clearpage
@@ -2048,7 +2052,7 @@ boxplot_years_png(imgwd, "d_juv_moy_A",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_juv_moy_A.png}%{a_juv.png}
      \caption{d\_juv\_moy\_A}
-     \label{d_juv_moy_A} 
+     \label{d_juv_moy_A}
 \end{figure}
 
 \clearpage
@@ -2077,7 +2081,7 @@ boxplot_years_png(imgwd, "d_juv_moy_L",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_juv_moy_L.png}%{a_juv.png}
      \caption{d\_juv\_moy\_L}
-     \label{d_juv_moy_L} 
+     \label{d_juv_moy_L}
 \end{figure}
 
 \clearpage
@@ -2106,7 +2110,7 @@ boxplot_years_png(imgwd, "d_juv_moy_P",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_juv_moy_P.png}%{a_juv.png}
      \caption{d\_juv\_moy\_P}
-     \label{d_juv_moy_P} 
+     \label{d_juv_moy_P}
 \end{figure}
 
 \clearpage
@@ -2137,7 +2141,7 @@ boxplot_years_png(imgwd, "d_egg_moy_V",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_egg_moy_V.png}%{a_juv.png}
      \caption{d\_egg\_moy\_V}
-     \label{d_egg_moy_V} 
+     \label{d_egg_moy_V}
 \end{figure}
 
 \clearpage
@@ -2159,7 +2163,7 @@ boxplot_years_png(imgwd, "d_egg_moy_L",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}d_egg_moy_L.png}%{a_juv.png}
      \caption{d\_egg\_moy\_L}
-     \label{d_egg_moy_L} 
+     \label{d_egg_moy_L}
 \end{figure}
 
 \clearpage
@@ -2190,7 +2194,7 @@ boxplot_years_png(imgwd, "res_wild_moy_V_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_wild_moy_V_std.png}
      \caption{res\_wild\_moy\_V\_std}
-     \label{res_wild_moy_V_std} 
+     \label{res_wild_moy_V_std}
 \end{figure}
 
 \clearpage
@@ -2216,7 +2220,7 @@ boxplot_years_png(imgwd, "res_wild_moy_A_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_wild_moy_A_std.png}%{a_juv.png}
      \caption{res\_wild\_moy\_A\_std}
-     \label{res_wild_moy_A_std} 
+     \label{res_wild_moy_A_std}
 \end{figure}
 
 \clearpage
@@ -2242,7 +2246,7 @@ boxplot_years_png(imgwd, "res_wild_moy_L_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_wild_moy_L_std.png}%{a_juv.png}
      \caption{res\_wild\_moy\_L\_std}
-     \label{res_wild_moy_L_std} 
+     \label{res_wild_moy_L_std}
 \end{figure}
 
 \clearpage
@@ -2268,7 +2272,7 @@ boxplot_years_png(imgwd, "res_wild_moy_P_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_wild_moy_P_std.png}%{a_juv.png}
      \caption{res\_wild\_moy\_P\_std}
-     \label{res_wild_moy_P_std} 
+     \label{res_wild_moy_P_std}
 \end{figure}
 
 \clearpage
@@ -2307,7 +2311,7 @@ boxplot_years_png(imgwd, "res_juv_moy_V_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_juv_moy_V_std.png}%{a_juv.png}
      \caption{res\_juv\_moy\_V\_std}
-     \label{res_juv_moy_V_std} 
+     \label{res_juv_moy_V_std}
 \end{figure}
 
 \clearpage
@@ -2340,7 +2344,7 @@ boxplot_years_png(imgwd, "res_juv_moy_A_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_juv_moy_A_std.png}%{a_juv.png}
      \caption{res\_juv\_moy\_A\_std}
-     \label{res_juv_moy_A_std} 
+     \label{res_juv_moy_A_std}
 \end{figure}
 
 \clearpage
@@ -2374,7 +2378,7 @@ boxplot_years_png(imgwd, "res_juv_moy_L_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_juv_moy_L_std.png}%{a_juv.png}
      \caption{res\_juv\_moy\_L\_std}
-     \label{res_juv_moy_L_std} 
+     \label{res_juv_moy_L_std}
 \end{figure}
 
 \clearpage
@@ -2406,7 +2410,7 @@ boxplot_years_png(imgwd, "res_juv_moy_P_std",
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}res_juv_moy_P_std.png}%{a_juv.png}
      \caption{res\_juv\_moy\_P\_std}
-     \label{res_juv_moy_P_std} 
+     \label{res_juv_moy_P_std}
 \end{figure}
 
 \clearpage
@@ -2451,8 +2455,8 @@ dev.off()
 
 \begin{figure}[ht]
      \includegraphics{\Sexpr{imgwd}corr_res_wild.png}
-     \caption{res\_juv\_moy\_P\_std}
-     \label{res_juv_moy_P_std} 
+     \caption{corr\_res\_wild}
+     \label{corr_res_wild}
 \end{figure}
 
 \clearpage
@@ -2509,9 +2513,9 @@ dev.off()
 @
 
 \begin{figure}[ht]
-     \includegraphics{\Sexpr{imgwd}corr_res_wild.png}
-     \caption{res\_juv\_moy\_P\_std}
-     \label{res_juv_moy_P_std} 
+     \includegraphics{\Sexpr{imgwd}corr_res_juv.png}
+     \caption{corr\_res\_juv}
+     \label{corr_res_juv}
 \end{figure}
 
 \clearpage
@@ -2534,7 +2538,7 @@ write_param_table(level_s, tabwd, "level_s")
 %     \caption{level\_s}
 %     \label{level_s}
 % \end{figure}
-% 
+%
 % \input{\Sexpr{tabwd}level_s.tex}
 % \clearpage
 
@@ -2554,9 +2558,9 @@ write_param_table(tau_Q, tabwd, "tau_Q")
 % \begin{figure}[ht]
 %      \includegraphics{\Sexpr{imgwd}tau_Q.png}
 %      \caption{tau\_Q :précision de la loi normale dans laquelle on tire L_s_juv2ad}
-%      \label{tau_Q} 
+%      \label{tau_Q}
 % \end{figure}
-% 
+%
 % \input{\Sexpr{tabwd}tau_Q.tex}
 %\clearpage
 
@@ -2578,7 +2582,7 @@ write_param_table(rho_poutes, tabwd, "rho_poutes")
 %\begin{figure}[ht]
 %     \includegraphics{\Sexpr{imgwd}rho_poutes.png}%{a_juv.png}
 %     \caption{rho\_poutes}
-%     \label{rho_poutes} 
+%     \label{rho_poutes}
 %\end{figure}
 %
 %\input{\Sexpr{tabwd}rho_poutes.tex}
