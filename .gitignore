@@ -4,6 +4,9 @@
 # Chemin local vers le dossier de données externe au dépôt (voir chemin_local_template.R)
 /chemin_local.R
 
+# Requêtes SQL personnelles, conservées en local uniquement
+/sql/
+
 # Données (volumineuses, non versionnées - voir data/CODA dans le README)
 /data/
 /Docear/
