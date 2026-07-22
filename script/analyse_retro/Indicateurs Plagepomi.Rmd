@@ -234,40 +234,40 @@ indicateurs <- list(
     periode = row_adultes$periode,
     diagnostic = row_adultes$diagnostic,
     statut = row_adultes$statut,
-    a_retenir = "Commentaire synthétique à compléter.",
-    repere = "Valeur ou seuil de référence à compléter.",
-    interpretation = "Interprétation de l'évolution à compléter.",
-    methode = "Méthode de calcul, période de référence et précautions à compléter."
+    a_retenir = "La moyenne 2021-2025 est très largement en-dessous du seuil de référence (~ 730 individus).",
+    repere = "Seuil : 50 % de Rmax calculé dans les conditions de survie moyenne actuelle (période 1992-2025)",
+    interpretation = "Depuis la moyenne 2011-2015, la situation n'a cessé de se dégrader pour atteindre sur la période 2021-2025 son niveau le plus bas.",
+    methode = "moyenne mobile sur 5 ans. Les valeurs antérieures au démarrage de la station de comptage de Vichy sont estimées à partir des pêches."
   ),
   renouvellement = list(
     titre = "Taux de renouvellement de la population sauvage",
     periode = row_renouv$periode,
     diagnostic = row_renouv$diagnostic,
     statut = row_renouv$statut,
-    a_retenir = "Commentaire synthétique à compléter.",
-    repere = "Valeur ou seuil de référence à compléter.",
-    interpretation = "Interprétation de l'évolution à compléter.",
-    methode = "Méthode de calcul, période de référence et précautions à compléter."
+    a_retenir = "La moyenne 2015–2019 est de 0,19 : un adulte sauvage ne produit en moyenne que 0,19 adulte sauvage à la génération suivante.",
+    repere = "Taux de renouvellement ≥ 1. Un adulte sauvage doit produire au moins un adulte sauvage à la génération suivante.",
+    interpretation = "Le renouvellement naturel de la population n’est pas assuré. Après une amélioration temporaire, le taux diminue de nouveau et reste très inférieur au niveau d’équilibre.",
+    methode = "Rapport entre le nombre d’adultes sauvages revenus à Vichy et le nombre d'adultes (toutes origines) de la génération parentale, revenue cinq ans auparavant. L’indicateur est lissé par une moyenne mobile sur cinq ans. L’axe vertical est logarithmique."
   ),
   juveniles = list(
     titre = "Part des juvéniles sauvages",
     periode = row_juv$periode,
     diagnostic = row_juv$diagnostic,
     statut = row_juv$statut,
-    a_retenir = "Commentaire synthétique à compléter.",
-    repere = "Valeur ou seuil de référence à compléter.",
-    interpretation = "Interprétation de l'évolution à compléter.",
-    methode = "Méthode de calcul, période de référence et précautions à compléter."
+    a_retenir = "Sur la période 2021–2025, les juvéniles sauvages représentent en moyenne 34 % de l’ensemble des juvéniles.",
+    repere = "Au moins 50 % de juvéniles sauvages parmi l’ensemble des juvéniles présents en amont de Vichy.",
+    interpretation = "Les juvéniles sauvages ne sont plus majoritaires. Après une amélioration ayant permis d’atteindre temporairement l’objectif, leur part diminue nettement au cours des dernières années.",
+    methode = "Rapport entre le nombre de juvéniles sauvages et le nombre total de juvéniles (sauvages et issus des déversements), présents en amont de Vichy. L’indicateur est présenté sous forme de moyenne mobile sur cinq ans afin de lisser les fluctuations annuelles."
   ),
   conservation = list(
     titre = "Diagnostic de conservation de la population sauvage",
     periode = row_risk10$periode,
     diagnostic = row_risk10$diagnostic,
     statut = row_risk10$statut,
-    a_retenir = "Commentaire synthétique à compléter.",
-    repere = "Valeur ou seuil de référence à compléter.",
-    interpretation = "Interprétation de l'évolution à compléter.",
-    methode = "Méthode de calcul, période de référence et précautions à compléter."
+    a_retenir = "Sur la période 2021–2025, la probabilité moyenne de respecter le critère de conservation n’est que de 0 %, 2 % ou 5 %, selon le niveau de risque accepté.",
+    repere = "Probabilité ≥ 50 % de respecter les critères de conservation. Un faible recrutement correspond à une production sauvage inférieure à 25 % de Rmax. Les trois scénarios tolèrent respectivement 1, 2 ou 3 faibles recrutements sur 10 ans.",
+    interpretation = "Aucun des trois niveaux de risque ne permet d’atteindre le seuil de 50 %. Même en tolérant trois années de faible recrutement sur dix, la conservation de la population sauvage demeure très peu probable.",
+    methode = "Le diagnostic est calculé sur une fenêtre glissante de dix ans. Il estime la probabilité que le nombre d’années de faible recrutement ne dépasse pas 1, 2 ou 3 années."
   )
 )
 ```
@@ -386,9 +386,9 @@ synth_rows <- list(
   list(groupe = "Niveau de population d'adultes à Vichy", indicateur = "Adultes à Vichy", row = row_adultes, digits = 0),
   list(groupe = "Taux de renouvellement de la population sauvage", indicateur = "Taux de renouvellement", row = row_renouv, digits = 2),
   list(groupe = "Part des juvéniles sauvages", indicateur = "Part de juvéniles sauvages", row = row_juv, digits = 2),
-  list(groupe = "Diagnostic de conservation de la population sauvage", indicateur = "Risque toléré 10%", row = row_risk10, digits = 2),
-  list(groupe = "Diagnostic de conservation de la population sauvage", indicateur = "Risque toléré 20%", row = row_risk20, digits = 2),
-  list(groupe = "Diagnostic de conservation de la population sauvage", indicateur = "Risque toléré 30%", row = row_risk30, digits = 2)
+  list(groupe = "Diagnostic de conservation de la population sauvage pour 25% de Rmax", indicateur = "Risque toléré 10%", row = row_risk10, digits = 2),
+  list(groupe = "Diagnostic de conservation de la population sauvage pour 25% de Rmax", indicateur = "Risque toléré 20%", row = row_risk20, digits = 2),
+  list(groupe = "Diagnostic de conservation de la population sauvage pour 25% de Rmax", indicateur = "Risque toléré 30%", row = row_risk30, digits = 2)
 )
 
 synth_df <- do.call(rbind, lapply(synth_rows, function(x) {
@@ -399,7 +399,7 @@ synth_df <- do.call(rbind, lapply(synth_rows, function(x) {
     `Période évaluée` = r$periode,
     `Moyenne` = fmt_fr(r$moyenne_recente, x$digits),
     `Objectif` = fmt_fr(r$reference_recente, x$digits),
-    `Position` = make_position_html(r$position_pct),
+    `Niveau d'atteinte de l'indicateur` = make_position_html(r$position_pct),
     Diagnostic = make_diag_html(r$diagnostic, r$statut),
     `Dernière observation` = glue::glue("{r$derniere_annee} : {fmt_fr(r$derniere_valeur, x$digits)}"),
     `Médiane 5 premières années` = make_hist_html(r$mediane_debut, r$objectif_debut, x$digits),
@@ -412,17 +412,17 @@ synth_df <- do.call(rbind, lapply(synth_rows, function(x) {
 ```{r tables, results='asis'}
 gt(synth_df, groupname_col = "groupe", rowname_col = "Indicateur") |>
   tab_spanner(label = "Situation récente",
-              columns = c(Moyenne, Objectif, Position, Diagnostic, `Dernière observation`)) |>
+              columns = c(Moyenne, Objectif, `Niveau d'atteinte de l'indicateur`, Diagnostic, `Dernière observation`)) |>
   tab_spanner(label = "Repères historiques",
               columns = c(`Médiane 5 premières années`, `Médiane série complète`)) |>
-  fmt_markdown(columns = c(Position, Diagnostic, `Médiane 5 premières années`, `Médiane série complète`)) |>
+  fmt_markdown(columns = c(`Niveau d'atteinte de l'indicateur`, Diagnostic, `Médiane 5 premières années`, `Médiane série complète`)) |>
   cols_align(align = "right", columns = c(Moyenne, Objectif, `Dernière observation`,
                                            `Médiane 5 premières années`, `Médiane série complète`)) |>
-  cols_align(align = "center", columns = c(Position, Diagnostic)) |>
+  cols_align(align = "center", columns = c(`Niveau d'atteinte de l'indicateur`, Diagnostic)) |>
   cols_width(
     Indicateur ~ px(180), `Période évaluée` ~ px(100),
     Moyenne ~ px(80), Objectif ~ px(80),
-    Position ~ px(180), Diagnostic ~ px(190),
+    `Niveau d'atteinte de l'indicateur` ~ px(180), Diagnostic ~ px(190),
     `Dernière observation` ~ px(110),
     `Médiane 5 premières années` ~ px(150), `Médiane série complète` ~ px(150)
   ) |>
