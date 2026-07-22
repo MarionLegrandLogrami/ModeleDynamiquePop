@@ -76,7 +76,7 @@ d_tot_moy_P <- read.coda(str_c(datawd, "dmoytot_PCODAchain1.txt"), str_c(datawd,
 Pour la cible de gestion « à court terme » de cet indicateur, le COGEPOMI a choisi de considérer comme référence le nombre 
 d’adultes que produiraient la quantité de juvéniles correspondant à la moitié de la capacité d’accueil 
 (Rmax) sous l’hypothèse d’un taux de transfert entre le juvénile de l’année et l’adulte identique à ce 
-qui est observé depuis 1992 (`rmedian(s_juv2ad[,12:T])*100` % en médiane).
+qui est observé depuis 1992 (`r round(median(s_juv2ad[,12:(T-6)])*100,2)` % en médiane).
 
 L'objectif à atteindre évolue au cours du temps en fonction de la réouverture des axes. En particulier 4 modifications majeures sont intervenues durant la période étudiée.
 
@@ -171,6 +171,7 @@ tableau_secteurs <- tab_secteurs |>
 
 tableau_secteurs
 ```
+
 
 L'objectif est lissé par période de 5 ans (moyenne mobile) afin d'être comparable à la série des adultes observés ou estimés à Vichy.
 
