@@ -211,42 +211,29 @@ enregistré dans le dossier des figures du modèle.
 library(patchwork)
 library(ggtext)
 
-# Période récente évaluée (bornée par la dernière année réellement calculable
-# pour l'indicateur), pour l'étiquette du bandeau de chaque fiche
-periode_recente <- function(values, window = 5, year_origin = 1974) {
-  last_t <- max(which(!is.na(values)))
-  str_c(year_origin + last_t - window + 1, "-", year_origin + last_t)
-}
-
-# Diagnostic calculé à partir des mêmes seuils déjà affichés sur les graphiques
-# ci-dessus (constat chiffré basé sur la dernière année disponible, pas une
-# interprétation)
-diagnostic_seuil <- function(values, threshold, label_haut, label_bas) {
-  last_val <- values[max(which(!is.na(values)))]
-  if (last_val >= threshold) list(diagnostic = label_haut, statut = "vert") else list(diagnostic = label_bas, statut = "rouge")
-}
-
-d_niveau <- diagnostic_seuil(data_vichy_all / mean_N_vichy_50_actu, 1, "Objectif atteint", "Sous le seuil")
-d_renouv <- diagnostic_seuil(taux_renouv_annuel, 1, "Renouvellement assuré", "Renouvellement insuffisant")
-d_juv <- diagnostic_seuil(ratio_result$mean_ratio, 0.5, "Objectif atteint", "Sous le seuil")
-
-last_risk10 <- risk_25$mean_risk_10[max(which(!is.na(risk_25$mean_risk_10)))]
-d_conservation <- if (last_risk10 >= 0.75) {
-  list(diagnostic = "Conservation assurée", statut = "vert")
-} else if (last_risk10 >= 0.25) {
-  list(diagnostic = "Conservation incertaine", statut = "orange")
-} else {
-  list(diagnostic = "Conservation non assurée", statut = "rouge")
-}
+# Chaque ligne est calculée une seule fois ici (moyenne récente sur 5 ans,
+# comparée à la référence sur exactement la même période, diagnostic) et
+# réutilisée à la fois pour les cartouches des fiches indicateurs ci-dessous
+# et pour le tableau de synthèse plus bas, afin de garantir une cohérence
+# stricte entre les deux (mêmes chiffres, même règle de diagnostic).
+row_adultes <- build_indicateur_row(data_vichy_all, mean_N_vichy_50_actu,
+                                     diag_binaire("Objectif atteint", "Sous le seuil"), digits = 0)
+row_renouv <- build_indicateur_row(taux_renouv_annuel, 1,
+                                    diag_binaire("Renouvellement assuré", "Renouvellement insuffisant"), digits = 2)
+row_juv <- build_indicateur_row(ratio_result$mean_ratio, 0.5,
+                                 diag_binaire("Objectif atteint", "Sous le seuil"), digits = 2)
+row_risk10 <- build_indicateur_row(risk_25$mean_risk_10, 0.5, diag_conservation_3voies, digits = 2)
+row_risk20 <- build_indicateur_row(risk_25$mean_risk_20, 0.5, diag_conservation_3voies, digits = 2)
+row_risk30 <- build_indicateur_row(risk_25$mean_risk_30, 0.5, diag_conservation_3voies, digits = 2)
 
 # Paramétrage des 4 fiches (structure list() pour pouvoir éditer les
 # commentaires sans toucher au code de construction des fiches)
 indicateurs <- list(
   adultes = list(
     titre = "Niveau de population d'adultes à Vichy",
-    periode = periode_recente(data_vichy_all),
-    diagnostic = d_niveau$diagnostic,
-    statut = d_niveau$statut,
+    periode = row_adultes$periode,
+    diagnostic = row_adultes$diagnostic,
+    statut = row_adultes$statut,
     a_retenir = "Commentaire synthétique à compléter.",
     repere = "Valeur ou seuil de référence à compléter.",
     interpretation = "Interprétation de l'évolution à compléter.",
@@ -254,9 +241,9 @@ indicateurs <- list(
   ),
   renouvellement = list(
     titre = "Taux de renouvellement de la population sauvage",
-    periode = periode_recente(taux_renouv_annuel),
-    diagnostic = d_renouv$diagnostic,
-    statut = d_renouv$statut,
+    periode = row_renouv$periode,
+    diagnostic = row_renouv$diagnostic,
+    statut = row_renouv$statut,
     a_retenir = "Commentaire synthétique à compléter.",
     repere = "Valeur ou seuil de référence à compléter.",
     interpretation = "Interprétation de l'évolution à compléter.",
@@ -264,9 +251,9 @@ indicateurs <- list(
   ),
   juveniles = list(
     titre = "Part des juvéniles sauvages",
-    periode = periode_recente(ratio_result$mean_ratio),
-    diagnostic = d_juv$diagnostic,
-    statut = d_juv$statut,
+    periode = row_juv$periode,
+    diagnostic = row_juv$diagnostic,
+    statut = row_juv$statut,
     a_retenir = "Commentaire synthétique à compléter.",
     repere = "Valeur ou seuil de référence à compléter.",
     interpretation = "Interprétation de l'évolution à compléter.",
@@ -274,9 +261,9 @@ indicateurs <- list(
   ),
   conservation = list(
     titre = "Diagnostic de conservation de la population sauvage",
-    periode = periode_recente(risk_25$mean_risk_10),
-    diagnostic = d_conservation$diagnostic,
-    statut = d_conservation$statut,
+    periode = row_risk10$periode,
+    diagnostic = row_risk10$diagnostic,
+    statut = row_risk10$statut,
     a_retenir = "Commentaire synthétique à compléter.",
     repere = "Valeur ou seuil de référence à compléter.",
     interpretation = "Interprétation de l'évolution à compléter.",
@@ -343,26 +330,119 @@ ggsave(str_c(imgwd, "FichesIndicateurs_page2.pdf"), page_2, width = 11.69, heigh
 print(page_2)
 ```
 
-## Tableaux de synthèse
+## Tableau de synthèse
 
-Pour chaque indicateur : la dernière année disponible, la moyenne des 5
-dernières et des 5 premières années disponibles, et la médiane sur
-l'ensemble de la série (plus robuste qu'une moyenne aux valeurs extrêmes).
+Pour chaque indicateur : la moyenne récente (5 dernières années
+calculables) comparée à sa référence/objectif sur exactement la même
+période (même règle de diagnostic que les cartouches des fiches
+ci-dessus), puis à titre de repère historique la dernière observation
+annuelle, la moyenne de début de série et la médiane sur l'ensemble de la
+série.
+
+```{r tables_setup}
+library(gt)
+
+fmt_fr <- function(x, digits = 2) {
+  if (is.na(x)) return("—")
+  formatC(x, format = "f", digits = digits, big.mark = " ", decimal.mark = ",")
+}
+
+# Barre + pourcentage de la colonne "Position par rapport à l'objectif" :
+# la barre est plafonnée visuellement à 100% mais le texte garde la vraie
+# valeur (utile quand l'objectif est dépassé)
+make_position_html <- function(pct, palette = plagepomi_palette) {
+  if (is.na(pct)) return("—")
+  width_capped <- max(0, min(pct, 100))
+  color <- if (pct >= 100) palette$badge_green else if (pct >= 50) palette$badge_orange else palette$badge_red
+  label <- str_c(fmt_fr(pct, 0), "% de l'objectif")
+  glue::glue(
+    "<div style='display:flex;align-items:center;gap:6px;'>",
+    "<div style='background:#EEF0F2;border-radius:3px;width:56px;height:7px;overflow:hidden;flex:none;'>",
+    "<div style='background:{color};width:{width_capped}%;height:100%;'></div>",
+    "</div>",
+    "<span style='font-size:12px;color:#4B5563;white-space:nowrap;'>{label}</span>",
+    "</div>"
+  )
+}
+
+make_diag_html <- function(diagnostic, statut, palette = plagepomi_palette) {
+  color <- switch(statut, vert = palette$badge_green, rouge = palette$badge_red,
+                  orange = palette$badge_orange, palette$badge_gray)
+  glue::glue("<span style='background:{color};color:white;border-radius:4px;padding:2px 8px;",
+             "font-size:12px;font-weight:600;white-space:nowrap;'>{diagnostic}</span>")
+}
+
+# Repère historique (valeur + objectif de la même période, en 2e ligne discrète)
+make_hist_html <- function(valeur, objectif, digits) {
+  glue::glue(
+    "{fmt_fr(valeur, digits)}<br>",
+    "<span style='font-size:11px;color:#6B7280;'>objectif : {fmt_fr(objectif, digits)}</span>"
+  )
+}
+
+# Une ligne du tableau par indicateur (3 sous-lignes pour le diagnostic de
+# conservation, une par niveau de risque toléré)
+synth_rows <- list(
+  list(groupe = "Niveau de population d'adultes à Vichy", indicateur = "Adultes à Vichy", row = row_adultes, digits = 0),
+  list(groupe = "Taux de renouvellement de la population sauvage", indicateur = "Taux de renouvellement", row = row_renouv, digits = 2),
+  list(groupe = "Part des juvéniles sauvages", indicateur = "Part de juvéniles sauvages", row = row_juv, digits = 2),
+  list(groupe = "Diagnostic de conservation de la population sauvage", indicateur = "Risque toléré 10%", row = row_risk10, digits = 2),
+  list(groupe = "Diagnostic de conservation de la population sauvage", indicateur = "Risque toléré 20%", row = row_risk20, digits = 2),
+  list(groupe = "Diagnostic de conservation de la population sauvage", indicateur = "Risque toléré 30%", row = row_risk30, digits = 2)
+)
+
+synth_df <- do.call(rbind, lapply(synth_rows, function(x) {
+  r <- x$row
+  data.frame(
+    groupe = x$groupe,
+    Indicateur = x$indicateur,
+    `Période évaluée` = r$periode,
+    `Moyenne` = fmt_fr(r$moyenne_recente, x$digits),
+    `Objectif` = fmt_fr(r$reference_recente, x$digits),
+    `Position` = make_position_html(r$position_pct),
+    Diagnostic = make_diag_html(r$diagnostic, r$statut),
+    `Dernière observation` = glue::glue("{r$derniere_annee} : {fmt_fr(r$derniere_valeur, x$digits)}"),
+    `Médiane 5 premières années` = make_hist_html(r$mediane_debut, r$objectif_debut, x$digits),
+    `Médiane série complète` = make_hist_html(r$mediane_historique, r$objectif_historique, x$digits),
+    stringsAsFactors = FALSE, check.names = FALSE
+  )
+}))
+```
 
 ```{r tables, results='asis'}
-knitr::kable(format = "html",summarize_indicator_series(data_vichy_all, "Adultes observés/estimés à Vichy"),
-             caption = "Niveau de population")
-knitr::kable(format = "html",summarize_indicator_series(mean_N_vichy_50_actu, "Cible (50% Rmax, survie actuelle)"))
-
-knitr::kable(format = "html",summarize_indicator_series(taux_renouv_annuel, "Taux de renouvellement (pop. sauvage)"),
-             caption = "Taux de renouvellement de la population sauvage")
-
-knitr::kable(format = "html",rbind(
-  summarize_indicator_series(risk_25$mean_risk_10, "Probabilité de conservation (risque 10%)"),
-  summarize_indicator_series(risk_25$mean_risk_20, "Probabilité de conservation (risque 20%)"),
-  summarize_indicator_series(risk_25$mean_risk_30, "Probabilité de conservation (risque 30%)")
-), caption = "Diagnostic de conservation (25% Rmax)")
-
-knitr::kable(format = "html",summarize_indicator_series(ratio_result$mean_ratio, "Part de juvéniles sauvages"),
-             caption = "Part des juvéniles sauvages")
+gt(synth_df, groupname_col = "groupe", rowname_col = "Indicateur") |>
+  tab_spanner(label = "Situation récente",
+              columns = c(Moyenne, Objectif, Position, Diagnostic, `Dernière observation`)) |>
+  tab_spanner(label = "Repères historiques",
+              columns = c(`Médiane 5 premières années`, `Médiane série complète`)) |>
+  fmt_markdown(columns = c(Position, Diagnostic, `Médiane 5 premières années`, `Médiane série complète`)) |>
+  cols_align(align = "right", columns = c(Moyenne, Objectif, `Dernière observation`,
+                                           `Médiane 5 premières années`, `Médiane série complète`)) |>
+  cols_align(align = "center", columns = c(Position, Diagnostic)) |>
+  cols_width(
+    Indicateur ~ px(180), `Période évaluée` ~ px(100),
+    Moyenne ~ px(80), Objectif ~ px(80),
+    Position ~ px(180), Diagnostic ~ px(190),
+    `Dernière observation` ~ px(110),
+    `Médiane 5 premières années` ~ px(150), `Médiane série complète` ~ px(150)
+  ) |>
+  tab_style(style = cell_fill(color = "#F1F3F5"), locations = cells_column_labels()) |>
+  tab_style(style = cell_fill(color = "#F1F3F5"), locations = cells_column_spanners()) |>
+  tab_style(style = cell_fill(color = "#F7F8FA"), locations = cells_row_groups()) |>
+  tab_options(
+    table.width = px(1200),
+    table.font.size = px(13),
+    table.background.color = "white",
+    data_row.padding = px(6),
+    column_labels.font.weight = "bold",
+    row_group.font.weight = "bold",
+    table.border.top.style = "none",
+    table.border.bottom.style = "none",
+    table_body.hlines.color = "#E5E7EB",
+    table_body.border.bottom.color = "#E5E7EB",
+    heading.border.bottom.style = "none",
+    row_group.border.top.style = "none"
+  ) |>
+  opt_row_striping() |>
+  opt_horizontal_padding(scale = 1)
 ```

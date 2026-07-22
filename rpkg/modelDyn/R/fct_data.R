@@ -675,3 +675,105 @@ summarize_indicator_series <- function(values, label, year_origin = 1974, digits
     check.names = FALSE
   )
 }
+
+#' Règle de diagnostic binaire (seuil unique) pour \code{\link{build_indicateur_row}}
+#'
+#' @param label_haut Texte affiché si la moyenne récente atteint ou dépasse la référence.
+#' @param label_bas Texte affiché sinon.
+#' @return Une fonction \code{function(moyenne, reference)} retournant une
+#'   liste \code{list(diagnostic, statut)} ("vert" ou "rouge").
+#' @export
+diag_binaire <- function(label_haut, label_bas) {
+  function(moyenne, reference) {
+    if (moyenne >= reference) {
+      list(diagnostic = label_haut, statut = "vert")
+    } else {
+      list(diagnostic = label_bas, statut = "rouge")
+    }
+  }
+}
+
+#' Règle de diagnostic à 3 niveaux pour le diagnostic de conservation
+#'
+#' Reprend exactement le découpage déjà utilisé sur le graphique du
+#' diagnostic de conservation (fonds rouge/orange/jaune/vert à 25/50/75% de
+#' probabilité) : \code{reference} (0.5) n'intervient pas dans le calcul, les
+#' seuils réels sont fixes à 0.25 et 0.75 - c'est la même règle que celle
+#' utilisée pour le cartouche de diagnostic des fiches indicateurs.
+#'
+#' @param moyenne Probabilité moyenne de conservation sur la période récente.
+#' @param reference Non utilisé (présent pour la signature commune avec \code{\link{diag_binaire}}).
+#' @return Une liste \code{list(diagnostic, statut)} ("vert"/"orange"/"rouge").
+#' @export
+diag_conservation_3voies <- function(moyenne, reference) {
+  if (moyenne >= 0.75) {
+    list(diagnostic = "Conservation assurée", statut = "vert")
+  } else if (moyenne >= 0.25) {
+    list(diagnostic = "Conservation incertaine", statut = "orange")
+  } else {
+    list(diagnostic = "Conservation non assurée", statut = "rouge")
+  }
+}
+
+#' Construit toutes les statistiques d'une ligne du tableau de synthèse PLAGEPOMI
+#'
+#' Calcule, à partir d'une série annuelle, tout ce qui est nécessaire pour une
+#' ligne du tableau de synthèse (et le cartouche de diagnostic des fiches
+#' indicateurs, pour rester rigoureusement cohérent avec le tableau) : période
+#' récente évaluée, moyenne récente comparée à la référence sur exactement la
+#' même période, position en % de l'objectif, diagnostic, ainsi que les
+#' repères historiques (dernière observation, médiane des 5 premières années,
+#' médiane sur toute la série) - chacun avec l'objectif correspondant sur la
+#' même période, pour rester comparable (l'objectif peut varier dans le
+#' temps, ex. le niveau de population).
+#'
+#' @param values Série annuelle de l'indicateur (longueur T, NA hors de la plage calculable).
+#' @param reference Référence/objectif : soit un scalaire (seuil fixe, ex. 1
+#'   ou 0.5), soit un vecteur de même longueur que \code{values} (cible qui
+#'   varie dans le temps, ex. la cible du niveau de population).
+#' @param diagnostic_fn Fonction \code{function(moyenne, reference)} retournant
+#'   \code{list(diagnostic, statut)}, ex. \code{\link{diag_binaire}} ou
+#'   \code{\link{diag_conservation_3voies}}.
+#' @param digits Nombre de décimales pour l'arrondi des valeurs. Défaut : 2.
+#' @param year_origin Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.
+#' @return Une liste : \code{periode}, \code{moyenne_recente},
+#'   \code{reference_recente}, \code{position_pct} (NA si référence
+#'   nulle/manquante), \code{diagnostic}, \code{statut}, \code{derniere_annee},
+#'   \code{derniere_valeur}, \code{mediane_debut}, \code{objectif_debut}
+#'   (médiane de la référence sur les 5 premières années), \code{mediane_historique},
+#'   \code{objectif_historique} (médiane de la référence sur toute la série).
+#' @export
+build_indicateur_row <- function(values, reference, diagnostic_fn, digits = 2,
+                                  year_origin = 1974) {
+  valid <- which(!is.na(values))
+  last1_idx <- tail(valid, 1)
+  last5_idx <- tail(valid, 5)
+  first5_idx <- head(valid, 5)
+
+  ref_vec <- if (length(reference) == 1) rep(reference, length(values)) else reference
+
+  moyenne_recente <- mean(values[last5_idx])
+  reference_recente <- mean(ref_vec[last5_idx])
+  diag <- diagnostic_fn(moyenne_recente, reference_recente)
+
+  position_pct <- if (is.na(reference_recente) || reference_recente == 0) {
+    NA_real_
+  } else {
+    100 * moyenne_recente / reference_recente
+  }
+
+  list(
+    periode = str_c(year_origin + min(last5_idx), "-", year_origin + max(last5_idx)),
+    moyenne_recente = round(moyenne_recente, digits),
+    reference_recente = round(reference_recente, digits),
+    position_pct = position_pct,
+    diagnostic = diag$diagnostic,
+    statut = diag$statut,
+    derniere_annee = year_origin + last1_idx,
+    derniere_valeur = round(values[last1_idx], digits),
+    mediane_debut = round(median(values[first5_idx]), digits),
+    objectif_debut = round(median(ref_vec[first5_idx]), digits),
+    mediane_historique = round(median(values[valid]), digits),
+    objectif_historique = round(median(ref_vec[valid]), digits)
+  )
+}

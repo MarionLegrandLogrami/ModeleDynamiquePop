@@ -4,12 +4,17 @@
 \alias{theme_plagepomi}
 \title{Thème harmonisé pour les indicateurs PLAGEPOMI}
 \usage{
-theme_plagepomi(base_size = 13, palette = plagepomi_palette)
+theme_plagepomi(base_size = 13, title_size = 13, palette = plagepomi_palette)
 }
 \arguments{
 \item{base_size}{Taille de police de base, en points. Défaut : 13 (utiliser
 une valeur plus petite, ex. 9, pour un assemblage de plusieurs graphiques
 sur une même figure - cf. la figure de synthèse des 4 indicateurs).}
+
+\item{title_size}{Taille du titre, en points, indépendamment de
+\code{base_size} (par défaut, \code{theme_bw()} donne au titre 1.2x
+\code{base_size}, soit 15.6 pour \code{base_size = 13}). Défaut : 13
+(même taille que le reste du texte).}
 
 \item{palette}{Palette de couleurs à utiliser pour la grille et le texte des
 axes. Défaut : \code{\link{plagepomi_palette}}.}

@@ -598,14 +598,18 @@ scale_x_years_plagepomi <- function(year_first, year_last, to_position) {
 #' @param base_size Taille de police de base, en points. Défaut : 13 (utiliser
 #'   une valeur plus petite, ex. 9, pour un assemblage de plusieurs graphiques
 #'   sur une même figure - cf. la figure de synthèse des 4 indicateurs).
+#' @param title_size Taille du titre, en points, indépendamment de
+#'   \code{base_size} (par défaut, \code{theme_bw()} donne au titre 1.2x
+#'   \code{base_size}, soit 15.6 pour \code{base_size = 13}). Défaut : 13
+#'   (même taille que le reste du texte).
 #' @param palette Palette de couleurs à utiliser pour la grille et le texte des
 #'   axes. Défaut : \code{\link{plagepomi_palette}}.
 #' @return Un objet thème ggplot2, à ajouter au graphique avec \code{+}.
 #' @export
-theme_plagepomi <- function(base_size = 13, palette = plagepomi_palette) {
+theme_plagepomi <- function(base_size = 13, title_size = 13, palette = plagepomi_palette) {
   theme_bw(base_size = base_size) +
     theme(
-      plot.title = element_text(hjust = 0.5, margin = margin(b = 10), face = "bold"),
+      plot.title = element_text(size = title_size, hjust = 0.5, margin = margin(b = 10), face = "bold"),
       axis.title.x = element_text(margin = margin(t = 8)),
       axis.title.y = element_text(margin = margin(r = 8)),
       axis.text = element_text(colour = palette$axis_text),
