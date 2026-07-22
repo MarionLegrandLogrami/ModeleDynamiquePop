@@ -1,6 +1,6 @@
 ---
 title: "Indicateurs Plagepomi"
-author: "Marion Legrand"
+author: "Marion Legrand & Etienne Prévost"
 date: "2026-07-21"
 output:
   html_document:
@@ -26,6 +26,9 @@ library(stringr)
 library(ggplot2)
 library(dplyr)
 library(gridExtra)
+library(tibble)
+library(gt)
+library(modelDyn)
 T <- 51
 
 source(here::here("script/fonctions/fct_graph.R"))
@@ -70,10 +73,106 @@ d_tot_moy_P <- read.coda(str_c(datawd, "dmoytot_PCODAchain1.txt"), str_c(datawd,
 
 ## Niveau de population
 
-Nombre d'adultes observés ou estimés à Vichy (moyenne mobile 5 ans), comparé à la
-cible intermédiaire : le nombre d'adultes que produirait la quantité de
-juvéniles correspondant à 50% de Rmax, dans les conditions de survie
-juvénile/adulte actuelles.
+Pour la cible de gestion « à court terme » de cet indicateur, le COGEPOMI a choisi de considérer comme référence le nombre 
+d’adultes que produiraient la quantité de juvéniles correspondant à la moitié de la capacité d’accueil 
+(Rmax) sous l’hypothèse d’un taux de transfert entre le juvénile de l’année et l’adulte identique à ce 
+qui est observé depuis 1992 (`rmedian(s_juv2ad[,12:T])*100` % en médiane).
+
+L'objectif à atteindre évolue au cours du temps en fonction de la réouverture des axes. En particulier 4 modifications majeures sont intervenues durant la période étudiée.
+
+```{r table_evol_surf, results='asis'}
+
+tab_secteurs <- tribble(
+  ~periode,             ~`Vichy-Langeac`, ~Alagnon,      ~`Langeac-Poutès`, ~`Amont Poutès`,
+  "1975-1985",          "Tout le secteur", "Grand-Pont",  "Tout le secteur", "-",
+  "1986-1997",          "Tout le secteur", "Grand-Pont",  "Tout le secteur", "Saint-Etienne du Vigan",
+  "1998-2003",          "Tout le secteur", "Grand-Pont",  "Tout le secteur", "Tout le secteur",
+  "2004-Aujourd’hui",   "Tout le secteur", "Joursac",     "Tout le secteur", "Tout le secteur"
+)
+
+tableau_secteurs <- tab_secteurs |>
+  gt() |>
+  cols_label(
+    periode = "",
+    `Vichy-Langeac` = "Vichy-Langeac",
+    Alagnon = "Alagnon",
+    `Langeac-Poutès` = "Langeac-Poutès",
+    `Amont Poutès` = "Amont Poutès"
+  ) |>
+  cols_align(
+    align = "left",
+    columns = periode
+  ) |>
+  cols_align(
+    align = "center",
+    columns = -periode
+  ) |>
+  cols_width(
+    periode ~ px(195),
+    `Vichy-Langeac` ~ px(180),
+    Alagnon ~ px(145),
+    `Langeac-Poutès` ~ px(195),
+    `Amont Poutès` ~ px(235)
+  ) |>
+  tab_style(
+    style = list(
+      cell_fill(color = "#4472C4"),
+      cell_text(
+        color = "white",
+        weight = "bold",
+        size = px(20)
+      ),
+      cell_borders(
+        sides = "all",
+        color = "#8EAADB",
+        weight = px(1)
+      )
+    ),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(
+    style = cell_fill(color = "#D9E2F3"),
+    locations = cells_body(rows = c(1, 3))
+  ) |>
+  tab_style(
+    style = cell_fill(color = "#FFFFFF"),
+    locations = cells_body(rows = c(2, 4))
+  ) |>
+  tab_style(
+    style = cell_text(
+      weight = "bold",
+      size = px(18)
+    ),
+    locations = cells_body(columns = periode)
+  ) |>
+  tab_style(
+    style = cell_text(size = px(18)),
+    locations = cells_body(columns = -periode)
+  ) |>
+  tab_style(
+    style = cell_borders(
+      sides = "all",
+      color = "#8EAADB",
+      weight = px(1)
+    ),
+    locations = cells_body()
+  ) |>
+  tab_options(
+    table.width = px(950),
+    table.font.names = c("Arial", "sans-serif"),
+    table.background.color = "white",
+    data_row.padding = px(3),
+    column_labels.padding = px(3),
+    table.border.top.width = px(0),
+    table.border.bottom.width = px(0),
+    table.border.left.width = px(0),
+    table.border.right.width = px(0)
+  )
+
+tableau_secteurs
+```
+
+L'objectif est lissé par période de 5 ans (moyenne mobile) afin d'être comparable à la série des adultes observés ou estimés à Vichy.
 
 ```{r niveau_pop, fig.width=8, fig.height=6}
 juv_rmax_50 <- compute_juv_rmax(0.5, Rmax, nu_d, S_juv_JP, T)
@@ -203,14 +302,7 @@ grid.arrange(
 
 ## Fiches indicateurs
 
-Fiches synthétiques au format A4 paysage (2 indicateurs par page), destinées
-à une publication institutionnelle. Les rubriques de commentaire (À retenir /
-Repère-objectif / Interprétation / Méthode et précautions) sont volontairement
-laissées en texte temporaire : seuls le diagnostic, son statut (rouge/vert/orange)
-et la période évaluée sont calculés automatiquement, à partir des mêmes seuils
-déjà utilisés par les graphiques ci-dessus (constat chiffré, pas une
-interprétation) - à ajuster si besoin. Un PDF vectoriel par page est également
-enregistré dans le dossier des figures du modèle.
+Aperçu des fiches indicateurs qui sont créées et sauvegardées au format PDF lors de l'execution de ce script
 
 ```{r fiches_setup}
 library(patchwork)
@@ -348,12 +440,6 @@ invisible(dev.off())
 
 ## Tableau de synthèse
 
-Pour chaque indicateur : la moyenne récente (5 dernières années
-calculables) comparée à sa référence/objectif sur exactement la même
-période (même règle de diagnostic que les cartouches des fiches
-ci-dessus), puis à titre de repère historique la dernière observation
-annuelle, la moyenne de début de série et la médiane sur l'ensemble de la
-série.
 
 ```{r tables_setup}
 library(gt)
