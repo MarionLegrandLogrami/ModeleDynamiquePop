@@ -7,6 +7,11 @@ output:
     df_print: paged
     toc: true
     toc_float: true
+# Force le HTML à s'enregistrer à côté de ce .Rmd (script/analyse_retro/),
+# quel que soit le réglage RStudio "Knit Directory" ou la façon dont le
+# Knit est lancé - par défaut certains réglages font sortir le fichier à la
+# racine du projet.
+knit: !expr function(input, ...) { rmarkdown::render(input, output_dir = dirname(input), envir = globalenv()) }
 ---
 
 <!-- Le script a été démarré en septembre 2023 mais non terminé. J4ai repris ça avec de l'IA (Claude) en juillet 2026 -->
@@ -120,7 +125,7 @@ tableau_secteurs <- tab_secteurs |>
       cell_text(
         color = "white",
         weight = "bold",
-        size = px(20)
+        size = px(13)
       ),
       cell_borders(
         sides = "all",
@@ -141,12 +146,12 @@ tableau_secteurs <- tab_secteurs |>
   tab_style(
     style = cell_text(
       weight = "bold",
-      size = px(18)
+      size = px(13)
     ),
     locations = cells_body(columns = periode)
   ) |>
   tab_style(
-    style = cell_text(size = px(18)),
+    style = cell_text(size = px(12)),
     locations = cells_body(columns = -periode)
   ) |>
   tab_style(

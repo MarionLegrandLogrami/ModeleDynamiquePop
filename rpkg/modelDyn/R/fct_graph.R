@@ -919,7 +919,7 @@ creer_fiche_indicateur <- function(graphique, titre, periode, diagnostic, statut
 
   comment_md <- str_c(
     "**À RETENIR**<br><span style='color:#4B5563;'>", wrap_br(a_retenir, 70), "</span><br><br>",
-    "**REPÈRE / OBJECTIF**<br><span style='color:#4B5563;'>", wrap_br(repere, 70), "</span><br><br>",
+    "**OBJECTIF**<br><span style='color:#4B5563;'>", wrap_br(repere, 70), "</span><br><br>",
     "**INTERPRÉTATION**<br><span style='color:#4B5563;'>", wrap_br(interpretation, 70), "</span>"
   )
 
