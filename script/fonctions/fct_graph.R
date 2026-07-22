@@ -725,10 +725,10 @@ draw_diagnostic_conservation <- function(mean_risk_10, mean_risk_20, mean_risk_3
     geom_hline(yintercept = 0.5, colour = palette$threshold, linetype = "solid", linewidth = 0.9) +
     geom_hline(yintercept = 0.75, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
     geom_hline(yintercept = 0.25, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
-    annotate("text", x = window + 1, y = 0.5, label = "seuil 50%", hjust = 0, vjust = -0.5,
+    annotate("text", x = T, y = 0.5, label = "seuil 50%", hjust = 1, vjust = -0.5,
              size = 3, colour = palette$threshold) +
     xlab("Année") +
-    ylab("Probabilité d'assurer la conservation \nselon le diagnostic choisi") +
+    ylab("Probabilité d'assurer \nla conservation") +
     scale_x_years_plagepomi(year_origin + window + 1, year_origin + T, function(year) year - year_origin) +
     scale_y_continuous(breaks = seq(0, 1, 0.2), labels = seq(0, 1, 0.2)) +
     scale_colour_manual("", breaks = c("1", "2", "3"), values = c(palette$line_main, "#6B7280", "#AEB4BC"),
@@ -736,9 +736,12 @@ draw_diagnostic_conservation <- function(mean_risk_10, mean_risk_20, mean_risk_3
     scale_linetype_manual("", breaks = c("1", "2", "3"), values = c("solid", "dashed", "dotted"),
                           labels = c("Risque 10%", "Risque 20%", "Risque 30%")) +
     theme_plagepomi() +
-    theme(legend.position = "bottom")
+    # legend.box.spacing réduit : l'espace par défaut entre le graphique et
+    # la légende du bas laissait un grand vide, au détriment de la hauteur
+    # utile du graphique.
+    theme(legend.position = "bottom", legend.box.spacing = unit(2, "pt"), legend.margin = margin(0, 0, 0, 0))
   if (show_title) {
-    p <- p + ggtitle(str_c("Diagnostic de conservation de la population sauvage pour ", target_pct, "% Rmax \n(fenêtre glissante sur ", window, " ans)"))
+    p <- p + ggtitle(str_c("Diagnostic de conservation de la population sauvage \npour ", target_pct, "% de Rmax \n(fenêtre glissante sur ", window, " ans)"))
   }
   p
 }
@@ -772,10 +775,10 @@ draw_part_juv_wild <- function(mean_ratio, T, year_origin = 1974, show_title = T
     geom_hline(yintercept = 0.5, colour = palette$threshold, linetype = "solid", linewidth = 0.9) +
     geom_hline(yintercept = 0.75, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
     geom_hline(yintercept = 0.25, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
-    annotate("text", x = max(years), y = 0.5, label = "objectif 50%", hjust = 1, vjust = -0.5,
+    annotate("text", x = min(years), y = 0.5, label = "objectif 50%", hjust = 0, vjust = -0.5,
              size = 3, colour = palette$threshold) +
-    annotate("text", x = min(years), y = 0.08, label = "Objectif non atteint", hjust = 0, size = 3, colour = "grey35") +
-    annotate("text", x = min(years), y = 0.92, label = "Objectif atteint", hjust = 0, size = 3, colour = "grey35") +
+    annotate("text", x = max(years), y = 0.08, label = "Objectif non atteint", hjust = 1, size = 3, colour = "grey35") +
+    annotate("text", x = max(years), y = 0.92, label = "Objectif atteint", hjust = 1, size = 3, colour = "grey35") +
     xlab("Année") +
     ylab("Ratio juvénile sauvage \nsur juvénile total") +
     scale_x_years_plagepomi(min(years), max(years), identity) +
@@ -875,12 +878,20 @@ creer_fiche_indicateur <- function(graphique, titre, periode, diagnostic, statut
     palette$badge_gray
   )
 
+  # scale_*_continuous(expand=c(0,0)) plutôt que xlim()/ylim() (qui laissent
+  # l'expansion par défaut de ggplot, ~5% de marge invisible de chaque côté) :
+  # sans ça, x=0/x=1 ne correspondent pas vraiment aux bords du panneau, ce
+  # qui laissait de l'espace inutilisé de part et d'autre que plot.margin ne
+  # permettait pas d'expliquer/contrôler.
+  no_expand_x <- scale_x_continuous(limits = c(0, 1), expand = c(0, 0))
+  no_expand_y <- scale_y_continuous(limits = c(0, 1), expand = c(0, 0))
+
   bandeau_titre <- ggplot() +
-    xlim(0, 1) + ylim(0, 1) +
+    no_expand_x + no_expand_y +
     annotate("text", x = 0.01, y = 0.5, label = titre, hjust = 0, vjust = 0.5,
-             fontface = "bold", size = 5, colour = "#1F2328") +
+             fontface = "bold", size = 4.8, colour = "#1F2328") +
     ggtext::geom_richtext(aes(x = 0.72, y = 0.5, label = periode),
-                          hjust = 0.5, vjust = 0.5, size = 3.3,
+                          hjust = 0.5, vjust = 0.5, size = 3.3, fontface = "bold",
                           fill = "#EEF0F2", label.colour = NA, colour = "#4B5563",
                           label.r = unit(4, "pt"), label.padding = unit(c(3, 7, 3, 7), "pt")) +
     ggtext::geom_richtext(aes(x = 0.99, y = 0.5, label = diagnostic),
@@ -888,43 +899,69 @@ creer_fiche_indicateur <- function(graphique, titre, periode, diagnostic, statut
                           fill = badge_col, label.colour = NA, colour = "white",
                           label.r = unit(4, "pt"), label.padding = unit(c(4, 9, 4, 9), "pt")) +
     theme_void() +
-    theme(plot.margin = margin(4, 10, 4, 10),
+    # Marges haut/bas généreuses : sinon les descendantes (p, g, q) des
+    # lettres du titre/badges se retrouvent coupées par le bord du bandeau.
+    theme(plot.margin = margin(10, 8, 10, 8),
           plot.background = element_rect(fill = "#F7F8F9", colour = NA))
 
+  # Pré-découpage du texte par nombre de caractères (stringr::str_wrap),
+  # plutôt que de compter sur le retour à la ligne automatique par largeur de
+  # geom_textbox : dans cette composition patchwork imbriquée (fiche empilée
+  # dans une page, bandeau/colonne dans une fiche), la largeur de
+  # geom_textbox (qu'elle soit en "npc" ou en unité absolue) ne se convertit
+  # pas de façon fiable au moment du rendu final pour certains éléments
+  # (le texte ne s'enroulait plus et se coupait en plein mot en dépassant la
+  # page). str_wrap() calcule les retours à la ligne d'après un nombre de
+  # caractères (indépendant des unités graphiques), ce qui est robuste quel
+  # que soit le niveau d'imbrication ; geom_textbox garde une largeur large
+  # pour ne pas ré-envelopper le texte une seconde fois.
+  wrap_br <- function(text, width) gsub("\n", "<br>", str_wrap(text, width = width), fixed = TRUE)
+
+  comment_md <- str_c(
+    "**À RETENIR**<br><span style='color:#4B5563;'>", wrap_br(a_retenir, 70), "</span><br><br>",
+    "**REPÈRE / OBJECTIF**<br><span style='color:#4B5563;'>", wrap_br(repere, 70), "</span><br><br>",
+    "**INTERPRÉTATION**<br><span style='color:#4B5563;'>", wrap_br(interpretation, 70), "</span>"
+  )
+
   colonne_commentaire <- ggplot() +
-    xlim(0, 1) + ylim(0, 1) +
-    annotate("text", x = 0, y = 0.97, label = "À RETENIR", hjust = 0, vjust = 1,
-             fontface = "bold", size = 3.2, colour = "#1F2328") +
-    ggtext::geom_textbox(aes(x = 0, y = 0.90, label = a_retenir), hjust = 0, vjust = 1,
-                          width = unit(0.95, "npc"), box.colour = NA, fill = NA,
-                          size = 3, colour = "grey45", fontface = "italic") +
-    annotate("text", x = 0, y = 0.62, label = "REPÈRE / OBJECTIF", hjust = 0, vjust = 1,
-             fontface = "bold", size = 3.2, colour = "#1F2328") +
-    ggtext::geom_textbox(aes(x = 0, y = 0.55, label = repere), hjust = 0, vjust = 1,
-                          width = unit(0.95, "npc"), box.colour = NA, fill = NA,
-                          size = 3, colour = "grey45", fontface = "italic") +
-    annotate("text", x = 0, y = 0.30, label = "INTERPRÉTATION", hjust = 0, vjust = 1,
-             fontface = "bold", size = 3.2, colour = "#1F2328") +
-    ggtext::geom_textbox(aes(x = 0, y = 0.23, label = interpretation), hjust = 0, vjust = 1,
-                          width = unit(0.95, "npc"), box.colour = NA, fill = NA,
-                          size = 3, colour = "grey45", fontface = "italic") +
+    no_expand_x + no_expand_y +
+    # box.padding=0 : geom_textbox ajoute par défaut ~5.5pt de marge interne
+    # tout autour, ce qui décalait le texte vers le bas sans raison utile
+    # (le haut de la colonne restait vide). En la supprimant, le texte
+    # démarre vraiment en haut, ce qui redonne de la place pour espacer les
+    # 3 rubriques (À retenir/Repère/Interprétation) sans les rapprocher.
+    ggtext::geom_textbox(aes(x = 0, y = 1, label = comment_md), hjust = 0, vjust = 1,
+                          width = unit(20, "in"), box.colour = NA, fill = NA,
+                          box.padding = unit(c(0, 0, 0, 0), "pt"),
+                          size = 3.5, colour = "#1F2328", lineheight = 1.2) +
+    coord_cartesian(clip = "off") +
     theme_void() +
-    theme(plot.margin = margin(6, 6, 6, 12),
+    theme(plot.margin = margin(4, 4, 4, 10),
           plot.background = element_rect(fill = palette$bg_offwhite, colour = NA))
 
-  corps <- graphique + colonne_commentaire + patchwork::plot_layout(widths = c(0.63, 0.37))
+  # Largeurs graphique/commentaire équilibrées (au lieu de 63/37) : un
+  # graphique trop large et peu haut devient difficile à lire (tendances
+  # aplaties), et la colonne de texte a besoin de place pour un vrai
+  # commentaire (pas un texte temporaire d'une ligne).
+  corps <- graphique + colonne_commentaire + patchwork::plot_layout(widths = c(0.5, 0.5))
+
+  methode_md <- str_c("**MÉTHODE ET PRÉCAUTIONS**<br><span style='color:#4B5563;'>", wrap_br(methode, 148), "</span>")
 
   bandeau_methode <- ggplot() +
-    xlim(0, 1) + ylim(0, 1) +
-    annotate("text", x = 0, y = 0.8, label = "MÉTHODE ET PRÉCAUTIONS", hjust = 0, vjust = 1,
-             fontface = "bold", size = 3, colour = "#1F2328") +
-    ggtext::geom_textbox(aes(x = 0, y = 0.5, label = methode), hjust = 0, vjust = 1,
-                          width = unit(0.98, "npc"), box.colour = NA, fill = NA,
-                          size = 2.9, colour = "grey40") +
+    no_expand_x + no_expand_y +
+    ggtext::geom_textbox(aes(x = 0, y = 1, label = methode_md), hjust = 0, vjust = 1,
+                          width = unit(20, "in"), box.colour = NA, fill = NA,
+                          box.padding = unit(c(0, 0, 0, 0), "pt"),
+                          size = 3.1, colour = "#1F2328", lineheight = 1.15) +
+    coord_cartesian(clip = "off") +
     theme_void() +
-    theme(plot.margin = margin(4, 10, 6, 10),
+    # Marges gauche/droite réduites (~alignées sur le panneau du graphique à
+    # gauche et le bord de la colonne de commentaire à droite) : les grandes
+    # marges symétriques laissaient beaucoup d'espace inutilisé. Marge basse
+    # un peu plus généreuse : le texte touchait le bord du bandeau sinon.
+    theme(plot.margin = margin(6, 6, 10, 6),
           plot.background = element_rect(fill = "#F3F4F6", colour = NA))
 
   bandeau_titre / corps / bandeau_methode +
-    patchwork::plot_layout(heights = c(0.11, 0.71, 0.18))
+    patchwork::plot_layout(heights = c(0.095, 0.725, 0.18))
 }

@@ -112,7 +112,7 @@ graph_niveau_pop <- draw_niveau_pop(
   T = T,
   split_year = 2001,
   title = "Adultes observés ou estimés à Vichy par rapport au nombre de géniteurs \nque produiraient la quantité de juvéniles correspondant à 50% de Rmax \n(moyenne mobile 5 ans)",
-  ylab_txt = "Adultes observés ou estimés à Vichy"
+  ylab_txt = "Adultes observés ou \nestimés à Vichy"
 )
 print(graph_niveau_pop)
 ```
@@ -184,14 +184,19 @@ print(graph_part_juv)
 # titres (souvent sur 2 lignes) débordaient du panneau réduit. On surcharge
 # donc ici une police plus petite, seulement pour cette version combinée -
 # les graphiques individuels plus haut dans le document ne sont pas affectés.
-small_theme <- theme_plagepomi(base_size = 9)
+# title_size explicitement réduit (sinon il reste à 13pt par défaut, quel que
+# soit base_size, et le titre le plus long - diagnostic de conservation -
+# débordait de son panneau réduit) ; legend.text agrandi (la légende
+# risque 10/20/30% était minuscule à base_size=9, ~7pt).
+small_theme <- theme_plagepomi(base_size = 12, title_size = 11) +
+  theme(legend.text = element_text(size = 10))
 grid.arrange(
   graph_niveau_pop + small_theme,
   graph_tx_ren + small_theme + theme(legend.position = "bottom"),
   graph_part_juv + small_theme,
   graph_diagnostic + small_theme + theme(legend.position = "bottom"),
   layout_matrix = rbind(c(1, NA, 2), c(NA, NA, NA), c(3, NA, 4)),
-  widths = c(1, 0.12, 1),
+  widths = c(1, 0.06, 1),
   heights = c(1, 0.08, 1)
 )
 ```
@@ -275,7 +280,7 @@ indicateurs <- list(
 ```{r fiches_page1, fig.width=11.69, fig.height=8.27}
 fiche_adultes <- creer_fiche_indicateur(
   graphique = draw_niveau_pop(mean_N_vichy_50_actu, data_vichy_all, T, split_year = 2001,
-                               title = NULL, ylab_txt = "Adultes observés ou estimés à Vichy"),
+                               title = NULL, ylab_txt = "Adultes observés ou \nestimés à Vichy"),
   titre = indicateurs$adultes$titre, periode = indicateurs$adultes$periode,
   diagnostic = indicateurs$adultes$diagnostic, statut = indicateurs$adultes$statut,
   a_retenir = indicateurs$adultes$a_retenir, repere = indicateurs$adultes$repere,
@@ -291,13 +296,12 @@ fiche_renouvellement <- creer_fiche_indicateur(
 )
 
 page_1 <- wrap_elements(fiche_adultes) / plot_spacer() / wrap_elements(fiche_renouvellement) +
-  plot_layout(heights = c(1, 0.04, 1)) +
+  plot_layout(heights = c(1, 0.006, 1)) +
   plot_annotation(theme = theme(
-    plot.margin = margin(10, 10, 10, 10, unit = "mm"),
+    plot.margin = margin(2.5, 5, 2.5, 5, unit = "mm"),
     plot.background = element_rect(fill = "white", colour = NA)
   ))
 
-ggsave(str_c(imgwd, "FichesIndicateurs_page1.pdf"), page_1, width = 11.69, height = 8.27, device = cairo_pdf)
 print(page_1)
 ```
 
@@ -320,14 +324,26 @@ fiche_conservation <- creer_fiche_indicateur(
 )
 
 page_2 <- wrap_elements(fiche_juveniles) / plot_spacer() / wrap_elements(fiche_conservation) +
-  plot_layout(heights = c(1, 0.04, 1)) +
+  plot_layout(heights = c(1, 0.006, 1)) +
   plot_annotation(theme = theme(
-    plot.margin = margin(10, 10, 10, 10, unit = "mm"),
+    plot.margin = margin(2.5, 5, 2.5, 5, unit = "mm"),
     plot.background = element_rect(fill = "white", colour = NA)
   ))
 
-ggsave(str_c(imgwd, "FichesIndicateurs_page2.pdf"), page_2, width = 11.69, height = 8.27, device = cairo_pdf)
 print(page_2)
+```
+
+```{r fiches_pdf_export}
+# Un seul PDF vectoriel à 2 pages (au lieu d'un fichier par page) : onefile
+# = TRUE (défaut de cairo_pdf) fait avancer d'une page à chaque print(). Dans
+# un chunk séparé pour ne pas interférer avec la capture des graphiques
+# inline des chunks précédents (l'ouverture/fermeture manuelle d'un device
+# dans le même chunk qu'un print() destiné au HTML provoquait une erreur au
+# knit, non reproductible hors RMarkdown).
+cairo_pdf(str_c(imgwd, "FichesIndicateurs.pdf"), width = 11.69, height = 8.27, onefile = TRUE)
+print(page_1)
+print(page_2)
+invisible(dev.off())
 ```
 
 ## Tableau de synthèse
@@ -416,9 +432,7 @@ gt(synth_df, groupname_col = "groupe", rowname_col = "Indicateur") |>
   tab_spanner(label = "Repères historiques",
               columns = c(`Médiane 5 premières années`, `Médiane série complète`)) |>
   fmt_markdown(columns = c(`Niveau d'atteinte de l'indicateur`, Diagnostic, `Médiane 5 premières années`, `Médiane série complète`)) |>
-  cols_align(align = "right", columns = c(Moyenne, Objectif, `Dernière observation`,
-                                           `Médiane 5 premières années`, `Médiane série complète`)) |>
-  cols_align(align = "center", columns = c(`Niveau d'atteinte de l'indicateur`, Diagnostic)) |>
+  cols_align(align = "center", columns = everything()) |>
   cols_width(
     Indicateur ~ px(180), `Période évaluée` ~ px(100),
     Moyenne ~ px(80), Objectif ~ px(80),
