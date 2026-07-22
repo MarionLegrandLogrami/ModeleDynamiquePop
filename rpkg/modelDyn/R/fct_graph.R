@@ -945,7 +945,7 @@ creer_fiche_indicateur <- function(graphique, titre, periode, diagnostic, statut
   # commentaire (pas un texte temporaire d'une ligne).
   corps <- graphique + colonne_commentaire + patchwork::plot_layout(widths = c(0.5, 0.5))
 
-  methode_md <- str_c("**MÉTHODE ET PRÉCAUTIONS**<br><span style='color:#4B5563;'>", wrap_br(methode, 148), "</span>")
+  methode_md <- str_c("**MÉTHODE**<br><span style='color:#4B5563;'>", wrap_br(methode, 148), "</span>")
 
   bandeau_methode <- ggplot() +
     no_expand_x + no_expand_y +
