@@ -11,7 +11,9 @@ draw_diagnostic_conservation(
   T,
   target_pct,
   window = 10,
-  year_origin = 1974
+  year_origin = 1974,
+  show_title = TRUE,
+  palette = plagepomi_palette
 )
 }
 \arguments{
@@ -26,6 +28,11 @@ retournés par \code{\link{compute_diagnostic_risk}}.}
 \item{window}{Taille de la fenêtre glissante, en années. Défaut : 10.}
 
 \item{year_origin}{Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.}
+
+\item{show_title}{Si FALSE, n'affiche pas de titre (utile quand le titre est
+déjà affiché ailleurs, ex. bandeau d'une fiche indicateur). Défaut : TRUE.}
+
+\item{palette}{Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.}
 }
 \value{
 Un objet ggplot.

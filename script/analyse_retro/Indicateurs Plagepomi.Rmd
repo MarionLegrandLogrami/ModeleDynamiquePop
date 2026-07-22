@@ -129,26 +129,15 @@ renew_rate_w_coef <- compute_renew_rate_wild(N_wild_vichy, coef_juv, N_vichy_bug
 taux_renouv_annuel <- rep(NA_real_, T)
 taux_renouv_annuel[7:(T - 6)] <- exp(colMeans(renew_rate_w_coef[, 7:(T - 6)], na.rm = TRUE))
 
-tx_ren_result <- draw_indic_tx_ren(renew_rate_w_coef, pngName = "TauxRenouvellementPopSauvage",
-                                    Tyear = T, typ_pop = "sauvage", simulation = FALSE, png = FALSE)
-
-# draw_indic_tx_ren() est une fonction partagée avec d'autres scripts (import
-# ancien) : on harmonise ici son axe et son thème plutôt que de modifier son
-# comportement par défaut. Le calcul du taux de renouvellement nécessite les
-# retours des 3 années suivantes : la dernière année disponible est donc
-# mécaniquement 2019 (T-6), 6 ans avant la dernière année des 3 autres
-# indicateurs (2025).
-# La fonction fixe aussi en dur une limite basse de l'axe Y à 0.2 (échelle
-# log) : avec le modèle 2026_07 la dernière valeur (2019) descend à 0.195 et
-# se retrouvait donc supprimée silencieusement (les warnings sont masqués par
-# le réglage global du document) - on élargit la limite basse pour conserver 
-# tous les point de la série.
-y_min_tx <- min(0.2, min(taux_renouv_annuel, na.rm = TRUE) * 0.9)
-graph_tx_ren <- tx_ren_result[[1]] +
-  scale_x_years_plagepomi(year_origin + 1 + 10, year_origin + T - 6, function(year) year - year_origin - 10) +
-  scale_y_continuous(trans = "log10", limits = c(y_min_tx, 5)) +
-  theme_plagepomi() +
-  theme(legend.position = "bottom")
+# draw_tx_renouv_sauvage() est une variante dédiée de draw_indic_tx_ren()
+# (fonction partagée avec d'autres scripts, laissée inchangée), avec la
+# palette/le thème harmonisés et une limite basse d'axe Y calculée
+# dynamiquement (draw_indic_tx_ren la fixe à 0.2, alors qu'avec le modèle
+# 2026_07 la dernière valeur descend à 0.195 et se retrouvait supprimée
+# silencieusement). Le calcul du taux de renouvellement nécessite les retours
+# des 3 années suivantes : la dernière année disponible est donc mécaniquement
+# 2019 (T-6), 6 ans avant la dernière année des 3 autres indicateurs (2025).
+graph_tx_ren <- draw_tx_renouv_sauvage(taux_renouv_annuel, T)
 print(graph_tx_ren)
 ```
 
@@ -201,6 +190,153 @@ grid.arrange(
   widths = c(1, 0.12, 1),
   heights = c(1, 0.08, 1)
 )
+```
+
+## Fiches indicateurs
+
+Fiches synthétiques au format A4 paysage (2 indicateurs par page), destinées
+à une publication institutionnelle. Les rubriques de commentaire (À retenir /
+Repère-objectif / Interprétation / Méthode et précautions) sont volontairement
+laissées en texte temporaire : seuls le diagnostic, son statut (rouge/vert/orange)
+et la période évaluée sont calculés automatiquement, à partir des mêmes seuils
+déjà utilisés par les graphiques ci-dessus (constat chiffré, pas une
+interprétation) - à ajuster si besoin. Un PDF vectoriel par page est également
+enregistré dans le dossier des figures du modèle.
+
+```{r fiches_setup}
+library(patchwork)
+library(ggtext)
+
+# Période récente évaluée (bornée par la dernière année réellement calculable
+# pour l'indicateur), pour l'étiquette du bandeau de chaque fiche
+periode_recente <- function(values, window = 5, year_origin = 1974) {
+  last_t <- max(which(!is.na(values)))
+  str_c(year_origin + last_t - window + 1, "-", year_origin + last_t)
+}
+
+# Diagnostic calculé à partir des mêmes seuils déjà affichés sur les graphiques
+# ci-dessus (constat chiffré basé sur la dernière année disponible, pas une
+# interprétation)
+diagnostic_seuil <- function(values, threshold, label_haut, label_bas) {
+  last_val <- values[max(which(!is.na(values)))]
+  if (last_val >= threshold) list(diagnostic = label_haut, statut = "vert") else list(diagnostic = label_bas, statut = "rouge")
+}
+
+d_niveau <- diagnostic_seuil(data_vichy_all / mean_N_vichy_50_actu, 1, "Objectif atteint", "Sous le seuil")
+d_renouv <- diagnostic_seuil(taux_renouv_annuel, 1, "Renouvellement assuré", "Renouvellement insuffisant")
+d_juv <- diagnostic_seuil(ratio_result$mean_ratio, 0.5, "Objectif atteint", "Sous le seuil")
+
+last_risk10 <- risk_25$mean_risk_10[max(which(!is.na(risk_25$mean_risk_10)))]
+d_conservation <- if (last_risk10 >= 0.75) {
+  list(diagnostic = "Conservation assurée", statut = "vert")
+} else if (last_risk10 >= 0.25) {
+  list(diagnostic = "Conservation incertaine", statut = "orange")
+} else {
+  list(diagnostic = "Conservation non assurée", statut = "rouge")
+}
+
+# Paramétrage des 4 fiches (structure list() pour pouvoir éditer les
+# commentaires sans toucher au code de construction des fiches)
+indicateurs <- list(
+  adultes = list(
+    titre = "Niveau de population d'adultes à Vichy",
+    periode = periode_recente(data_vichy_all),
+    diagnostic = d_niveau$diagnostic,
+    statut = d_niveau$statut,
+    a_retenir = "Commentaire synthétique à compléter.",
+    repere = "Valeur ou seuil de référence à compléter.",
+    interpretation = "Interprétation de l'évolution à compléter.",
+    methode = "Méthode de calcul, période de référence et précautions à compléter."
+  ),
+  renouvellement = list(
+    titre = "Taux de renouvellement de la population sauvage",
+    periode = periode_recente(taux_renouv_annuel),
+    diagnostic = d_renouv$diagnostic,
+    statut = d_renouv$statut,
+    a_retenir = "Commentaire synthétique à compléter.",
+    repere = "Valeur ou seuil de référence à compléter.",
+    interpretation = "Interprétation de l'évolution à compléter.",
+    methode = "Méthode de calcul, période de référence et précautions à compléter."
+  ),
+  juveniles = list(
+    titre = "Part des juvéniles sauvages",
+    periode = periode_recente(ratio_result$mean_ratio),
+    diagnostic = d_juv$diagnostic,
+    statut = d_juv$statut,
+    a_retenir = "Commentaire synthétique à compléter.",
+    repere = "Valeur ou seuil de référence à compléter.",
+    interpretation = "Interprétation de l'évolution à compléter.",
+    methode = "Méthode de calcul, période de référence et précautions à compléter."
+  ),
+  conservation = list(
+    titre = "Diagnostic de conservation de la population sauvage",
+    periode = periode_recente(risk_25$mean_risk_10),
+    diagnostic = d_conservation$diagnostic,
+    statut = d_conservation$statut,
+    a_retenir = "Commentaire synthétique à compléter.",
+    repere = "Valeur ou seuil de référence à compléter.",
+    interpretation = "Interprétation de l'évolution à compléter.",
+    methode = "Méthode de calcul, période de référence et précautions à compléter."
+  )
+)
+```
+
+```{r fiches_page1, fig.width=11.69, fig.height=8.27}
+fiche_adultes <- creer_fiche_indicateur(
+  graphique = draw_niveau_pop(mean_N_vichy_50_actu, data_vichy_all, T, split_at = 23,
+                               title = NULL, ylab_txt = "Adultes observés ou estimés à Vichy"),
+  titre = indicateurs$adultes$titre, periode = indicateurs$adultes$periode,
+  diagnostic = indicateurs$adultes$diagnostic, statut = indicateurs$adultes$statut,
+  a_retenir = indicateurs$adultes$a_retenir, repere = indicateurs$adultes$repere,
+  interpretation = indicateurs$adultes$interpretation, methode = indicateurs$adultes$methode
+)
+
+fiche_renouvellement <- creer_fiche_indicateur(
+  graphique = draw_tx_renouv_sauvage(taux_renouv_annuel, T, show_title = FALSE),
+  titre = indicateurs$renouvellement$titre, periode = indicateurs$renouvellement$periode,
+  diagnostic = indicateurs$renouvellement$diagnostic, statut = indicateurs$renouvellement$statut,
+  a_retenir = indicateurs$renouvellement$a_retenir, repere = indicateurs$renouvellement$repere,
+  interpretation = indicateurs$renouvellement$interpretation, methode = indicateurs$renouvellement$methode
+)
+
+page_1 <- wrap_elements(fiche_adultes) / plot_spacer() / wrap_elements(fiche_renouvellement) +
+  plot_layout(heights = c(1, 0.04, 1)) +
+  plot_annotation(theme = theme(
+    plot.margin = margin(10, 10, 10, 10, unit = "mm"),
+    plot.background = element_rect(fill = "white", colour = NA)
+  ))
+
+ggsave(str_c(imgwd, "FichesIndicateurs_page1.pdf"), page_1, width = 11.69, height = 8.27, device = cairo_pdf)
+print(page_1)
+```
+
+```{r fiches_page2, fig.width=11.69, fig.height=8.27}
+fiche_juveniles <- creer_fiche_indicateur(
+  graphique = draw_part_juv_wild(ratio_result$mean_ratio, T, show_title = FALSE),
+  titre = indicateurs$juveniles$titre, periode = indicateurs$juveniles$periode,
+  diagnostic = indicateurs$juveniles$diagnostic, statut = indicateurs$juveniles$statut,
+  a_retenir = indicateurs$juveniles$a_retenir, repere = indicateurs$juveniles$repere,
+  interpretation = indicateurs$juveniles$interpretation, methode = indicateurs$juveniles$methode
+)
+
+fiche_conservation <- creer_fiche_indicateur(
+  graphique = draw_diagnostic_conservation(risk_25$mean_risk_10, risk_25$mean_risk_20, risk_25$mean_risk_30,
+                                             T, target_pct = 25, show_title = FALSE),
+  titre = indicateurs$conservation$titre, periode = indicateurs$conservation$periode,
+  diagnostic = indicateurs$conservation$diagnostic, statut = indicateurs$conservation$statut,
+  a_retenir = indicateurs$conservation$a_retenir, repere = indicateurs$conservation$repere,
+  interpretation = indicateurs$conservation$interpretation, methode = indicateurs$conservation$methode
+)
+
+page_2 <- wrap_elements(fiche_juveniles) / plot_spacer() / wrap_elements(fiche_conservation) +
+  plot_layout(heights = c(1, 0.04, 1)) +
+  plot_annotation(theme = theme(
+    plot.margin = margin(10, 10, 10, 10, unit = "mm"),
+    plot.background = element_rect(fill = "white", colour = NA)
+  ))
+
+ggsave(str_c(imgwd, "FichesIndicateurs_page2.pdf"), page_2, width = 11.69, height = 8.27, device = cairo_pdf)
+print(page_2)
 ```
 
 ## Tableaux de synthèse

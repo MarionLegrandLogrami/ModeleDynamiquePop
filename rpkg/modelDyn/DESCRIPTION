@@ -1,4 +1,4 @@
-Package: logramiSaumon
+Package: modelDyn
 Type: Package
 Title: Fonctions de traitement et de graphiques pour le modele de dynamique de population du saumon de l'Allier
 Version: 0.1.0

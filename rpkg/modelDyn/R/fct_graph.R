@@ -518,6 +518,36 @@ draw_indic_tx_ren_boxplot<-function(tx_renouv,pngName,Tyear=T,typ_pop="sauvage",
 # Indicateurs Plagepomi.Rmd), portées depuis Indicateurs PLAGEPOMI.Rnw.
 #===================================================================================
 
+#' Palette de couleurs des 4 indicateurs et fiches PLAGEPOMI
+#'
+#' Couleurs sobres et douces (fonds pastel, ligne principale gris foncé
+#' neutre, seuils gris foncé) pour les graphiques et les fiches indicateurs :
+#' \code{bg_*} = fonds de zone favorable/défavorable (à utiliser avec
+#' \code{alpha} ~0.35-0.6, ce sont des fonds de lecture, pas des éléments
+#' graphiques dominants) ; \code{line_main} = couleur de la série principale ;
+#' \code{grid_major}/\code{axis_text} = grille/texte des axes ; \code{threshold}
+#' = couleur des lignes de seuil ; \code{badge_*} = couleurs (plus soutenues)
+#' des cartouches de diagnostic dans les fiches.
+#'
+#' @format Une liste nommée de codes couleur hexadécimaux.
+#' @export
+plagepomi_palette <- list(
+  bg_red = "#F4C7C3",
+  bg_orange = "#F5D0A6",
+  bg_yellow = "#F3E7A6",
+  bg_green = "#D5E8D1",
+  bg_white = "#FFFFFF",
+  bg_offwhite = "#FAFAFA",
+  line_main = "#20262E",
+  grid_major = "#D9DEE3",
+  axis_text = "#30343B",
+  threshold = "#4B5563",
+  badge_red = "#C74343",
+  badge_green = "#4F8A4A",
+  badge_orange = "#C98024",
+  badge_gray = "#6B7280"
+)
+
 #' Axe des années harmonisé pour les indicateurs PLAGEPOMI
 #'
 #' Construit une échelle x en années civiles, avec ticks majeurs (labellisés)
@@ -549,14 +579,22 @@ scale_x_years_plagepomi <- function(year_first, year_last, to_position) {
 #' @param base_size Taille de police de base, en points. Défaut : 13 (utiliser
 #'   une valeur plus petite, ex. 9, pour un assemblage de plusieurs graphiques
 #'   sur une même figure - cf. la figure de synthèse des 4 indicateurs).
+#' @param palette Palette de couleurs à utiliser pour la grille et le texte des
+#'   axes. Défaut : \code{\link{plagepomi_palette}}.
 #' @return Un objet thème ggplot2, à ajouter au graphique avec \code{+}.
 #' @export
-theme_plagepomi <- function(base_size = 13) {
+theme_plagepomi <- function(base_size = 13, palette = plagepomi_palette) {
   theme_bw(base_size = base_size) +
     theme(
-      plot.title = element_text(hjust = 0.5, margin = margin(b = 10)),
+      plot.title = element_text(hjust = 0.5, margin = margin(b = 10), face = "bold"),
       axis.title.x = element_text(margin = margin(t = 8)),
-      axis.title.y = element_text(margin = margin(r = 8))
+      axis.title.y = element_text(margin = margin(r = 8)),
+      axis.text = element_text(colour = palette$axis_text),
+      axis.title = element_text(colour = palette$axis_text),
+      panel.grid.major = element_line(colour = palette$grid_major, linewidth = 0.3),
+      panel.grid.minor = element_line(colour = palette$grid_major, linewidth = 0.15),
+      panel.border = element_blank(),
+      axis.line = element_line(colour = "grey60", linewidth = 0.3)
     )
 }
 
@@ -575,10 +613,11 @@ theme_plagepomi <- function(base_size = 13) {
 #' @param title Titre du graphique.
 #' @param ylab_txt Titre de l'axe Y.
 #' @param year_origin Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.
+#' @param palette Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.
 #' @return Un objet ggplot.
 #' @export
 draw_niveau_pop <- function(mean_target, observed, T, split_at, title, ylab_txt,
-                             year_origin = 1974) {
+                             year_origin = 1974, palette = plagepomi_palette) {
   x_mob <- seq(2, (T - 3), 1)
   target_ma <- running.mean(mean_target, 5)
   keep <- !is.na(target_ma)
@@ -587,7 +626,7 @@ draw_niveau_pop <- function(mean_target, observed, T, split_at, title, ylab_txt,
   n <- length(x_mob)
 
   ids <- factor(c(str_c("1.", seq(1, (T - 5), 1)), str_c("2.", seq(1, (T - 5), 1))))
-  values <- data.frame(id = ids, values = c(rep("red", (T - 5)), rep("green", (T - 5))))
+  values <- data.frame(id = ids, values = c(rep(palette$bg_red, (T - 5)), rep(palette$bg_green, (T - 5))))
   positions <- data.frame(
     id = rep(ids, each = 4),
     x = rep(c(rbind(seq(3, (T - 3), 1), seq(2, (T - 4), 1), seq(2, (T - 4), 1), seq(3, (T - 3), 1))), 2),
@@ -599,16 +638,17 @@ draw_niveau_pop <- function(mean_target, observed, T, split_at, title, ylab_txt,
   )
   datapoly <- plyr::join(values, positions)
 
-  ggplot() +
-    geom_polygon(data = datapoly, aes(x = x, y = y, group = id), fill = datapoly$values, alpha = 0.5) +
-    geom_line(aes(x_mob[1:split_at], observed_ma[1:split_at]), linewidth = 1, linetype = "dashed") +
-    geom_line(aes(x_mob[split_at:n], observed_ma[split_at:n]), linewidth = 1) +
+  p <- ggplot() +
+    geom_polygon(data = datapoly, aes(x = x, y = y, group = id), fill = datapoly$values, alpha = 0.55) +
+    geom_line(aes(x_mob[1:split_at], observed_ma[1:split_at]), colour = palette$line_main, linewidth = 0.9, linetype = "dashed") +
+    geom_line(aes(x_mob[split_at:n], observed_ma[split_at:n]), colour = palette$line_main, linewidth = 0.9) +
     xlab("Année") +
     ylab(ylab_txt) +
-    ggtitle(title) +
     scale_x_years_plagepomi(year_origin + x_mob[1] + 3, year_origin + T, function(year) year - year_origin - 3) +
     theme(legend.position = "none") +
     theme_plagepomi()
+  if (!is.null(title)) p <- p + ggtitle(title)
+  p
 }
 
 #' Indicateur PLAGEPOMI "diagnostic de conservation"
@@ -624,31 +664,42 @@ draw_niveau_pop <- function(mean_target, observed, T, split_at, title, ylab_txt,
 #' @param target_pct Seuil de diagnostic, en pourcentage de Rmax (affiché dans le titre).
 #' @param window Taille de la fenêtre glissante, en années. Défaut : 10.
 #' @param year_origin Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.
+#' @param show_title Si FALSE, n'affiche pas de titre (utile quand le titre est
+#'   déjà affiché ailleurs, ex. bandeau d'une fiche indicateur). Défaut : TRUE.
+#' @param palette Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.
 #' @return Un objet ggplot.
 #' @export
 draw_diagnostic_conservation <- function(mean_risk_10, mean_risk_20, mean_risk_30, T,
-                                          target_pct, window = 10, year_origin = 1974) {
+                                          target_pct, window = 10, year_origin = 1974,
+                                          show_title = TRUE, palette = plagepomi_palette) {
   x_diag <- seq(window + 1, T, 1)
   rects <- data.frame(ystart = seq(0, 0.75, 0.25), yend = seq(0.25, 1, 0.25),
-                       col = c("red", "orange", "yellow", "green"))
+                       col = c(palette$bg_red, palette$bg_orange, palette$bg_yellow, palette$bg_green))
 
-  ggplot() +
-    geom_rect(data = rects, aes(xmin = (window + 1), xmax = T, ymin = ystart, ymax = yend), fill = rects$col, alpha = 0.5) +
-    geom_line(aes(x_diag, mean_risk_10[x_diag], colour = "1"), size = 1) +
-    geom_line(aes(x_diag, mean_risk_20[x_diag], colour = "2"), size = 1) +
-    geom_line(aes(x_diag, mean_risk_30[x_diag], colour = "3"), size = 1) +
-    geom_hline(yintercept = 0.5, linetype = "dashed", size = 2) +
-    geom_hline(yintercept = 0.75, linetype = "dashed", size = 1) +
-    geom_hline(yintercept = 0.25, linetype = "dashed", size = 1) +
+  p <- ggplot() +
+    geom_rect(data = rects, aes(xmin = (window + 1), xmax = T, ymin = ystart, ymax = yend), fill = rects$col, alpha = 0.55) +
+    geom_line(aes(x_diag, mean_risk_10[x_diag], colour = "1", linetype = "1"), linewidth = 0.9) +
+    geom_line(aes(x_diag, mean_risk_20[x_diag], colour = "2", linetype = "2"), linewidth = 0.8) +
+    geom_line(aes(x_diag, mean_risk_30[x_diag], colour = "3", linetype = "3"), linewidth = 0.8) +
+    geom_hline(yintercept = 0.5, colour = palette$threshold, linetype = "solid", linewidth = 0.9) +
+    geom_hline(yintercept = 0.75, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
+    geom_hline(yintercept = 0.25, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
+    annotate("text", x = window + 1, y = 0.5, label = "seuil 50%", hjust = 0, vjust = -0.5,
+             size = 3, colour = palette$threshold) +
     xlab("Année") +
-    ylab("Probabilité d'assurer la conservation selon le diagnostic choisi") +
-    ggtitle(str_c("Diagnostic de conservation de la population sauvage pour ", target_pct, "% Rmax \n(fenêtre glissante sur ", window, " ans)")) +
+    ylab("Probabilité d'assurer la conservation \nselon le diagnostic choisi") +
     scale_x_years_plagepomi(year_origin + window + 1, year_origin + T, function(year) year - year_origin) +
     scale_y_continuous(breaks = seq(0, 1, 0.2), labels = seq(0, 1, 0.2)) +
-    scale_colour_manual("", breaks = c("1", "2", "3"), values = c("black", "gray50", "gray80"),
+    scale_colour_manual("", breaks = c("1", "2", "3"), values = c(palette$line_main, "#6B7280", "#AEB4BC"),
                         labels = c("Risque 10%", "Risque 20%", "Risque 30%")) +
+    scale_linetype_manual("", breaks = c("1", "2", "3"), values = c("solid", "dashed", "dotted"),
+                          labels = c("Risque 10%", "Risque 20%", "Risque 30%")) +
     theme_plagepomi() +
     theme(legend.position = "bottom")
+  if (show_title) {
+    p <- p + ggtitle(str_c("Diagnostic de conservation de la population sauvage pour ", target_pct, "% Rmax \n(fenêtre glissante sur ", window, " ans)"))
+  }
+  p
 }
 
 #' Indicateur PLAGEPOMI "part des juvéniles sauvages"
@@ -660,25 +711,178 @@ draw_diagnostic_conservation <- function(mean_risk_10, mean_risk_20, mean_risk_3
 #' @param mean_ratio Vecteur de longueur T : ratio juvéniles sauvages / totaux, tel que retourné par \code{\link{compute_ratio_juv_wild}}.
 #' @param T Nombre d'années.
 #' @param year_origin Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.
+#' @param show_title Si FALSE, n'affiche pas de titre (utile quand le titre est
+#'   déjà affiché ailleurs, ex. bandeau d'une fiche indicateur). Défaut : TRUE.
+#' @param palette Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.
 #' @return Un objet ggplot.
 #' @export
-draw_part_juv_wild <- function(mean_ratio, T, year_origin = 1974) {
+draw_part_juv_wild <- function(mean_ratio, T, year_origin = 1974, show_title = TRUE,
+                                palette = plagepomi_palette) {
   x_juv <- seq(1, (T - 5), 1)
-  rect_2_col <- data.frame(ystart = c(0, 0.5), yend = c(0.5, 1), col = c("red", "green"))
+  rect_2_col <- data.frame(ystart = c(0, 0.5), yend = c(0.5, 1), col = c(palette$bg_red, palette$bg_green))
   ratio_ma <- running.mean(mean_ratio, 5)
   ratio_ma <- ratio_ma[!is.na(ratio_ma)]
 
-  ggplot() +
-    geom_rect(data = rect_2_col, aes(xmin = 1, xmax = (T - 5), ymin = ystart, ymax = yend), fill = rect_2_col$col, alpha = 0.5) +
-    geom_line(aes(x_juv, ratio_ma), size = 1) +
-    geom_hline(yintercept = 0.5, linetype = "dashed", size = 2) +
-    geom_hline(yintercept = 0.75, linetype = "dashed", size = 1) +
-    geom_hline(yintercept = 0.25, linetype = "dashed", size = 1) +
+  p <- ggplot() +
+    geom_rect(data = rect_2_col, aes(xmin = 1, xmax = (T - 5), ymin = ystart, ymax = yend), fill = rect_2_col$col, alpha = 0.55) +
+    geom_line(aes(x_juv, ratio_ma), colour = palette$line_main, linewidth = 0.9) +
+    geom_hline(yintercept = 0.5, colour = palette$threshold, linetype = "solid", linewidth = 0.9) +
+    geom_hline(yintercept = 0.75, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
+    geom_hline(yintercept = 0.25, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
+    annotate("text", x = (T - 5), y = 0.5, label = "objectif 50%", hjust = 1, vjust = -0.5,
+             size = 3, colour = palette$threshold) +
+    annotate("text", x = 1, y = 0.08, label = "Objectif non atteint", hjust = 0, size = 3, colour = "grey35") +
+    annotate("text", x = 1, y = 0.92, label = "Objectif atteint", hjust = 0, size = 3, colour = "grey35") +
     xlab("Année") +
-    ylab("Ratio juvénile sauvage sur juvénile total") +
-    ggtitle("Part de juvéniles sauvages dans l'ensemble des juvéniles \n(moyenne mobile 5 ans)") +
+    ylab("Ratio juvénile sauvage \nsur juvénile total") +
     scale_x_years_plagepomi(year_origin + x_juv[1] + 5, year_origin + T, function(year) year - year_origin - 5) +
     coord_cartesian(xlim = c(1, (T - 5))) +
     theme(legend.position = "none") +
     theme_plagepomi()
+  if (show_title) {
+    p <- p + ggtitle("Part de juvéniles sauvages dans l'ensemble des juvéniles \n(moyenne mobile 5 ans)")
+  }
+  p
+}
+
+#' Indicateur PLAGEPOMI "taux de renouvellement de la population sauvage"
+#'
+#' Variante de \code{\link{draw_indic_tx_ren}} dédiée aux fiches/graphiques
+#' PLAGEPOMI harmonisés (palette \code{\link{plagepomi_palette}}, thème
+#' \code{\link{theme_plagepomi}}, axe des années cohérent avec les 3 autres
+#' indicateurs). La fonction \code{draw_indic_tx_ren} d'origine, partagée avec
+#' d'autres scripts du projet, reste inchangée. Contrairement à
+#' \code{draw_indic_tx_ren} (limite basse de l'axe Y fixée à 0.2), la limite
+#' basse est calculée dynamiquement pour ne jamais couper un point de la
+#' série (cf. le point 2019 à 0.195 avec le modèle 2026_07).
+#'
+#' @param taux_renouv_annuel Vecteur de longueur T : taux de renouvellement
+#'   annuel en échelle naturelle (ex. \code{exp(colMeans(renew_rate_w_coef))}),
+#'   NA hors de la plage calculable.
+#' @param T Nombre d'années.
+#' @param year_origin Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.
+#' @param show_title Si FALSE, n'affiche pas de titre. Défaut : TRUE.
+#' @param palette Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.
+#' @return Un objet ggplot.
+#' @export
+draw_tx_renouv_sauvage <- function(taux_renouv_annuel, T, year_origin = 1974,
+                                    show_title = TRUE, palette = plagepomi_palette) {
+  # Isoler d'abord la plage valide (sans NA) avant la moyenne mobile : sinon
+  # stats::filter() propage les NA de bord sur 2 positions de trop de chaque
+  # côté (la moyenne mobile perd alors 2 années de plus que nécessaire aux
+  # deux extrémités de la série calculable).
+  valid <- which(!is.na(taux_renouv_annuel))
+  ma <- as.numeric(running.mean(taux_renouv_annuel[valid], 5))
+  keep <- !is.na(ma)
+  ma <- ma[keep]
+  years <- (year_origin + valid)[keep]
+
+  y_min <- min(0.2, min(ma, na.rm = TRUE) * 0.9)
+  rect_2_col <- data.frame(ystart = c(y_min, 1), yend = c(1, 5),
+                           col = c(palette$bg_red, palette$bg_green))
+
+  p <- ggplot() +
+    geom_rect(data = rect_2_col, aes(xmin = min(years), xmax = max(years), ymin = ystart, ymax = yend),
+              fill = rect_2_col$col, alpha = 0.55) +
+    geom_line(aes(years, ma), colour = palette$line_main, linewidth = 0.9) +
+    geom_hline(yintercept = 1, colour = palette$threshold, linewidth = 0.9) +
+    annotate("text", x = max(years), y = 1, label = "seuil = 1", hjust = 1, vjust = -0.6,
+             size = 3, colour = palette$threshold) +
+    scale_y_continuous(trans = "log10", limits = c(y_min, 5)) +
+    annotation_logticks(sides = "l") +
+    scale_x_years_plagepomi(min(years), max(years), identity) +
+    xlab("Année de reproduction") +
+    ylab("Tx de renouvellement") +
+    theme_plagepomi() +
+    theme(legend.position = "none")
+  if (show_title) {
+    p <- p + ggtitle("Taux de renouvellement de la population sauvage \n(moyenne mobile 5 ans)")
+  }
+  p
+}
+
+#' Construit une fiche indicateur PLAGEPOMI (patchwork)
+#'
+#' Assemble un graphique d'indicateur (sans titre interne, cf. paramètre
+#' \code{show_title}/\code{title} des \code{draw_*}) avec un bandeau de titre
+#' (titre, période évaluée, cartouche de diagnostic coloré), une colonne de
+#' commentaire (À retenir / Repère-objectif / Interprétation) et un bandeau
+#' méthodologique, en une fiche autonome au format patchwork - empilable avec
+#' \code{/} pour construire une page (cf. \code{page_1 <- fiche1 / fiche2}).
+#'
+#' @param graphique Objet ggplot de l'indicateur (idéalement sans titre interne).
+#' @param titre Titre court de l'indicateur, affiché en gras dans le bandeau supérieur.
+#' @param periode Période évaluée (ex. "2021-2025"), affichée en étiquette discrète.
+#' @param diagnostic Texte du diagnostic (ex. "Sous le seuil"), affiché dans le cartouche coloré.
+#' @param statut Statut associé au cartouche : \code{"rouge"}, \code{"vert"},
+#'   \code{"orange"} ou toute autre valeur (gris, statut indéterminé).
+#' @param a_retenir Texte de la rubrique "À retenir" (commentaire synthétique).
+#' @param repere Texte de la rubrique "Repère / objectif" (valeur ou seuil de référence).
+#' @param interpretation Texte de la rubrique "Interprétation" (interprétation de l'évolution).
+#' @param methode Texte du bandeau "Méthode et précautions" (méthode de calcul, période de référence, précautions).
+#' @param palette Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.
+#' @return Un objet patchwork (composable avec \code{/} et \code{+}).
+#' @export
+creer_fiche_indicateur <- function(graphique, titre, periode, diagnostic, statut,
+                                    a_retenir, repere, interpretation, methode,
+                                    palette = plagepomi_palette) {
+  badge_col <- switch(statut,
+    rouge = palette$badge_red,
+    vert = palette$badge_green,
+    orange = palette$badge_orange,
+    palette$badge_gray
+  )
+
+  bandeau_titre <- ggplot() +
+    xlim(0, 1) + ylim(0, 1) +
+    annotate("text", x = 0.01, y = 0.5, label = titre, hjust = 0, vjust = 0.5,
+             fontface = "bold", size = 5, colour = "#1F2328") +
+    ggtext::geom_richtext(aes(x = 0.72, y = 0.5, label = periode),
+                          hjust = 0.5, vjust = 0.5, size = 3.3,
+                          fill = "#EEF0F2", label.colour = NA, colour = "#4B5563",
+                          label.r = unit(4, "pt"), label.padding = unit(c(3, 7, 3, 7), "pt")) +
+    ggtext::geom_richtext(aes(x = 0.99, y = 0.5, label = diagnostic),
+                          hjust = 1, vjust = 0.5, size = 3.5, fontface = "bold",
+                          fill = badge_col, label.colour = NA, colour = "white",
+                          label.r = unit(4, "pt"), label.padding = unit(c(4, 9, 4, 9), "pt")) +
+    theme_void() +
+    theme(plot.margin = margin(4, 10, 4, 10),
+          plot.background = element_rect(fill = "#F7F8F9", colour = NA))
+
+  colonne_commentaire <- ggplot() +
+    xlim(0, 1) + ylim(0, 1) +
+    annotate("text", x = 0, y = 0.97, label = "À RETENIR", hjust = 0, vjust = 1,
+             fontface = "bold", size = 3.2, colour = "#1F2328") +
+    ggtext::geom_textbox(aes(x = 0, y = 0.90, label = a_retenir), hjust = 0, vjust = 1,
+                          width = unit(0.95, "npc"), box.colour = NA, fill = NA,
+                          size = 3, colour = "grey45", fontface = "italic") +
+    annotate("text", x = 0, y = 0.62, label = "REPÈRE / OBJECTIF", hjust = 0, vjust = 1,
+             fontface = "bold", size = 3.2, colour = "#1F2328") +
+    ggtext::geom_textbox(aes(x = 0, y = 0.55, label = repere), hjust = 0, vjust = 1,
+                          width = unit(0.95, "npc"), box.colour = NA, fill = NA,
+                          size = 3, colour = "grey45", fontface = "italic") +
+    annotate("text", x = 0, y = 0.30, label = "INTERPRÉTATION", hjust = 0, vjust = 1,
+             fontface = "bold", size = 3.2, colour = "#1F2328") +
+    ggtext::geom_textbox(aes(x = 0, y = 0.23, label = interpretation), hjust = 0, vjust = 1,
+                          width = unit(0.95, "npc"), box.colour = NA, fill = NA,
+                          size = 3, colour = "grey45", fontface = "italic") +
+    theme_void() +
+    theme(plot.margin = margin(6, 6, 6, 12),
+          plot.background = element_rect(fill = palette$bg_offwhite, colour = NA))
+
+  corps <- graphique + colonne_commentaire + patchwork::plot_layout(widths = c(0.63, 0.37))
+
+  bandeau_methode <- ggplot() +
+    xlim(0, 1) + ylim(0, 1) +
+    annotate("text", x = 0, y = 0.8, label = "MÉTHODE ET PRÉCAUTIONS", hjust = 0, vjust = 1,
+             fontface = "bold", size = 3, colour = "#1F2328") +
+    ggtext::geom_textbox(aes(x = 0, y = 0.5, label = methode), hjust = 0, vjust = 1,
+                          width = unit(0.98, "npc"), box.colour = NA, fill = NA,
+                          size = 2.9, colour = "grey40") +
+    theme_void() +
+    theme(plot.margin = margin(4, 10, 6, 10),
+          plot.background = element_rect(fill = "#F3F4F6", colour = NA))
+
+  bandeau_titre / corps / bandeau_methode +
+    patchwork::plot_layout(heights = c(0.11, 0.71, 0.18))
 }

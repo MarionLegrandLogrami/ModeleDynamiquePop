@@ -4,7 +4,13 @@
 \alias{draw_part_juv_wild}
 \title{Indicateur PLAGEPOMI "part des juvéniles sauvages"}
 \usage{
-draw_part_juv_wild(mean_ratio, T, year_origin = 1974)
+draw_part_juv_wild(
+  mean_ratio,
+  T,
+  year_origin = 1974,
+  show_title = TRUE,
+  palette = plagepomi_palette
+)
 }
 \arguments{
 \item{mean_ratio}{Vecteur de longueur T : ratio juvéniles sauvages / totaux, tel que retourné par \code{\link{compute_ratio_juv_wild}}.}
@@ -12,6 +18,11 @@ draw_part_juv_wild(mean_ratio, T, year_origin = 1974)
 \item{T}{Nombre d'années.}
 
 \item{year_origin}{Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.}
+
+\item{show_title}{Si FALSE, n'affiche pas de titre (utile quand le titre est
+déjà affiché ailleurs, ex. bandeau d'une fiche indicateur). Défaut : TRUE.}
+
+\item{palette}{Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.}
 }
 \value{
 Un objet ggplot.

@@ -4,12 +4,15 @@
 \alias{theme_plagepomi}
 \title{Thème harmonisé pour les indicateurs PLAGEPOMI}
 \usage{
-theme_plagepomi(base_size = 13)
+theme_plagepomi(base_size = 13, palette = plagepomi_palette)
 }
 \arguments{
 \item{base_size}{Taille de police de base, en points. Défaut : 13 (utiliser
 une valeur plus petite, ex. 9, pour un assemblage de plusieurs graphiques
 sur une même figure - cf. la figure de synthèse des 4 indicateurs).}
+
+\item{palette}{Palette de couleurs à utiliser pour la grille et le texte des
+axes. Défaut : \code{\link{plagepomi_palette}}.}
 }
 \value{
 Un objet thème ggplot2, à ajouter au graphique avec \code{+}.

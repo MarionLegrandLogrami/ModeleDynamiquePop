@@ -11,7 +11,8 @@ draw_niveau_pop(
   split_at,
   title,
   ylab_txt,
-  year_origin = 1974
+  year_origin = 1974,
+  palette = plagepomi_palette
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ laquelle la série observée passe de "estimée" (tirets) à "réelle" (trait pl
 \item{ylab_txt}{Titre de l'axe Y.}
 
 \item{year_origin}{Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.}
+
+\item{palette}{Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.}
 }
 \value{
 Un objet ggplot.
