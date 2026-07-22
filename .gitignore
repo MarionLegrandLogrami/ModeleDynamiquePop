@@ -29,6 +29,11 @@ script/lateX/data_model.R
 script/lateX/data_2021_09.r
 script/lateX/data_covariable_2019_12_12.R
 script/analyse_retro/data_model_2023_05_3_ModelSansDistriMelange.R
+/data_4zones_Interaction.R
+/data_4zones_Interaction_2017.05.03.R
+/data_4zones_Interaction_2017.07.19.R
+/data_4zones_Interaction_2019_12_12.R
+/data_4zones_Interaction_2021_09.R
 
 # Doublons générés à la racine quand du code est exécuté à la console
 # (répertoire de travail = racine du .Rproj) plutôt que via Knit/Compile PDF
