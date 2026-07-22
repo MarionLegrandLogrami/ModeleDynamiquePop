@@ -8,7 +8,7 @@ draw_niveau_pop(
   mean_target,
   observed,
   T,
-  split_at,
+  split_year,
   title,
   ylab_txt,
   year_origin = 1974,
@@ -22,10 +22,13 @@ draw_niveau_pop(
 
 \item{T}{Nombre d'années.}
 
-\item{split_at}{Position (dans la série moyennée mobile) à partir de
-laquelle la série observée passe de "estimée" (tirets) à "réelle" (trait plein).}
+\item{split_year}{Année civile à partir de laquelle la série observée
+passe de "estimée" (tirets) à "réelle" (trait plein) - la première année
+où la fenêtre de 5 ans de la moyenne mobile ne contient que des comptages
+réels à Vichy.}
 
-\item{title}{Titre du graphique.}
+\item{title}{Titre du graphique. NULL pour ne pas en afficher (utile dans
+une fiche indicateur où le titre est déjà affiché ailleurs).}
 
 \item{ylab_txt}{Titre de l'axe Y.}
 
@@ -37,8 +40,22 @@ laquelle la série observée passe de "estimée" (tirets) à "réelle" (trait pl
 Un objet ggplot.
 }
 \description{
-Trace le nombre d'adultes observés/estimés à Vichy (moyenne mobile 5 ans),
-comparé à la cible (nombre d'adultes que produirait la quantité de
-juvéniles visée dans les conditions de survie actuelles), avec un polygone
-rouge/vert indiquant si l'observé est en dessous/au-dessus de la cible.
+Trace le nombre d'adultes observés/estimés à Vichy (moyenne mobile arrière
+sur 5 ans, cf. \code{\link{trailing_mean}}), comparé à la cible (nombre
+d'adultes que produirait la quantité de juvéniles visée dans les
+conditions de survie actuelles), avec un polygone rouge/vert indiquant si
+l'observé est en dessous/au-dessus de la cible.
+}
+\details{
+La cible est lissée avec exactement la même fenêtre mobile arrière que
+l'observé (5 ans, cf. \code{\link{trailing_mean}}). C'est nécessaire pour
+une comparaison juste : l'observé sur une fenêtre comme 2000-2004 mélange
+des retours produits sous l'ancien ET le nouveau régime d'habitat dès
+qu'une ouverture survient dans la fenêtre (ex. Alagnon en 2004) - une
+cible non lissée (100% "nouveau régime" dès l'année de l'ouverture)
+surestimerait alors artificiellement l'écart avec l'observé. Ce choix
+délisse en contrepartie la lecture des paliers nets de la cible (Tableau 2
+du rapport d'indicateurs 2021) : chaque ouverture d'habitat apparaît comme
+une rampe sur ~4 ans plutôt qu'un saut nette à sa date exacte - la
+cohérence de la comparaison prime sur la lisibilité des dates.
 }

@@ -36,5 +36,10 @@ indicateurs). La fonction \code{draw_indic_tx_ren} d'origine, partagée avec
 d'autres scripts du projet, reste inchangée. Contrairement à
 \code{draw_indic_tx_ren} (limite basse de l'axe Y fixée à 0.2), la limite
 basse est calculée dynamiquement pour ne jamais couper un point de la
-série (cf. le point 2019 à 0.195 avec le modèle 2026_07).
+série. Utilise \code{\link{trailing_mean}} (moyenne mobile arrière) et non
+\code{\link{running.mean}} (centrée) : conforme au rapport d'indicateurs
+2021 ("l'année qui apparait sur le graphique est la dernière année de
+chacune des périodes mobiles de 5 ans"), ce qui permet aussi d'atteindre la
+dernière année réellement calculable (une moyenne centrée aurait toujours
+besoin de 2 années de données futures qui n'existent pas encore).
 }

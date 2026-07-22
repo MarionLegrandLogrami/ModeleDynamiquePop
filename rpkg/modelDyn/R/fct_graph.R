@@ -310,6 +310,25 @@ corrplot_png <- function(data, imgwd, filename, width = 800, height = 800, metho
 #' @export
 running.mean<- function(x, n = 5){stats::filter(x, rep(1 / n, n), sides = 2)}
 
+#' Moyenne mobile arrière (sur les n dernières valeurs, dont la courante)
+#'
+#' Contrairement à \code{\link{running.mean}} (moyenne centrée), la valeur en
+#' sortie à la position i est la moyenne de \code{x[(i-n+1):i]} - la
+#' convention utilisée pour les indicateurs PLAGEPOMI (cf. rapport
+#' d'indicateurs 2021 : "L'année qui apparait sur le graphique est la
+#' dernière année de chacune des périodes mobiles de 5 ans"). N'a besoin
+#' d'aucune donnée future : contrairement à une moyenne centrée, elle atteint
+#' donc toujours la dernière année disponible de \code{x}.
+#'
+#' @param x Vecteur numérique.
+#' @param n Taille de la fenêtre de moyenne mobile. Défaut : 5.
+#' @return Un vecteur numérique de même longueur que \code{x}, NA pour les
+#'   \code{n-1} premières valeurs (fenêtre incomplète).
+#' @export
+trailing_mean <- function(x, n = 5) {
+  as.numeric(stats::filter(x, rep(1 / n, n), sides = 1))
+}
+
 #' Graphique ggplot de l'indicateur taux de renouvellement (ligne, moyenne mobile 5 ans)
 #'
 #' Trace le taux de renouvellement (échelle log naturelle) en moyenne mobile
@@ -600,36 +619,54 @@ theme_plagepomi <- function(base_size = 13, palette = plagepomi_palette) {
 
 #' Indicateur PLAGEPOMI "niveau de population"
 #'
-#' Trace le nombre d'adultes observés/estimés à Vichy (moyenne mobile 5 ans),
-#' comparé à la cible (nombre d'adultes que produirait la quantité de
-#' juvéniles visée dans les conditions de survie actuelles), avec un polygone
-#' rouge/vert indiquant si l'observé est en dessous/au-dessus de la cible.
+#' Trace le nombre d'adultes observés/estimés à Vichy (moyenne mobile arrière
+#' sur 5 ans, cf. \code{\link{trailing_mean}}), comparé à la cible (nombre
+#' d'adultes que produirait la quantité de juvéniles visée dans les
+#' conditions de survie actuelles), avec un polygone rouge/vert indiquant si
+#' l'observé est en dessous/au-dessus de la cible.
+#'
+#' @details
+#' La cible est lissée avec exactement la même fenêtre mobile arrière que
+#' l'observé (5 ans, cf. \code{\link{trailing_mean}}). C'est nécessaire pour
+#' une comparaison juste : l'observé sur une fenêtre comme 2000-2004 mélange
+#' des retours produits sous l'ancien ET le nouveau régime d'habitat dès
+#' qu'une ouverture survient dans la fenêtre (ex. Alagnon en 2004) - une
+#' cible non lissée (100% "nouveau régime" dès l'année de l'ouverture)
+#' surestimerait alors artificiellement l'écart avec l'observé. Ce choix
+#' délisse en contrepartie la lecture des paliers nets de la cible (Tableau 2
+#' du rapport d'indicateurs 2021) : chaque ouverture d'habitat apparaît comme
+#' une rampe sur ~4 ans plutôt qu'un saut nette à sa date exacte - la
+#' cohérence de la comparaison prime sur la lisibilité des dates.
 #'
 #' @param mean_target Vecteur de longueur T : cible (nombre d'adultes visé), par année.
 #' @param observed Vecteur de longueur T : adultes observés/estimés à Vichy, par année (cf. \code{\link{reconstitute_data_vichy}}).
 #' @param T Nombre d'années.
-#' @param split_at Position (dans la série moyennée mobile) à partir de
-#'   laquelle la série observée passe de "estimée" (tirets) à "réelle" (trait plein).
-#' @param title Titre du graphique.
+#' @param split_year Année civile à partir de laquelle la série observée
+#'   passe de "estimée" (tirets) à "réelle" (trait plein) - la première année
+#'   où la fenêtre de 5 ans de la moyenne mobile ne contient que des comptages
+#'   réels à Vichy.
+#' @param title Titre du graphique. NULL pour ne pas en afficher (utile dans
+#'   une fiche indicateur où le titre est déjà affiché ailleurs).
 #' @param ylab_txt Titre de l'axe Y.
 #' @param year_origin Année de référence (année 1 du modèle = year_origin + 1). Défaut : 1974.
 #' @param palette Palette de couleurs. Défaut : \code{\link{plagepomi_palette}}.
 #' @return Un objet ggplot.
 #' @export
-draw_niveau_pop <- function(mean_target, observed, T, split_at, title, ylab_txt,
+draw_niveau_pop <- function(mean_target, observed, T, split_year, title, ylab_txt,
                              year_origin = 1974, palette = plagepomi_palette) {
-  x_mob <- seq(2, (T - 3), 1)
-  target_ma <- running.mean(mean_target, 5)
+  target_ma <- trailing_mean(mean_target, 5)
   keep <- !is.na(target_ma)
   target_ma <- target_ma[keep]
-  observed_ma <- running.mean(observed, 5)[keep]
-  n <- length(x_mob)
+  observed_ma <- trailing_mean(observed, 5)[keep]
+  years <- (year_origin + seq_along(mean_target))[keep]
+  n <- length(years)
+  split_at <- which(years >= split_year)[1]
 
-  ids <- factor(c(str_c("1.", seq(1, (T - 5), 1)), str_c("2.", seq(1, (T - 5), 1))))
-  values <- data.frame(id = ids, values = c(rep(palette$bg_red, (T - 5)), rep(palette$bg_green, (T - 5))))
+  ids <- factor(c(str_c("1.", seq(1, (n - 1), 1)), str_c("2.", seq(1, (n - 1), 1))))
+  values <- data.frame(id = ids, values = c(rep(palette$bg_red, (n - 1)), rep(palette$bg_green, (n - 1))))
   positions <- data.frame(
     id = rep(ids, each = 4),
-    x = rep(c(rbind(seq(3, (T - 3), 1), seq(2, (T - 4), 1), seq(2, (T - 4), 1), seq(3, (T - 3), 1))), 2),
+    x = rep(c(rbind(years[2:n], years[1:(n - 1)], years[1:(n - 1)], years[2:n])), 2),
     y = c(
       c(rbind(0, 0, target_ma[1:(n - 1)], target_ma[2:n])),
       c(rbind(target_ma[2:n], target_ma[1:(n - 1)],
@@ -640,11 +677,11 @@ draw_niveau_pop <- function(mean_target, observed, T, split_at, title, ylab_txt,
 
   p <- ggplot() +
     geom_polygon(data = datapoly, aes(x = x, y = y, group = id), fill = datapoly$values, alpha = 0.55) +
-    geom_line(aes(x_mob[1:split_at], observed_ma[1:split_at]), colour = palette$line_main, linewidth = 0.9, linetype = "dashed") +
-    geom_line(aes(x_mob[split_at:n], observed_ma[split_at:n]), colour = palette$line_main, linewidth = 0.9) +
+    geom_line(aes(years[1:split_at], observed_ma[1:split_at]), colour = palette$line_main, linewidth = 0.9, linetype = "dashed") +
+    geom_line(aes(years[split_at:n], observed_ma[split_at:n]), colour = palette$line_main, linewidth = 0.9) +
     xlab("Année") +
     ylab(ylab_txt) +
-    scale_x_years_plagepomi(year_origin + x_mob[1] + 3, year_origin + T, function(year) year - year_origin - 3) +
+    scale_x_years_plagepomi(min(years), max(years), identity) +
     theme(legend.position = "none") +
     theme_plagepomi()
   if (!is.null(title)) p <- p + ggtitle(title)
@@ -704,9 +741,9 @@ draw_diagnostic_conservation <- function(mean_risk_10, mean_risk_20, mean_risk_3
 
 #' Indicateur PLAGEPOMI "part des juvéniles sauvages"
 #'
-#' Trace le ratio juvéniles sauvages / juvéniles totaux (moyenne mobile 5
-#' ans), avec un fond rouge/vert selon que le ratio est en dessous/au-dessus
-#' de 50\%.
+#' Trace le ratio juvéniles sauvages / juvéniles totaux (moyenne mobile
+#' arrière sur 5 ans, cf. \code{\link{trailing_mean}}), avec un fond
+#' rouge/vert selon que le ratio est en dessous/au-dessus de 50\%.
 #'
 #' @param mean_ratio Vecteur de longueur T : ratio juvéniles sauvages / totaux, tel que retourné par \code{\link{compute_ratio_juv_wild}}.
 #' @param T Nombre d'années.
@@ -718,25 +755,26 @@ draw_diagnostic_conservation <- function(mean_risk_10, mean_risk_20, mean_risk_3
 #' @export
 draw_part_juv_wild <- function(mean_ratio, T, year_origin = 1974, show_title = TRUE,
                                 palette = plagepomi_palette) {
-  x_juv <- seq(1, (T - 5), 1)
+  ratio_ma <- trailing_mean(mean_ratio, 5)
+  keep <- !is.na(ratio_ma)
+  ratio_ma <- ratio_ma[keep]
+  years <- (year_origin + seq_along(mean_ratio))[keep]
+
   rect_2_col <- data.frame(ystart = c(0, 0.5), yend = c(0.5, 1), col = c(palette$bg_red, palette$bg_green))
-  ratio_ma <- running.mean(mean_ratio, 5)
-  ratio_ma <- ratio_ma[!is.na(ratio_ma)]
 
   p <- ggplot() +
-    geom_rect(data = rect_2_col, aes(xmin = 1, xmax = (T - 5), ymin = ystart, ymax = yend), fill = rect_2_col$col, alpha = 0.55) +
-    geom_line(aes(x_juv, ratio_ma), colour = palette$line_main, linewidth = 0.9) +
+    geom_rect(data = rect_2_col, aes(xmin = min(years), xmax = max(years), ymin = ystart, ymax = yend), fill = rect_2_col$col, alpha = 0.55) +
+    geom_line(aes(years, ratio_ma), colour = palette$line_main, linewidth = 0.9) +
     geom_hline(yintercept = 0.5, colour = palette$threshold, linetype = "solid", linewidth = 0.9) +
     geom_hline(yintercept = 0.75, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
     geom_hline(yintercept = 0.25, colour = palette$threshold, linetype = "dashed", linewidth = 0.4) +
-    annotate("text", x = (T - 5), y = 0.5, label = "objectif 50%", hjust = 1, vjust = -0.5,
+    annotate("text", x = max(years), y = 0.5, label = "objectif 50%", hjust = 1, vjust = -0.5,
              size = 3, colour = palette$threshold) +
-    annotate("text", x = 1, y = 0.08, label = "Objectif non atteint", hjust = 0, size = 3, colour = "grey35") +
-    annotate("text", x = 1, y = 0.92, label = "Objectif atteint", hjust = 0, size = 3, colour = "grey35") +
+    annotate("text", x = min(years), y = 0.08, label = "Objectif non atteint", hjust = 0, size = 3, colour = "grey35") +
+    annotate("text", x = min(years), y = 0.92, label = "Objectif atteint", hjust = 0, size = 3, colour = "grey35") +
     xlab("Année") +
     ylab("Ratio juvénile sauvage \nsur juvénile total") +
-    scale_x_years_plagepomi(year_origin + x_juv[1] + 5, year_origin + T, function(year) year - year_origin - 5) +
-    coord_cartesian(xlim = c(1, (T - 5))) +
+    scale_x_years_plagepomi(min(years), max(years), identity) +
     theme(legend.position = "none") +
     theme_plagepomi()
   if (show_title) {
@@ -754,7 +792,12 @@ draw_part_juv_wild <- function(mean_ratio, T, year_origin = 1974, show_title = T
 #' d'autres scripts du projet, reste inchangée. Contrairement à
 #' \code{draw_indic_tx_ren} (limite basse de l'axe Y fixée à 0.2), la limite
 #' basse est calculée dynamiquement pour ne jamais couper un point de la
-#' série (cf. le point 2019 à 0.195 avec le modèle 2026_07).
+#' série. Utilise \code{\link{trailing_mean}} (moyenne mobile arrière) et non
+#' \code{\link{running.mean}} (centrée) : conforme au rapport d'indicateurs
+#' 2021 ("l'année qui apparait sur le graphique est la dernière année de
+#' chacune des périodes mobiles de 5 ans"), ce qui permet aussi d'atteindre la
+#' dernière année réellement calculable (une moyenne centrée aurait toujours
+#' besoin de 2 années de données futures qui n'existent pas encore).
 #'
 #' @param taux_renouv_annuel Vecteur de longueur T : taux de renouvellement
 #'   annuel en échelle naturelle (ex. \code{exp(colMeans(renew_rate_w_coef))}),
@@ -767,15 +810,10 @@ draw_part_juv_wild <- function(mean_ratio, T, year_origin = 1974, show_title = T
 #' @export
 draw_tx_renouv_sauvage <- function(taux_renouv_annuel, T, year_origin = 1974,
                                     show_title = TRUE, palette = plagepomi_palette) {
-  # Isoler d'abord la plage valide (sans NA) avant la moyenne mobile : sinon
-  # stats::filter() propage les NA de bord sur 2 positions de trop de chaque
-  # côté (la moyenne mobile perd alors 2 années de plus que nécessaire aux
-  # deux extrémités de la série calculable).
-  valid <- which(!is.na(taux_renouv_annuel))
-  ma <- as.numeric(running.mean(taux_renouv_annuel[valid], 5))
+  ma <- trailing_mean(taux_renouv_annuel, 5)
   keep <- !is.na(ma)
   ma <- ma[keep]
-  years <- (year_origin + valid)[keep]
+  years <- (year_origin + seq_along(taux_renouv_annuel))[keep]
 
   y_min <- min(0.2, min(ma, na.rm = TRUE) * 0.9)
   rect_2_col <- data.frame(ystart = c(y_min, 1), yend = c(1, 5),

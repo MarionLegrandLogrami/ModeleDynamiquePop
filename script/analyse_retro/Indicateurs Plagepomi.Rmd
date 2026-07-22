@@ -102,11 +102,15 @@ mean_N_vichy_50_actu <- colMeans(N_vichy_50_actu)
 
 data_vichy_all <- reconstitute_data_vichy(bugs_N_vichy_real, data_vichy, T)
 
+# split_year = 2001 : d'après le rapport d'indicateurs 2021 (§2.1.3), c'est la
+# première année où la fenêtre mobile de 5 ans ne contient que des comptages
+# réels à Vichy (la station a commencé à compter en 1997, soit 1997+4=2001
+# pour la première fenêtre entièrement réelle).
 graph_niveau_pop <- draw_niveau_pop(
   mean_target = mean_N_vichy_50_actu,
   observed = data_vichy_all,
   T = T,
-  split_at = 23,
+  split_year = 2001,
   title = "Adultes observés ou estimés à Vichy par rapport au nombre de géniteurs \nque produiraient la quantité de juvéniles correspondant à 50% de Rmax \n(moyenne mobile 5 ans)",
   ylab_txt = "Adultes observés ou estimés à Vichy"
 )
@@ -283,7 +287,7 @@ indicateurs <- list(
 
 ```{r fiches_page1, fig.width=11.69, fig.height=8.27}
 fiche_adultes <- creer_fiche_indicateur(
-  graphique = draw_niveau_pop(mean_N_vichy_50_actu, data_vichy_all, T, split_at = 23,
+  graphique = draw_niveau_pop(mean_N_vichy_50_actu, data_vichy_all, T, split_year = 2001,
                                title = NULL, ylab_txt = "Adultes observés ou estimés à Vichy"),
   titre = indicateurs$adultes$titre, periode = indicateurs$adultes$periode,
   diagnostic = indicateurs$adultes$diagnostic, statut = indicateurs$adultes$statut,

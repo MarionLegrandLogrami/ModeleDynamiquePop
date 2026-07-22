@@ -28,7 +28,7 @@ déjà affiché ailleurs, ex. bandeau d'une fiche indicateur). Défaut : TRUE.}
 Un objet ggplot.
 }
 \description{
-Trace le ratio juvéniles sauvages / juvéniles totaux (moyenne mobile 5
-ans), avec un fond rouge/vert selon que le ratio est en dessous/au-dessus
-de 50\%.
+Trace le ratio juvéniles sauvages / juvéniles totaux (moyenne mobile
+arrière sur 5 ans, cf. \code{\link{trailing_mean}}), avec un fond
+rouge/vert selon que le ratio est en dessous/au-dessus de 50\%.
 }
