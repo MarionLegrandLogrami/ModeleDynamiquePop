@@ -34,6 +34,7 @@ script/analyse_retro/data_model_2023_05_3_ModelSansDistriMelange.R
 # (répertoire de travail = racine du .Rproj) plutôt que via Knit/Compile PDF
 /data_covariable_2019_12_12.R
 /Indicateurs-Plagepomi.html
+script/analyse_retro/Indicateurs-Plagepomi.html
 
 # Document de travail personnel, non destiné à être versionné
 /script/lateX/Synthese_et_analyse_modele_2026_07.md

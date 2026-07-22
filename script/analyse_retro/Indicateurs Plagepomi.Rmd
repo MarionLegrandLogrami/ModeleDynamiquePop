@@ -11,7 +11,7 @@ output:
 # quel que soit le réglage RStudio "Knit Directory" ou la façon dont le
 # Knit est lancé - par défaut certains réglages font sortir le fichier à la
 # racine du projet.
-knit: !expr function(input, ...) { rmarkdown::render(input, output_dir = dirname(input), envir = globalenv()) }
+knit: (function(input, ...) { rmarkdown::render(input, output_dir = dirname(input), envir = globalenv()) })
 ---
 
 <!-- Le script a été démarré en septembre 2023 mais non terminé. J4ai repris ça avec de l'IA (Claude) en juillet 2026 -->
@@ -340,7 +340,7 @@ indicateurs <- list(
     a_retenir = "La moyenne 2021-2025 est très largement en-dessous du seuil de référence (~ 730 individus).",
     repere = "Seuil : 50 % de Rmax calculé dans les conditions de survie moyenne actuelle (période 1992-2025)",
     interpretation = "Depuis la moyenne 2011-2015, la situation n'a cessé de se dégrader pour atteindre sur la période 2021-2025 son niveau le plus bas.",
-    methode = "moyenne mobile sur 5 ans. Les valeurs antérieures au démarrage de la station de comptage de Vichy sont estimées à partir des pêches."
+    methode = "Moyenne mobile sur 5 ans. Les valeurs antérieures au démarrage de la station de comptage de Vichy sont estimées notamment à partir des données de pêcheries (professionnelles et amateurs)."
   ),
   renouvellement = list(
     titre = "Taux de renouvellement de la population sauvage",
