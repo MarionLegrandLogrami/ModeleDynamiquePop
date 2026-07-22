@@ -1,7 +1,7 @@
 ---
 title: "Indicateurs Plagepomi"
 author: "Marion Legrand & Etienne Prévost"
-date: "2026-07-21"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
 output:
   html_document:
     df_print: paged
@@ -33,7 +33,7 @@ library(dplyr)
 library(gridExtra)
 library(tibble)
 library(gt)
-library(modelDyn)
+library(modelDyn) #si besoin de mettre à jour le package, lancer : source(str_c(getwd(),"/script/fonctions/build_docs_package.R"))
 T <- 51
 
 source(here::here("script/fonctions/fct_graph.R"))
@@ -113,11 +113,11 @@ tableau_secteurs <- tab_secteurs |>
     columns = -periode
   ) |>
   cols_width(
-    periode ~ px(195),
-    `Vichy-Langeac` ~ px(180),
-    Alagnon ~ px(145),
-    `Langeac-Poutès` ~ px(195),
-    `Amont Poutès` ~ px(235)
+    periode ~ px(160),
+    `Vichy-Langeac` ~ px(160),
+    Alagnon ~ px(160),
+    `Langeac-Poutès` ~ px(160),
+    `Amont Poutès` ~ px(160)
   ) |>
   tab_style(
     style = list(
@@ -151,7 +151,7 @@ tableau_secteurs <- tab_secteurs |>
     locations = cells_body(columns = periode)
   ) |>
   tab_style(
-    style = cell_text(size = px(12)),
+    style = cell_text(size = px(13)),
     locations = cells_body(columns = -periode)
   ) |>
   tab_style(
@@ -163,7 +163,7 @@ tableau_secteurs <- tab_secteurs |>
     locations = cells_body()
   ) |>
   tab_options(
-    table.width = px(950),
+    table.width = px(800),
     table.font.names = c("Arial", "sans-serif"),
     table.background.color = "white",
     data_row.padding = px(3),
